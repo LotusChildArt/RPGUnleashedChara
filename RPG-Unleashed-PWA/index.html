@@ -3075,7 +3075,8 @@ body.owlbear-connected .owlbear-only {
 
 .library-share-button,
 .party-campaign-button,
-.party-back-button {
+.party-back-button,
+.party-remove-button {
     border: 2px solid black;
     border-radius: 18px;
     background: white;
@@ -3087,7 +3088,8 @@ body.owlbear-connected .owlbear-only {
 
 .library-share-button:hover,
 .party-campaign-button:hover,
-.party-back-button:hover {
+.party-back-button:hover,
+.party-remove-button:hover {
     background: #eee;
 }
 
@@ -3145,6 +3147,58 @@ body.owlbear-connected .owlbear-only {
 .party-character-detail {
     margin: 2px 0;
     color: #444;
+}
+
+.party-character-actions {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.party-remove-button {
+    min-height: 34px;
+    padding: 5px 12px;
+}
+
+.party-edit-button {
+    border: 2px solid black;
+    border-radius: 18px;
+    background: white;
+    min-height: 34px;
+    padding: 5px 12px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.party-edit-button:hover {
+    background: #eee;
+}
+
+.remote-edit-banner {
+    display: none;
+    margin: 10px auto 0;
+    width: calc(100% - 20px);
+    max-width: 1000px;
+    border: 2px solid black;
+    border-radius: 18px;
+    padding: 10px 14px;
+    background: white;
+    font-size: 14px;
+}
+
+.remote-edit-banner.active {
+    display: block;
+}
+
+.remote-edit-banner strong {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 16px;
+}
+
+.remote-edit-banner .remote-edit-subtext {
+    color: #555;
 }
 
 .party-share-status {
@@ -3404,6 +3458,19 @@ body.owlbear-connected .owlbear-only {
     id="character-app"
     class="character-app"
 >
+
+<div
+    class="remote-edit-banner"
+    id="remote-edit-banner"
+>
+    <strong id="remote-edit-title">
+        Editing Player Character
+    </strong>
+    <div
+        class="remote-edit-subtext"
+        id="remote-edit-subtext"
+    ></div>
+</div>
 
 
 <!-- =========================================
@@ -5450,6 +5517,23 @@ body.owlbear-connected .owlbear-only {
             </div>
 
 
+            <div class="option-row">
+
+                <button
+                    class="option-button"
+                    id="save-options"
+                    type="button"
+                >
+                    Save Options
+                </button>
+
+                <div class="option-description">
+                    Edit save details such as the campaign name for this character.
+                </div>
+
+            </div>
+
+
             <div
                 class="option-save-status"
                 id="save-status"
@@ -5535,11 +5619,11 @@ body.owlbear-connected .owlbear-only {
 
     <div class="campaign-modal">
 
-        <h2>
+        <h2 id="campaign-modal-title">
             Save Character
         </h2>
 
-        <p>
+        <p id="campaign-modal-message">
             Would you like to add a campaign name to this character? This is optional.
         </p>
 
@@ -5607,6 +5691,10 @@ const GLOBAL_MOBILE_KEY =
 
 
 let currentCharacterRecord =
+    null;
+
+
+let remoteEditSession =
     null;
 
 
@@ -5802,6 +5890,77 @@ async function getAllCharacters() {
 }
 
 
+async function getCharacterById(
+    characterId
+) {
+
+    const db =
+        await openCharacterDatabase();
+
+
+    return new Promise(
+        (
+            resolve,
+            reject
+        ) => {
+
+            const transaction =
+                db.transaction(
+                    RPG_CHARACTER_STORE,
+                    "readonly"
+                );
+
+
+            const request =
+                transaction
+                    .objectStore(
+                        RPG_CHARACTER_STORE
+                    )
+                    .get(
+                        characterId
+                    );
+
+
+            request.addEventListener(
+                "success",
+                () => {
+
+                    resolve(
+                        request.result ||
+                        null
+                    );
+
+                }
+            );
+
+
+            request.addEventListener(
+                "error",
+                () => {
+
+                    reject(
+                        request.error
+                    );
+
+                }
+            );
+
+
+            transaction.addEventListener(
+                "complete",
+                () => {
+
+                    db.close();
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
 async function putCharacter(
     character
 ) {
@@ -5920,6 +6079,13 @@ async function deleteCharacter(
     );
 
 }
+
+
+window.RPGCharacterStore = {
+    getCharacterById,
+    putCharacter,
+    deleteCharacter
+};
 
 
 function makeCharacterId() {
@@ -6364,7 +6530,9 @@ function setGlobalMobileMode(
 }
 
 
-function askForCampaignName() {
+function askForCampaignName(
+    options = {}
+) {
 
     return new Promise(
         resolve => {
@@ -6372,6 +6540,18 @@ function askForCampaignName() {
             const overlay =
                 document.getElementById(
                     "campaign-modal-overlay"
+                );
+
+
+            const title =
+                document.getElementById(
+                    "campaign-modal-title"
+                );
+
+
+            const message =
+                document.getElementById(
+                    "campaign-modal-message"
                 );
 
 
@@ -6393,7 +6573,23 @@ function askForCampaignName() {
                 );
 
 
+            title.textContent =
+                options.title ||
+                "Save Character";
+
+
+            message.textContent =
+                options.message ||
+                "Would you like to add a campaign name to this character? This is optional.";
+
+
+            confirmButton.textContent =
+                options.confirmLabel ||
+                "Save";
+
+
             input.value =
+                options.initialCampaign ||
                 "";
 
 
@@ -6409,6 +6605,9 @@ function askForCampaignName() {
 
 
             input.focus();
+
+
+            input.select();
 
 
             function close(
@@ -6521,7 +6720,6 @@ function askForCampaignName() {
     );
 
 }
-
 
 async function renderCharacterLibrary() {
 
@@ -7414,6 +7612,226 @@ async function renderPartyCharacters(
                 );
 
 
+                if (
+                    window.RPGOwlbear
+                        ?.canEditPartyCharacter(
+                            character
+                        )
+                ) {
+
+                    const editActions =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    editActions.className =
+                        "party-character-actions";
+
+
+                    const editButton =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    editButton.className =
+                        "party-edit-button";
+
+
+                    editButton.type =
+                        "button";
+
+
+                    editButton.textContent =
+                        "View / Edit Sheet";
+
+
+                    editButton.addEventListener(
+                        "click",
+                        async () => {
+
+                            const originalText =
+                                editButton.textContent;
+
+
+                            editButton.disabled =
+                                true;
+
+
+                            editButton.textContent =
+                                "Loading…";
+
+
+                            try {
+
+                                const record =
+                                    await window.RPGOwlbear
+                                        .requestCharacterSheet(
+                                            character
+                                        );
+
+
+                                openRemoteCharacterForEdit(
+                                    character,
+                                    record
+                                );
+
+                            }
+
+                            catch (
+                                error
+                            ) {
+
+                                console.error(
+                                    "Could not open the player character sheet:",
+                                    error
+                                );
+
+
+                                window.alert(
+                                    error?.message ||
+                                    "Could not retrieve this character sheet. Make sure the player is still connected to the Owlbear room."
+                                );
+
+
+                                editButton.disabled =
+                                    false;
+
+
+                                editButton.textContent =
+                                    originalText;
+
+                            }
+
+                        }
+                    );
+
+
+                    editActions.appendChild(
+                        editButton
+                    );
+
+
+                    card.appendChild(
+                        editActions
+                    );
+
+                }
+
+
+                if (
+                    window.RPGOwlbear
+                        ?.canRemovePartyCharacter(
+                            character
+                        )
+                ) {
+
+                    const actions =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    actions.className =
+                        "party-character-actions";
+
+
+                    const removeButton =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    removeButton.className =
+                        "party-remove-button";
+
+
+                    removeButton.type =
+                        "button";
+
+
+                    removeButton.textContent =
+                        "Remove";
+
+
+                    removeButton.addEventListener(
+                        "click",
+                        async () => {
+
+                            if (
+                                !window.confirm(
+                                    "Remove " +
+                                    (character.name ||
+                                    "this character") +
+                                    " from " +
+                                    campaignName +
+                                    "? This does not delete the player's saved character."
+                                )
+                            ) {
+
+                                return;
+
+                            }
+
+
+                            removeButton.disabled =
+                                true;
+
+
+                            try {
+
+                                await window.RPGOwlbear
+                                    .removePartyCharacter(
+                                        character
+                                    );
+
+
+                                await renderPartyCharacters(
+                                    campaignName
+                                );
+
+                            }
+
+                            catch (
+                                error
+                            ) {
+
+                                console.error(
+                                    "Could not remove the party character:",
+                                    error
+                                );
+
+
+                                window.alert(
+                                    "Could not remove this character from the campaign."
+                                );
+
+                            }
+
+                            finally {
+
+                                removeButton.disabled =
+                                    false;
+
+                            }
+
+                        }
+                    );
+
+
+                    actions.appendChild(
+                        removeButton
+                    );
+
+
+                    card.appendChild(
+                        actions
+                    );
+
+                }
+
+
                 list.appendChild(
                     card
                 );
@@ -7437,6 +7855,67 @@ async function renderPartyCharacters(
             '<div class="library-empty">Could not load this campaign.</div>';
 
     }
+
+}
+
+
+function openRemoteCharacterForEdit(
+    character,
+    record
+) {
+
+    if (
+        characterSheetInitialized
+    ) {
+
+        return;
+
+    }
+
+
+    remoteEditSession = {
+        ownerId:
+            character.ownerId,
+        ownerName:
+            character.ownerName ||
+            "Player",
+        characterId:
+            character.characterId,
+        campaign:
+            character.campaign ||
+            "",
+        baseRevision:
+            Number(
+                record.revision ||
+                0
+            )
+    };
+
+
+    currentCharacterRecord = {
+        ...record,
+        id:
+            character.characterId,
+        campaign:
+            character.campaign ||
+            record.campaign ||
+            "",
+        portrait:
+            ""
+    };
+
+
+    restoreCharacterTabs(
+        currentCharacterRecord.state
+    );
+
+
+    showCharacterApp();
+
+
+    initializeCharacterSheet(
+        currentCharacterRecord.state
+    );
 
 }
 
@@ -10446,6 +10925,12 @@ const saveSheetButton =
     );
 
 
+const saveOptionsButton =
+    document.getElementById(
+        "save-options"
+    );
+
+
 const saveStatus =
     document.getElementById(
         "save-status"
@@ -10662,7 +11147,277 @@ function prepareTabForSave(
 }
 
 
+async function editSaveOptions() {
+
+    if (
+        !currentCharacterRecord
+    ) {
+
+        saveStatus.textContent =
+            "Save this character before editing its save options.";
+
+
+        return;
+
+    }
+
+
+    const result =
+        await askForCampaignName({
+            title:
+                "Save Options",
+            message:
+                "Edit the campaign name for this character. Leave it blank to remove the campaign name. If the character is currently shared in Owlbear, its Party Characters entry will be updated as well.",
+            initialCampaign:
+                currentCharacterRecord.campaign ||
+                "",
+            confirmLabel:
+                "Save Options"
+        });
+
+
+    if (
+        result.cancelled
+    ) {
+
+        return;
+
+    }
+
+
+    const record = {
+        ...currentCharacterRecord,
+        campaign:
+            result.campaign,
+        revision:
+            Number(
+                currentCharacterRecord.revision ||
+                0
+            ) +
+            1,
+        updatedAt:
+            Date.now()
+    };
+
+
+    try {
+
+        await putCharacter(
+            record
+        );
+
+
+        currentCharacterRecord =
+            record;
+
+
+        if (
+            window.RPGOwlbear?.ready
+        ) {
+
+            await window.RPGOwlbear
+                .syncSharedCharacter(
+                    record
+                );
+
+        }
+
+
+        saveStatus.textContent =
+            result.campaign
+                ? "Save options updated. Campaign: " +
+                  result.campaign
+                : "Save options updated. Campaign name removed.";
+
+    }
+
+    catch (
+        error
+    ) {
+
+        console.error(
+            "Could not update save options:",
+            error
+        );
+
+
+        saveStatus.textContent =
+            "Could not update save options.";
+
+    }
+
+}
+
+
+async function saveRemoteCharacterSheet() {
+
+    if (
+        !remoteEditSession ||
+        !window.RPGOwlbear?.ready
+    ) {
+
+        saveStatus.textContent =
+            "Remote editing is not connected to Owlbear.";
+
+
+        return;
+
+    }
+
+
+    const state = {
+        magicEnabled:
+            magicToggleButton.dataset.enabled ===
+            "true",
+        tabs: {}
+    };
+
+
+    [
+        "tab1",
+        "tab2",
+        "tab3",
+        "tab4",
+        "tab5"
+    ].forEach(
+        tabId => {
+
+            state.tabs[tabId] =
+                prepareTabForSave(
+                    document.getElementById(
+                        tabId
+                    )
+                );
+
+        }
+    );
+
+
+    const meta =
+        getMetaFromLiveSheet();
+
+
+    const record = {
+        ...currentCharacterRecord,
+        id:
+            remoteEditSession.characterId,
+        name:
+            meta.name,
+        race:
+            meta.race,
+        level:
+            meta.level,
+        campaign:
+            currentCharacterRecord?.campaign ||
+            remoteEditSession.campaign ||
+            "",
+        portrait:
+            "",
+        state
+    };
+
+
+    saveSheetButton.disabled =
+        true;
+
+
+    saveStatus.textContent =
+        "Sending changes to the player…";
+
+
+    try {
+
+        const result =
+            await window.RPGOwlbear
+                .updateRemoteCharacter({
+                    ownerId:
+                        remoteEditSession.ownerId,
+                    characterId:
+                        remoteEditSession.characterId,
+                    baseRevision:
+                        remoteEditSession.baseRevision,
+                    record
+                });
+
+
+        remoteEditSession.baseRevision =
+            Number(
+                result.revision
+            );
+
+
+        currentCharacterRecord = {
+            ...record,
+            revision:
+                result.revision,
+            updatedAt:
+                result.updatedAt
+        };
+
+
+        saveStatus.textContent =
+            "Changes saved to the player's character.";
+
+    }
+
+    catch (
+        error
+    ) {
+
+        console.error(
+            "Could not save remote character changes:",
+            error
+        );
+
+
+        if (
+            error?.code ===
+            "REVISION_CONFLICT"
+        ) {
+
+            saveStatus.textContent =
+                "This character changed after you opened it. Return to Party Characters and reopen the sheet before saving.";
+
+
+            window.alert(
+                "This character changed after you opened it. Your changes were not saved. Reopen the character from Party Characters to get the latest version."
+            );
+
+        }
+
+        else {
+
+            saveStatus.textContent =
+                error?.message ||
+                "Could not send these changes to the player.";
+
+        }
+
+    }
+
+    finally {
+
+        saveSheetButton.disabled =
+            false;
+
+    }
+
+}
+
+
 async function saveCharacterSheet() {
+
+    if (
+        remoteEditSession
+    ) {
+
+        await saveRemoteCharacterSheet();
+
+
+        return;
+
+    }
+
 
     let campaign =
         currentCharacterRecord?.campaign ||
@@ -10744,6 +11499,12 @@ async function saveCharacterSheet() {
         createdAt:
             currentCharacterRecord?.createdAt ||
             now,
+        revision:
+            Number(
+                currentCharacterRecord?.revision ||
+                0
+            ) +
+            1,
         updatedAt:
             now,
         state
@@ -10759,6 +11520,33 @@ async function saveCharacterSheet() {
 
         currentCharacterRecord =
             record;
+
+
+        if (
+            window.RPGOwlbear?.ready
+        ) {
+
+            try {
+
+                await window.RPGOwlbear
+                    .syncSharedCharacter(
+                        record
+                    );
+
+            }
+
+            catch (
+                error
+            ) {
+
+                console.error(
+                    "Could not refresh the shared Owlbear character:",
+                    error
+                );
+
+            }
+
+        }
 
 
         saveStatus.textContent =
@@ -10787,6 +11575,12 @@ async function saveCharacterSheet() {
 saveSheetButton.addEventListener(
     "click",
     saveCharacterSheet
+);
+
+
+saveOptionsButton.addEventListener(
+    "click",
+    editSaveOptions
 );
 
 
@@ -10837,6 +11631,59 @@ setMobileEnabled(
     "true"
 );
 
+
+
+if (
+    remoteEditSession
+) {
+
+    const remoteBanner =
+        document.getElementById(
+            "remote-edit-banner"
+        );
+
+
+    const remoteTitle =
+        document.getElementById(
+            "remote-edit-title"
+        );
+
+
+    const remoteSubtext =
+        document.getElementById(
+            "remote-edit-subtext"
+        );
+
+
+    remoteBanner.classList.add(
+        "active"
+    );
+
+
+    remoteTitle.textContent =
+        "Editing " +
+        (currentCharacterRecord?.name ||
+        "Player Character");
+
+
+    remoteSubtext.textContent =
+        "Owner: " +
+        remoteEditSession.ownerName +
+        " • Live GM edit. Save sends your changes back to the player's character library.";
+
+
+    saveSheetButton.textContent =
+        "Save Changes";
+
+
+    saveOptionsButton
+        .closest(
+            ".option-row"
+        )
+        .style.display =
+            "none";
+
+}
 
 
 /* =========================================
@@ -11092,6 +11939,69 @@ window.addEventListener(
 );
 
 
+
+
+window.addEventListener(
+    "rpg-remote-character-updated",
+    async event => {
+
+        const characterId =
+            event.detail?.characterId;
+
+
+        if (
+            !characterId
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            currentCharacterRecord?.id ===
+                characterId &&
+            !remoteEditSession &&
+            document
+                .getElementById(
+                    "character-app"
+                )
+                .classList
+                .contains(
+                    "active"
+                )
+        ) {
+
+            window.alert(
+                "The GM updated this character sheet. The app will return to the main menu so you can reopen the updated character."
+            );
+
+
+            window.location.reload();
+
+
+            return;
+
+        }
+
+
+        if (
+            document
+                .getElementById(
+                    "character-library-screen"
+                )
+                .classList
+                .contains(
+                    "active"
+                )
+        ) {
+
+            await renderCharacterLibrary();
+
+        }
+
+    }
+);
 
 
 migrateLegacySave();
