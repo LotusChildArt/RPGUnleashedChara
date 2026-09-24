@@ -1,12 +1,15 @@
-const CACHE_NAME = "rpg-unleashed-v7";
+const CACHE_NAME = "rpg-unleashed-v10";
 
 const APP_SHELL = [
     "./",
     "./index.html",
+    "./owlbear-integration.js",
     "./manifest.json",
     "./icons/icon-192.png",
     "./icons/icon-512.png",
-    "./icons/apple-touch-icon.png"
+    "./icons/apple-touch-icon.png",
+    "./owlbear/manifest.json",
+    "./owlbear/INSTALL.txt"
 ];
 
 self.addEventListener("install", event => {

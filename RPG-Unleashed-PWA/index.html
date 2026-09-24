@@ -1103,18 +1103,18 @@ input::placeholder {
    ========================================= */
 
 .skill-bonus-section {
-    max-width: 900px;
+    max-width: 950px;
 }
 
 .skill-bonus-row {
     display: grid;
     grid-template-columns:
-        minmax(260px, 2fr)
+        minmax(220px, 1.8fr)
         110px
-        minmax(280px, 3fr)
+        minmax(320px, 3fr)
         34px;
     gap: 6px;
-    align-items: center;
+    align-items: start;
     margin-bottom: 6px;
 }
 
@@ -1153,6 +1153,12 @@ input::placeholder {
 
 .skill-bonus-input {
     text-align: center;
+}
+
+.skill-special-input {
+    resize: none;
+    overflow: hidden;
+    line-height: 1.35;
 }
 
 .add-skill-bonus {
@@ -1694,21 +1700,23 @@ input::placeholder {
 
 .background-line.primary {
     grid-template-columns:
-        minmax(220px, 2fr)
-        minmax(140px, 1fr)
-        100px
-        minmax(130px, .9fr)
-        minmax(130px, .9fr);
+        minmax(180px, 2fr)
+        115px
+        72px
+        92px
+        92px;
 }
 
 .background-line.secondary {
     grid-template-columns:
-        minmax(220px, 1.5fr)
-        minmax(180px, 1fr)
-        minmax(180px, 1fr);
+        150px
+        minmax(220px, 1fr)
+        minmax(220px, 1fr);
+    align-items: start;
 }
 
-.background-line input {
+.background-line input,
+.background-line textarea {
     width: 100%;
     min-height: 38px;
     border: 2px solid black;
@@ -1716,6 +1724,12 @@ input::placeholder {
     background: white;
     padding: 6px 12px;
     outline: none;
+}
+
+.background-line textarea {
+    resize: none;
+    overflow: hidden;
+    line-height: 1.35;
 }
 
 
@@ -1883,13 +1897,23 @@ input::placeholder {
     font-weight: bold;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 560px) {
 
     .path-detail-row,
-    .background-line.primary,
-    .background-line.secondary,
     .background-flex-sections,
     .background-description-picture {
+        grid-template-columns: 1fr;
+    }
+
+    .background-line.primary {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .background-line.primary input:first-child {
+        grid-column: 1 / -1;
+    }
+
+    .background-line.secondary {
         grid-template-columns: 1fr;
     }
 
@@ -1908,11 +1932,12 @@ input::placeholder {
     display: grid;
     grid-template-columns:
         auto
-        150px
-        150px
-        minmax(210px, 1fr);
+        96px
+        108px
+        138px;
     gap: 8px;
     align-items: center;
+    justify-content: start;
     margin-bottom: 10px;
 }
 
@@ -1941,12 +1966,13 @@ input::placeholder {
 .magic-source-row {
     display: grid;
     grid-template-columns:
-        minmax(150px, .9fr)
-        minmax(170px, 1fr)
-        minmax(220px, 1.35fr)
-        minmax(220px, 1.35fr);
+        150px
+        165px
+        minmax(160px, 185px)
+        minmax(160px, 185px);
     gap: 8px;
     align-items: start;
+    justify-content: start;
     margin-bottom: 8px;
 }
 
@@ -2037,21 +2063,24 @@ input::placeholder {
 }
 
 .spell-card {
+    display: grid;
+    grid-template-columns:
+        minmax(190px, 2fr)
+        88px
+        minmax(105px, .9fr)
+        minmax(95px, .8fr)
+        34px;
+    gap: 6px;
     border: 2px solid black;
     border-radius: 22px;
     padding: 12px;
     margin-bottom: 10px;
+    align-items: start;
 }
 
-.spell-top-row {
-    display: grid;
-    grid-template-columns:
-        minmax(220px, 2fr)
-        110px
-        34px;
-    gap: 6px;
-    align-items: start;
-    margin-bottom: 8px;
+.spell-top-row,
+.spell-stat-row {
+    display: contents;
 }
 
 .spell-name,
@@ -2068,9 +2097,13 @@ input::placeholder {
     outline: none;
 }
 
-.spell-mana {
-    text-align: center;
-}
+.spell-name { grid-column: 1; grid-row: 1; }
+.spell-mana { grid-column: 2; grid-row: 1; text-align: center; }
+.spell-stat-row .spell-stat-input:nth-child(1) { grid-column: 3; grid-row: 1; }
+.spell-stat-row .spell-stat-input:nth-child(2) { grid-column: 4; grid-row: 1; }
+.spell-stat-row .spell-stat-input:nth-child(3) { grid-column: 1; grid-row: 2; }
+.spell-stat-row .spell-stat-input:nth-child(4) { grid-column: 2; grid-row: 2; }
+.spell-effect { grid-column: 3 / 6; grid-row: 2; }
 
 .spell-effect,
 .spell-upgrade {
@@ -2079,21 +2112,30 @@ input::placeholder {
     line-height: 1.35;
 }
 
-.spell-stat-row {
+.spell-upgrades {
+    grid-column: 1 / 6;
+    grid-row: 3;
     display: grid;
-    grid-template-columns:
-        repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 6px;
-    margin-bottom: 8px;
+    margin-top: 2px;
 }
 
-.spell-upgrades {
-    display: grid;
-    grid-template-columns:
-        repeat(3, minmax(0, 1fr));
-    gap: 6px;
-    margin-top: 8px;
+.remove-spell {
+    grid-column: 5;
+    grid-row: 1;
+    width: 32px;
+    height: 32px;
+    border: 1.5px solid black;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 3px;
 }
+
+.spell-card:first-child .remove-spell { visibility: hidden; }
+
 
 .add-spell {
     margin-top: 3px;
@@ -2125,20 +2167,35 @@ input::placeholder {
     visibility: hidden;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 560px) {
 
-    .magic-title-row,
-    .magic-source-row,
-    .magework-meta,
-    .magework-grid,
-    .spell-top-row,
-    .spell-stat-row,
-    .spell-upgrades {
-        grid-template-columns: 1fr;
+    .magic-title-row {
+        grid-template-columns: auto 86px 96px;
     }
 
-    .spell-card:first-child .remove-spell {
-        display: none;
+    .magic-title-row h1 {
+        grid-column: 1 / -1;
+    }
+
+    .magic-title-row input:nth-of-type(3) {
+        grid-column: 1 / -1;
+        max-width: 138px;
+    }
+
+    .magic-source-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .magic-source-row textarea {
+        grid-column: auto;
+    }
+
+    .magework-meta {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .magework-grid {
+        grid-template-columns: 1fr;
     }
 
 }
@@ -2593,9 +2650,7 @@ body.mobile-mode .path-detail-row {
 }
 
 body.mobile-mode .background-line.primary {
-    grid-template-columns:
-        1fr
-        1fr;
+    grid-template-columns: 1fr 1fr;
 }
 
 body.mobile-mode .background-line.primary input:nth-child(1) {
@@ -2603,13 +2658,11 @@ body.mobile-mode .background-line.primary input:nth-child(1) {
 }
 
 body.mobile-mode .background-line.secondary {
-    grid-template-columns:
-        1fr
-        1fr;
+    grid-template-columns: 1fr;
 }
 
-body.mobile-mode .background-line.secondary input:nth-child(1) {
-    grid-column: 1 / -1;
+body.mobile-mode .background-line.secondary input:first-child {
+    max-width: 190px;
 }
 
 body.mobile-mode .background-flex-sections,
@@ -2626,59 +2679,25 @@ body.mobile-mode .character-picture-box {
 /* Magic */
 
 body.mobile-mode .magic-title-row {
-    grid-template-columns:
-        1fr
-        1fr;
+    grid-template-columns: 1fr 1fr;
 }
-
-body.mobile-mode .magic-title-row h1 {
-    grid-column: 1 / -1;
-}
-
-body.mobile-mode .magic-title-row input:nth-of-type(3) {
-    grid-column: 1 / -1;
-}
-
-body.mobile-mode .magic-source-row {
-    grid-template-columns:
-        1fr
-        1fr;
-}
-
-body.mobile-mode .magic-source-row textarea {
-    grid-column: 1 / -1;
-}
-
-body.mobile-mode .magework-meta {
-    grid-template-columns:
-        1fr
-        1fr;
-}
-
-body.mobile-mode .magework-meta input:last-child {
-    grid-column: 1 / -1;
-}
-
-body.mobile-mode .magework-grid {
-    grid-template-columns: 1fr;
-}
-
-body.mobile-mode .spell-top-row {
-    grid-template-columns:
-        minmax(0, 1fr)
-        90px
-        34px;
-}
-
-body.mobile-mode .spell-stat-row {
-    grid-template-columns:
-        1fr
-        1fr;
-}
-
-body.mobile-mode .spell-upgrades {
-    grid-template-columns: 1fr;
-}
+body.mobile-mode .magic-title-row h1 { grid-column: 1 / -1; }
+body.mobile-mode .magic-title-row input:nth-of-type(3) { grid-column: 1 / -1; max-width: 150px; }
+body.mobile-mode .magic-source-row { grid-template-columns: 1fr 1fr; }
+body.mobile-mode .magic-source-row textarea { grid-column: auto; }
+body.mobile-mode .magework-meta { grid-template-columns: 1fr 1fr; }
+body.mobile-mode .magework-meta input:last-child { grid-column: 1 / -1; }
+body.mobile-mode .magework-grid { grid-template-columns: 1fr; }
+body.mobile-mode .spell-card { grid-template-columns: minmax(0, 1fr) 82px 34px; }
+body.mobile-mode .spell-name { grid-column: 1; grid-row: 1; }
+body.mobile-mode .spell-mana { grid-column: 2; grid-row: 1; }
+body.mobile-mode .remove-spell { grid-column: 3; grid-row: 1; }
+body.mobile-mode .spell-stat-row .spell-stat-input:nth-child(1) { grid-column: 1; grid-row: 2; }
+body.mobile-mode .spell-stat-row .spell-stat-input:nth-child(2) { grid-column: 2 / 4; grid-row: 2; }
+body.mobile-mode .spell-stat-row .spell-stat-input:nth-child(3) { grid-column: 1; grid-row: 3; }
+body.mobile-mode .spell-stat-row .spell-stat-input:nth-child(4) { grid-column: 2 / 4; grid-row: 3; }
+body.mobile-mode .spell-effect { grid-column: 1 / 4; grid-row: 4; }
+body.mobile-mode .spell-upgrades { grid-column: 1 / 4; grid-row: 5; grid-template-columns: 1fr; }
 
 
 /* Options */
@@ -3040,6 +3059,101 @@ body.mobile-mode .app-option-row {
     padding-right: 0;
 }
 
+
+
+/* =========================================
+   OWLBEAR PARTY SHARING
+   ========================================= */
+
+.owlbear-only {
+    display: none !important;
+}
+
+body.owlbear-connected .owlbear-only {
+    display: block !important;
+}
+
+.library-share-button,
+.party-campaign-button,
+.party-back-button {
+    border: 2px solid black;
+    border-radius: 18px;
+    background: white;
+    min-height: 36px;
+    padding: 6px 13px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.library-share-button:hover,
+.party-campaign-button:hover,
+.party-back-button:hover {
+    background: #eee;
+}
+
+.library-share-button.is-shared {
+    font-weight: bold;
+}
+
+.party-section-note {
+    margin: 0 0 14px;
+    color: #555;
+}
+
+.party-campaign-list,
+.party-character-list {
+    display: grid;
+    gap: 12px;
+}
+
+.party-campaign-button {
+    width: 100%;
+    min-height: 58px;
+    border-radius: 22px;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    text-align: left;
+    font-size: 16px;
+}
+
+.party-campaign-name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.party-campaign-count {
+    white-space: nowrap;
+    color: #555;
+    font-weight: normal;
+}
+
+.party-character-card {
+    border: 2px solid black;
+    border-radius: 22px;
+    padding: 14px;
+    background: white;
+}
+
+.party-character-card h2 {
+    margin: 0 0 8px;
+    font-size: 21px;
+}
+
+.party-character-detail {
+    margin: 2px 0;
+    color: #444;
+}
+
+.party-share-status {
+    min-height: 20px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: #555;
+}
+
 </style>
 
 </head>
@@ -3080,6 +3194,14 @@ body.mobile-mode .app-option-row {
                 type="button"
             >
                 Character Library
+            </button>
+
+            <button
+                class="main-menu-button owlbear-only"
+                id="open-party-characters"
+                type="button"
+            >
+                Party Characters
             </button>
 
             <button
@@ -3135,6 +3257,85 @@ body.mobile-mode .app-option-row {
         <div
             class="character-library-list"
             id="character-library-list"
+        ></div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     PARTY CHARACTERS — CAMPAIGNS
+     ========================================= -->
+
+<div
+    id="party-campaign-screen"
+    class="app-screen"
+>
+
+    <div class="app-shell">
+
+        <div class="library-heading-row">
+
+            <h1>
+                Party Characters
+            </h1>
+
+            <button
+                class="party-back-button"
+                id="party-campaign-back"
+                type="button"
+            >
+                Back
+            </button>
+
+        </div>
+
+        <p class="party-section-note">
+            Select a campaign to view characters shared by players currently connected to this Owlbear room.
+        </p>
+
+        <div
+            class="party-campaign-list"
+            id="party-campaign-list"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     PARTY CHARACTERS — CAMPAIGN ROSTER
+     ========================================= -->
+
+<div
+    id="party-character-screen"
+    class="app-screen"
+>
+
+    <div class="app-shell">
+
+        <div class="library-heading-row">
+
+            <h1 id="party-character-heading">
+                Party Characters
+            </h1>
+
+            <button
+                class="party-back-button"
+                id="party-character-back"
+                type="button"
+            >
+                Campaigns
+            </button>
+
+        </div>
+
+        <div
+            class="party-character-list"
+            id="party-character-list"
         ></div>
 
     </div>
@@ -4234,11 +4435,11 @@ body.mobile-mode .app-option-row {
                     placeholder="Bonus"
                 >
 
-                <input
+                <textarea
                     class="skill-special-input"
-                    type="text"
+                    rows="1"
                     placeholder="Special"
-                >
+                ></textarea>
 
                 <button
                     class="remove-skill-bonus"
@@ -4677,15 +4878,17 @@ body.mobile-mode .app-option-row {
                     placeholder="Race"
                 >
 
-                <input
-                    type="text"
+                <textarea
+                    class="background-detail-expand"
+                    rows="1"
                     placeholder="Hair"
-                >
+                ></textarea>
 
-                <input
-                    type="text"
+                <textarea
+                    class="background-detail-expand"
+                    rows="1"
                     placeholder="Eyes"
-                >
+                ></textarea>
 
             </div>
 
@@ -4912,7 +5115,7 @@ body.mobile-mode .app-option-row {
 
             <input
                 type="text"
-                placeholder="Caster Bonus MND / CHA"
+                placeholder="Casting Bonus"
             >
 
         </div>
@@ -5370,6 +5573,12 @@ body.mobile-mode .app-option-row {
 
 </div>
 
+
+<script>
+window.RPGOwlbear = window.RPGOwlbear || {
+    ready: false
+};
+</script>
 
 <script>
 
@@ -6332,6 +6541,36 @@ async function renderCharacterLibrary() {
             await getAllCharacters();
 
 
+        let mySharedCharacters =
+            [];
+
+
+        if (
+            window.RPGOwlbear?.ready
+        ) {
+
+            try {
+
+                mySharedCharacters =
+                    await window.RPGOwlbear
+                        .getMySharedCharacters();
+
+            }
+
+            catch (
+                error
+            ) {
+
+                console.error(
+                    "Could not read Owlbear shared characters:",
+                    error
+                );
+
+            }
+
+        }
+
+
         list.innerHTML =
             "";
 
@@ -6528,10 +6767,161 @@ async function renderCharacterLibrary() {
                 );
 
 
-                actions.append(
-                    openButton,
-                    deleteButton
-                );
+                if (
+                    window.RPGOwlbear?.ready
+                ) {
+
+                    const shareButton =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    shareButton.className =
+                        "library-share-button";
+
+
+                    shareButton.type =
+                        "button";
+
+
+                    const isShared =
+                        mySharedCharacters.some(
+                            shared =>
+                                shared.characterId ===
+                                character.id
+                        );
+
+
+                    shareButton.textContent =
+                        isShared
+                            ? "Unshare"
+                            : "Share";
+
+
+                    shareButton.classList.toggle(
+                        "is-shared",
+                        isShared
+                    );
+
+
+                    shareButton.addEventListener(
+                        "click",
+                        async () => {
+
+                            shareButton.disabled =
+                                true;
+
+
+                            try {
+
+                                if (
+                                    !character.campaign ||
+                                    !character.campaign.trim()
+                                ) {
+
+                                    const campaign =
+                                        window.prompt(
+                                            "Enter a campaign name before sharing this character:"
+                                        );
+
+
+                                    if (
+                                        campaign ===
+                                        null
+                                    ) {
+
+                                        return;
+
+                                    }
+
+
+                                    const cleanCampaign =
+                                        campaign.trim();
+
+
+                                    if (
+                                        !cleanCampaign
+                                    ) {
+
+                                        window.alert(
+                                            "A campaign name is required to share a character."
+                                        );
+
+
+                                        return;
+
+                                    }
+
+
+                                    character.campaign =
+                                        cleanCampaign;
+
+
+                                    character.updatedAt =
+                                        Date.now();
+
+
+                                    await putCharacter(
+                                        character
+                                    );
+
+                                }
+
+
+                                await window.RPGOwlbear
+                                    .toggleCharacterShare(
+                                        character
+                                    );
+
+
+                                await renderCharacterLibrary();
+
+                            }
+
+                            catch (
+                                error
+                            ) {
+
+                                console.error(
+                                    "Could not update Owlbear sharing:",
+                                    error
+                                );
+
+
+                                window.alert(
+                                    "Could not update this character's Owlbear sharing."
+                                );
+
+                            }
+
+                            finally {
+
+                                shareButton.disabled =
+                                    false;
+
+                            }
+
+                        }
+                    );
+
+
+                    actions.append(
+                        openButton,
+                        shareButton,
+                        deleteButton
+                    );
+
+                }
+
+                else {
+
+                    actions.append(
+                        openButton,
+                        deleteButton
+                    );
+
+                }
 
 
                 info.appendChild(
@@ -6612,6 +7002,439 @@ async function renderCharacterLibrary() {
 
         list.innerHTML =
             '<div class="library-empty">Could not load the Character Library.</div>';
+
+    }
+
+}
+
+
+function normalizeCampaignName(
+    campaign
+) {
+
+    return String(
+        campaign ||
+        ""
+    )
+        .trim()
+        .toLocaleLowerCase();
+
+}
+
+
+async function renderPartyCampaigns() {
+
+    const list =
+        document.getElementById(
+            "party-campaign-list"
+        );
+
+
+    list.innerHTML =
+        '<div class="library-empty">Loading party characters…</div>';
+
+
+    if (
+        !window.RPGOwlbear?.ready
+    ) {
+
+        list.innerHTML =
+            '<div class="library-empty">Party Characters is only available inside Owlbear Rodeo.</div>';
+
+
+        return;
+
+    }
+
+
+    try {
+
+        const characters =
+            await window.RPGOwlbear
+                .getPartySharedCharacters();
+
+
+        const campaignMap =
+            new Map();
+
+
+        characters.forEach(
+            character => {
+
+                const campaign =
+                    String(
+                        character.campaign ||
+                        ""
+                    ).trim();
+
+
+                if (
+                    !campaign
+                ) {
+
+                    return;
+
+                }
+
+
+                const key =
+                    normalizeCampaignName(
+                        campaign
+                    );
+
+
+                if (
+                    !campaignMap.has(
+                        key
+                    )
+                ) {
+
+                    campaignMap.set(
+                        key,
+                        {
+                            name:
+                                campaign,
+                            count:
+                                0
+                        }
+                    );
+
+                }
+
+
+                campaignMap.get(
+                    key
+                ).count +=
+                    1;
+
+            }
+        );
+
+
+        const campaigns =
+            Array.from(
+                campaignMap.values()
+            )
+            .sort(
+                (
+                    a,
+                    b
+                ) =>
+                    a.name.localeCompare(
+                        b.name
+                    )
+            );
+
+
+        list.innerHTML =
+            "";
+
+
+        if (
+            campaigns.length ===
+            0
+        ) {
+
+            list.innerHTML =
+                '<div class="library-empty">No characters are currently shared to this Owlbear room.</div>';
+
+
+            return;
+
+        }
+
+
+        campaigns.forEach(
+            campaign => {
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                button.className =
+                    "party-campaign-button";
+
+
+                button.type =
+                    "button";
+
+
+                const name =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                name.className =
+                    "party-campaign-name";
+
+
+                name.textContent =
+                    campaign.name;
+
+
+                const count =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                count.className =
+                    "party-campaign-count";
+
+
+                count.textContent =
+                    campaign.count +
+                    (
+                        campaign.count ===
+                        1
+                            ? " character"
+                            : " characters"
+                    );
+
+
+                button.append(
+                    name,
+                    count
+                );
+
+
+                button.addEventListener(
+                    "click",
+                    async () => {
+
+                        showAppScreen(
+                            "party-character-screen"
+                        );
+
+
+                        await renderPartyCharacters(
+                            campaign.name
+                        );
+
+                    }
+                );
+
+
+                list.appendChild(
+                    button
+                );
+
+            }
+        );
+
+    }
+
+    catch (
+        error
+    ) {
+
+        console.error(
+            "Could not load Owlbear party characters:",
+            error
+        );
+
+
+        list.innerHTML =
+            '<div class="library-empty">Could not load Party Characters.</div>';
+
+    }
+
+}
+
+
+async function renderPartyCharacters(
+    campaignName
+) {
+
+    const heading =
+        document.getElementById(
+            "party-character-heading"
+        );
+
+
+    const list =
+        document.getElementById(
+            "party-character-list"
+        );
+
+
+    heading.textContent =
+        campaignName;
+
+
+    list.innerHTML =
+        '<div class="library-empty">Loading characters…</div>';
+
+
+    if (
+        !window.RPGOwlbear?.ready
+    ) {
+
+        list.innerHTML =
+            '<div class="library-empty">Party Characters is only available inside Owlbear Rodeo.</div>';
+
+
+        return;
+
+    }
+
+
+    try {
+
+        const allCharacters =
+            await window.RPGOwlbear
+                .getPartySharedCharacters();
+
+
+        const campaignKey =
+            normalizeCampaignName(
+                campaignName
+            );
+
+
+        const characters =
+            allCharacters
+                .filter(
+                    character =>
+                        normalizeCampaignName(
+                            character.campaign
+                        ) ===
+                        campaignKey
+                )
+                .sort(
+                    (
+                        a,
+                        b
+                    ) =>
+                        String(
+                            a.name ||
+                            ""
+                        ).localeCompare(
+                            String(
+                                b.name ||
+                                ""
+                            )
+                        )
+                );
+
+
+        list.innerHTML =
+            "";
+
+
+        if (
+            characters.length ===
+            0
+        ) {
+
+            list.innerHTML =
+                '<div class="library-empty">No connected players are currently sharing characters for this campaign.</div>';
+
+
+            return;
+
+        }
+
+
+        characters.forEach(
+            character => {
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    "party-character-card";
+
+
+                const name =
+                    document.createElement(
+                        "h2"
+                    );
+
+
+                name.textContent =
+                    character.name ||
+                    "Unnamed Character";
+
+
+                card.appendChild(
+                    name
+                );
+
+
+                [
+                    [
+                        "Race",
+                        character.race ||
+                        "—"
+                    ],
+                    [
+                        "Level",
+                        character.level ||
+                        "—"
+                    ],
+                    [
+                        "Shared by",
+                        character.ownerName ||
+                        "Player"
+                    ]
+                ].forEach(
+                    ([
+                        label,
+                        value
+                    ]) => {
+
+                        const line =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        line.className =
+                            "party-character-detail";
+
+
+                        line.textContent =
+                            label +
+                            ": " +
+                            value;
+
+
+                        card.appendChild(
+                            line
+                        );
+
+                    }
+                );
+
+
+                list.appendChild(
+                    card
+                );
+
+            }
+        );
+
+    }
+
+    catch (
+        error
+    ) {
+
+        console.error(
+            "Could not load characters for campaign:",
+            error
+        );
+
+
+        list.innerHTML =
+            '<div class="library-empty">Could not load this campaign.</div>';
 
     }
 
@@ -7780,9 +8603,45 @@ function populateSkillSelect(
 }
 
 
+function autoResizeSkillSpecial(
+    textarea
+) {
+
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+
+}
+
+
+function normalizeSkillSpecialField(
+    row
+) {
+
+    let specialField = row.querySelector(".skill-special-input");
+
+    if (specialField && specialField.tagName !== "TEXTAREA") {
+        const textarea = document.createElement("textarea");
+        textarea.className = "skill-special-input";
+        textarea.rows = 1;
+        textarea.placeholder = specialField.placeholder || "Special";
+        textarea.value = specialField.value;
+        specialField.replaceWith(textarea);
+        specialField = textarea;
+    }
+
+    if (specialField) {
+        specialField.addEventListener("input", () => autoResizeSkillSpecial(specialField));
+        autoResizeSkillSpecial(specialField);
+    }
+
+}
+
+
 function setupSkillBonusRow(
     row
 ) {
+
+    normalizeSkillSpecialField(row);
 
     const picker =
         row.querySelector(
@@ -7907,11 +8766,11 @@ addSkillBonusButton.addEventListener(
                 placeholder="Bonus"
             >
 
-            <input
+            <textarea
                 class="skill-special-input"
-                type="text"
+                rows="1"
                 placeholder="Special"
-            >
+            ></textarea>
 
             <button
                 class="remove-skill-bonus"
@@ -8877,6 +9736,39 @@ document
     );
 
 
+function autoResizeBackgroundDetail(textarea) {
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+}
+
+function normalizeBackgroundDetailFields() {
+    const secondary = document.querySelector("#tab4 .background-line.secondary");
+    if (!secondary) return;
+
+    ["Hair", "Eyes"].forEach(placeholder => {
+        let field = Array.from(secondary.querySelectorAll("input, textarea"))
+            .find(candidate => candidate.placeholder === placeholder);
+        if (!field) return;
+
+        if (field.tagName !== "TEXTAREA") {
+            const textarea = document.createElement("textarea");
+            textarea.className = "background-detail-expand";
+            textarea.rows = 1;
+            textarea.placeholder = placeholder;
+            textarea.value = field.value;
+            field.replaceWith(textarea);
+            field = textarea;
+        }
+
+        field.classList.add("background-detail-expand");
+        field.addEventListener("input", () => autoResizeBackgroundDetail(field));
+        autoResizeBackgroundDetail(field);
+    });
+}
+
+normalizeBackgroundDetailFields();
+
+
 const characterDescription =
     document.getElementById(
         "character-description"
@@ -9134,6 +10026,16 @@ document
 /* =========================================
    MAGIC
    ========================================= */
+
+const compactCastingBonusField =
+    document.querySelector(
+        "#tab5 .magic-title-row input:nth-of-type(3)"
+    );
+
+if (compactCastingBonusField) {
+    compactCastingBonusField.placeholder = "Casting Bonus";
+}
+
 
 function autoResizeMagicField(
     textarea
@@ -9974,6 +10876,60 @@ document
 
 document
     .getElementById(
+        "open-party-characters"
+    )
+    .addEventListener(
+        "click",
+        async () => {
+
+            showAppScreen(
+                "party-campaign-screen"
+            );
+
+
+            await renderPartyCampaigns();
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "party-campaign-back"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            showAppScreen(
+                "main-menu-screen"
+            );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "party-character-back"
+    )
+    .addEventListener(
+        "click",
+        async () => {
+
+            showAppScreen(
+                "party-campaign-screen"
+            );
+
+
+            await renderPartyCampaigns();
+
+        }
+    );
+
+
+document
+    .getElementById(
         "new-character"
     )
     .addEventListener(
@@ -10085,6 +11041,59 @@ setGlobalMobileMode(
 );
 
 
+window.addEventListener(
+    "rpg-owlbear-ready",
+    async () => {
+
+        document.body.classList.add(
+            "owlbear-connected"
+        );
+
+
+        if (
+            document
+                .getElementById(
+                    "character-library-screen"
+                )
+                .classList
+                .contains(
+                    "active"
+                )
+        ) {
+
+            await renderCharacterLibrary();
+
+        }
+
+    }
+);
+
+
+window.addEventListener(
+    "rpg-owlbear-party-change",
+    async () => {
+
+        if (
+            document
+                .getElementById(
+                    "party-campaign-screen"
+                )
+                .classList
+                .contains(
+                    "active"
+                )
+        ) {
+
+            await renderPartyCampaigns();
+
+        }
+
+    }
+);
+
+
+
+
 migrateLegacySave();
 
 
@@ -10094,6 +11103,12 @@ showAppScreen(
 
 </script>
 
+
+
+<script
+    type="module"
+    src="./owlbear-integration.js"
+></script>
 
 
 <script>
