@@ -7723,11 +7723,21 @@ async function renderPartyCharacters(
                 );
 
 
-                if (
+                const isMyPartyCharacter =
+                    character.ownerId ===
+                    window.RPGOwlbear?.playerId;
+
+
+                const canRemoteEditPartyCharacter =
                     window.RPGOwlbear
                         ?.canEditPartyCharacter(
                             character
-                        )
+                        );
+
+
+                if (
+                    isMyPartyCharacter ||
+                    canRemoteEditPartyCharacter
                 ) {
 
                     const editActions =
@@ -7755,7 +7765,9 @@ async function renderPartyCharacters(
 
 
                     editButton.textContent =
-                        "View / Edit Sheet";
+                        isMyPartyCharacter
+                            ? "Edit Sheet"
+                            : "View / Edit Sheet";
 
 
                     editButton.addEventListener(
@@ -7776,6 +7788,37 @@ async function renderPartyCharacters(
 
                             try {
 
+                                if (
+                                    isMyPartyCharacter
+                                ) {
+
+                                    const localCharacter =
+                                        await getCharacterById(
+                                            character.characterId
+                                        );
+
+
+                                    if (
+                                        !localCharacter
+                                    ) {
+
+                                        throw new Error(
+                                            "This character is shared in Owlbear, but its local save could not be found on this device."
+                                        );
+
+                                    }
+
+
+                                    openSavedCharacter(
+                                        localCharacter
+                                    );
+
+
+                                    return;
+
+                                }
+
+
                                 const record =
                                     await window.RPGOwlbear
                                         .requestCharacterSheet(
@@ -7795,7 +7838,7 @@ async function renderPartyCharacters(
                             ) {
 
                                 console.error(
-                                    "Could not open the player character sheet:",
+                                    "Could not open the party character sheet:",
                                     error
                                 );
 
