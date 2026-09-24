@@ -1,15 +1,10 @@
 RPG UNLEASHED — OWLBEAR RODEO EXTENSION
 
-This package still works as the standalone/PWA app.
+Deploy the entire RPG-Unleashed-PWA folder.
 
-For Owlbear Rodeo, deploy the entire RPG-Unleashed-PWA folder to your existing host.
-
-Then add this URL as the Owlbear extension install link:
-
+Owlbear install URL:
 https://YOUR-SITE/owbear/manifest.json
 
-Example:
-https://your-rpg-unleashed-site.onrender.com/owlbear/manifest.json
+Version 1.3.0 adds live GM character-sheet viewing/editing. The manifest now uses a background page so connected players can answer sheet requests even while the action popover is closed.
 
-The extension currently embeds the existing RPG Unleashed app as an Owlbear action popover.
-No Owlbear SDK features are enabled yet; this is the compatibility/embedding stage.
+Shared character summaries are stored in Owlbear player metadata. Full sheets are transferred ephemerally through Owlbear broadcasts when the GM opens a shared character. Character pictures remain local and are not transferred.
