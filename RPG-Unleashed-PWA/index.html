@@ -3215,6 +3215,26 @@ body.owlbear-connected .owlbear-only {
 
 <body>
 
+<script>
+const RPG_IS_OWLBEAR_POPOVER =
+    new URLSearchParams(
+        window.location.search
+    ).get(
+        "owlbear"
+    ) ===
+    "1";
+
+if (
+    RPG_IS_OWLBEAR_POPOVER
+) {
+
+    document.body.classList.add(
+        "owlbear-context"
+    );
+
+}
+</script>
+
 
 <!-- =========================================
      MAIN MENU
@@ -6966,7 +6986,8 @@ async function renderCharacterLibrary() {
 
 
                 if (
-                    window.RPGOwlbear?.ready
+                    window.RPGOwlbear?.ready ||
+                    window.RPG_IS_OWLBEAR_POPOVER
                 ) {
 
                     const shareButton =
@@ -6981,6 +7002,96 @@ async function renderCharacterLibrary() {
 
                     shareButton.type =
                         "button";
+
+
+                    if (
+                        !window.RPGOwlbear?.ready
+                    ) {
+
+                        shareButton.textContent =
+                            "Connecting…";
+
+
+                        shareButton.disabled =
+                            true;
+
+
+                        shareButton.title =
+                            "Connecting to Owlbear Rodeo";
+
+
+                        actions.append(
+                            openButton,
+                            shareButton,
+                            deleteButton
+                        );
+
+
+                        info.appendChild(
+                            actions
+                        );
+
+
+                        card.appendChild(
+                            info
+                        );
+
+
+                        if (
+                            character.portrait
+                        ) {
+
+                            card.classList.add(
+                                "has-portrait"
+                            );
+
+
+                            const portrait =
+                                document.createElement(
+                                    "div"
+                                );
+
+
+                            portrait.className =
+                                "library-portrait";
+
+
+                            const portraitImage =
+                                document.createElement(
+                                    "img"
+                                );
+
+
+                            portraitImage.src =
+                                character.portrait;
+
+
+                            portraitImage.alt =
+                                (character.name ||
+                                "Character") +
+                                " portrait";
+
+
+                            portrait.appendChild(
+                                portraitImage
+                            );
+
+
+                            card.appendChild(
+                                portrait
+                            );
+
+                        }
+
+
+                        list.appendChild(
+                            card
+                        );
+
+
+                        return;
+
+                    }
 
 
                     const isShared =
@@ -11888,13 +11999,71 @@ setGlobalMobileMode(
 );
 
 
+const partyCharactersButton =
+    document.getElementById(
+        "open-party-characters"
+    );
+
+
+function updateOwlbearConnectionUi() {
+
+    const inOwlbear =
+        window.RPG_IS_OWLBEAR_POPOVER ||
+        window.RPGOwlbear?.ready;
+
+
+    document.body.classList.toggle(
+        "owlbear-context",
+        Boolean(
+            inOwlbear
+        )
+    );
+
+
+    const connected =
+        window.RPGOwlbear?.ready ===
+        true;
+
+
+    document.body.classList.toggle(
+        "owlbear-connected",
+        connected
+    );
+
+
+    if (
+        partyCharactersButton
+    ) {
+
+        partyCharactersButton.disabled =
+            Boolean(
+                inOwlbear &&
+                !connected
+            );
+
+
+        partyCharactersButton.title =
+            connected
+                ? ""
+                : (
+                    inOwlbear
+                        ? "Connecting to Owlbear Rodeo"
+                        : ""
+                );
+
+    }
+
+}
+
+
+updateOwlbearConnectionUi();
+
+
 window.addEventListener(
     "rpg-owlbear-ready",
     async () => {
 
-        document.body.classList.add(
-            "owlbear-connected"
-        );
+        updateOwlbearConnectionUi();
 
 
         if (
@@ -11911,6 +12080,16 @@ window.addEventListener(
             await renderCharacterLibrary();
 
         }
+
+    }
+);
+
+
+window.addEventListener(
+    "rpg-owlbear-connection-state",
+    () => {
+
+        updateOwlbearConnectionUi();
 
     }
 );

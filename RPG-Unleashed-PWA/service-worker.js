@@ -1,4 +1,4 @@
-const CACHE_NAME = "rpg-unleashed-v12";
+const CACHE_NAME = "rpg-unleashed-v13";
 
 const APP_SHELL = [
     "./",
@@ -41,6 +41,29 @@ self.addEventListener("fetch", event => {
         request.method !== "GET" ||
         new URL(request.url).origin !== self.location.origin
     ) {
+        return;
+    }
+
+    if (
+        new URL(request.url).pathname.endsWith(
+            "/owlbear-integration.js"
+        )
+    ) {
+        event.respondWith(
+            fetch(request)
+                .then(response => {
+                    const copy = response.clone();
+
+                    caches.open(CACHE_NAME)
+                        .then(cache => cache.put(request, copy));
+
+                    return response;
+                })
+                .catch(() =>
+                    caches.match(request)
+                )
+        );
+
         return;
     }
 

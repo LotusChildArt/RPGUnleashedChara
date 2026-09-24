@@ -453,14 +453,150 @@ function preserveOwnerPicture(
 }
 
 
+
+let owlbearInitializationPromise =
+    null;
+
+
+function waitForOwlbearRetry(
+    milliseconds
+) {
+
+    return new Promise(
+        resolve => {
+
+            window.setTimeout(
+                resolve,
+                milliseconds
+            );
+
+        }
+    );
+
+}
+
+
+async function loadOwlbearSdk() {
+
+    const sources = [
+        "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk/+esm",
+        "https://esm.sh/@owlbear-rodeo/sdk"
+    ];
+
+
+    let lastError =
+        null;
+
+
+    for (
+        let attempt = 0;
+        attempt < 6;
+        attempt += 1
+    ) {
+
+        const source =
+            sources[
+                attempt %
+                sources.length
+            ];
+
+
+        try {
+
+            return await import(
+                source +
+                (
+                    attempt ===
+                    0
+                        ? ""
+                        : (
+                            source.includes(
+                                "?"
+                            )
+                                ? "&"
+                                : "?"
+                        ) +
+                        "rpgRetry=" +
+                        Date.now()
+                )
+            );
+
+        }
+
+        catch (
+            error
+        ) {
+
+            lastError =
+                error;
+
+
+            window.dispatchEvent(
+                new CustomEvent(
+                    "rpg-owlbear-connection-state",
+                    {
+                        detail: {
+                            state:
+                                "retrying",
+                            attempt:
+                                attempt +
+                                1
+                        }
+                    }
+                )
+            );
+
+
+            await waitForOwlbearRetry(
+                700 +
+                (
+                    attempt *
+                    500
+                )
+            );
+
+        }
+
+    }
+
+
+    throw (
+        lastError ||
+        new Error(
+            "Could not load the Owlbear Rodeo SDK."
+        )
+    );
+
+}
+
+
 async function initializeOwlbear() {
+
+    if (
+        window.RPGOwlbear?.ready
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        owlbearInitializationPromise
+    ) {
+
+        return owlbearInitializationPromise;
+
+    }
+
+
+    owlbearInitializationPromise =
+        (async () => {
 
     try {
 
         const sdkModule =
-            await import(
-                "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk/+esm"
-            );
+            await loadOwlbearSdk();
 
 
         const OBR =
@@ -2074,6 +2210,19 @@ async function initializeOwlbear() {
                     );
 
 
+                    window.dispatchEvent(
+                        new CustomEvent(
+                            "rpg-owlbear-connection-state",
+                            {
+                                detail: {
+                                    state:
+                                        "ready"
+                                }
+                            }
+                        )
+                    );
+
+
                     OBR.party.onChange(
                         () => {
 
@@ -2141,7 +2290,58 @@ async function initializeOwlbear() {
 
     }
 
+
+    })();
+
+
+    try {
+
+        await owlbearInitializationPromise;
+
+    }
+
+    finally {
+
+        owlbearInitializationPromise =
+            null;
+
+    }
+
 }
 
 
 initializeOwlbear();
+
+
+window.addEventListener(
+    "pageshow",
+    () => {
+
+        if (
+            !window.RPGOwlbear?.ready
+        ) {
+
+            initializeOwlbear();
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "visibilitychange",
+    () => {
+
+        if (
+            document.visibilityState ===
+                "visible" &&
+            !window.RPGOwlbear?.ready
+        ) {
+
+            initializeOwlbear();
+
+        }
+
+    }
+);
