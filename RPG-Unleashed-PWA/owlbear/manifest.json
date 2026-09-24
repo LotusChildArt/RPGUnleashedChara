@@ -1,0 +1,14 @@
+{
+  "name": "RPG Unleashed Character Sheet",
+  "version": "1.0.0",
+  "manifest_version": 1,
+  "description": "Character library and digital character sheet for RPG Unleashed.",
+  "icon": "/icons/icon-192.png",
+  "action": {
+    "title": "RPG Unleashed",
+    "icon": "/icons/icon-192.png",
+    "popover": "/",
+    "width": 760,
+    "height": 800
+  }
+}

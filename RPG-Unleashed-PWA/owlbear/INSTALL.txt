@@ -1,0 +1,15 @@
+RPG UNLEASHED — OWLBEAR RODEO EXTENSION
+
+This package still works as the standalone/PWA app.
+
+For Owlbear Rodeo, deploy the entire RPG-Unleashed-PWA folder to your existing host.
+
+Then add this URL as the Owlbear extension install link:
+
+https://YOUR-SITE/owbear/manifest.json
+
+Example:
+https://your-rpg-unleashed-site.onrender.com/owlbear/manifest.json
+
+The extension currently embeds the existing RPG Unleashed app as an Owlbear action popover.
+No Owlbear SDK features are enabled yet; this is the compatibility/embedding stage.
