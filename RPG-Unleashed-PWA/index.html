@@ -3085,11 +3085,16 @@ body.mobile-mode .app-option-row {
    OWLBEAR PARTY SHARING
    ========================================= */
 
-.owlbear-only {
+.owlbear-only,
+.owlbear-gm-only {
     display: none !important;
 }
 
 body.owlbear-connected .owlbear-only {
+    display: block !important;
+}
+
+body.owlbear-connected.owlbear-gm .owlbear-gm-only {
     display: block !important;
 }
 
@@ -3291,7 +3296,7 @@ if (
             </button>
 
             <button
-                class="main-menu-button owlbear-only"
+                class="main-menu-button owlbear-gm-only"
                 id="open-party-characters"
                 type="button"
             >
@@ -3311,7 +3316,7 @@ if (
                 id="import-character"
                 type="button"
             >
-                Import Character
+                Import Backup
             </button>
 
             <input
@@ -5600,11 +5605,11 @@ if (
                     id="export-character"
                     type="button"
                 >
-                    Export Character
+                    Create Backup
                 </button>
 
                 <div class="option-description">
-                    Export the most recently saved version of this character as a .rpgunleashed file. Save first to include recent edits.
+                    Create a .rpgunleashed backup file for safekeeping or moving this character to another device. Save first to include recent edits.
                 </div>
 
             </div>
@@ -7602,7 +7607,7 @@ async function renderCharacterLibrary() {
 
 
                 exportButton.textContent =
-                    "Export";
+                    "Backup";
 
 
                 exportButton.addEventListener(
@@ -7628,7 +7633,7 @@ async function renderCharacterLibrary() {
 
 
                             window.alert(
-                                "Could not export this character."
+                                "Could not create a backup for this character."
                             );
 
                         }
@@ -7815,8 +7820,8 @@ async function renderCharacterLibrary() {
 
                     shareButton.textContent =
                         isShared
-                            ? "Unshare"
-                            : "Share";
+                            ? "Stop Sharing"
+                            : "Share with GM";
 
 
                     shareButton.classList.toggle(
@@ -12507,7 +12512,7 @@ exportCharacterButton.addEventListener(
 
 
             saveStatus.textContent =
-                "Character export created.";
+                "Character backup created.";
 
         }
 
@@ -12522,7 +12527,7 @@ exportCharacterButton.addEventListener(
 
 
             saveStatus.textContent =
-                "Could not export this character.";
+                "Could not create a backup for this character.";
 
         }
 
@@ -12910,7 +12915,7 @@ importCharacterFileInput.addEventListener(
 
 
             importCharacterButton.textContent =
-                "Import Character";
+                "Import Backup";
 
 
             importCharacterFileInput.value =
@@ -13054,6 +13059,18 @@ function updateOwlbearConnectionUi() {
     document.body.classList.toggle(
         "owlbear-connected",
         connected
+    );
+
+
+    const isGameMaster =
+        connected &&
+        window.RPGOwlbear?.playerRole ===
+            "GM";
+
+
+    document.body.classList.toggle(
+        "owlbear-gm",
+        isGameMaster
     );
 
 
