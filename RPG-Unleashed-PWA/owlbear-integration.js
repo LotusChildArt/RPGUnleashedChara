@@ -45,6 +45,98 @@ const CONDITION_ASSET_HEIGHT =
     1536;
 
 
+const CONDITION_DEFINITIONS = [
+    {
+        id: "fear",
+        name: "Fear",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "wounded",
+        name: "Acid",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "arrowed",
+        name: "Arrowed",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "bleeding",
+        name: "Bleeding",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "broken-bone",
+        name: "Broken Bone",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "burning",
+        name: "Burning",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "charmed",
+        name: "Charmed",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "poisoned",
+        name: "Dead",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "drunk",
+        name: "Drunk",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "confused",
+        name: "Unconscious",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "frozen",
+        name: "Frozen",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "unconscious",
+        name: "Poisoned",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "taunted",
+        name: "Taunted",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "shocked",
+        name: "Shocked",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "stunned",
+        name: "Stunned",
+        description: "No rules text has been set for this condition yet."
+    }
+];
+
+
+function getConditionDefinition(
+    conditionId
+) {
+
+    return CONDITION_DEFINITIONS.find(
+        definition =>
+            definition.id ===
+            conditionId
+    ) || null;
+
+}
+
+
 const TRANSFER_CHUNK_BYTES =
     7000;
 
@@ -1014,6 +1106,454 @@ async function initializeOwlbear() {
                         );
                     }
 
+
+                    async function getLocalCharacters() {
+
+                        if (
+                            typeof window.RPGCharacterStore
+                                ?.getAllCharacters ===
+                            "function"
+                        ) {
+
+                            return (
+                                await window.RPGCharacterStore
+                                    .getAllCharacters()
+                            ) || [];
+
+                        }
+
+
+                        return [];
+
+                    }
+
+
+                    async function findLinkedCharacterReferenceByTokenId(
+                        tokenId
+                    ) {
+
+                        if (
+                            !tokenId ||
+                            !(await OBR.scene.isReady())
+                        ) {
+
+                            return null;
+
+                        }
+
+
+                        const linkedItems =
+                            await OBR.scene.items.getItems(
+                                item => {
+
+                                    const hudMeta =
+                                        item.metadata?.[
+                                            TOKEN_HUD_METADATA_KEY
+                                        ];
+
+
+                                    const conditionMeta =
+                                        item.metadata?.[
+                                            TOKEN_CONDITION_METADATA_KEY
+                                        ];
+
+
+                                    const meta =
+                                        hudMeta ||
+                                        conditionMeta;
+
+
+                                    return (
+                                        meta?.tokenId ===
+                                            tokenId &&
+                                        meta?.roomId ===
+                                            roomId
+                                    );
+
+                                }
+                            );
+
+
+                        const firstHudMeta =
+                            linkedItems
+                                .map(
+                                    item =>
+                                        item.metadata?.[
+                                            TOKEN_HUD_METADATA_KEY
+                                        ] ||
+                                        null
+                                )
+                                .find(
+                                    Boolean
+                                );
+
+
+                        const firstConditionMeta =
+                            linkedItems
+                                .map(
+                                    item =>
+                                        item.metadata?.[
+                                            TOKEN_CONDITION_METADATA_KEY
+                                        ] ||
+                                        null
+                                )
+                                .find(
+                                    Boolean
+                                );
+
+
+                        const firstMeta =
+                            firstHudMeta ||
+                            firstConditionMeta ||
+                            null;
+
+
+                        if (
+                            !firstMeta?.characterId
+                        ) {
+
+                            const localCharacters =
+                                await getLocalCharacters();
+
+
+                            const localMatch =
+                                localCharacters.find(
+                                    character =>
+                                        getRoomTokenLink(
+                                            character,
+                                            roomId
+                                        )?.tokenId ===
+                                        tokenId
+                                );
+
+
+                            if (
+                                localMatch
+                            ) {
+
+                                return {
+                                    ownerId:
+                                        ownerIdOverride ||
+                                        OBR.player.id,
+                                    characterId:
+                                        localMatch.id,
+                                    tokenId,
+                                    source:
+                                        "local"
+                                };
+
+                            }
+
+
+                            return null;
+
+                        }
+
+
+                        return {
+                            ownerId:
+                                firstMeta.ownerId ||
+                                "",
+                            characterId:
+                                firstMeta.characterId,
+                            tokenId,
+                            source:
+                                firstMeta.ownerId &&
+                                firstMeta.ownerId !==
+                                    OBR.player.id
+                                        ? "remote"
+                                        : "local"
+                        };
+
+                    }
+
+
+                    async function loadCharacterForTokenId(
+                        tokenId
+                    ) {
+
+                        const reference =
+                            await findLinkedCharacterReferenceByTokenId(
+                                tokenId
+                            );
+
+
+                        if (
+                            !reference?.characterId
+                        ) {
+
+                            return null;
+
+                        }
+
+
+                        if (
+                            !reference.ownerId ||
+                            reference.ownerId ===
+                                OBR.player.id
+                        ) {
+
+                            const record =
+                                await window.RPGCharacterStore
+                                    ?.getCharacterById(
+                                        reference.characterId
+                                    );
+
+
+                            if (
+                                !record
+                            ) {
+
+                                throw new Error(
+                                    "This token is linked, but the character record was not found on this device."
+                                );
+
+                            }
+
+
+                            return {
+                                reference,
+                                record,
+                                remoteEditSession:
+                                    null
+                            };
+
+                        }
+
+
+                        if (
+                            playerRole !==
+                            "GM"
+                        ) {
+
+                            throw new Error(
+                                "Only the GM can edit another player's condition list."
+                            );
+
+                        }
+
+
+                        const sharedCharacter =
+                            {
+                                ownerId:
+                                    reference.ownerId,
+                                characterId:
+                                    reference.characterId
+                            };
+
+
+                        const record =
+                            await requestCharacterSheet(
+                                sharedCharacter
+                            );
+
+
+                        return {
+                            reference,
+                            record,
+                            remoteEditSession: {
+                                ownerId:
+                                    reference.ownerId,
+                                characterId:
+                                    reference.characterId,
+                                baseRevision:
+                                    Number(
+                                        record.revision ||
+                                        0
+                                    )
+                            }
+                        };
+
+                    }
+
+
+                    async function saveTokenLinkedCharacter({
+                        record,
+                        remoteEditSession
+                    }) {
+
+                        if (
+                            remoteEditSession
+                        ) {
+
+                            const result =
+                                await updateRemoteCharacter({
+                                    ownerId:
+                                        remoteEditSession.ownerId,
+                                    characterId:
+                                        remoteEditSession.characterId,
+                                    baseRevision:
+                                        remoteEditSession.baseRevision,
+                                    record
+                                });
+
+
+                            const updatedRecord =
+                                {
+                                    ...record,
+                                    revision:
+                                        result.revision,
+                                    updatedAt:
+                                        result.updatedAt
+                                };
+
+
+                            await updateCharacterConditionOverlays(
+                                updatedRecord,
+                                null,
+                                remoteEditSession.ownerId
+                            );
+
+
+                            return {
+                                record:
+                                    updatedRecord,
+                                remoteEditSession: {
+                                    ...remoteEditSession,
+                                    baseRevision:
+                                        Number(
+                                            result.revision ||
+                                            remoteEditSession.baseRevision ||
+                                            0
+                                        )
+                                }
+                            };
+
+                        }
+
+
+                        const updatedRecord =
+                            {
+                                ...record,
+                                revision:
+                                    Number(
+                                        record.revision ||
+                                        0
+                                    ) + 1,
+                                updatedAt:
+                                    Date.now()
+                            };
+
+
+                        await window.RPGCharacterStore
+                            ?.putCharacter(
+                                updatedRecord
+                            );
+
+
+                        try {
+
+                            await syncSharedCharacter(
+                                updatedRecord
+                            );
+
+                        }
+
+                        catch (
+                            error
+                        ) {
+
+                            console.error(
+                                "Could not refresh Owlbear shared character while saving conditions:",
+                                error
+                            );
+
+                        }
+
+
+                        await updateCharacterConditionOverlays(
+                            updatedRecord
+                        );
+
+
+                        return {
+                            record:
+                                updatedRecord,
+                            remoteEditSession:
+                                null
+                        };
+
+                    }
+
+
+                    async function setupConditionsContextMenu() {
+
+                        if (
+                            !isBackgroundContext
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        await OBR.contextMenu.remove(
+                            "com.rpgunleashed.character-sheet/conditions-menu"
+                        ).catch(
+                            () => {}
+                        );
+
+
+                        await OBR.contextMenu.create({
+                            id:
+                                "com.rpgunleashed.character-sheet/conditions-menu",
+                            icons: [
+                                {
+                                    icon:
+                                        "/icons/icon-192.png",
+                                    label:
+                                        "RPG Conditions",
+                                    filter: {
+                                        every: [
+                                            {
+                                                key:
+                                                    "layer",
+                                                value:
+                                                    "CHARACTER"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ],
+                            onClick(
+                                context,
+                                elementId
+                            ) {
+
+                                const first =
+                                    context.items?.[0];
+
+
+                                if (
+                                    !first?.id
+                                ) {
+
+                                    return;
+
+                                }
+
+
+                                OBR.popover.open({
+                                    id:
+                                        "com.rpgunleashed.character-sheet/conditions-popover",
+                                    url:
+                                        "/owlbear-conditions.html?tokenId=" +
+                                        encodeURIComponent(
+                                            first.id
+                                        ),
+                                    width:
+                                        360,
+                                    height:
+                                        420,
+                                    anchorElementId:
+                                        elementId
+                                });
+
+                            }
+                        });
+
+                    }
+
                     async function findCharacterHudItems(characterId) {
                         if (!(await OBR.scene.isReady())) return [];
 
@@ -1441,7 +1981,8 @@ async function initializeOwlbear() {
                     async function createConditionOverlayItem(
                         character,
                         token,
-                        condition
+                        condition,
+                        ownerIdOverride = null
                     ) {
 
                         const assetPath =
@@ -1554,7 +2095,8 @@ async function initializeOwlbear() {
 
                     async function updateCharacterConditionOverlays(
                         character,
-                        conditionOverride = null
+                        conditionOverride = null,
+                        ownerIdOverride = null
                     ) {
 
                         if (
@@ -1646,7 +2188,8 @@ async function initializeOwlbear() {
                                 await createConditionOverlayItem(
                                     sourceCharacter,
                                     token,
-                                    condition
+                                    condition,
+                                    ownerIdOverride
                                 );
 
 
@@ -3242,6 +3785,9 @@ async function initializeOwlbear() {
                     }
 
 
+                    await setupConditionsContextMenu();
+
+
                     window.RPGOwlbear = {
                         ready:
                             true,
@@ -3264,7 +3810,11 @@ async function initializeOwlbear() {
                         linkCharacterToSelectedToken,
                         unlinkCharacterToken,
                         updateCharacterTokenDisplay,
-                        updateCharacterConditionOverlays
+                        updateCharacterConditionOverlays,
+                        loadCharacterForTokenId,
+                        saveTokenLinkedCharacter,
+                        conditionDefinitions:
+                            CONDITION_DEFINITIONS
                     };
 
 

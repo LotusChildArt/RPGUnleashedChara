@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+<title>RPG Unleashed Conditions</title>
+<style>
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    padding: 12px;
+    font-family: Arial, sans-serif;
+    background: white;
+    color: #111;
+}
+.panel {
+    border: 2px solid black;
+    border-radius: 18px;
+    padding: 12px;
+    background: white;
+}
+.header {
+    margin-bottom: 10px;
+}
+.header h1 {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+}
+.subtext {
+    color: #666;
+    font-size: 12px;
+}
+.status {
+    min-height: 18px;
+    font-size: 12px;
+    color: #444;
+    margin: 8px 0 10px 0;
+}
+.add-row {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+select,
+button {
+    border: 2px solid black;
+    border-radius: 14px;
+    background: white;
+    min-height: 36px;
+    padding: 6px 10px;
+}
+button {
+    cursor: pointer;
+    font-weight: bold;
+}
+.condition-list {
+    display: grid;
+    gap: 8px;
+}
+.condition-row {
+    border: 1.5px solid #888;
+    border-radius: 16px;
+    padding: 8px;
+    background: #fafafa;
+}
+.condition-top {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto auto auto auto;
+    align-items: center;
+    gap: 6px;
+}
+.condition-name {
+    font-weight: bold;
+}
+.stack-value {
+    min-width: 24px;
+    text-align: center;
+    font-weight: bold;
+}
+.icon-button {
+    width: 34px;
+    min-width: 34px;
+    padding: 0;
+}
+.condition-help {
+    display: none;
+    margin-top: 8px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: white;
+    border: 1px solid #d0d0d0;
+    font-size: 12px;
+    line-height: 1.35;
+}
+.condition-help.active {
+    display: block;
+}
+.empty {
+    color: #777;
+    font-size: 13px;
+    padding: 8px 2px;
+}
+.loading {
+    color: #444;
+    font-size: 13px;
+}
+.error {
+    color: #8d0000;
+    font-size: 13px;
+}
+</style>
+</head>
+<body>
+<div class="panel">
+    <div class="header">
+        <h1>Token Conditions</h1>
+        <div
+            class="subtext"
+            id="character-context"
+        >
+            Loading linked character…
+        </div>
+    </div>
+
+    <div
+        class="status"
+        id="status-message"
+    ></div>
+
+    <div class="add-row">
+        <select id="condition-picker">
+            <option value="">
+                Select condition…
+            </option>
+        </select>
+
+        <button
+            id="add-condition-button"
+            type="button"
+        >
+            + Condition
+        </button>
+    </div>
+
+    <div
+        class="condition-list"
+        id="condition-list"
+    >
+        <div class="loading">
+            Waiting for Owlbear…
+        </div>
+    </div>
+</div>
+
+<script>
+const RPG_DB_NAME = "rpgUnleashedCharactersDB";
+const RPG_DB_VERSION = 1;
+const RPG_CHARACTER_STORE = "characters";
+
+function openCharacterDatabase() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(
+            RPG_DB_NAME,
+            RPG_DB_VERSION
+        );
+
+        request.addEventListener(
+            "upgradeneeded",
+            event => {
+                const db = event.target.result;
+                if (!db.objectStoreNames.contains(RPG_CHARACTER_STORE)) {
+                    db.createObjectStore(
+                        RPG_CHARACTER_STORE,
+                        { keyPath: "id" }
+                    );
+                }
+            }
+        );
+
+        request.addEventListener(
+            "success",
+            () => resolve(request.result)
+        );
+
+        request.addEventListener(
+            "error",
+            () => reject(request.error)
+        );
+    });
+}
+
+async function getAllCharacters() {
+    const db = await openCharacterDatabase();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(
+            RPG_CHARACTER_STORE,
+            "readonly"
+        );
+        const request = transaction
+            .objectStore(RPG_CHARACTER_STORE)
+            .getAll();
+
+        request.addEventListener(
+            "success",
+            () => resolve(request.result || [])
+        );
+        request.addEventListener(
+            "error",
+            () => reject(request.error)
+        );
+        transaction.addEventListener(
+            "complete",
+            () => db.close()
+        );
+    });
+}
+
+async function getCharacterById(characterId) {
+    const db = await openCharacterDatabase();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(
+            RPG_CHARACTER_STORE,
+            "readonly"
+        );
+        const request = transaction
+            .objectStore(RPG_CHARACTER_STORE)
+            .get(characterId);
+
+        request.addEventListener(
+            "success",
+            () => resolve(request.result || null)
+        );
+        request.addEventListener(
+            "error",
+            () => reject(request.error)
+        );
+        transaction.addEventListener(
+            "complete",
+            () => db.close()
+        );
+    });
+}
+
+async function putCharacter(character) {
+    const db = await openCharacterDatabase();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(
+            RPG_CHARACTER_STORE,
+            "readwrite"
+        );
+        transaction
+            .objectStore(RPG_CHARACTER_STORE)
+            .put(character);
+
+        transaction.addEventListener(
+            "complete",
+            () => {
+                db.close();
+                resolve(character);
+            }
+        );
+        transaction.addEventListener(
+            "error",
+            () => reject(transaction.error)
+        );
+    });
+}
+
+window.RPGCharacterStore = {
+    getAllCharacters,
+    getCharacterById,
+    putCharacter
+};
+
+const DEFAULT_CONDITION_DEFINITIONS = [
+    { id: "fear", name: "Fear", description: "No rules text has been set for this condition yet." },
+    { id: "wounded", name: "Acid", description: "No rules text has been set for this condition yet." },
+    { id: "arrowed", name: "Arrowed", description: "No rules text has been set for this condition yet." },
+    { id: "bleeding", name: "Bleeding", description: "No rules text has been set for this condition yet." },
+    { id: "broken-bone", name: "Broken Bone", description: "No rules text has been set for this condition yet." },
+    { id: "burning", name: "Burning", description: "No rules text has been set for this condition yet." },
+    { id: "charmed", name: "Charmed", description: "No rules text has been set for this condition yet." },
+    { id: "poisoned", name: "Dead", description: "No rules text has been set for this condition yet." },
+    { id: "drunk", name: "Drunk", description: "No rules text has been set for this condition yet." },
+    { id: "confused", name: "Unconscious", description: "No rules text has been set for this condition yet." },
+    { id: "frozen", name: "Frozen", description: "No rules text has been set for this condition yet." },
+    { id: "unconscious", name: "Poisoned", description: "No rules text has been set for this condition yet." },
+    { id: "taunted", name: "Taunted", description: "No rules text has been set for this condition yet." },
+    { id: "shocked", name: "Shocked", description: "No rules text has been set for this condition yet." },
+    { id: "stunned", name: "Stunned", description: "No rules text has been set for this condition yet." }
+];
+
+const tokenId = new URLSearchParams(window.location.search).get("tokenId") || "";
+const statusMessage = document.getElementById("status-message");
+const characterContextLabel = document.getElementById("character-context");
+const conditionPicker = document.getElementById("condition-picker");
+const addConditionButton = document.getElementById("add-condition-button");
+const conditionList = document.getElementById("condition-list");
+
+let conditionDefinitions = DEFAULT_CONDITION_DEFINITIONS;
+let loadedContext = null;
+let loadedRecord = null;
+let saving = false;
+
+function setStatus(message, kind = "") {
+    statusMessage.className = "status" + (kind ? " " + kind : "");
+    statusMessage.textContent = message || "";
+}
+
+function getConditionDefinition(conditionId) {
+    return conditionDefinitions.find(
+        definition => definition.id === conditionId
+    ) || null;
+}
+
+function parseConditionsFromRecord(record) {
+    const tab1Html = record?.state?.tabs?.tab1;
+    if (typeof tab1Html !== "string") return [];
+
+    const template = document.createElement("template");
+    template.innerHTML = tab1Html;
+
+    return Array.from(
+        template.content.querySelectorAll(".condition-card")
+    ).map(card => {
+        const input = card.querySelector(".condition-stacks");
+        const stacks = Number(
+            input?.value ||
+            input?.getAttribute("value") ||
+            1
+        );
+        return {
+            id: card.dataset.conditionId || "",
+            stacks: Number.isFinite(stacks)
+                ? Math.max(1, Math.floor(stacks))
+                : 1
+        };
+    }).filter(condition => getConditionDefinition(condition.id));
+}
+
+function writeConditionsToRecord(record, conditions) {
+    const tab1Html = record?.state?.tabs?.tab1;
+    if (typeof tab1Html !== "string") return record;
+
+    const template = document.createElement("template");
+    template.innerHTML = tab1Html;
+
+    const list = template.content.querySelector(".active-condition-list");
+    if (!list) return record;
+
+    list.innerHTML = "";
+
+    if (!conditions.length) {
+        const empty = document.createElement("div");
+        empty.className = "condition-empty-message";
+        empty.textContent = "No active conditions.";
+        list.appendChild(empty);
+    }
+
+    conditions.forEach(condition => {
+        const card = document.createElement("div");
+        card.className = "condition-card";
+        card.dataset.conditionId = condition.id;
+        card.innerHTML = `
+            <span class="condition-card-name">
+                ${getConditionDefinition(condition.id)?.name || condition.id}
+            </span>
+
+            <label class="condition-stack-field">
+                Stacks
+                <input
+                    class="condition-stacks"
+                    type="number"
+                    min="1"
+                    step="1"
+                    value="${Math.max(1, Number(condition.stacks) || 1)}"
+                >
+            </label>
+
+            <button
+                class="remove-condition"
+                type="button"
+                title="Remove"
+            >
+                ×
+            </button>
+        `;
+        list.appendChild(card);
+    });
+
+    return {
+        ...record,
+        state: {
+            ...record.state,
+            tabs: {
+                ...record.state.tabs,
+                tab1: template.innerHTML
+            }
+        }
+    };
+}
+
+function renderConditionPicker() {
+    conditionPicker.innerHTML = '<option value="">Select condition…</option>';
+    conditionDefinitions.forEach(definition => {
+        const option = document.createElement("option");
+        option.value = definition.id;
+        option.textContent = definition.name;
+        conditionPicker.appendChild(option);
+    });
+}
+
+function renderConditions() {
+    const conditions = parseConditionsFromRecord(loadedRecord);
+    conditionList.innerHTML = "";
+
+    if (!conditions.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "No active conditions.";
+        conditionList.appendChild(empty);
+        return;
+    }
+
+    conditions.forEach(condition => {
+        const definition = getConditionDefinition(condition.id);
+        const row = document.createElement("div");
+        row.className = "condition-row";
+
+        const helpId = "help-" + condition.id;
+
+        row.innerHTML = `
+            <div class="condition-top">
+                <span class="condition-name">
+                    ${definition?.name || condition.id}
+                </span>
+                <button
+                    class="icon-button minus-button"
+                    type="button"
+                    data-condition-id="${condition.id}"
+                    title="Reduce stacks"
+                >
+                    −
+                </button>
+                <span class="stack-value">
+                    ${condition.stacks}
+                </span>
+                <button
+                    class="icon-button plus-button"
+                    type="button"
+                    data-condition-id="${condition.id}"
+                    title="Add stacks"
+                >
+                    +
+                </button>
+                <button
+                    class="icon-button info-button"
+                    type="button"
+                    data-help-id="${helpId}"
+                    title="What does this do?"
+                >
+                    ?
+                </button>
+            </div>
+
+            <div
+                class="condition-help"
+                id="${helpId}"
+            >
+                ${definition?.description || "No rules text has been set for this condition yet."}
+            </div>
+        `;
+
+        conditionList.appendChild(row);
+    });
+
+    conditionList.querySelectorAll(".minus-button").forEach(button => {
+        button.addEventListener("click", async () => {
+            await changeStacks(button.dataset.conditionId, -1);
+        });
+    });
+
+    conditionList.querySelectorAll(".plus-button").forEach(button => {
+        button.addEventListener("click", async () => {
+            await changeStacks(button.dataset.conditionId, 1);
+        });
+    });
+
+    conditionList.querySelectorAll(".info-button").forEach(button => {
+        button.addEventListener("click", () => {
+            const help = document.getElementById(button.dataset.helpId);
+            help?.classList.toggle("active");
+        });
+    });
+}
+
+async function persistConditions(nextConditions) {
+    if (!loadedRecord || !loadedContext) return;
+
+    loadedRecord = writeConditionsToRecord(
+        loadedRecord,
+        nextConditions
+    );
+
+    renderConditions();
+    setStatus("Saving…");
+
+    try {
+        const result = await window.RPGOwlbear.saveTokenLinkedCharacter({
+            record: loadedRecord,
+            remoteEditSession: loadedContext.remoteEditSession
+        });
+
+        loadedRecord = result.record;
+        loadedContext = {
+            ...loadedContext,
+            remoteEditSession: result.remoteEditSession
+        };
+
+        setStatus("Saved.");
+    } catch (error) {
+        console.error("Could not save conditions:", error);
+        setStatus(
+            error?.message || "Could not save conditions.",
+            "error"
+        );
+    }
+}
+
+async function changeStacks(conditionId, delta) {
+    if (saving) return;
+    const current = parseConditionsFromRecord(loadedRecord);
+    const next = [];
+    let handled = false;
+
+    current.forEach(condition => {
+        if (condition.id !== conditionId) {
+            next.push(condition);
+            return;
+        }
+
+        handled = true;
+        const stacks = Math.max(0, condition.stacks + delta);
+        if (stacks > 0) {
+            next.push({
+                ...condition,
+                stacks
+            });
+        }
+    });
+
+    if (!handled && delta > 0) {
+        next.push({
+            id: conditionId,
+            stacks: 1
+        });
+    }
+
+    saving = true;
+}
+</script>
+
+<script type="module" src="./owlbear-integration.js"></script>
+<script>
+async function changeStacks(conditionId, delta) {
+    if (saving) return;
+    saving = true;
+
+    const current = parseConditionsFromRecord(loadedRecord);
+    const next = [];
+    let handled = false;
+
+    current.forEach(condition => {
+        if (condition.id !== conditionId) {
+            next.push(condition);
+            return;
+        }
+
+        handled = true;
+        const stacks = Math.max(0, condition.stacks + delta);
+        if (stacks > 0) {
+            next.push({
+                ...condition,
+                stacks
+            });
+        }
+    });
+
+    if (!handled && delta > 0) {
+        next.push({
+            id: conditionId,
+            stacks: 1
+        });
+    }
+
+    await persistConditions(next);
+    saving = false;
+}
+
+addConditionButton.addEventListener("click", async () => {
+    if (saving) return;
+    if (!conditionPicker.value) return;
+
+    const current = parseConditionsFromRecord(loadedRecord);
+    const existing = current.find(
+        condition => condition.id === conditionPicker.value
+    );
+
+    let next;
+    if (existing) {
+        next = current.map(condition =>
+            condition.id === conditionPicker.value
+                ? {
+                    ...condition,
+                    stacks: condition.stacks + 1
+                }
+                : condition
+        );
+    } else {
+        next = [
+            ...current,
+            {
+                id: conditionPicker.value,
+                stacks: 1
+            }
+        ];
+    }
+
+    conditionPicker.value = "";
+    saving = true;
+    await persistConditions(next);
+    saving = false;
+});
+
+async function initializeConditionsMenu() {
+    if (!tokenId) {
+        characterContextLabel.textContent = "No token was provided.";
+        conditionList.innerHTML = '<div class="error">This menu was opened without a valid token.</div>';
+        return;
+    }
+
+    try {
+        if (!window.RPGOwlbear?.ready) {
+            await new Promise(resolve => {
+                window.addEventListener(
+                    "rpg-owlbear-ready",
+                    resolve,
+                    { once: true }
+                );
+            });
+        }
+
+        conditionDefinitions =
+            window.RPGOwlbear.conditionDefinitions ||
+            DEFAULT_CONDITION_DEFINITIONS;
+
+        renderConditionPicker();
+
+        loadedContext =
+            await window.RPGOwlbear.loadCharacterForTokenId(
+                tokenId
+            );
+
+        if (!loadedContext?.record) {
+            characterContextLabel.textContent = "No RPG Unleashed character is linked to this token.";
+            conditionList.innerHTML = '<div class="error">Link a character to this token first.</div>';
+            return;
+        }
+
+        loadedRecord = loadedContext.record;
+
+        const editMode =
+            loadedContext.remoteEditSession
+                ? "GM editing player character"
+                : "Owner editing character";
+
+        characterContextLabel.textContent =
+            (loadedRecord.name || "Unnamed Character") +
+            " • " +
+            editMode;
+
+        renderConditions();
+        setStatus("Ready.");
+
+    } catch (error) {
+        console.error("Could not load token conditions:", error);
+        characterContextLabel.textContent = "Could not load linked character.";
+        conditionList.innerHTML = '<div class="error">' +
+            (error?.message || "The condition editor could not load.") +
+            '</div>';
+    }
+}
+
+initializeConditionsMenu();
+</script>
+</body>
+</html>
