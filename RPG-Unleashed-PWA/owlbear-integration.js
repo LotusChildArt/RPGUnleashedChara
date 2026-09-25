@@ -1475,7 +1475,7 @@ async function initializeOwlbear() {
                             Math.max(
                                 1,
                                 bounds.width *
-                                1.75
+                                1.35
                             );
 
 
@@ -1516,7 +1516,8 @@ async function initializeOwlbear() {
                             x:
                                 bounds.center.x,
                             y:
-                                bounds.center.y
+                                bounds.center.y -
+                                (bounds.height * 0.06)
                         })
                         .layer(
                             "ATTACHMENT"
