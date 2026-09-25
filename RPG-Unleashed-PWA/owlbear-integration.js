@@ -14,6 +14,37 @@ const TOKEN_HUD_METADATA_KEY =
     "com.rpgunleashed.character-sheet/tokenHud";
 
 
+const TOKEN_CONDITION_METADATA_KEY =
+    "com.rpgunleashed.character-sheet/tokenCondition";
+
+
+const CONDITION_OVERLAY_ASSETS = {
+    "fear": "/assets/conditions/fear.png",
+    "wounded": "/assets/conditions/wounded.png",
+    "arrowed": "/assets/conditions/arrowed.png",
+    "bleeding": "/assets/conditions/bleeding.png",
+    "broken-bone": "/assets/conditions/broken-bone.png",
+    "burning": "/assets/conditions/burning.png",
+    "charmed": "/assets/conditions/charmed.png",
+    "poisoned": "/assets/conditions/poisoned.png",
+    "drunk": "/assets/conditions/drunk.png",
+    "confused": "/assets/conditions/confused.png",
+    "frozen": "/assets/conditions/frozen.png",
+    "unconscious": "/assets/conditions/unconscious.png",
+    "taunted": "/assets/conditions/taunted.png",
+    "shocked": "/assets/conditions/shocked.png",
+    "stunned": "/assets/conditions/stunned.png"
+};
+
+
+const CONDITION_ASSET_WIDTH =
+    1516;
+
+
+const CONDITION_ASSET_HEIGHT =
+    1536;
+
+
 const TRANSFER_CHUNK_BYTES =
     7000;
 
@@ -183,6 +214,94 @@ function getVitalsFromCharacterRecord(character) {
     return vitals;
 }
 
+function getConditionsFromCharacterRecord(
+    character
+) {
+
+    const tab1Html =
+        character?.state?.tabs?.tab1;
+
+
+    if (
+        typeof tab1Html !==
+        "string"
+    ) {
+
+        return [];
+
+    }
+
+
+    const template =
+        document.createElement(
+            "template"
+        );
+
+
+    template.innerHTML =
+        tab1Html;
+
+
+    return Array.from(
+        template.content.querySelectorAll(
+            ".condition-card"
+        )
+    )
+    .map(
+        card => {
+
+            const id =
+                card.dataset.conditionId ||
+                "";
+
+
+            const raw =
+                card.querySelector(
+                    ".condition-stacks"
+                )?.value ||
+                card.querySelector(
+                    ".condition-stacks"
+                )?.getAttribute(
+                    "value"
+                ) ||
+                "1";
+
+
+            const stacks =
+                Number(
+                    raw
+                );
+
+
+            return {
+                id,
+                stacks:
+                    Number.isFinite(
+                        stacks
+                    )
+                        ? Math.max(
+                            1,
+                            Math.floor(
+                                stacks
+                            )
+                        )
+                        : 1
+            };
+
+        }
+    )
+    .filter(
+        condition =>
+            Boolean(
+                CONDITION_OVERLAY_ASSETS[
+                    condition.id
+                ]
+            )
+    );
+
+}
+
+
 function normalizeVitals(vitals) {
     const num = key => {
         const value = Number(vitals?.[key] ?? 0);
@@ -227,7 +346,7 @@ function makeTokenHudSecondaryText(vitals) {
 }
 
 
-function makeTextBar(current, maximum, segments = 10) {
+function makeTextBar(current, maximum, segments = 12) {
     if (maximum <= 0) {
         return "";
     }
@@ -247,8 +366,10 @@ function makeTextBar(current, maximum, segments = 10) {
         );
 
     return (
-        "█".repeat(filled) +
-        "░".repeat(segments - filled)
+        "[" +
+        "#".repeat(filled) +
+        "-".repeat(segments - filled) +
+        "]"
     );
 }
 
@@ -264,7 +385,7 @@ function makeTokenHudText(vitals) {
         values.hpCurrent > 0
     ) {
         lines.push(
-            "HP   " +
+            "HP " +
             makeTextBar(
                 values.hpCurrent,
                 values.hpMax
@@ -882,6 +1003,7 @@ async function initializeOwlbear() {
 
 
                     const buildLabel = sdkModule.buildLabel;
+                    const buildImage = sdkModule.buildImage;
 
                     function hasCharacterTokenLink(character) {
                         return Boolean(
@@ -1147,6 +1269,10 @@ async function initializeOwlbear() {
                                 latest,
                                 link
                             );
+
+                            await removeCharacterConditionOverlays(
+                                latest
+                            );
                         }
 
                         const links = {
@@ -1239,7 +1365,316 @@ async function initializeOwlbear() {
                                 updated
                             );
 
+
+                        await updateCharacterConditionOverlays(
+                            updated
+                        );
+
+
                         return updated;
+                    }
+
+
+                    async function findCharacterConditionOverlayItems(
+                        characterId
+                    ) {
+
+                        if (
+                            !(await OBR.scene.isReady())
+                        ) {
+
+                            return [];
+
+                        }
+
+
+                        return OBR.scene.items.getItems(
+                            item => {
+
+                                const meta =
+                                    item.metadata?.[
+                                        TOKEN_CONDITION_METADATA_KEY
+                                    ];
+
+
+                                return (
+                                    meta?.characterId ===
+                                        characterId &&
+                                    meta?.ownerId ===
+                                        OBR.player.id &&
+                                    meta?.roomId ===
+                                        roomId
+                                );
+
+                            }
+                        );
+
+                    }
+
+
+                    async function removeCharacterConditionOverlays(
+                        character
+                    ) {
+
+                        const items =
+                            await findCharacterConditionOverlayItems(
+                                character.id
+                            );
+
+
+                        if (
+                            items.length
+                        ) {
+
+                            await OBR.scene.items.deleteItems(
+                                items.map(
+                                    item =>
+                                        item.id
+                                )
+                            );
+
+                        }
+
+                    }
+
+
+                    async function createConditionOverlayItem(
+                        character,
+                        token,
+                        condition
+                    ) {
+
+                        const assetPath =
+                            CONDITION_OVERLAY_ASSETS[
+                                condition.id
+                            ];
+
+
+                        if (
+                            !assetPath
+                        ) {
+
+                            return null;
+
+                        }
+
+
+                        const bounds =
+                            await OBR.scene.items.getItemBounds(
+                                [
+                                    token.id
+                                ]
+                            );
+
+
+                        const sceneDpi =
+                            await OBR.scene.grid.getDpi();
+
+
+                        const desiredWidth =
+                            Math.max(
+                                1,
+                                bounds.width *
+                                2.35
+                            );
+
+
+                        const imageDpi =
+                            CONDITION_ASSET_WIDTH *
+                            sceneDpi /
+                            desiredWidth;
+
+
+                        return buildImage(
+                            {
+                                width:
+                                    CONDITION_ASSET_WIDTH,
+                                height:
+                                    CONDITION_ASSET_HEIGHT,
+                                url:
+                                    new URL(
+                                        assetPath,
+                                        window.location.origin
+                                    ).href,
+                                mime:
+                                    "image/png"
+                            },
+                            {
+                                dpi:
+                                    imageDpi,
+                                offset: {
+                                    x:
+                                        CONDITION_ASSET_WIDTH /
+                                        2,
+                                    y:
+                                        CONDITION_ASSET_HEIGHT /
+                                        2
+                                }
+                            }
+                        )
+                        .position({
+                            x:
+                                bounds.center.x,
+                            y:
+                                bounds.center.y
+                        })
+                        .layer(
+                            "ATTACHMENT"
+                        )
+                        .attachedTo(
+                            token.id
+                        )
+                        .locked(
+                            true
+                        )
+                        .disableHit(
+                            true
+                        )
+                        .metadata({
+                            [TOKEN_CONDITION_METADATA_KEY]:
+                                {
+                                    characterId:
+                                        character.id,
+                                    ownerId:
+                                        OBR.player.id,
+                                    roomId,
+                                    tokenId:
+                                        token.id,
+                                    conditionId:
+                                        condition.id,
+                                    stacks:
+                                        condition.stacks
+                                }
+                        })
+                        .build();
+
+                    }
+
+
+                    async function updateCharacterConditionOverlays(
+                        character,
+                        conditionOverride = null
+                    ) {
+
+                        if (
+                            !character ||
+                            !(await OBR.scene.isReady())
+                        ) {
+
+                            return false;
+
+                        }
+
+
+                        const storedCharacter =
+                            await window.RPGCharacterStore
+                                ?.getCharacterById(
+                                    character.id
+                                );
+
+
+                        const sourceCharacter =
+                            storedCharacter ||
+                            character;
+
+
+                        const link =
+                            getRoomTokenLink(
+                                sourceCharacter,
+                                roomId
+                            );
+
+
+                        if (
+                            !link?.tokenId
+                        ) {
+
+                            return false;
+
+                        }
+
+
+                        const tokenItems =
+                            await OBR.scene.items.getItems(
+                                [
+                                    link.tokenId
+                                ]
+                            );
+
+
+                        const token =
+                            tokenItems[0];
+
+
+                        if (
+                            !token ||
+                            token.layer !==
+                                "CHARACTER"
+                        ) {
+
+                            return false;
+
+                        }
+
+
+                        const conditions =
+                            Array.isArray(
+                                conditionOverride
+                            )
+                                ? conditionOverride
+                                : getConditionsFromCharacterRecord(
+                                    character
+                                );
+
+
+                        await removeCharacterConditionOverlays(
+                            sourceCharacter
+                        );
+
+
+                        const overlays =
+                            [];
+
+
+                        for (
+                            const condition
+                            of conditions
+                        ) {
+
+                            const item =
+                                await createConditionOverlayItem(
+                                    sourceCharacter,
+                                    token,
+                                    condition
+                                );
+
+
+                            if (
+                                item
+                            ) {
+
+                                overlays.push(
+                                    item
+                                );
+
+                            }
+
+                        }
+
+
+                        if (
+                            overlays.length
+                        ) {
+
+                            await OBR.scene.items.addItems(
+                                overlays
+                            );
+
+                        }
+
+
+                        return true;
+
                     }
 
 
@@ -1317,6 +1752,11 @@ async function initializeOwlbear() {
                     ) {
 
                         await updateCharacterTokenDisplay(
+                            character
+                        );
+
+
+                        await updateCharacterConditionOverlays(
                             character
                         );
 
@@ -2225,6 +2665,11 @@ async function initializeOwlbear() {
                                         );
 
 
+                                        await updateCharacterConditionOverlays(
+                                            nextRecord
+                                        );
+
+
                                         await refreshSharedSummaryFromBackground(
                                             nextRecord
                                         );
@@ -2817,7 +3262,8 @@ async function initializeOwlbear() {
                         hasCharacterTokenLink,
                         linkCharacterToSelectedToken,
                         unlinkCharacterToken,
-                        updateCharacterTokenDisplay
+                        updateCharacterTokenDisplay,
+                        updateCharacterConditionOverlays
                     };
 
 

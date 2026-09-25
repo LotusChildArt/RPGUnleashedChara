@@ -606,6 +606,189 @@ input::placeholder {
 }
 
 
+.condition-manager {
+
+    margin-bottom: 10px;
+
+    border:
+        2px
+        solid
+        black;
+
+    border-radius: 18px;
+
+    padding: 10px;
+
+    background: white;
+}
+
+
+.condition-manager-title {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 8px;
+}
+
+
+.condition-manager-title strong {
+
+    font-size: 16px;
+}
+
+
+.condition-add-row {
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto;
+
+    gap: 8px;
+}
+
+
+.condition-add-row select,
+.condition-add-row button,
+.condition-card input,
+.condition-card button {
+
+    border:
+        2px
+        solid
+        black;
+
+    border-radius: 16px;
+
+    background: white;
+}
+
+
+.condition-add-row select {
+
+    min-height: 38px;
+
+    padding:
+        5px
+        9px;
+}
+
+
+.condition-add-row button {
+
+    min-height: 38px;
+
+    padding:
+        5px
+        12px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+.active-condition-list {
+
+    display: grid;
+
+    gap: 7px;
+
+    margin-top: 9px;
+}
+
+
+.condition-card {
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto
+        auto;
+
+    align-items: center;
+
+    gap: 8px;
+
+    border:
+        1.5px
+        solid
+        #888;
+
+    border-radius: 15px;
+
+    padding:
+        7px
+        8px;
+}
+
+
+.condition-card-name {
+
+    font-weight: bold;
+}
+
+
+.condition-stack-field {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    white-space: nowrap;
+
+    color: #666;
+}
+
+
+.condition-stack-field input {
+
+    width: 64px;
+
+    min-height: 34px;
+
+    padding:
+        4px
+        6px;
+
+    text-align: center;
+}
+
+
+.remove-condition {
+
+    width: 34px;
+
+    min-height: 34px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+.condition-empty-message {
+
+    color: #777;
+
+    font-size: 13px;
+
+    padding:
+        2px
+        3px;
+}
+
+
 
 /* =========================================
    SECTION HEADINGS
@@ -4072,12 +4255,48 @@ if (
 
 
 
-    <!-- CONDITION -->
+    <!-- CONDITIONS -->
+
+    <div class="condition-manager">
+
+        <div class="condition-manager-title">
+
+            <strong>
+                Conditions
+            </strong>
+
+            <span>
+                Token borders sync in Owlbear
+            </span>
+
+        </div>
+
+        <div class="condition-add-row">
+
+            <select class="condition-picker">
+                <option value="">
+                    Select condition…
+                </option>
+            </select>
+
+            <button
+                class="add-condition"
+                type="button"
+            >
+                + Condition
+            </button>
+
+        </div>
+
+        <div class="active-condition-list"></div>
+
+    </div>
+
 
     <div class="condition-box">
 
         <span>
-            Condition
+            Condition Notes
         </span>
 
         <textarea></textarea>
@@ -8979,6 +9198,594 @@ function initializeCharacterSheet(
 
     characterSheetInitialized =
         true;
+
+
+/* =========================================
+   STRUCTURED CONDITIONS
+   ========================================= */
+
+const RPG_CONDITION_DEFINITIONS = [
+    { id: "fear", name: "Fear" },
+    { id: "wounded", name: "Wounded" },
+    { id: "arrowed", name: "Arrowed" },
+    { id: "bleeding", name: "Bleeding" },
+    { id: "broken-bone", name: "Broken Bone" },
+    { id: "burning", name: "Burning" },
+    { id: "charmed", name: "Charmed" },
+    { id: "poisoned", name: "Poisoned" },
+    { id: "drunk", name: "Drunk" },
+    { id: "confused", name: "Confused" },
+    { id: "frozen", name: "Frozen" },
+    { id: "unconscious", name: "Unconscious" },
+    { id: "taunted", name: "Taunted" },
+    { id: "shocked", name: "Shocked" },
+    { id: "stunned", name: "Stunned" }
+];
+
+
+function getConditionDefinition(
+    conditionId
+) {
+
+    return RPG_CONDITION_DEFINITIONS
+        .find(
+            definition =>
+                definition.id ===
+                conditionId
+        ) ||
+        null;
+
+}
+
+
+function ensureConditionManager() {
+
+    const tab =
+        document.getElementById(
+            "tab1"
+        );
+
+
+    if (
+        !tab ||
+        tab.querySelector(
+            ".condition-manager"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    const notes =
+        tab.querySelector(
+            ".condition-box"
+        );
+
+
+    if (
+        !notes
+    ) {
+
+        return;
+
+    }
+
+
+    const manager =
+        document.createElement(
+            "div"
+        );
+
+
+    manager.className =
+        "condition-manager";
+
+
+    manager.innerHTML = `
+
+        <div class="condition-manager-title">
+            <strong>Conditions</strong>
+            <span>Token borders sync in Owlbear</span>
+        </div>
+
+        <div class="condition-add-row">
+
+            <select class="condition-picker">
+                <option value="">
+                    Select condition…
+                </option>
+            </select>
+
+            <button
+                class="add-condition"
+                type="button"
+            >
+                + Condition
+            </button>
+
+        </div>
+
+        <div class="active-condition-list"></div>
+
+    `;
+
+
+    notes.parentNode.insertBefore(
+        manager,
+        notes
+    );
+
+
+    const label =
+        notes.querySelector(
+            "span"
+        );
+
+
+    if (
+        label
+    ) {
+
+        label.textContent =
+            "Condition Notes";
+
+    }
+
+}
+
+
+function getLiveConditionState() {
+
+    return Array.from(
+        document.querySelectorAll(
+            "#tab1 .condition-card"
+        )
+    )
+    .map(
+        card => {
+
+            const stacks =
+                Number(
+                    card.querySelector(
+                        ".condition-stacks"
+                    )?.value ||
+                    1
+                );
+
+
+            return {
+                id:
+                    card.dataset.conditionId ||
+                    "",
+                stacks:
+                    Number.isFinite(
+                        stacks
+                    )
+                        ? Math.max(
+                            1,
+                            Math.floor(
+                                stacks
+                            )
+                        )
+                        : 1
+            };
+
+        }
+    )
+    .filter(
+        condition =>
+            Boolean(
+                getConditionDefinition(
+                    condition.id
+                )
+            )
+    );
+
+}
+
+
+let conditionOverlayTimer =
+    null;
+
+
+function queueConditionOverlayUpdate() {
+
+    if (
+        remoteEditSession ||
+        !currentCharacterRecord ||
+        !window.RPGOwlbear?.ready ||
+        !window.RPGOwlbear
+            .hasCharacterTokenLink(
+                currentCharacterRecord
+            )
+    ) {
+
+        return;
+
+    }
+
+
+    window.clearTimeout(
+        conditionOverlayTimer
+    );
+
+
+    conditionOverlayTimer =
+        window.setTimeout(
+            async () => {
+
+                try {
+
+                    await window.RPGOwlbear
+                        .updateCharacterConditionOverlays(
+                            currentCharacterRecord,
+                            getLiveConditionState()
+                        );
+
+                }
+
+                catch (
+                    error
+                ) {
+
+                    console.error(
+                        "Could not update Owlbear condition borders:",
+                        error
+                    );
+
+                }
+
+            },
+            120
+        );
+
+}
+
+
+function renderConditionEmptyState() {
+
+    const list =
+        document.querySelector(
+            "#tab1 .active-condition-list"
+        );
+
+
+    if (
+        !list
+    ) {
+
+        return;
+
+    }
+
+
+    const existing =
+        list.querySelector(
+            ".condition-empty-message"
+        );
+
+
+    const hasCards =
+        Boolean(
+            list.querySelector(
+                ".condition-card"
+            )
+        );
+
+
+    if (
+        hasCards
+    ) {
+
+        existing?.remove();
+
+        return;
+
+    }
+
+
+    if (
+        !existing
+    ) {
+
+        const empty =
+            document.createElement(
+                "div"
+            );
+
+
+        empty.className =
+            "condition-empty-message";
+
+
+        empty.textContent =
+            "No active conditions.";
+
+
+        list.appendChild(
+            empty
+        );
+
+    }
+
+}
+
+
+function setupConditionCard(
+    card
+) {
+
+    const stacks =
+        card.querySelector(
+            ".condition-stacks"
+        );
+
+
+    const remove =
+        card.querySelector(
+            ".remove-condition"
+        );
+
+
+    stacks?.addEventListener(
+        "input",
+        queueConditionOverlayUpdate
+    );
+
+
+    remove?.addEventListener(
+        "click",
+        () => {
+
+            card.remove();
+
+            renderConditionEmptyState();
+
+            queueConditionOverlayUpdate();
+
+        }
+    );
+
+}
+
+
+function addConditionCard(
+    conditionId,
+    stacks = 1
+) {
+
+    const definition =
+        getConditionDefinition(
+            conditionId
+        );
+
+
+    const list =
+        document.querySelector(
+            "#tab1 .active-condition-list"
+        );
+
+
+    if (
+        !definition ||
+        !list
+    ) {
+
+        return;
+
+    }
+
+
+    const existing =
+        list.querySelector(
+            `.condition-card[data-condition-id="${conditionId}"]`
+        );
+
+
+    if (
+        existing
+    ) {
+
+        const input =
+            existing.querySelector(
+                ".condition-stacks"
+            );
+
+
+        if (
+            input
+        ) {
+
+            input.value =
+                Math.max(
+                    1,
+                    Number(
+                        input.value ||
+                        1
+                    ) +
+                    1
+                );
+
+        }
+
+
+        queueConditionOverlayUpdate();
+
+        return;
+
+    }
+
+
+    list.querySelector(
+        ".condition-empty-message"
+    )?.remove();
+
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+
+    card.className =
+        "condition-card";
+
+
+    card.dataset.conditionId =
+        conditionId;
+
+
+    card.innerHTML = `
+
+        <span class="condition-card-name">
+            ${definition.name}
+        </span>
+
+        <label class="condition-stack-field">
+            Stacks
+            <input
+                class="condition-stacks"
+                type="number"
+                min="1"
+                step="1"
+                value="${Math.max(1, Number(stacks) || 1)}"
+            >
+        </label>
+
+        <button
+            class="remove-condition"
+            type="button"
+            title="Remove ${definition.name}"
+        >
+            ×
+        </button>
+
+    `;
+
+
+    list.appendChild(
+        card
+    );
+
+
+    setupConditionCard(
+        card
+    );
+
+
+    queueConditionOverlayUpdate();
+
+}
+
+
+function setupConditionManager() {
+
+    ensureConditionManager();
+
+
+    const picker =
+        document.querySelector(
+            "#tab1 .condition-picker"
+        );
+
+
+    const add =
+        document.querySelector(
+            "#tab1 .add-condition"
+        );
+
+
+    if (
+        !picker ||
+        !add
+    ) {
+
+        return;
+
+    }
+
+
+    const currentValue =
+        picker.value;
+
+
+    picker.innerHTML =
+        '<option value="">Select condition…</option>';
+
+
+    RPG_CONDITION_DEFINITIONS
+        .forEach(
+            definition => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    definition.id;
+
+
+                option.textContent =
+                    definition.name;
+
+
+                picker.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+    picker.value =
+        currentValue;
+
+
+    document
+        .querySelectorAll(
+            "#tab1 .condition-card"
+        )
+        .forEach(
+            setupConditionCard
+        );
+
+
+    add.addEventListener(
+        "click",
+        () => {
+
+            if (
+                !picker.value
+            ) {
+
+                return;
+
+            }
+
+
+            addConditionCard(
+                picker.value,
+                1
+            );
+
+
+            picker.value =
+                "";
+
+        }
+    );
+
+
+    renderConditionEmptyState();
+
+}
+
+
+setupConditionManager();
 
 
 /* =========================================

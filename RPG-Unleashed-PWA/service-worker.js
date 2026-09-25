@@ -1,4 +1,4 @@
-const CACHE_NAME = "rpg-unleashed-v25";
+const CACHE_NAME = "rpg-unleashed-v27";
 
 const APP_SHELL = [
     "./",
@@ -8,6 +8,21 @@ const APP_SHELL = [
     "./icons/icon-192.png",
     "./icons/icon-512.png",
     "./icons/apple-touch-icon.png",
+    "./assets/conditions/fear.png",
+    "./assets/conditions/wounded.png",
+    "./assets/conditions/arrowed.png",
+    "./assets/conditions/bleeding.png",
+    "./assets/conditions/broken-bone.png",
+    "./assets/conditions/burning.png",
+    "./assets/conditions/charmed.png",
+    "./assets/conditions/poisoned.png",
+    "./assets/conditions/drunk.png",
+    "./assets/conditions/confused.png",
+    "./assets/conditions/frozen.png",
+    "./assets/conditions/unconscious.png",
+    "./assets/conditions/taunted.png",
+    "./assets/conditions/shocked.png",
+    "./assets/conditions/stunned.png",
     "./owlbear/manifest.json",
     "./owlbear/INSTALL.txt"
 ];
