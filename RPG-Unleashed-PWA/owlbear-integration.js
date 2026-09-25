@@ -1475,7 +1475,7 @@ async function initializeOwlbear() {
                             Math.max(
                                 1,
                                 bounds.width *
-                                2.35
+                                1.75
                             );
 
 
