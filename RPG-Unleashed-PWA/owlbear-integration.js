@@ -227,139 +227,78 @@ function makeTokenHudSecondaryText(vitals) {
 }
 
 
-function hasVisibleMana(vitals) {
-    const values = normalizeVitals(vitals);
-
-    return (
-        values.manaMax > 0 ||
-        values.manaCurrent > 0
-    );
-}
-
-
-function clampBarFraction(current, maximum) {
+function makeTextBar(current, maximum, segments = 10) {
     if (maximum <= 0) {
-        return 0;
+        return "";
     }
 
-    return Math.max(
-        0,
-        Math.min(
-            1,
-            current / maximum
-        )
+    const fraction =
+        Math.max(
+            0,
+            Math.min(
+                1,
+                current / maximum
+            )
+        );
+
+    const filled =
+        Math.round(
+            fraction * segments
+        );
+
+    return (
+        "█".repeat(filled) +
+        "░".repeat(segments - filled)
     );
 }
 
 
-function getTokenHudLayout(bounds, vitals) {
+function makeTokenHudText(vitals) {
     const values =
         normalizeVitals(vitals);
 
-    const hasMana =
-        hasVisibleMana(values);
+    const lines = [];
 
-    const secondaryText =
+    if (
+        values.hpMax > 0 ||
+        values.hpCurrent > 0
+    ) {
+        lines.push(
+            "HP   " +
+            makeTextBar(
+                values.hpCurrent,
+                values.hpMax
+            )
+        );
+    }
+
+    if (
+        values.manaMax > 0 ||
+        values.manaCurrent > 0
+    ) {
+        lines.push(
+            "Mana " +
+            makeTextBar(
+                values.manaCurrent,
+                values.manaMax
+            )
+        );
+    }
+
+    const secondary =
         makeTokenHudSecondaryText(
             values
         );
 
-    const hasSecondary =
-        Boolean(
-            secondaryText
+    if (secondary) {
+        lines.push(
+            secondary
         );
-
-    const barWidth =
-        Math.max(
-            78,
-            Math.min(
-                138,
-                Math.round(
-                    bounds.width * 0.95
-                )
-            )
-        );
-
-    const barHeight =
-        10;
-
-    const barSpacing =
-        16;
-
-    let hpY;
-
-    if (hasMana && hasSecondary) {
-        hpY =
-            bounds.min.y - 48;
     }
 
-    else if (
-        hasMana ||
-        hasSecondary
-    ) {
-        hpY =
-            bounds.min.y - 36;
-    }
-
-    else {
-        hpY =
-            bounds.min.y - 24;
-    }
-
-    const layout = {
-        barWidth,
-        barHeight,
-        hasMana,
-        secondaryText,
-        hp: {
-            centerX:
-                bounds.center.x,
-            centerY:
-                hpY
-        },
-        mana:
-            null,
-        stats:
-            null
-    };
-
-    if (hasMana) {
-        layout.mana = {
-            centerX:
-                bounds.center.x,
-            centerY:
-                hpY + barSpacing
-        };
-    }
-
-    if (hasSecondary) {
-        layout.stats = {
-            centerX:
-                bounds.center.x,
-            centerY:
-                (
-                    hasMana
-                        ? layout.mana.centerY
-                        : layout.hp.centerY
-                ) +
-                16
-        };
-    }
-
-    return layout;
-}
-
-
-function makeHudItemMetadata(characterId, ownerId, roomId, tokenId, kind) {
-    return {
-        [TOKEN_HUD_METADATA_KEY]: {
-            characterId,
-            ownerId,
-            roomId,
-            tokenId,
-            kind
-        }
-    };
+    return lines.join(
+        "\n"
+    );
 }
 
 
@@ -943,10 +882,14 @@ async function initializeOwlbear() {
 
 
                     const buildLabel = sdkModule.buildLabel;
-                    const buildShape = sdkModule.buildShape;
 
                     function hasCharacterTokenLink(character) {
-                        return Boolean(getRoomTokenLink(character, roomId));
+                        return Boolean(
+                            getRoomTokenLink(
+                                character,
+                                roomId
+                            )
+                        );
                     }
 
                     async function findCharacterHudItems(characterId) {
@@ -956,182 +899,68 @@ async function initializeOwlbear() {
                             const meta =
                                 item.metadata?.[TOKEN_HUD_METADATA_KEY];
 
-                            return meta?.characterId === characterId &&
+                            return (
+                                meta?.characterId === characterId &&
                                 meta?.ownerId === OBR.player.id &&
-                                meta?.roomId === roomId;
+                                meta?.roomId === roomId
+                            );
                         });
                     }
 
-                    function createHudBarItems(character, token, layout, kindPrefix, currentValue, maxValue, color) {
-                        const background = buildShape()
-                            .shapeType("RECTANGLE")
-                            .width(layout.barWidth)
-                            .height(layout.barHeight)
-                            .fillColor("#f0f0f0")
-                            .fillOpacity(0.92)
-                            .strokeColor("#111111")
-                            .strokeOpacity(1)
-                            .strokeWidth(2)
-                            .position({
-                                x: layout.centerX,
-                                y: layout.centerY
-                            })
-                            .layer("ATTACHMENT")
-                            .attachedTo(token.id)
-                            .locked(true)
-                            .disableHit(true)
-                            .metadata(
-                                makeHudItemMetadata(
-                                    character.id,
-                                    OBR.player.id,
-                                    roomId,
-                                    token.id,
-                                    kindPrefix + "-bg"
-                                )
-                            )
-                            .build();
-
-                        const fillFraction =
-                            clampBarFraction(
-                                currentValue,
-                                maxValue
-                            );
-
-                        const fillWidth =
-                            Math.max(
-                                0.001,
-                                layout.barWidth * fillFraction
-                            );
-
-                        const fillLeft =
-                            layout.centerX -
-                            (layout.barWidth / 2);
-
-                        const fill = buildShape()
-                            .shapeType("RECTANGLE")
-                            .width(fillWidth)
-                            .height(
-                                Math.max(
-                                    0.001,
-                                    layout.barHeight - 2
-                                )
-                            )
-                            .fillColor(color)
-                            .fillOpacity(1)
-                            .strokeColor(color)
-                            .strokeOpacity(1)
-                            .strokeWidth(0)
-                            .position({
-                                x: fillLeft + (fillWidth / 2),
-                                y: layout.centerY
-                            })
-                            .layer("ATTACHMENT")
-                            .attachedTo(token.id)
-                            .locked(true)
-                            .disableHit(true)
-                            .metadata(
-                                makeHudItemMetadata(
-                                    character.id,
-                                    OBR.player.id,
-                                    roomId,
-                                    token.id,
-                                    kindPrefix + "-fill"
-                                )
-                            )
-                            .build();
-
-                        return [background, fill];
-                    }
-
-                    function createHudStatsLabel(character, token, layout, text) {
-                        return buildLabel()
-                            .plainText(text)
-                            .fontSize(14)
-                            .fontWeight(700)
-                            .textAlign("CENTER")
-                            .fillColor("#111111")
-                            .backgroundColor("#ffffff")
-                            .backgroundOpacity(0.9)
-                            .padding(5)
-                            .cornerRadius(9)
-                            .position({
-                                x: layout.centerX,
-                                y: layout.centerY
-                            })
-                            .layer("ATTACHMENT")
-                            .attachedTo(token.id)
-                            .locked(true)
-                            .disableHit(true)
-                            .metadata(
-                                makeHudItemMetadata(
-                                    character.id,
-                                    OBR.player.id,
-                                    roomId,
-                                    token.id,
-                                    "stats-label"
-                                )
-                            )
-                            .build();
-                    }
-
-                    async function createCharacterHudItems(character, token, vitalsOverride = null) {
+                    async function createCharacterHudLabel(character, token, vitalsOverride = null) {
                         const bounds =
-                            await OBR.scene.items.getItemBounds([token.id]);
+                            await OBR.scene.items.getItemBounds(
+                                [token.id]
+                            );
 
                         const vitals =
                             vitalsOverride
                                 ? normalizeVitals(vitalsOverride)
                                 : getVitalsFromCharacterRecord(character);
 
-                        const layout =
-                            getTokenHudLayout(bounds, vitals);
-
-                        const items = [
-                            ...createHudBarItems(
-                                character,
-                                token,
-                                layout.hp,
-                                "hp",
-                                vitals.hpCurrent,
-                                vitals.hpMax,
-                                "#d64545"
-                            )
-                        ];
-
-                        if (layout.hasMana && layout.mana) {
-                            items.push(
-                                ...createHudBarItems(
-                                    character,
-                                    token,
-                                    layout.mana,
-                                    "mana",
-                                    vitals.manaCurrent,
-                                    vitals.manaMax,
-                                    "#4b6fd6"
-                                )
+                        const text =
+                            makeTokenHudText(
+                                vitals
                             );
-                        }
 
-                        if (layout.secondaryText && layout.stats) {
-                            items.push(
-                                createHudStatsLabel(
-                                    character,
-                                    token,
-                                    layout.stats,
-                                    layout.secondaryText
-                                )
-                            );
-                        }
+                        const label =
+                            buildLabel()
+                                .plainText(text)
+                                .fontSize(16)
+                                .fontWeight(700)
+                                .textAlign("CENTER")
+                                .fillColor("#111111")
+                                .backgroundColor("#ffffff")
+                                .backgroundOpacity(0.92)
+                                .padding(7)
+                                .cornerRadius(10)
+                                .position({
+                                    x: bounds.center.x,
+                                    y: bounds.min.y - 28
+                                })
+                                .layer("ATTACHMENT")
+                                .attachedTo(token.id)
+                                .locked(true)
+                                .disableHit(true)
+                                .metadata({
+                                    [TOKEN_HUD_METADATA_KEY]: {
+                                        characterId: character.id,
+                                        ownerId: OBR.player.id,
+                                        roomId,
+                                        tokenId: token.id,
+                                        kind: "vitals-label"
+                                    }
+                                })
+                                .build();
 
-                        await OBR.scene.items.addItems(items);
-                        return items;
+                        await OBR.scene.items.addItems(
+                            [label]
+                        );
+
+                        return label;
                     }
 
                     async function removeCharacterHudItems(character, link = null) {
-                        const latestLink =
-                            link ||
-                            null;
-
                         const found =
                             await findCharacterHudItems(
                                 character.id
@@ -1139,11 +968,15 @@ async function initializeOwlbear() {
 
                         const ids =
                             new Set(
-                                found.map(item => item.id)
+                                found.map(
+                                    item => item.id
+                                )
                             );
 
-                        getHudItemIdsFromLink(latestLink)
-                            .forEach(id => ids.add(id));
+                        getHudItemIdsFromLink(link)
+                            .forEach(
+                                id => ids.add(id)
+                            );
 
                         if (ids.size) {
                             await OBR.scene.items.deleteItems(
@@ -1153,48 +986,125 @@ async function initializeOwlbear() {
                     }
 
                     async function updateCharacterTokenDisplay(character, vitalsOverride = null) {
-                        if (!character || !(await OBR.scene.isReady())) return false;
+                        if (
+                            !character ||
+                            !(await OBR.scene.isReady())
+                        ) {
+                            return false;
+                        }
 
                         const storedCharacter =
-                            await window.RPGCharacterStore?.getCharacterById(character.id);
+                            await window.RPGCharacterStore
+                                ?.getCharacterById(
+                                    character.id
+                                );
 
                         const sourceCharacter =
-                            storedCharacter || character;
+                            storedCharacter ||
+                            character;
 
                         const link =
-                            getRoomTokenLink(sourceCharacter, roomId);
+                            getRoomTokenLink(
+                                sourceCharacter,
+                                roomId
+                            );
 
-                        if (!link?.tokenId) return false;
+                        if (!link?.tokenId) {
+                            return false;
+                        }
 
                         const tokenItems =
-                            await OBR.scene.items.getItems([link.tokenId]);
+                            await OBR.scene.items.getItems(
+                                [link.tokenId]
+                            );
 
                         const token =
                             tokenItems[0];
 
-                        if (!token || token.layer !== "CHARACTER") return false;
+                        if (
+                            !token ||
+                            token.layer !== "CHARACTER"
+                        ) {
+                            return false;
+                        }
 
                         const vitals =
                             vitalsOverride
                                 ? normalizeVitals(vitalsOverride)
                                 : getVitalsFromCharacterRecord(character);
 
+                        const text =
+                            makeTokenHudText(
+                                vitals
+                            );
+
+                        let labels = [];
+
+                        if (
+                            Array.isArray(link.hudItemIds) &&
+                            link.hudItemIds.length
+                        ) {
+                            labels =
+                                await OBR.scene.items.getItems(
+                                    link.hudItemIds
+                                );
+                        }
+
+                        if (
+                            !labels.length &&
+                            link.labelId
+                        ) {
+                            labels =
+                                await OBR.scene.items.getItems(
+                                    [link.labelId]
+                                );
+                        }
+
+                        if (!labels.length) {
+                            labels =
+                                await findCharacterHudItems(
+                                    character.id
+                                );
+                        }
+
+                        const label =
+                            labels.find(
+                                item => item.type === "LABEL"
+                            );
+
+                        if (label) {
+                            await OBR.scene.items.updateItems(
+                                [label.id],
+                                items => {
+                                    for (const item of items) {
+                                        if (item.text) {
+                                            item.text.plainText =
+                                                text;
+                                        }
+                                    }
+                                }
+                            );
+
+                            return true;
+                        }
+
                         await removeCharacterHudItems(
                             sourceCharacter,
                             link
                         );
 
-                        const items =
-                            await createCharacterHudItems(
+                        const created =
+                            await createCharacterHudLabel(
                                 sourceCharacter,
                                 token,
                                 vitals
                             );
 
                         const latest =
-                            await window.RPGCharacterStore?.getCharacterById(
-                                character.id
-                            );
+                            await window.RPGCharacterStore
+                                ?.getCharacterById(
+                                    character.id
+                                );
 
                         if (latest) {
                             await window.RPGCharacterStore.putCharacter({
@@ -1203,7 +1113,8 @@ async function initializeOwlbear() {
                                     ...(latest.owlbearTokenLinks || {}),
                                     [roomId]: {
                                         tokenId: token.id,
-                                        hudItemIds: items.map(item => item.id),
+                                        hudItemIds: [created.id],
+                                        labelId: created.id,
                                         linkedAt: Date.now()
                                     }
                                 }
@@ -1214,10 +1125,15 @@ async function initializeOwlbear() {
                     }
 
                     async function unlinkCharacterToken(character) {
-                        if (!character) return character;
+                        if (!character) {
+                            return character;
+                        }
 
                         const latest =
-                            await window.RPGCharacterStore?.getCharacterById(character.id) ||
+                            await window.RPGCharacterStore
+                                ?.getCharacterById(
+                                    character.id
+                                ) ||
                             character;
 
                         const link =
@@ -1233,46 +1149,74 @@ async function initializeOwlbear() {
                             );
                         }
 
-                        const links =
-                            { ...(latest.owlbearTokenLinks || {}) };
+                        const links = {
+                            ...(latest.owlbearTokenLinks || {})
+                        };
 
                         delete links[roomId];
 
-                        const updated =
-                            { ...latest, owlbearTokenLinks: links };
+                        const updated = {
+                            ...latest,
+                            owlbearTokenLinks: links
+                        };
 
-                        await window.RPGCharacterStore?.putCharacter(updated);
+                        await window.RPGCharacterStore
+                            ?.putCharacter(
+                                updated
+                            );
+
                         return updated;
                     }
 
                     async function linkCharacterToSelectedToken(character) {
                         if (!(await OBR.scene.isReady())) {
-                            throw new Error("Open an Owlbear scene before linking a token.");
+                            throw new Error(
+                                "Open an Owlbear scene before linking a token."
+                            );
                         }
 
-                        const selection = await OBR.player.getSelection();
-                        if (!selection || selection.length !== 1) {
-                            throw new Error("Select exactly one Character token in Owlbear, then press Link Token.");
+                        const selection =
+                            await OBR.player.getSelection();
+
+                        if (
+                            !selection ||
+                            selection.length !== 1
+                        ) {
+                            throw new Error(
+                                "Select exactly one Character token in Owlbear, then press Link Token."
+                            );
                         }
 
                         const selectedItems =
-                            await OBR.scene.items.getItems(selection);
+                            await OBR.scene.items.getItems(
+                                selection
+                            );
 
                         const token =
                             selectedItems[0];
 
-                        if (!token || token.layer !== "CHARACTER") {
-                            throw new Error("The selected Owlbear item must be on the Character layer.");
+                        if (
+                            !token ||
+                            token.layer !== "CHARACTER"
+                        ) {
+                            throw new Error(
+                                "The selected Owlbear item must be on the Character layer."
+                            );
                         }
 
                         const latest =
-                            await window.RPGCharacterStore?.getCharacterById(character.id) ||
+                            await window.RPGCharacterStore
+                                ?.getCharacterById(
+                                    character.id
+                                ) ||
                             character;
 
-                        await unlinkCharacterToken(latest);
+                        await unlinkCharacterToken(
+                            latest
+                        );
 
-                        const items =
-                            await createCharacterHudItems(
+                        const label =
+                            await createCharacterHudLabel(
                                 latest,
                                 token
                             );
@@ -1283,13 +1227,18 @@ async function initializeOwlbear() {
                                 ...(latest.owlbearTokenLinks || {}),
                                 [roomId]: {
                                     tokenId: token.id,
-                                    hudItemIds: items.map(item => item.id),
+                                    hudItemIds: [label.id],
+                                    labelId: label.id,
                                     linkedAt: Date.now()
                                 }
                             }
                         };
 
-                        await window.RPGCharacterStore?.putCharacter(updated);
+                        await window.RPGCharacterStore
+                            ?.putCharacter(
+                                updated
+                            );
+
                         return updated;
                     }
 

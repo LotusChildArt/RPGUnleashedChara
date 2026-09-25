@@ -1,4 +1,4 @@
-const CACHE_NAME = "rpg-unleashed-v24";
+const CACHE_NAME = "rpg-unleashed-v25";
 
 const APP_SHELL = [
     "./",

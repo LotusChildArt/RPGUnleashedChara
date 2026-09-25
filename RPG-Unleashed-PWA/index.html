@@ -8009,7 +8009,14 @@ async function renderCharacterLibrary() {
                             await renderCharacterLibrary();
                         } catch (error) {
                             console.error("Could not update the Owlbear token link:", error);
-                            window.alert(error?.message || "Could not update the Owlbear token link.");
+                            window.alert(
+                                "Could not update the Owlbear token link." +
+                                (
+                                    error?.message
+                                        ? "\n\n" + error.message
+                                        : ""
+                                )
+                            );
                         } finally {
                             tokenButton.disabled = false;
                         }
