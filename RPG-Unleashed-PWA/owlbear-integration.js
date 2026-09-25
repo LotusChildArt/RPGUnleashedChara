@@ -1097,6 +1097,15 @@ async function initializeOwlbear() {
                     const buildLabel = sdkModule.buildLabel;
                     const buildImage = sdkModule.buildImage;
 
+
+                    if (
+                        isBackgroundContext
+                    ) {
+
+                        await setupConditionsContextMenu();
+
+                    }
+
                     function hasCharacterTokenLink(character) {
                         return Boolean(
                             getRoomTokenLink(
@@ -1478,15 +1487,6 @@ async function initializeOwlbear() {
 
                     async function setupConditionsContextMenu() {
 
-                        if (
-                            !isBackgroundContext
-                        ) {
-
-                            return;
-
-                        }
-
-
                         await OBR.contextMenu.remove(
                             "com.rpgunleashed.character-sheet/conditions-menu"
                         ).catch(
@@ -1504,6 +1504,10 @@ async function initializeOwlbear() {
                                     label:
                                         "RPG Conditions",
                                     filter: {
+                                        min:
+                                            1,
+                                        max:
+                                            1,
                                         every: [
                                             {
                                                 key:
@@ -1515,44 +1519,59 @@ async function initializeOwlbear() {
                                     }
                                 }
                             ],
-                            onClick(
-                                context,
-                                elementId
-                            ) {
-
-                                const first =
-                                    context.items?.[0];
-
-
-                                if (
-                                    !first?.id
-                                ) {
-
-                                    return;
-
-                                }
-
-
-                                OBR.popover.open({
-                                    id:
-                                        "com.rpgunleashed.character-sheet/conditions-popover",
-                                    url:
-                                        "/owlbear-conditions.html?tokenId=" +
-                                        encodeURIComponent(
-                                            first.id
-                                        ),
-                                    width:
-                                        360,
-                                    height:
-                                        420,
-                                    anchorElementId:
-                                        elementId
-                                });
-
+                            embed: {
+                                url:
+                                    "/owlbear-conditions.html",
+                                height:
+                                    390
                             }
                         });
 
                     }
+
+
+                    async function getSelectedCharacterTokenId() {
+
+                        const selection =
+                            await OBR.player.getSelection();
+
+
+                        if (
+                            !selection ||
+                            selection.length !==
+                                1
+                        ) {
+
+                            return null;
+
+                        }
+
+
+                        const items =
+                            await OBR.scene.items.getItems(
+                                selection
+                            );
+
+
+                        const item =
+                            items[0];
+
+
+                        if (
+                            !item ||
+                            item.layer !==
+                                "CHARACTER"
+                        ) {
+
+                            return null;
+
+                        }
+
+
+                        return item.id;
+
+                    }
+
 
                     async function findCharacterHudItems(characterId) {
                         if (!(await OBR.scene.isReady())) return [];
@@ -3785,9 +3804,6 @@ async function initializeOwlbear() {
                     }
 
 
-                    await setupConditionsContextMenu();
-
-
                     window.RPGOwlbear = {
                         ready:
                             true,
@@ -3813,6 +3829,7 @@ async function initializeOwlbear() {
                         updateCharacterConditionOverlays,
                         loadCharacterForTokenId,
                         saveTokenLinkedCharacter,
+                        getSelectedCharacterTokenId,
                         conditionDefinitions:
                             CONDITION_DEFINITIONS
                     };

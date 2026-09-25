@@ -296,7 +296,7 @@ const DEFAULT_CONDITION_DEFINITIONS = [
     { id: "stunned", name: "Stunned", description: "No rules text has been set for this condition yet." }
 ];
 
-const tokenId = new URLSearchParams(window.location.search).get("tokenId") || "";
+let tokenId = new URLSearchParams(window.location.search).get("tokenId") || "";
 const statusMessage = document.getElementById("status-message");
 const characterContextLabel = document.getElementById("character-context");
 const conditionPicker = document.getElementById("condition-picker");
@@ -639,13 +639,9 @@ addConditionButton.addEventListener("click", async () => {
 });
 
 async function initializeConditionsMenu() {
-    if (!tokenId) {
-        characterContextLabel.textContent = "No token was provided.";
-        conditionList.innerHTML = '<div class="error">This menu was opened without a valid token.</div>';
-        return;
-    }
 
     try {
+
         if (!window.RPGOwlbear?.ready) {
             await new Promise(resolve => {
                 window.addEventListener(
@@ -659,6 +655,33 @@ async function initializeConditionsMenu() {
         conditionDefinitions =
             window.RPGOwlbear.conditionDefinitions ||
             DEFAULT_CONDITION_DEFINITIONS;
+
+
+        if (
+            !tokenId
+        ) {
+
+            tokenId =
+                await window.RPGOwlbear
+                    .getSelectedCharacterTokenId();
+
+        }
+
+
+        if (
+            !tokenId
+        ) {
+
+            characterContextLabel.textContent =
+                "Select one Character token.";
+
+            conditionList.innerHTML =
+                '<div class="error">RPG Conditions works on one selected Character token at a time.</div>';
+
+            return;
+
+        }
+
 
         renderConditionPicker();
 
