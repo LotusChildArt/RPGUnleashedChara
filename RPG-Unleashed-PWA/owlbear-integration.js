@@ -113,7 +113,8 @@ function getVitalsFromCharacterRecord(character) {
         drArmor: 0,
         drNatural: 0,
         drMagic: 0,
-        mana: 0
+        manaCurrent: 0,
+        manaMax: 0
     };
 
     const tab1Html = character?.state?.tabs?.tab1;
@@ -138,11 +139,45 @@ function getVitalsFromCharacterRecord(character) {
     if (typeof tab5Html === "string") {
         const template = document.createElement("template");
         template.innerHTML = tab5Html;
-        vitals.mana = numericFieldValue(
+        const manaCurrent =
             template.content.querySelector(
-                '.magic-title-row input[placeholder="Manapool"]'
-            )
-        );
+                ".mana-current"
+            );
+
+        const manaMax =
+            template.content.querySelector(
+                ".mana-max"
+            );
+
+        const legacyManapool =
+            template.content.querySelector(
+                'input[placeholder="Manapool"]'
+            );
+
+        if (manaCurrent || manaMax) {
+            vitals.manaCurrent =
+                numericFieldValue(
+                    manaCurrent
+                );
+
+            vitals.manaMax =
+                numericFieldValue(
+                    manaMax
+                );
+        }
+
+        else if (legacyManapool) {
+            const legacyMana =
+                numericFieldValue(
+                    legacyManapool
+                );
+
+            vitals.manaCurrent =
+                legacyMana;
+
+            vitals.manaMax =
+                legacyMana;
+        }
     }
 
     return vitals;
@@ -160,19 +195,61 @@ function normalizeVitals(vitals) {
         drArmor: num("drArmor"),
         drNatural: num("drNatural"),
         drMagic: num("drMagic"),
-        mana: num("mana")
+        manaCurrent: num("manaCurrent"),
+        manaMax: num("manaMax")
     };
 }
 
 function makeTokenHudText(vitals) {
     const values = normalizeVitals(vitals);
-    const lines = [
-        `HP ${values.hpCurrent} / ${values.hpMax}    NL ${values.nl}`,
-        `DR  A ${values.drArmor}   N ${values.drNatural}   M ${values.drMagic}`
-    ];
-    if (values.mana > 0) lines.push(`Mana ${values.mana}`);
+    const lines = [];
+
+    if (
+        values.hpMax > 0 ||
+        values.hpCurrent > 0
+    ) {
+        lines.push(
+            `HP ${values.hpCurrent} / ${values.hpMax}`
+        );
+    }
+
+    const secondary = [];
+
+    if (values.nl > 0) {
+        secondary.push(
+            `${values.nl} NL`
+        );
+    }
+
+    const totalDr =
+        values.drArmor +
+        values.drNatural +
+        values.drMagic;
+
+    if (totalDr > 0) {
+        secondary.push(
+            `DR ${totalDr}`
+        );
+    }
+
+    if (secondary.length) {
+        lines.push(
+            secondary.join("   ")
+        );
+    }
+
+    if (
+        values.manaMax > 0 ||
+        values.manaCurrent > 0
+    ) {
+        lines.push(
+            `Mana ${values.manaCurrent} / ${values.manaMax}`
+        );
+    }
+
     return lines.join("\\n");
 }
+
 
 function getRoomTokenLink(character, roomId) {
     const links = character?.owlbearTokenLinks;

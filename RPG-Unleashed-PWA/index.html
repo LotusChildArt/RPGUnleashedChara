@@ -1932,7 +1932,7 @@ input::placeholder {
     display: grid;
     grid-template-columns:
         auto
-        96px
+        170px
         108px
         138px;
     gap: 8px;
@@ -1960,6 +1960,44 @@ input::placeholder {
 }
 
 .magic-title-row input[type="number"] {
+    text-align: center;
+}
+
+.mana-current-max {
+    min-height: 38px;
+    display: grid;
+    grid-template-columns:
+        auto
+        48px
+        auto
+        48px;
+    align-items: center;
+    gap: 3px;
+    border: 2px solid black;
+    border-radius: 19px;
+    padding:
+        0
+        8px;
+    background: white;
+}
+
+.mana-current-max input {
+    min-height: 30px;
+    border: none;
+    border-radius: 0;
+    padding:
+        4px
+        2px;
+    text-align: center;
+}
+
+.mana-label {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.mana-divider {
+    color: #777;
     text-align: center;
 }
 
@@ -2177,7 +2215,7 @@ input::placeholder {
         grid-column: 1 / -1;
     }
 
-    .magic-title-row input:nth-of-type(3) {
+    .magic-title-row > input:last-child {
         grid-column: 1 / -1;
         max-width: 138px;
     }
@@ -2682,7 +2720,8 @@ body.mobile-mode .magic-title-row {
     grid-template-columns: 1fr 1fr;
 }
 body.mobile-mode .magic-title-row h1 { grid-column: 1 / -1; }
-body.mobile-mode .magic-title-row input:nth-of-type(3) { grid-column: 1 / -1; max-width: 150px; }
+body.mobile-mode .mana-current-max { max-width: 180px; }
+body.mobile-mode .magic-title-row > input:last-child { grid-column: 1 / -1; max-width: 150px; }
 body.mobile-mode .magic-source-row { grid-template-columns: 1fr 1fr; }
 body.mobile-mode .magic-source-row textarea { grid-column: auto; }
 body.mobile-mode .magework-meta { grid-template-columns: 1fr 1fr; }
@@ -5234,10 +5273,31 @@ if (
                 Magic
             </h1>
 
-            <input
-                type="number"
-                placeholder="Manapool"
-            >
+            <div class="mana-current-max">
+
+                <span class="mana-label">
+                    Mana
+                </span>
+
+                <input
+                    class="mana-current"
+                    type="number"
+                    min="0"
+                    placeholder="Cur"
+                >
+
+                <span class="mana-divider">
+                    /
+                </span>
+
+                <input
+                    class="mana-max"
+                    type="number"
+                    min="0"
+                    placeholder="Max"
+                >
+
+            </div>
 
             <input
                 type="number"
@@ -11403,9 +11463,92 @@ document
    MAGIC
    ========================================= */
 
+function normalizeMagicManaTracker() {
+
+    const titleRow =
+        document.querySelector(
+            "#tab5 .magic-title-row"
+        );
+
+    if (!titleRow) {
+        return;
+    }
+
+    if (
+        titleRow.querySelector(
+            ".mana-current-max"
+        )
+    ) {
+        return;
+    }
+
+    const oldManapool =
+        titleRow.querySelector(
+            'input[placeholder="Manapool"]'
+        );
+
+    if (!oldManapool) {
+        return;
+    }
+
+    const oldValue =
+        oldManapool.value;
+
+    const tracker =
+        document.createElement(
+            "div"
+        );
+
+    tracker.className =
+        "mana-current-max";
+
+    tracker.innerHTML = `
+
+        <span class="mana-label">
+            Mana
+        </span>
+
+        <input
+            class="mana-current"
+            type="number"
+            min="0"
+            placeholder="Cur"
+        >
+
+        <span class="mana-divider">
+            /
+        </span>
+
+        <input
+            class="mana-max"
+            type="number"
+            min="0"
+            placeholder="Max"
+        >
+
+    `;
+
+    tracker.querySelector(
+        ".mana-current"
+    ).value = oldValue;
+
+    tracker.querySelector(
+        ".mana-max"
+    ).value = oldValue;
+
+    oldManapool.replaceWith(
+        tracker
+    );
+
+}
+
+
+normalizeMagicManaTracker();
+
+
 const compactCastingBonusField =
     document.querySelector(
-        "#tab5 .magic-title-row input:nth-of-type(3)"
+        '#tab5 .magic-title-row input[placeholder="Casting Bonus"]' 
     );
 
 if (compactCastingBonusField) {
@@ -12666,9 +12809,16 @@ function getLiveOwlbearVitals() {
         drArmor: numberFrom(drInputs[0]),
         drNatural: numberFrom(drInputs[1]),
         drMagic: numberFrom(drInputs[2]),
-        mana: numberFrom(document.querySelector(
-            '#tab5 .magic-title-row input[placeholder="Manapool"]'
-        ))
+        manaCurrent: numberFrom(
+            document.querySelector(
+                "#tab5 .mana-current"
+            )
+        ),
+        manaMax: numberFrom(
+            document.querySelector(
+                "#tab5 .mana-max"
+            )
+        )
     };
 }
 
@@ -12699,7 +12849,8 @@ document.querySelectorAll(
     "#tab1 .current-max-field input, " +
     "#tab1 .nl-field input, " +
     "#tab1 .dr-bubbles input, " +
-    '#tab5 .magic-title-row input[placeholder="Manapool"]'
+    "#tab5 .mana-current, " +
+    "#tab5 .mana-max"
 ).forEach(input => {
     input.addEventListener("input", queueOwlbearTokenHudUpdate);
 });
