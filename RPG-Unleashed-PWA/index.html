@@ -2804,6 +2804,8 @@ body.mobile-mode .option-save-status {
 .library-back-button:hover,
 .app-options-back-button:hover,
 .library-open-button:hover,
+.library-export-button:hover,
+.library-token-button:hover,
 .library-delete-button:hover,
 .campaign-modal-button:hover {
     background: #eee;
@@ -2883,6 +2885,8 @@ body.mobile-mode .option-save-status {
 }
 
 .library-open-button,
+.library-export-button,
+.library-token-button,
 .library-delete-button {
     border: 2px solid black;
     border-radius: 18px;
@@ -3301,6 +3305,21 @@ if (
             >
                 + New Character
             </button>
+
+            <button
+                class="main-menu-button"
+                id="import-character"
+                type="button"
+            >
+                Import Character
+            </button>
+
+            <input
+                id="import-character-file"
+                type="file"
+                accept=".rpgunleashed,application/json"
+                hidden
+            >
 
             <button
                 class="main-menu-button"
@@ -5574,6 +5593,23 @@ if (
             </div>
 
 
+            <div class="option-row">
+
+                <button
+                    class="option-button"
+                    id="export-character"
+                    type="button"
+                >
+                    Export Character
+                </button>
+
+                <div class="option-description">
+                    Export the most recently saved version of this character as a .rpgunleashed file. Save first to include recent edits.
+                </div>
+
+            </div>
+
+
             <div
                 class="option-save-status"
                 id="save-status"
@@ -6149,6 +6185,599 @@ function makeCharacterId() {
             .toString(16)
             .slice(2)
     );
+
+}
+
+
+const RPG_CHARACTER_EXPORT_FORMAT =
+    "rpg-unleashed-character";
+
+
+const RPG_CHARACTER_EXPORT_VERSION =
+    1;
+
+
+function safeCharacterFileName(
+    name
+) {
+
+    const cleaned =
+        String(
+            name ||
+            "RPG-Unleashed-Character"
+        )
+        .trim()
+        .replace(
+            /[<>:"/\\|?*\u0000-\u001F]/g,
+            "-"
+        )
+        .replace(
+            /\s+/g,
+            "_"
+        )
+        .slice(
+            0,
+            80
+        );
+
+
+    return (
+        cleaned ||
+        "RPG-Unleashed-Character"
+    ) +
+    ".rpgunleashed";
+
+}
+
+
+function exportCharacterRecord(
+    character
+) {
+
+    if (
+        !character
+    ) {
+
+        throw new Error(
+            "No character is available to export."
+        );
+
+    }
+
+
+    const exportCharacter =
+        structuredClone(
+            character
+        );
+
+
+    delete exportCharacter
+        .owlbearTokenLinks;
+
+
+    const payload = {
+        format:
+            RPG_CHARACTER_EXPORT_FORMAT,
+        version:
+            RPG_CHARACTER_EXPORT_VERSION,
+        exportedAt:
+            new Date()
+                .toISOString(),
+        character:
+            exportCharacter
+    };
+
+
+    const blob =
+        new Blob(
+            [
+                JSON.stringify(
+                    payload,
+                    null,
+                    2
+                )
+            ],
+            {
+                type:
+                    "application/json"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href =
+        url;
+
+
+    link.download =
+        safeCharacterFileName(
+            character.name
+        );
+
+
+    document.body.appendChild(
+        link
+    );
+
+
+    link.click();
+
+
+    link.remove();
+
+
+    window.setTimeout(
+        () => {
+
+            URL.revokeObjectURL(
+                url
+            );
+
+        },
+        1000
+    );
+
+}
+
+
+function sanitizeImportedTabHtml(
+    markup
+) {
+
+    const template =
+        document.createElement(
+            "template"
+        );
+
+
+    template.innerHTML =
+        String(
+            markup ||
+            ""
+        );
+
+
+    template.content
+        .querySelectorAll(
+            "script, iframe, object, embed"
+        )
+        .forEach(
+            element => {
+
+                element.remove();
+
+            }
+        );
+
+
+    template.content
+        .querySelectorAll(
+            "*"
+        )
+        .forEach(
+            element => {
+
+                Array.from(
+                    element.attributes
+                )
+                .forEach(
+                    attribute => {
+
+                        const name =
+                            attribute.name
+                                .toLowerCase();
+
+
+                        const value =
+                            attribute.value
+                                .trim()
+                                .toLowerCase();
+
+
+                        if (
+                            name.startsWith(
+                                "on"
+                            ) ||
+                            (
+                                (
+                                    name ===
+                                    "href" ||
+                                    name ===
+                                    "src"
+                                ) &&
+                                value.startsWith(
+                                    "javascript:"
+                                )
+                            )
+                        ) {
+
+                            element.removeAttribute(
+                                attribute.name
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+    return template.innerHTML;
+
+}
+
+
+function normalizeImportedCharacter(
+    payload
+) {
+
+    if (
+        !payload ||
+        payload.format !==
+            RPG_CHARACTER_EXPORT_FORMAT ||
+        Number(
+            payload.version
+        ) !==
+            RPG_CHARACTER_EXPORT_VERSION ||
+        !payload.character ||
+        typeof payload.character !==
+            "object"
+    ) {
+
+        throw new Error(
+            "This is not a valid RPG Unleashed character export."
+        );
+
+    }
+
+
+    const source =
+        payload.character;
+
+
+    if (
+        !source.state ||
+        typeof source.state !==
+            "object" ||
+        !source.state.tabs ||
+        typeof source.state.tabs !==
+            "object"
+    ) {
+
+        throw new Error(
+            "This character file does not contain a valid character sheet."
+        );
+
+    }
+
+
+    const tabs = {};
+
+
+    [
+        "tab1",
+        "tab2",
+        "tab3",
+        "tab4",
+        "tab5"
+    ].forEach(
+        tabId => {
+
+            if (
+                typeof source.state.tabs[
+                    tabId
+                ] !==
+                "string"
+            ) {
+
+                throw new Error(
+                    "This character file is missing part of the character sheet."
+                );
+
+            }
+
+
+            tabs[tabId] =
+                sanitizeImportedTabHtml(
+                    source.state.tabs[
+                        tabId
+                    ]
+                );
+
+        }
+    );
+
+
+    const now =
+        Date.now();
+
+
+    const portrait =
+        typeof source.portrait ===
+            "string" &&
+        source.portrait.startsWith(
+            "data:image/"
+        )
+            ? source.portrait
+            : "";
+
+
+    return {
+        id:
+            typeof source.id ===
+                "string" &&
+            source.id.trim()
+                ? source.id
+                : makeCharacterId(),
+        name:
+            typeof source.name ===
+                "string"
+                ? source.name
+                : "",
+        race:
+            typeof source.race ===
+                "string"
+                ? source.race
+                : "",
+        level:
+            (
+                typeof source.level ===
+                    "string" ||
+                typeof source.level ===
+                    "number"
+            )
+                ? source.level
+                : "",
+        campaign:
+            typeof source.campaign ===
+                "string"
+                ? source.campaign
+                : "",
+        portrait,
+        createdAt:
+            Number.isFinite(
+                Number(
+                    source.createdAt
+                )
+            )
+                ? Number(
+                    source.createdAt
+                )
+                : now,
+        revision:
+            Math.max(
+                1,
+                Number(
+                    source.revision ||
+                    1
+                )
+            ),
+        updatedAt:
+            now,
+        state: {
+            magicEnabled:
+                source.state.magicEnabled ===
+                true,
+            tabs
+        }
+    };
+
+}
+
+
+async function importCharacterFile(
+    file
+) {
+
+    if (
+        !file
+    ) {
+
+        return;
+
+    }
+
+
+    let payload;
+
+
+    try {
+
+        payload =
+            JSON.parse(
+                await file.text()
+            );
+
+    }
+
+    catch (
+        error
+    ) {
+
+        throw new Error(
+            "The selected file could not be read as an RPG Unleashed character."
+        );
+
+    }
+
+
+    let character =
+        normalizeImportedCharacter(
+            payload
+        );
+
+
+    const existing =
+        await getCharacterById(
+            character.id
+        );
+
+
+    let replacedExisting =
+        false;
+
+
+    if (
+        existing
+    ) {
+
+        const choice =
+            window.prompt(
+                (
+                    (character.name ||
+                    "This character") +
+                    " already exists in your Character Library.\n\n" +
+                    "Type COPY to import another copy.\n" +
+                    "Type REPLACE to replace the existing save.\n" +
+                    "Type CANCEL to stop."
+                ),
+                "COPY"
+            );
+
+
+        if (
+            choice ===
+            null
+        ) {
+
+            return null;
+
+        }
+
+
+        const normalizedChoice =
+            choice
+                .trim()
+                .toUpperCase();
+
+
+        if (
+            normalizedChoice ===
+            "CANCEL"
+        ) {
+
+            return null;
+
+        }
+
+
+        if (
+            normalizedChoice ===
+            "REPLACE"
+        ) {
+
+            character = {
+                ...character,
+                id:
+                    existing.id,
+                createdAt:
+                    existing.createdAt ||
+                    character.createdAt,
+                revision:
+                    Math.max(
+                        Number(
+                            existing.revision ||
+                            0
+                        ),
+                        Number(
+                            character.revision ||
+                            0
+                        )
+                    ) +
+                    1,
+                updatedAt:
+                    Date.now()
+            };
+
+
+            replacedExisting =
+                true;
+
+        }
+
+        else if (
+            normalizedChoice ===
+            "COPY"
+        ) {
+
+            character = {
+                ...character,
+                id:
+                    makeCharacterId(),
+                name:
+                    (
+                        character.name ||
+                        "Unnamed Character"
+                    ) +
+                    " (Copy)",
+                createdAt:
+                    Date.now(),
+                revision:
+                    1,
+                updatedAt:
+                    Date.now()
+            };
+
+        }
+
+        else {
+
+            throw new Error(
+                "Import cancelled because the response was not COPY, REPLACE, or CANCEL."
+            );
+
+        }
+
+    }
+
+
+    await putCharacter(
+        character
+    );
+
+
+    if (
+        replacedExisting &&
+        window.RPGOwlbear?.ready
+    ) {
+
+        try {
+
+            await window.RPGOwlbear
+                .syncSharedCharacter(
+                    character
+                );
+
+        }
+
+        catch (
+            error
+        ) {
+
+            console.error(
+                "Imported character saved, but its Owlbear share could not be refreshed:",
+                error
+            );
+
+        }
+
+    }
+
+
+    return character;
 
 }
 
@@ -6958,6 +7587,56 @@ async function renderCharacterLibrary() {
                 );
 
 
+                const exportButton =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                exportButton.className =
+                    "library-export-button";
+
+
+                exportButton.type =
+                    "button";
+
+
+                exportButton.textContent =
+                    "Export";
+
+
+                exportButton.addEventListener(
+                    "click",
+                    () => {
+
+                        try {
+
+                            exportCharacterRecord(
+                                character
+                            );
+
+                        }
+
+                        catch (
+                            error
+                        ) {
+
+                            console.error(
+                                "Could not export character:",
+                                error
+                            );
+
+
+                            window.alert(
+                                "Could not export this character."
+                            );
+
+                        }
+
+                    }
+                );
+
+
                 const deleteButton =
                     document.createElement(
                         "button"
@@ -6993,6 +7672,17 @@ async function renderCharacterLibrary() {
 
                         }
 
+
+                        if (
+                            window.RPGOwlbear?.ready &&
+                            window.RPGOwlbear.hasCharacterTokenLink(character)
+                        ) {
+                            try {
+                                await window.RPGOwlbear.unlinkCharacterToken(character);
+                            } catch (error) {
+                                console.error("Could not remove the character's Owlbear token display:", error);
+                            }
+                        }
 
                         await deleteCharacter(
                             character.id
@@ -7043,6 +7733,7 @@ async function renderCharacterLibrary() {
                         actions.append(
                             openButton,
                             shareButton,
+                            exportButton,
                             deleteButton
                         );
 
@@ -7235,9 +7926,35 @@ async function renderCharacterLibrary() {
                     );
 
 
+                    const tokenButton = document.createElement("button");
+                    tokenButton.className = "library-token-button";
+                    tokenButton.type = "button";
+
+                    const tokenLinked = window.RPGOwlbear.hasCharacterTokenLink(character);
+                    tokenButton.textContent = tokenLinked ? "Unlink Token" : "Link Token";
+
+                    tokenButton.addEventListener("click", async () => {
+                        tokenButton.disabled = true;
+                        try {
+                            if (tokenLinked) {
+                                await window.RPGOwlbear.unlinkCharacterToken(character);
+                            } else {
+                                await window.RPGOwlbear.linkCharacterToSelectedToken(character);
+                            }
+                            await renderCharacterLibrary();
+                        } catch (error) {
+                            console.error("Could not update the Owlbear token link:", error);
+                            window.alert(error?.message || "Could not update the Owlbear token link.");
+                        } finally {
+                            tokenButton.disabled = false;
+                        }
+                    });
+
                     actions.append(
                         openButton,
                         shareButton,
+                        tokenButton,
+                        exportButton,
                         deleteButton
                     );
 
@@ -7247,6 +7964,7 @@ async function renderCharacterLibrary() {
 
                     actions.append(
                         openButton,
+                        exportButton,
                         deleteButton
                     );
 
@@ -11105,6 +11823,12 @@ const saveOptionsButton =
     );
 
 
+const exportCharacterButton =
+    document.getElementById(
+        "export-character"
+    );
+
+
 const saveStatus =
     document.getElementById(
         "save-status"
@@ -11758,6 +12482,54 @@ saveOptionsButton.addEventListener(
 );
 
 
+exportCharacterButton.addEventListener(
+    "click",
+    () => {
+
+        if (
+            !currentCharacterRecord
+        ) {
+
+            saveStatus.textContent =
+                "Save this character before exporting it.";
+
+
+            return;
+
+        }
+
+
+        try {
+
+            exportCharacterRecord(
+                currentCharacterRecord
+            );
+
+
+            saveStatus.textContent =
+                "Character export created.";
+
+        }
+
+        catch (
+            error
+        ) {
+
+            console.error(
+                "Could not export character:",
+                error
+            );
+
+
+            saveStatus.textContent =
+                "Could not export this character.";
+
+        }
+
+    }
+);
+
+
 magicToggleButton.addEventListener(
     "click",
     () => {
@@ -11857,8 +12629,75 @@ if (
         .style.display =
             "none";
 
+
+    exportCharacterButton
+        .closest(
+            ".option-row"
+        )
+        .style.display =
+            "none";
+
 }
 
+
+/* =========================================
+   OWLBEAR TOKEN HUD — LIVE VITALS
+   ========================================= */
+
+function getLiveOwlbearVitals() {
+    const hpInputs = document.querySelectorAll(
+        "#tab1 .current-max-field .current-max-values input"
+    );
+    const drInputs = document.querySelectorAll("#tab1 .dr-bubbles input");
+    const numberFrom = input => {
+        const value = Number(input?.value || 0);
+        return Number.isFinite(value) ? value : 0;
+    };
+
+    return {
+        hpCurrent: numberFrom(hpInputs[0]),
+        hpMax: numberFrom(hpInputs[1]),
+        nl: numberFrom(document.querySelector("#tab1 .nl-field input")),
+        drArmor: numberFrom(drInputs[0]),
+        drNatural: numberFrom(drInputs[1]),
+        drMagic: numberFrom(drInputs[2]),
+        mana: numberFrom(document.querySelector(
+            '#tab5 .magic-title-row input[placeholder="Manapool"]'
+        ))
+    };
+}
+
+let owlBearTokenHudTimer = null;
+
+function queueOwlbearTokenHudUpdate() {
+    if (
+        remoteEditSession ||
+        !currentCharacterRecord ||
+        !window.RPGOwlbear?.ready ||
+        !window.RPGOwlbear.hasCharacterTokenLink(currentCharacterRecord)
+    ) return;
+
+    window.clearTimeout(owlBearTokenHudTimer);
+    owlBearTokenHudTimer = window.setTimeout(async () => {
+        try {
+            await window.RPGOwlbear.updateCharacterTokenDisplay(
+                currentCharacterRecord,
+                getLiveOwlbearVitals()
+            );
+        } catch (error) {
+            console.error("Could not update the Owlbear token HUD:", error);
+        }
+    }, 150);
+}
+
+document.querySelectorAll(
+    "#tab1 .current-max-field input, " +
+    "#tab1 .nl-field input, " +
+    "#tab1 .dr-bubbles input, " +
+    '#tab5 .magic-title-row input[placeholder="Manapool"]'
+).forEach(input => {
+    input.addEventListener("input", queueOwlbearTokenHudUpdate);
+});
 
 /* =========================================
    INITIAL CALCULATION
@@ -11866,6 +12705,7 @@ if (
 
 updateStats();
 updateCarryCapacity();
+queueOwlbearTokenHudUpdate();
 
 
 
@@ -11957,6 +12797,129 @@ document
         "click",
         startNewCharacter
     );
+
+
+const importCharacterButton =
+    document.getElementById(
+        "import-character"
+    );
+
+
+const importCharacterFileInput =
+    document.getElementById(
+        "import-character-file"
+    );
+
+
+importCharacterButton.addEventListener(
+    "click",
+    () => {
+
+        importCharacterFileInput.value =
+            "";
+
+
+        importCharacterFileInput.click();
+
+    }
+);
+
+
+importCharacterFileInput.addEventListener(
+    "change",
+    async () => {
+
+        const file =
+            importCharacterFileInput
+                .files?.[0];
+
+
+        if (
+            !file
+        ) {
+
+            return;
+
+        }
+
+
+        importCharacterButton.disabled =
+            true;
+
+
+        importCharacterButton.textContent =
+            "Importing…";
+
+
+        try {
+
+            const imported =
+                await importCharacterFile(
+                    file
+                );
+
+
+            if (
+                !imported
+            ) {
+
+                return;
+
+            }
+
+
+            showAppScreen(
+                "character-library-screen"
+            );
+
+
+            await renderCharacterLibrary();
+
+
+            window.alert(
+                (
+                    imported.name ||
+                    "Character"
+                ) +
+                " was imported into your Character Library."
+            );
+
+        }
+
+        catch (
+            error
+        ) {
+
+            console.error(
+                "Could not import character:",
+                error
+            );
+
+
+            window.alert(
+                error?.message ||
+                "Could not import this character file."
+            );
+
+        }
+
+        finally {
+
+            importCharacterButton.disabled =
+                false;
+
+
+            importCharacterButton.textContent =
+                "Import Character";
+
+
+            importCharacterFileInput.value =
+                "";
+
+        }
+
+    }
+);
 
 
 document
@@ -12127,6 +13090,24 @@ window.addEventListener(
     async () => {
 
         updateOwlbearConnectionUi();
+
+
+        if (
+            currentCharacterRecord &&
+            !remoteEditSession &&
+            document.getElementById("character-app").classList.contains("active")
+        ) {
+            try {
+                await window.RPGOwlbear.updateCharacterTokenDisplay(
+                    currentCharacterRecord,
+                    typeof getLiveOwlbearVitals === "function"
+                        ? getLiveOwlbearVitals()
+                        : null
+                );
+            } catch (error) {
+                console.error("Could not refresh the Owlbear token HUD:", error);
+            }
+        }
 
 
         if (

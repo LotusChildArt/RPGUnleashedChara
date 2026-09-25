@@ -10,6 +10,10 @@ const LIVE_SHEET_CHANNEL =
     "com.rpgunleashed.character-sheet/liveSheetV1";
 
 
+const TOKEN_HUD_METADATA_KEY =
+    "com.rpgunleashed.character-sheet/tokenHud";
+
+
 const TRANSFER_CHUNK_BYTES =
     7000;
 
@@ -93,6 +97,89 @@ function partyCharacterKey(
 
 }
 
+
+function numericFieldValue(field) {
+    if (!field) return 0;
+    const raw = field.value || field.getAttribute("value") || "0";
+    const value = Number(raw);
+    return Number.isFinite(value) ? value : 0;
+}
+
+function getVitalsFromCharacterRecord(character) {
+    const vitals = {
+        hpCurrent: 0,
+        hpMax: 0,
+        nl: 0,
+        drArmor: 0,
+        drNatural: 0,
+        drMagic: 0,
+        mana: 0
+    };
+
+    const tab1Html = character?.state?.tabs?.tab1;
+    if (typeof tab1Html === "string") {
+        const template = document.createElement("template");
+        template.innerHTML = tab1Html;
+        const hpInputs = template.content.querySelectorAll(
+            ".current-max-field .current-max-values input"
+        );
+        vitals.hpCurrent = numericFieldValue(hpInputs[0]);
+        vitals.hpMax = numericFieldValue(hpInputs[1]);
+        vitals.nl = numericFieldValue(
+            template.content.querySelector(".nl-field input")
+        );
+        const drInputs = template.content.querySelectorAll(".dr-bubbles input");
+        vitals.drArmor = numericFieldValue(drInputs[0]);
+        vitals.drNatural = numericFieldValue(drInputs[1]);
+        vitals.drMagic = numericFieldValue(drInputs[2]);
+    }
+
+    const tab5Html = character?.state?.tabs?.tab5;
+    if (typeof tab5Html === "string") {
+        const template = document.createElement("template");
+        template.innerHTML = tab5Html;
+        vitals.mana = numericFieldValue(
+            template.content.querySelector(
+                '.magic-title-row input[placeholder="Manapool"]'
+            )
+        );
+    }
+
+    return vitals;
+}
+
+function normalizeVitals(vitals) {
+    const num = key => {
+        const value = Number(vitals?.[key] ?? 0);
+        return Number.isFinite(value) ? value : 0;
+    };
+    return {
+        hpCurrent: num("hpCurrent"),
+        hpMax: num("hpMax"),
+        nl: num("nl"),
+        drArmor: num("drArmor"),
+        drNatural: num("drNatural"),
+        drMagic: num("drMagic"),
+        mana: num("mana")
+    };
+}
+
+function makeTokenHudText(vitals) {
+    const values = normalizeVitals(vitals);
+    const lines = [
+        `HP ${values.hpCurrent} / ${values.hpMax}    NL ${values.nl}`,
+        `DR  A ${values.drArmor}   N ${values.drNatural}   M ${values.drMagic}`
+    ];
+    if (values.mana > 0) lines.push(`Mana ${values.mana}`);
+    return lines.join("\\n");
+}
+
+function getRoomTokenLink(character, roomId) {
+    const links = character?.owlbearTokenLinks;
+    if (!links || typeof links !== "object") return null;
+    const link = links[roomId];
+    return link && typeof link === "object" ? link : null;
+}
 
 function makeTransferId() {
 
@@ -382,6 +469,11 @@ function preserveOwnerPicture(
         "";
 
 
+    next.owlbearTokenLinks =
+        currentRecord.owlbearTokenLinks ||
+        {};
+
+
     const incomingTab =
         next.state?.tabs?.tab4;
 
@@ -634,6 +726,161 @@ async function initializeOwlbear() {
                         OBR.room.id;
 
 
+                    const buildLabel = sdkModule.buildLabel;
+
+                    function hasCharacterTokenLink(character) {
+                        return Boolean(getRoomTokenLink(character, roomId));
+                    }
+
+                    async function findCharacterHudLabels(characterId) {
+                        if (!(await OBR.scene.isReady())) return [];
+                        return OBR.scene.items.getItems(item => {
+                            const meta = item.metadata?.[TOKEN_HUD_METADATA_KEY];
+                            return meta?.characterId === characterId &&
+                                meta?.ownerId === OBR.player.id &&
+                                meta?.roomId === roomId;
+                        });
+                    }
+
+                    async function createCharacterHudLabel(character, token, vitalsOverride = null) {
+                        const bounds = await OBR.scene.items.getItemBounds([token.id]);
+                        const vitals = vitalsOverride
+                            ? normalizeVitals(vitalsOverride)
+                            : getVitalsFromCharacterRecord(character);
+
+                        const label = buildLabel()
+                            .plainText(makeTokenHudText(vitals))
+                            .fontSize(16)
+                            .fontWeight(700)
+                            .textAlign("CENTER")
+                            .fillColor("#111111")
+                            .backgroundColor("#ffffff")
+                            .backgroundOpacity(0.9)
+                            .padding(7)
+                            .cornerRadius(10)
+                            .pointerDirection("DOWN")
+                            .pointerWidth(10)
+                            .pointerHeight(7)
+                            .position({ x: bounds.center.x, y: bounds.min.y - 24 })
+                            .layer("ATTACHMENT")
+                            .attachedTo(token.id)
+                            .locked(true)
+                            .disableHit(true)
+                            .metadata({
+                                [TOKEN_HUD_METADATA_KEY]: {
+                                    characterId: character.id,
+                                    ownerId: OBR.player.id,
+                                    roomId,
+                                    tokenId: token.id
+                                }
+                            })
+                            .build();
+
+                        await OBR.scene.items.addItems([label]);
+                        return label;
+                    }
+
+                    async function updateCharacterTokenDisplay(character, vitalsOverride = null) {
+                        if (!character || !(await OBR.scene.isReady())) return false;
+
+                        const storedCharacter = await window.RPGCharacterStore?.getCharacterById(character.id);
+                        const sourceCharacter = storedCharacter || character;
+                        const link = getRoomTokenLink(sourceCharacter, roomId);
+                        if (!link?.tokenId) return false;
+
+                        const tokenItems = await OBR.scene.items.getItems([link.tokenId]);
+                        const token = tokenItems[0];
+                        if (!token || token.layer !== "CHARACTER") return false;
+
+                        const vitals = vitalsOverride
+                            ? normalizeVitals(vitalsOverride)
+                            : getVitalsFromCharacterRecord(character);
+                        const text = makeTokenHudText(vitals);
+
+                        let labels = [];
+                        if (link.labelId) labels = await OBR.scene.items.getItems([link.labelId]);
+                        if (!labels.length) labels = await findCharacterHudLabels(character.id);
+
+                        if (labels.length) {
+                            await OBR.scene.items.updateItems(labels, items => {
+                                for (const item of items) {
+                                    if (item.text) item.text.plainText = text;
+                                }
+                            });
+                            return true;
+                        }
+
+                        const label = await createCharacterHudLabel(character, token, vitals);
+                        const latest = await window.RPGCharacterStore?.getCharacterById(character.id);
+                        if (latest) {
+                            await window.RPGCharacterStore.putCharacter({
+                                ...latest,
+                                owlbearTokenLinks: {
+                                    ...(latest.owlbearTokenLinks || {}),
+                                    [roomId]: {
+                                        tokenId: token.id,
+                                        labelId: label.id,
+                                        linkedAt: Date.now()
+                                    }
+                                }
+                            });
+                        }
+                        return true;
+                    }
+
+                    async function unlinkCharacterToken(character) {
+                        if (!character) return character;
+                        const latest = await window.RPGCharacterStore?.getCharacterById(character.id) || character;
+                        const link = getRoomTokenLink(latest, roomId);
+
+                        if (await OBR.scene.isReady()) {
+                            const labels = await findCharacterHudLabels(latest.id);
+                            const ids = new Set(labels.map(label => label.id));
+                            if (link?.labelId) ids.add(link.labelId);
+                            if (ids.size) await OBR.scene.items.deleteItems(Array.from(ids));
+                        }
+
+                        const links = { ...(latest.owlbearTokenLinks || {}) };
+                        delete links[roomId];
+                        const updated = { ...latest, owlbearTokenLinks: links };
+                        await window.RPGCharacterStore?.putCharacter(updated);
+                        return updated;
+                    }
+
+                    async function linkCharacterToSelectedToken(character) {
+                        if (!(await OBR.scene.isReady())) {
+                            throw new Error("Open an Owlbear scene before linking a token.");
+                        }
+
+                        const selection = await OBR.player.getSelection();
+                        if (!selection || selection.length !== 1) {
+                            throw new Error("Select exactly one Character token in Owlbear, then press Link Token.");
+                        }
+
+                        const selectedItems = await OBR.scene.items.getItems(selection);
+                        const token = selectedItems[0];
+                        if (!token || token.layer !== "CHARACTER") {
+                            throw new Error("The selected Owlbear item must be on the Character layer.");
+                        }
+
+                        const latest = await window.RPGCharacterStore?.getCharacterById(character.id) || character;
+                        await unlinkCharacterToken(latest);
+                        const label = await createCharacterHudLabel(latest, token);
+                        const updated = {
+                            ...latest,
+                            owlbearTokenLinks: {
+                                ...(latest.owlbearTokenLinks || {}),
+                                [roomId]: {
+                                    tokenId: token.id,
+                                    labelId: label.id,
+                                    linkedAt: Date.now()
+                                }
+                            }
+                        };
+                        await window.RPGCharacterStore?.putCharacter(updated);
+                        return updated;
+                    }
+
                     async function getRemovedPartyCharacters() {
 
                         const metadata =
@@ -706,6 +953,11 @@ async function initializeOwlbear() {
                     async function syncSharedCharacter(
                         character
                     ) {
+
+                        await updateCharacterTokenDisplay(
+                            character
+                        );
+
 
                         const metadata =
                             await OBR.player.getMetadata();
@@ -1606,6 +1858,11 @@ async function initializeOwlbear() {
                                             );
 
 
+                                        await updateCharacterTokenDisplay(
+                                            nextRecord
+                                        );
+
+
                                         await refreshSharedSummaryFromBackground(
                                             nextRecord
                                         );
@@ -2194,7 +2451,11 @@ async function initializeOwlbear() {
                         removePartyCharacter,
                         canEditPartyCharacter,
                         requestCharacterSheet,
-                        updateRemoteCharacter
+                        updateRemoteCharacter,
+                        hasCharacterTokenLink,
+                        linkCharacterToSelectedToken,
+                        unlinkCharacterToken,
+                        updateCharacterTokenDisplay
                     };
 
 
