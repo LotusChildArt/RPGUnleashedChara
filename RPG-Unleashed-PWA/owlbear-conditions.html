@@ -2,18 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-<title>RPG Unleashed Conditions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPG Unleashed Token Controls</title>
 <style>
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 body {
     margin: 0;
-    padding: 12px;
+    padding: 10px;
     font-family: Arial, sans-serif;
     background: white;
     color: #111;
@@ -21,141 +16,227 @@ body {
 .panel {
     border: 2px solid black;
     border-radius: 18px;
-    padding: 12px;
+    padding: 10px;
     background: white;
 }
-.header {
-    margin-bottom: 10px;
-}
-.header h1 {
-    margin: 0 0 4px 0;
-    font-size: 18px;
-}
-.subtext {
-    color: #666;
-    font-size: 12px;
-}
+.header { margin-bottom: 8px; }
+.header h1 { margin: 0 0 3px 0; font-size: 18px; }
+.subtext { color: #666; font-size: 12px; }
 .status {
-    min-height: 18px;
-    font-size: 12px;
+    min-height: 17px;
+    margin: 6px 0 8px 0;
     color: #444;
-    margin: 8px 0 10px 0;
+    font-size: 12px;
 }
-.add-row {
-    display: grid;
-    grid-template-columns: minmax(0,1fr) auto;
-    gap: 8px;
-    margin-bottom: 10px;
-}
-select,
-button {
+.status.error { color: #8d0000; }
+
+.control-section {
+    margin-top: 8px;
     border: 2px solid black;
-    border-radius: 14px;
+    border-radius: 16px;
     background: white;
-    min-height: 36px;
-    padding: 6px 10px;
+    overflow: hidden;
 }
-button {
+.control-section summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    list-style: none;
+    cursor: pointer;
+    padding: 9px 11px;
+    font-weight: bold;
+    user-select: none;
+}
+.control-section summary::-webkit-details-marker { display: none; }
+.control-section summary::after { content: "▸"; font-size: 15px; }
+.control-section[open] summary::after { content: "▾"; }
+.section-body {
+    border-top: 1px solid #bbb;
+    padding: 9px;
+}
+
+.resource-row, .dr-row {
+    display: grid;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 7px;
+}
+.resource-row {
+    grid-template-columns: 56px 32px minmax(52px, 1fr) 32px auto minmax(52px, 1fr);
+}
+.resource-row.single {
+    grid-template-columns: 56px 32px minmax(52px, 1fr) 32px;
+}
+.resource-label, .dr-label { font-weight: bold; }
+.divider { text-align: center; color: #666; }
+
+.number-input, select, button {
+    border: 2px solid black;
+    border-radius: 12px;
+    background: white;
+}
+.number-input {
+    width: 100%;
+    min-width: 0;
+    min-height: 34px;
+    padding: 5px 6px;
+    text-align: center;
+}
+.adjust-button, .icon-button {
+    min-height: 34px;
+    min-width: 32px;
+    padding: 0;
     cursor: pointer;
     font-weight: bold;
 }
-.condition-list {
-    display: grid;
+
+.dr-title { margin: 10px 0 6px 0; font-weight: bold; }
+.dr-row { grid-template-columns: 70px 32px minmax(52px, 1fr) 32px; }
+.dr-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 8px;
+    margin-top: 4px;
+    padding: 6px 8px;
+    border: 1px solid #aaa;
+    border-radius: 12px;
+    background: #fafafa;
+    font-weight: bold;
 }
+
+.add-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 7px;
+    margin-bottom: 9px;
+}
+select { min-height: 36px; padding: 6px 8px; }
+.add-row button {
+    min-height: 36px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.condition-list { display: grid; gap: 7px; }
 .condition-row {
     border: 1.5px solid #888;
-    border-radius: 16px;
-    padding: 8px;
+    border-radius: 14px;
+    padding: 7px;
     background: #fafafa;
 }
 .condition-top {
     display: grid;
-    grid-template-columns: minmax(0,1fr) auto auto auto auto;
+    grid-template-columns: minmax(0, 1fr) 32px 28px 32px 32px;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
 }
-.condition-name {
-    font-weight: bold;
-}
-.stack-value {
-    min-width: 24px;
-    text-align: center;
-    font-weight: bold;
-}
-.icon-button {
-    width: 34px;
-    min-width: 34px;
-    padding: 0;
-}
+.condition-name { font-weight: bold; }
+.stack-value { text-align: center; font-weight: bold; }
 .condition-help {
     display: none;
-    margin-top: 8px;
-    padding: 8px 10px;
-    border-radius: 12px;
-    background: white;
+    margin-top: 7px;
+    padding: 7px 8px;
     border: 1px solid #d0d0d0;
+    border-radius: 11px;
+    background: white;
     font-size: 12px;
     line-height: 1.35;
 }
-.condition-help.active {
-    display: block;
-}
-.empty {
+.condition-help.active { display: block; }
+.empty, .loading, .error-message {
     color: #777;
     font-size: 13px;
-    padding: 8px 2px;
+    padding: 6px 2px;
 }
-.loading {
-    color: #444;
-    font-size: 13px;
-}
-.error {
-    color: #8d0000;
-    font-size: 13px;
-}
+.error-message { color: #8d0000; }
 </style>
 </head>
 <body>
+
 <div class="panel">
     <div class="header">
-        <h1>Token Conditions</h1>
-        <div
-            class="subtext"
-            id="character-context"
-        >
-            Loading linked character…
+        <h1>RPG Unleashed</h1>
+        <div class="subtext" id="character-context">Loading linked character…</div>
+    </div>
+
+    <div class="status" id="status-message"></div>
+
+    <details class="control-section" id="stats-section" open>
+        <summary>Stats</summary>
+        <div class="section-body">
+
+            <div class="resource-row">
+                <span class="resource-label">HP</span>
+                <button class="adjust-button" type="button" data-stat="hpCurrent" data-delta="-1">−</button>
+                <input class="number-input stat-input" id="hp-current" type="number" data-stat="hpCurrent" aria-label="Current HP">
+                <button class="adjust-button" type="button" data-stat="hpCurrent" data-delta="1">+</button>
+                <span class="divider">/</span>
+                <input class="number-input stat-input" id="hp-max" type="number" data-stat="hpMax" aria-label="Maximum HP">
+            </div>
+
+            <div class="resource-row">
+                <span class="resource-label">Mana</span>
+                <button class="adjust-button" type="button" data-stat="manaCurrent" data-delta="-1">−</button>
+                <input class="number-input stat-input" id="mana-current" type="number" data-stat="manaCurrent" aria-label="Current Mana">
+                <button class="adjust-button" type="button" data-stat="manaCurrent" data-delta="1">+</button>
+                <span class="divider">/</span>
+                <input class="number-input stat-input" id="mana-max" type="number" data-stat="manaMax" aria-label="Maximum Mana">
+            </div>
+
+            <div class="resource-row single">
+                <span class="resource-label">NL</span>
+                <button class="adjust-button" type="button" data-stat="nl" data-delta="-1">−</button>
+                <input class="number-input stat-input" id="nl" type="number" data-stat="nl" aria-label="Nonlethal damage">
+                <button class="adjust-button" type="button" data-stat="nl" data-delta="1">+</button>
+            </div>
+
+            <div class="dr-title">DR</div>
+
+            <div class="dr-row">
+                <span class="dr-label">Armor</span>
+                <button class="adjust-button" type="button" data-stat="drArmor" data-delta="-1">−</button>
+                <input class="number-input stat-input" id="dr-armor" type="number" data-stat="drArmor" aria-label="Armor DR">
+                <button class="adjust-button" type="button" data-stat="drArmor" data-delta="1">+</button>
+            </div>
+
+            <div class="dr-row">
+                <span class="dr-label">Natural</span>
+                <button class="adjust-button" type="button" data-stat="drNatural" data-delta="-1">−</button>
+                <input class="number-input stat-input" id="dr-natural" type="number" data-stat="drNatural" aria-label="Natural DR">
+                <button class="adjust-button" type="button" data-stat="drNatural" data-delta="1">+</button>
+            </div>
+
+            <div class="dr-row">
+                <span class="dr-label">Magic</span>
+                <button class="adjust-button" type="button" data-stat="drMagic" data-delta="-1">−</button>
+                <input class="number-input stat-input" id="dr-magic" type="number" data-stat="drMagic" aria-label="Magic DR">
+                <button class="adjust-button" type="button" data-stat="drMagic" data-delta="1">+</button>
+            </div>
+
+            <div class="dr-total">
+                <span>Total DR</span>
+                <span id="dr-total">0</span>
+            </div>
         </div>
-    </div>
+    </details>
 
-    <div
-        class="status"
-        id="status-message"
-    ></div>
+    <details class="control-section" id="conditions-section" open>
+        <summary>Conditions</summary>
+        <div class="section-body">
+            <div class="add-row">
+                <select id="condition-picker">
+                    <option value="">Select condition…</option>
+                </select>
+                <button id="add-condition-button" type="button">+ Condition</button>
+            </div>
 
-    <div class="add-row">
-        <select id="condition-picker">
-            <option value="">
-                Select condition…
-            </option>
-        </select>
-
-        <button
-            id="add-condition-button"
-            type="button"
-        >
-            + Condition
-        </button>
-    </div>
-
-    <div
-        class="condition-list"
-        id="condition-list"
-    >
-        <div class="loading">
-            Waiting for Owlbear…
+            <div class="condition-list" id="condition-list">
+                <div class="loading">Waiting for Owlbear…</div>
+            </div>
         </div>
-    </div>
+    </details>
 </div>
 
 <script>
@@ -165,110 +246,56 @@ const RPG_CHARACTER_STORE = "characters";
 
 function openCharacterDatabase() {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open(
-            RPG_DB_NAME,
-            RPG_DB_VERSION
-        );
+        const request = indexedDB.open(RPG_DB_NAME, RPG_DB_VERSION);
 
-        request.addEventListener(
-            "upgradeneeded",
-            event => {
-                const db = event.target.result;
-                if (!db.objectStoreNames.contains(RPG_CHARACTER_STORE)) {
-                    db.createObjectStore(
-                        RPG_CHARACTER_STORE,
-                        { keyPath: "id" }
-                    );
-                }
+        request.addEventListener("upgradeneeded", event => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains(RPG_CHARACTER_STORE)) {
+                db.createObjectStore(RPG_CHARACTER_STORE, { keyPath: "id" });
             }
-        );
+        });
 
-        request.addEventListener(
-            "success",
-            () => resolve(request.result)
-        );
-
-        request.addEventListener(
-            "error",
-            () => reject(request.error)
-        );
+        request.addEventListener("success", () => resolve(request.result));
+        request.addEventListener("error", () => reject(request.error));
     });
 }
 
 async function getAllCharacters() {
     const db = await openCharacterDatabase();
     return new Promise((resolve, reject) => {
-        const transaction = db.transaction(
-            RPG_CHARACTER_STORE,
-            "readonly"
-        );
-        const request = transaction
-            .objectStore(RPG_CHARACTER_STORE)
-            .getAll();
+        const transaction = db.transaction(RPG_CHARACTER_STORE, "readonly");
+        const request = transaction.objectStore(RPG_CHARACTER_STORE).getAll();
 
-        request.addEventListener(
-            "success",
-            () => resolve(request.result || [])
-        );
-        request.addEventListener(
-            "error",
-            () => reject(request.error)
-        );
-        transaction.addEventListener(
-            "complete",
-            () => db.close()
-        );
+        request.addEventListener("success", () => resolve(request.result || []));
+        request.addEventListener("error", () => reject(request.error));
+        transaction.addEventListener("complete", () => db.close());
     });
 }
 
 async function getCharacterById(characterId) {
     const db = await openCharacterDatabase();
     return new Promise((resolve, reject) => {
-        const transaction = db.transaction(
-            RPG_CHARACTER_STORE,
-            "readonly"
-        );
-        const request = transaction
-            .objectStore(RPG_CHARACTER_STORE)
-            .get(characterId);
+        const transaction = db.transaction(RPG_CHARACTER_STORE, "readonly");
+        const request = transaction.objectStore(RPG_CHARACTER_STORE).get(characterId);
 
-        request.addEventListener(
-            "success",
-            () => resolve(request.result || null)
-        );
-        request.addEventListener(
-            "error",
-            () => reject(request.error)
-        );
-        transaction.addEventListener(
-            "complete",
-            () => db.close()
-        );
+        request.addEventListener("success", () => resolve(request.result || null));
+        request.addEventListener("error", () => reject(request.error));
+        transaction.addEventListener("complete", () => db.close());
     });
 }
 
 async function putCharacter(character) {
     const db = await openCharacterDatabase();
     return new Promise((resolve, reject) => {
-        const transaction = db.transaction(
-            RPG_CHARACTER_STORE,
-            "readwrite"
-        );
-        transaction
-            .objectStore(RPG_CHARACTER_STORE)
-            .put(character);
+        const transaction = db.transaction(RPG_CHARACTER_STORE, "readwrite");
+        transaction.objectStore(RPG_CHARACTER_STORE).put(character);
 
-        transaction.addEventListener(
-            "complete",
-            () => {
-                db.close();
-                resolve(character);
-            }
-        );
-        transaction.addEventListener(
-            "error",
-            () => reject(transaction.error)
-        );
+        transaction.addEventListener("complete", () => {
+            db.close();
+            resolve(character);
+        });
+
+        transaction.addEventListener("error", () => reject(transaction.error));
     });
 }
 
@@ -297,11 +324,25 @@ const DEFAULT_CONDITION_DEFINITIONS = [
 ];
 
 let tokenId = new URLSearchParams(window.location.search).get("tokenId") || "";
+
 const statusMessage = document.getElementById("status-message");
 const characterContextLabel = document.getElementById("character-context");
 const conditionPicker = document.getElementById("condition-picker");
 const addConditionButton = document.getElementById("add-condition-button");
 const conditionList = document.getElementById("condition-list");
+
+const statInputs = {
+    hpCurrent: document.getElementById("hp-current"),
+    hpMax: document.getElementById("hp-max"),
+    manaCurrent: document.getElementById("mana-current"),
+    manaMax: document.getElementById("mana-max"),
+    nl: document.getElementById("nl"),
+    drArmor: document.getElementById("dr-armor"),
+    drNatural: document.getElementById("dr-natural"),
+    drMagic: document.getElementById("dr-magic")
+};
+
+const drTotal = document.getElementById("dr-total");
 
 let conditionDefinitions = DEFAULT_CONDITION_DEFINITIONS;
 let loadedContext = null;
@@ -313,10 +354,133 @@ function setStatus(message, kind = "") {
     statusMessage.textContent = message || "";
 }
 
+function numberFromInput(input) {
+    const raw = input?.value ?? input?.getAttribute("value") ?? 0;
+    const value = Number(raw);
+    return Number.isFinite(value) ? value : 0;
+}
+
+function setSavedInputValue(input, value) {
+    if (!input) return;
+    const normalized = Number.isFinite(Number(value)) ? Number(value) : 0;
+    input.value = String(normalized);
+    input.setAttribute("value", String(normalized));
+}
+
 function getConditionDefinition(conditionId) {
-    return conditionDefinitions.find(
-        definition => definition.id === conditionId
-    ) || null;
+    return conditionDefinitions.find(definition => definition.id === conditionId) || null;
+}
+
+function parseVitalsFromRecord(record) {
+    const vitals = {
+        hpCurrent: 0,
+        hpMax: 0,
+        manaCurrent: 0,
+        manaMax: 0,
+        nl: 0,
+        drArmor: 0,
+        drNatural: 0,
+        drMagic: 0
+    };
+
+    const tab1Html = record?.state?.tabs?.tab1;
+    if (typeof tab1Html === "string") {
+        const template = document.createElement("template");
+        template.innerHTML = tab1Html;
+
+        const hpInputs = template.content.querySelectorAll(
+            ".current-max-field .current-max-values input"
+        );
+        vitals.hpCurrent = numberFromInput(hpInputs[0]);
+        vitals.hpMax = numberFromInput(hpInputs[1]);
+        vitals.nl = numberFromInput(template.content.querySelector(".nl-field input"));
+
+        const drInputs = template.content.querySelectorAll(".dr-bubbles input");
+        vitals.drArmor = numberFromInput(drInputs[0]);
+        vitals.drNatural = numberFromInput(drInputs[1]);
+        vitals.drMagic = numberFromInput(drInputs[2]);
+    }
+
+    const tab5Html = record?.state?.tabs?.tab5;
+    if (typeof tab5Html === "string") {
+        const template = document.createElement("template");
+        template.innerHTML = tab5Html;
+
+        const manaCurrent = template.content.querySelector(".mana-current");
+        const manaMax = template.content.querySelector(".mana-max");
+        const legacyManapool = template.content.querySelector(
+            'input[placeholder="Manapool"]'
+        );
+
+        if (manaCurrent || manaMax) {
+            vitals.manaCurrent = numberFromInput(manaCurrent);
+            vitals.manaMax = numberFromInput(manaMax);
+        } else if (legacyManapool) {
+            const legacyMana = numberFromInput(legacyManapool);
+            vitals.manaCurrent = legacyMana;
+            vitals.manaMax = legacyMana;
+        }
+    }
+
+    return vitals;
+}
+
+function writeVitalsToRecord(record, vitals) {
+    const nextRecord = {
+        ...record,
+        state: {
+            ...record.state,
+            tabs: {
+                ...record.state?.tabs
+            }
+        }
+    };
+
+    const tab1Html = nextRecord.state.tabs.tab1;
+    if (typeof tab1Html === "string") {
+        const template = document.createElement("template");
+        template.innerHTML = tab1Html;
+
+        const hpInputs = template.content.querySelectorAll(
+            ".current-max-field .current-max-values input"
+        );
+        setSavedInputValue(hpInputs[0], vitals.hpCurrent);
+        setSavedInputValue(hpInputs[1], vitals.hpMax);
+        setSavedInputValue(
+            template.content.querySelector(".nl-field input"),
+            vitals.nl
+        );
+
+        const drInputs = template.content.querySelectorAll(".dr-bubbles input");
+        setSavedInputValue(drInputs[0], vitals.drArmor);
+        setSavedInputValue(drInputs[1], vitals.drNatural);
+        setSavedInputValue(drInputs[2], vitals.drMagic);
+
+        nextRecord.state.tabs.tab1 = template.innerHTML;
+    }
+
+    const tab5Html = nextRecord.state.tabs.tab5;
+    if (typeof tab5Html === "string") {
+        const template = document.createElement("template");
+        template.innerHTML = tab5Html;
+
+        const manaCurrent = template.content.querySelector(".mana-current");
+        const manaMax = template.content.querySelector(".mana-max");
+        const legacyManapool = template.content.querySelector(
+            'input[placeholder="Manapool"]'
+        );
+
+        if (manaCurrent || manaMax) {
+            setSavedInputValue(manaCurrent, vitals.manaCurrent);
+            setSavedInputValue(manaMax, vitals.manaMax);
+        } else if (legacyManapool) {
+            setSavedInputValue(legacyManapool, vitals.manaCurrent);
+        }
+
+        nextRecord.state.tabs.tab5 = template.innerHTML;
+    }
+
+    return nextRecord;
 }
 
 function parseConditionsFromRecord(record) {
@@ -335,13 +499,14 @@ function parseConditionsFromRecord(record) {
             input?.getAttribute("value") ||
             1
         );
+
         return {
             id: card.dataset.conditionId || "",
             stacks: Number.isFinite(stacks)
                 ? Math.max(1, Math.floor(stacks))
                 : 1
         };
-    }).filter(condition => getConditionDefinition(condition.id));
+    }).filter(condition => Boolean(getConditionDefinition(condition.id)));
 }
 
 function writeConditionsToRecord(record, conditions) {
@@ -364,12 +529,14 @@ function writeConditionsToRecord(record, conditions) {
     }
 
     conditions.forEach(condition => {
+        const definition = getConditionDefinition(condition.id);
         const card = document.createElement("div");
+
         card.className = "condition-card";
         card.dataset.conditionId = condition.id;
         card.innerHTML = `
             <span class="condition-card-name">
-                ${getConditionDefinition(condition.id)?.name || condition.id}
+                ${definition?.name || condition.id}
             </span>
 
             <label class="condition-stack-field">
@@ -391,6 +558,7 @@ function writeConditionsToRecord(record, conditions) {
                 ×
             </button>
         `;
+
         list.appendChild(card);
     });
 
@@ -406,8 +574,41 @@ function writeConditionsToRecord(record, conditions) {
     };
 }
 
+function readVitalsFromControls() {
+    const vitals = {};
+
+    Object.entries(statInputs).forEach(([key, input]) => {
+        const value = Number(input?.value ?? 0);
+        vitals[key] = Number.isFinite(value) ? value : 0;
+    });
+
+    return vitals;
+}
+
+function updateDrTotal() {
+    const vitals = readVitalsFromControls();
+    drTotal.textContent = String(
+        vitals.drArmor +
+        vitals.drNatural +
+        vitals.drMagic
+    );
+}
+
+function renderVitals() {
+    const vitals = parseVitalsFromRecord(loadedRecord);
+
+    Object.entries(statInputs).forEach(([key, input]) => {
+        if (input) {
+            input.value = String(vitals[key] ?? 0);
+        }
+    });
+
+    updateDrTotal();
+}
+
 function renderConditionPicker() {
     conditionPicker.innerHTML = '<option value="">Select condition…</option>';
+
     conditionDefinitions.forEach(definition => {
         const option = document.createElement("option");
         option.value = definition.id;
@@ -431,36 +632,39 @@ function renderConditions() {
     conditions.forEach(condition => {
         const definition = getConditionDefinition(condition.id);
         const row = document.createElement("div");
-        row.className = "condition-row";
-
         const helpId = "help-" + condition.id;
 
+        row.className = "condition-row";
         row.innerHTML = `
             <div class="condition-top">
                 <span class="condition-name">
                     ${definition?.name || condition.id}
                 </span>
+
                 <button
-                    class="icon-button minus-button"
+                    class="icon-button minus-condition"
                     type="button"
                     data-condition-id="${condition.id}"
                     title="Reduce stacks"
                 >
                     −
                 </button>
+
                 <span class="stack-value">
                     ${condition.stacks}
                 </span>
+
                 <button
-                    class="icon-button plus-button"
+                    class="icon-button plus-condition"
                     type="button"
                     data-condition-id="${condition.id}"
                     title="Add stacks"
                 >
                     +
                 </button>
+
                 <button
-                    class="icon-button info-button"
+                    class="icon-button info-condition"
                     type="button"
                     data-help-id="${helpId}"
                     title="What does this do?"
@@ -469,10 +673,7 @@ function renderConditions() {
                 </button>
             </div>
 
-            <div
-                class="condition-help"
-                id="${helpId}"
-            >
+            <div class="condition-help" id="${helpId}">
                 ${definition?.description || "No rules text has been set for this condition yet."}
             </div>
         `;
@@ -480,35 +681,32 @@ function renderConditions() {
         conditionList.appendChild(row);
     });
 
-    conditionList.querySelectorAll(".minus-button").forEach(button => {
+    conditionList.querySelectorAll(".minus-condition").forEach(button => {
         button.addEventListener("click", async () => {
-            await changeStacks(button.dataset.conditionId, -1);
+            await changeConditionStacks(button.dataset.conditionId, -1);
         });
     });
 
-    conditionList.querySelectorAll(".plus-button").forEach(button => {
+    conditionList.querySelectorAll(".plus-condition").forEach(button => {
         button.addEventListener("click", async () => {
-            await changeStacks(button.dataset.conditionId, 1);
+            await changeConditionStacks(button.dataset.conditionId, 1);
         });
     });
 
-    conditionList.querySelectorAll(".info-button").forEach(button => {
+    conditionList.querySelectorAll(".info-condition").forEach(button => {
         button.addEventListener("click", () => {
-            const help = document.getElementById(button.dataset.helpId);
-            help?.classList.toggle("active");
+            document
+                .getElementById(button.dataset.helpId)
+                ?.classList.toggle("active");
         });
     });
 }
 
-async function persistConditions(nextConditions) {
-    if (!loadedRecord || !loadedContext) return;
+async function persistRecord(nextRecord) {
+    if (!nextRecord || !loadedContext || saving) return false;
 
-    loadedRecord = writeConditionsToRecord(
-        loadedRecord,
-        nextConditions
-    );
-
-    renderConditions();
+    saving = true;
+    loadedRecord = nextRecord;
     setStatus("Saving…");
 
     try {
@@ -523,18 +721,49 @@ async function persistConditions(nextConditions) {
             remoteEditSession: result.remoteEditSession
         };
 
+        renderVitals();
+        renderConditions();
         setStatus("Saved.");
+        return true;
     } catch (error) {
-        console.error("Could not save conditions:", error);
+        console.error("Could not save token controls:", error);
         setStatus(
-            error?.message || "Could not save conditions.",
+            error?.message || "Could not save changes.",
             "error"
         );
+        return false;
+    } finally {
+        saving = false;
     }
 }
 
-async function changeStacks(conditionId, delta) {
-    if (saving) return;
+async function persistVitals() {
+    if (!loadedRecord || saving) return;
+
+    const nextRecord = writeVitalsToRecord(
+        loadedRecord,
+        readVitalsFromControls()
+    );
+
+    await persistRecord(nextRecord);
+}
+
+async function adjustStat(stat, delta) {
+    const input = statInputs[stat];
+    if (!input || saving) return;
+
+    const current = Number(input.value || 0);
+    input.value = String(
+        (Number.isFinite(current) ? current : 0) + delta
+    );
+
+    updateDrTotal();
+    await persistVitals();
+}
+
+async function changeConditionStacks(conditionId, delta) {
+    if (saving || !loadedRecord) return;
+
     const current = parseConditionsFromRecord(loadedRecord);
     const next = [];
     let handled = false;
@@ -547,6 +776,7 @@ async function changeStacks(conditionId, delta) {
 
         handled = true;
         const stacks = Math.max(0, condition.stacks + delta);
+
         if (stacks > 0) {
             next.push({
                 ...condition,
@@ -562,86 +792,67 @@ async function changeStacks(conditionId, delta) {
         });
     }
 
-    saving = true;
+    const nextRecord = writeConditionsToRecord(
+        loadedRecord,
+        next
+    );
+
+    await persistRecord(nextRecord);
 }
-</script>
 
-<script type="module" src="./owlbear-integration.js"></script>
-<script>
-async function changeStacks(conditionId, delta) {
-    if (saving) return;
-    saving = true;
-
-    const current = parseConditionsFromRecord(loadedRecord);
-    const next = [];
-    let handled = false;
-
-    current.forEach(condition => {
-        if (condition.id !== conditionId) {
-            next.push(condition);
-            return;
-        }
-
-        handled = true;
-        const stacks = Math.max(0, condition.stacks + delta);
-        if (stacks > 0) {
-            next.push({
-                ...condition,
-                stacks
-            });
-        }
+document.querySelectorAll(".adjust-button").forEach(button => {
+    button.addEventListener("click", async () => {
+        await adjustStat(
+            button.dataset.stat,
+            Number(button.dataset.delta || 0)
+        );
     });
+});
 
-    if (!handled && delta > 0) {
-        next.push({
-            id: conditionId,
-            stacks: 1
-        });
-    }
-
-    await persistConditions(next);
-    saving = false;
-}
+Object.values(statInputs).forEach(input => {
+    input?.addEventListener("change", async () => {
+        updateDrTotal();
+        await persistVitals();
+    });
+});
 
 addConditionButton.addEventListener("click", async () => {
-    if (saving) return;
-    if (!conditionPicker.value) return;
+    if (saving || !conditionPicker.value || !loadedRecord) return;
 
     const current = parseConditionsFromRecord(loadedRecord);
     const existing = current.find(
         condition => condition.id === conditionPicker.value
     );
 
-    let next;
-    if (existing) {
-        next = current.map(condition =>
+    const next = existing
+        ? current.map(condition =>
             condition.id === conditionPicker.value
                 ? {
                     ...condition,
                     stacks: condition.stacks + 1
                 }
                 : condition
-        );
-    } else {
-        next = [
+        )
+        : [
             ...current,
             {
                 id: conditionPicker.value,
                 stacks: 1
             }
         ];
-    }
 
     conditionPicker.value = "";
-    saving = true;
-    await persistConditions(next);
-    saving = false;
+
+    const nextRecord = writeConditionsToRecord(
+        loadedRecord,
+        next
+    );
+
+    await persistRecord(nextRecord);
 });
 
-async function initializeConditionsMenu() {
-
+async function initializeTokenControls() {
     try {
-
         if (!window.RPGOwlbear?.ready) {
             await new Promise(resolve => {
                 window.addEventListener(
@@ -656,32 +867,24 @@ async function initializeConditionsMenu() {
             window.RPGOwlbear.conditionDefinitions ||
             DEFAULT_CONDITION_DEFINITIONS;
 
-
-        if (
-            !tokenId
-        ) {
-
+        if (!tokenId) {
             tokenId =
-                await window.RPGOwlbear
-                    .getSelectedCharacterTokenId();
-
+                await window.RPGOwlbear.getSelectedCharacterTokenId();
         }
 
-
-        if (
-            !tokenId
-        ) {
-
+        if (!tokenId) {
             characterContextLabel.textContent =
                 "Select one Character token.";
 
             conditionList.innerHTML =
-                '<div class="error">RPG Conditions works on one selected Character token at a time.</div>';
+                '<div class="error-message">These controls work on one selected Character token at a time.</div>';
 
+            setStatus(
+                "No linked Character token selected.",
+                "error"
+            );
             return;
-
         }
-
 
         renderConditionPicker();
 
@@ -691,8 +894,16 @@ async function initializeConditionsMenu() {
             );
 
         if (!loadedContext?.record) {
-            characterContextLabel.textContent = "No RPG Unleashed character is linked to this token.";
-            conditionList.innerHTML = '<div class="error">Link a character to this token first.</div>';
+            characterContextLabel.textContent =
+                "No RPG Unleashed character is linked to this token.";
+
+            conditionList.innerHTML =
+                '<div class="error-message">Link a character to this token first.</div>';
+
+            setStatus(
+                "No linked character found.",
+                "error"
+            );
             return;
         }
 
@@ -708,19 +919,33 @@ async function initializeConditionsMenu() {
             " • " +
             editMode;
 
+        renderVitals();
         renderConditions();
         setStatus("Ready.");
-
     } catch (error) {
-        console.error("Could not load token conditions:", error);
-        characterContextLabel.textContent = "Could not load linked character.";
-        conditionList.innerHTML = '<div class="error">' +
-            (error?.message || "The condition editor could not load.") +
+        console.error("Could not load token controls:", error);
+
+        characterContextLabel.textContent =
+            "Could not load linked character.";
+
+        conditionList.innerHTML =
+            '<div class="error-message">' +
+            (error?.message || "The token controls could not load.") +
             '</div>';
+
+        setStatus(
+            error?.message || "Could not load token controls.",
+            "error"
+        );
     }
 }
-
-initializeConditionsMenu();
 </script>
+
+<script type="module" src="./owlbear-integration.js"></script>
+
+<script>
+initializeTokenControls();
+</script>
+
 </body>
 </html>

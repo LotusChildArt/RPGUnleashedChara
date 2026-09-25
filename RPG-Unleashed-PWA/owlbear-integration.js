@@ -1407,6 +1407,11 @@ async function initializeOwlbear() {
                                 };
 
 
+                            await updateCharacterTokenDisplay(
+                                updatedRecord
+                            );
+
+
                             await updateCharacterConditionOverlays(
                                 updatedRecord,
                                 null,
@@ -1470,8 +1475,31 @@ async function initializeOwlbear() {
                         }
 
 
+                        await updateCharacterTokenDisplay(
+                            updatedRecord
+                        );
+
+
                         await updateCharacterConditionOverlays(
                             updatedRecord
+                        );
+
+
+                        await OBR.broadcast.sendMessage(
+                            LIVE_SHEET_CHANNEL,
+                            {
+                                type:
+                                    "owner-sheet-updated",
+                                characterId:
+                                    updatedRecord.id,
+                                revision:
+                                    updatedRecord.revision,
+                                roomId
+                            },
+                            {
+                                destination:
+                                    "LOCAL"
+                            }
                         );
 
 
@@ -1523,7 +1551,7 @@ async function initializeOwlbear() {
                                 url:
                                     "/owlbear-conditions.html",
                                 height:
-                                    390
+                                    520
                             }
                         });
 
