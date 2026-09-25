@@ -1054,7 +1054,6 @@ async function initializeOwlbear() {
                             .backgroundOpacity(0.9)
                             .padding(5)
                             .cornerRadius(9)
-                            .pointerDirection("NONE")
                             .position({
                                 x: layout.centerX,
                                 y: layout.centerY
