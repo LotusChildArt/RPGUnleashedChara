@@ -247,7 +247,7 @@ function makeTokenHudText(vitals) {
         );
     }
 
-    return lines.join("\\n");
+    return lines.join("\n");
 }
 
 
