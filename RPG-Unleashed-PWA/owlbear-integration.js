@@ -1856,10 +1856,10 @@ async function initializeOwlbear() {
                                         "TEXT"
                                     )
                                     .textWidth(
-                                        pixelWidth
+                                        "AUTO"
                                     )
                                     .textHeight(
-                                        pixelHeight
+                                        "AUTO"
                                     )
                                     .textPadding(
                                         0
@@ -1868,7 +1868,7 @@ async function initializeOwlbear() {
                                         30
                                     )
                                     .fontWeight(
-                                        700
+                                        900
                                     )
                                     .textAlign(
                                         "CENTER"
@@ -1889,7 +1889,7 @@ async function initializeOwlbear() {
                                         1
                                     )
                                     .textStrokeWidth(
-                                        5
+                                        6
                                     );
 
                         }
