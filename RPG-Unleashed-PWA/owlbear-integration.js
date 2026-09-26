@@ -45,6 +45,38 @@ const CONDITION_ASSET_HEIGHT =
     1536;
 
 
+const TOKEN_HUD_ASSETS = {
+    hpFill:
+        "/assets/tokenhud/hp-fill.png",
+    hpFrame:
+        "/assets/tokenhud/hp-frame.png",
+    manaFill:
+        "/assets/tokenhud/mana-fill.png",
+    manaFrame:
+        "/assets/tokenhud/mana-frame.png",
+    drIcon:
+        "/assets/tokenhud/dr-icon.png",
+    nlIcon:
+        "/assets/tokenhud/nl-icon.png"
+};
+
+
+const TOKEN_HUD_BAR_WIDTH =
+    300;
+
+
+const TOKEN_HUD_BAR_HEIGHT =
+    40;
+
+
+const TOKEN_HUD_ICON_WIDTH =
+    72;
+
+
+const TOKEN_HUD_ICON_HEIGHT =
+    63;
+
+
 const CONDITION_DEFINITIONS = [
     {
         id: "fear",
@@ -1408,7 +1440,9 @@ async function initializeOwlbear() {
 
 
                             await updateCharacterTokenDisplay(
-                                updatedRecord
+                                updatedRecord,
+                                null,
+                                remoteEditSession.ownerId
                             );
 
 
@@ -1601,79 +1635,717 @@ async function initializeOwlbear() {
                     }
 
 
-                    async function findCharacterHudItems(characterId) {
-                        if (!(await OBR.scene.isReady())) return [];
+                    async function findCharacterHudItems(
+                        characterId,
+                        ownerIdOverride = null
+                    ) {
 
-                        return OBR.scene.items.getItems(item => {
-                            const meta =
-                                item.metadata?.[TOKEN_HUD_METADATA_KEY];
+                        if (
+                            !(await OBR.scene.isReady())
+                        ) {
 
-                            return (
-                                meta?.characterId === characterId &&
-                                meta?.ownerId === OBR.player.id &&
-                                meta?.roomId === roomId
-                            );
-                        });
+                            return [];
+
+                        }
+
+
+                        const expectedOwnerId =
+                            ownerIdOverride ||
+                            OBR.player.id;
+
+
+                        return OBR.scene.items.getItems(
+                            item => {
+
+                                const meta =
+                                    item.metadata?.[
+                                        TOKEN_HUD_METADATA_KEY
+                                    ];
+
+
+                                return (
+                                    meta?.characterId ===
+                                        characterId &&
+                                    meta?.ownerId ===
+                                        expectedOwnerId &&
+                                    meta?.roomId ===
+                                        roomId
+                                );
+
+                            }
+                        );
+
                     }
 
-                    async function createCharacterHudLabel(character, token, vitalsOverride = null) {
+
+                    let tokenHudAssetPromise =
+                        null;
+
+
+                    function loadTokenHudImage(
+                        assetPath
+                    ) {
+
+                        return new Promise(
+                            (
+                                resolve,
+                                reject
+                            ) => {
+
+                                const image =
+                                    new Image();
+
+
+                                image.addEventListener(
+                                    "load",
+                                    () => resolve(
+                                        image
+                                    )
+                                );
+
+
+                                image.addEventListener(
+                                    "error",
+                                    () =>
+                                        reject(
+                                            new Error(
+                                                "Could not load token HUD asset: " +
+                                                assetPath
+                                            )
+                                        )
+                                );
+
+
+                                image.src =
+                                    new URL(
+                                        assetPath,
+                                        window.location.origin
+                                    ).href;
+
+                            }
+                        );
+
+                    }
+
+
+                    async function getTokenHudAssets() {
+
+                        if (
+                            !tokenHudAssetPromise
+                        ) {
+
+                            tokenHudAssetPromise =
+                                Promise.all(
+                                    Object.entries(
+                                        TOKEN_HUD_ASSETS
+                                    ).map(
+                                        async (
+                                            [
+                                                key,
+                                                path
+                                            ]
+                                        ) => [
+                                            key,
+                                            await loadTokenHudImage(
+                                                path
+                                            )
+                                        ]
+                                    )
+                                )
+                                .then(
+                                    entries =>
+                                        Object.fromEntries(
+                                            entries
+                                        )
+                                );
+
+                        }
+
+
+                        return tokenHudAssetPromise;
+
+                    }
+
+
+                    function clampHudFraction(
+                        current,
+                        maximum
+                    ) {
+
+                        if (
+                            maximum <= 0
+                        ) {
+
+                            return 0;
+
+                        }
+
+
+                        return Math.max(
+                            0,
+                            Math.min(
+                                1,
+                                current / maximum
+                            )
+                        );
+
+                    }
+
+
+                    function buildTokenHudLayout(
+                        vitals
+                    ) {
+
+                        const rows =
+                            [];
+
+
+                        const totalDr =
+                            vitals.drArmor +
+                            vitals.drNatural +
+                            vitals.drMagic;
+
+
+                        if (
+                            vitals.hpMax > 0 ||
+                            vitals.hpCurrent > 0
+                        ) {
+
+                            rows.push(
+                                {
+                                    type:
+                                        "bar",
+                                    fillKey:
+                                        "hpFill",
+                                    frameKey:
+                                        "hpFrame",
+                                    fraction:
+                                        clampHudFraction(
+                                            vitals.hpCurrent,
+                                            vitals.hpMax
+                                        )
+                                }
+                            );
+
+                        }
+
+
+                        if (
+                            vitals.manaMax > 0 ||
+                            vitals.manaCurrent > 0
+                        ) {
+
+                            rows.push(
+                                {
+                                    type:
+                                        "bar",
+                                    fillKey:
+                                        "manaFill",
+                                    frameKey:
+                                        "manaFrame",
+                                    fraction:
+                                        clampHudFraction(
+                                            vitals.manaCurrent,
+                                            vitals.manaMax
+                                        )
+                                }
+                            );
+
+                        }
+
+
+                        const iconEntries =
+                            [];
+
+
+                        if (
+                            totalDr > 0
+                        ) {
+
+                            iconEntries.push(
+                                {
+                                    iconKey:
+                                        "drIcon",
+                                    value:
+                                        totalDr
+                                }
+                            );
+
+                        }
+
+
+                        if (
+                            vitals.nl > 0
+                        ) {
+
+                            iconEntries.push(
+                                {
+                                    iconKey:
+                                        "nlIcon",
+                                    value:
+                                        vitals.nl
+                                }
+                            );
+
+                        }
+
+
+                        if (
+                            iconEntries.length
+                        ) {
+
+                            rows.push(
+                                {
+                                    type:
+                                        "icons",
+                                    entries:
+                                        iconEntries
+                                }
+                            );
+
+                        }
+
+
+                        return rows;
+
+                    }
+
+
+                    async function createTokenHudData(
+                        vitals
+                    ) {
+
+                        const rows =
+                            buildTokenHudLayout(
+                                vitals
+                            );
+
+
+                        if (
+                            !rows.length
+                        ) {
+
+                            return null;
+
+                        }
+
+
+                        const assets =
+                            await getTokenHudAssets();
+
+
+                        const padding =
+                            4;
+
+
+                        const gap =
+                            4;
+
+
+                        const iconGap =
+                            18;
+
+
+                        const canvasWidth =
+                            TOKEN_HUD_BAR_WIDTH;
+
+
+                        const rowHeights =
+                            rows.map(
+                                row =>
+                                    row.type ===
+                                    "icons"
+                                        ? TOKEN_HUD_ICON_HEIGHT
+                                        : TOKEN_HUD_BAR_HEIGHT
+                            );
+
+
+                        const canvasHeight =
+                            (padding * 2) +
+                            rowHeights.reduce(
+                                (
+                                    total,
+                                    height
+                                ) =>
+                                    total +
+                                    height,
+                                0
+                            ) +
+                            (gap * Math.max(
+                                0,
+                                rows.length - 1
+                            ));
+
+
+                        const canvas =
+                            document.createElement(
+                                "canvas"
+                            );
+
+
+                        canvas.width =
+                            canvasWidth;
+
+
+                        canvas.height =
+                            canvasHeight;
+
+
+                        const context =
+                            canvas.getContext(
+                                "2d"
+                            );
+
+
+                        let cursorY =
+                            padding;
+
+
+                        rows.forEach(
+                            row => {
+
+                                if (
+                                    row.type ===
+                                    "bar"
+                                ) {
+
+                                    context.drawImage(
+                                        assets[
+                                            row.frameKey
+                                        ],
+                                        0,
+                                        cursorY,
+                                        TOKEN_HUD_BAR_WIDTH,
+                                        TOKEN_HUD_BAR_HEIGHT
+                                    );
+
+
+                                    const fillWidth =
+                                        Math.round(
+                                            TOKEN_HUD_BAR_WIDTH *
+                                            row.fraction
+                                        );
+
+
+                                    if (
+                                        fillWidth > 0
+                                    ) {
+
+                                        context.drawImage(
+                                            assets[
+                                                row.fillKey
+                                            ],
+                                            0,
+                                            0,
+                                            fillWidth,
+                                            TOKEN_HUD_BAR_HEIGHT,
+                                            0,
+                                            cursorY,
+                                            fillWidth,
+                                            TOKEN_HUD_BAR_HEIGHT
+                                        );
+
+                                    }
+
+
+                                    cursorY +=
+                                        TOKEN_HUD_BAR_HEIGHT +
+                                        gap;
+
+
+                                    return;
+
+                                }
+
+
+                                if (
+                                    row.type ===
+                                    "icons"
+                                ) {
+
+                                    const rowWidth =
+                                        (
+                                            row.entries.length *
+                                            TOKEN_HUD_ICON_WIDTH
+                                        ) +
+                                        (
+                                            Math.max(
+                                                0,
+                                                row.entries.length - 1
+                                            ) *
+                                            iconGap
+                                        );
+
+
+                                    let cursorX =
+                                        Math.round(
+                                            (
+                                                canvasWidth -
+                                                rowWidth
+                                            ) / 2
+                                        );
+
+
+                                    row.entries.forEach(
+                                        entry => {
+
+                                            context.drawImage(
+                                                assets[
+                                                    entry.iconKey
+                                                ],
+                                                cursorX,
+                                                cursorY,
+                                                TOKEN_HUD_ICON_WIDTH,
+                                                TOKEN_HUD_ICON_HEIGHT
+                                            );
+
+
+                                            context.textAlign =
+                                                "center";
+
+
+                                            context.textBaseline =
+                                                "middle";
+
+
+                                            context.font =
+                                                "bold 29px Arial";
+
+
+                                            context.lineJoin =
+                                                "round";
+
+
+                                            context.lineWidth =
+                                                5;
+
+
+                                            context.strokeStyle =
+                                                "#000000";
+
+
+                                            context.fillStyle =
+                                                "#ffffff";
+
+
+                                            const textX =
+                                                cursorX +
+                                                (
+                                                    TOKEN_HUD_ICON_WIDTH / 2
+                                                );
+
+
+                                            const textY =
+                                                cursorY +
+                                                (
+                                                    TOKEN_HUD_ICON_HEIGHT / 2
+                                                ) + 1;
+
+
+                                            const text =
+                                                String(
+                                                    entry.value
+                                                );
+
+
+                                            context.strokeText(
+                                                text,
+                                                textX,
+                                                textY
+                                            );
+
+
+                                            context.fillText(
+                                                text,
+                                                textX,
+                                                textY
+                                            );
+
+
+                                            cursorX +=
+                                                TOKEN_HUD_ICON_WIDTH +
+                                                iconGap;
+
+                                        }
+                                    );
+
+
+                                    cursorY +=
+                                        TOKEN_HUD_ICON_HEIGHT +
+                                        gap;
+
+                                }
+
+                            }
+                        );
+
+
+                        return {
+                            url:
+                                canvas.toDataURL(
+                                    "image/png"
+                                ),
+                            width:
+                                canvas.width,
+                            height:
+                                canvas.height
+                        };
+
+                    }
+
+
+                    async function createCharacterHudImage(
+                        character,
+                        token,
+                        vitalsOverride = null,
+                        ownerIdOverride = null
+                    ) {
+
                         const bounds =
                             await OBR.scene.items.getItemBounds(
                                 [token.id]
                             );
 
+
                         const vitals =
                             vitalsOverride
-                                ? normalizeVitals(vitalsOverride)
-                                : getVitalsFromCharacterRecord(character);
+                                ? normalizeVitals(
+                                    vitalsOverride
+                                )
+                                : getVitalsFromCharacterRecord(
+                                    character
+                                );
 
-                        const text =
-                            makeTokenHudText(
+
+                        const hudImage =
+                            await createTokenHudData(
                                 vitals
                             );
 
-                        const label =
-                            buildLabel()
-                                .plainText(text)
-                                .fontSize(16)
-                                .fontWeight(700)
-                                .textAlign("CENTER")
-                                .fillColor("#111111")
-                                .backgroundColor("#ffffff")
-                                .backgroundOpacity(0.92)
-                                .padding(7)
-                                .cornerRadius(10)
-                                .position({
-                                    x: bounds.center.x,
-                                    y: bounds.min.y - 28
-                                })
-                                .layer("ATTACHMENT")
-                                .attachedTo(token.id)
-                                .locked(true)
-                                .disableHit(true)
-                                .metadata({
-                                    [TOKEN_HUD_METADATA_KEY]: {
-                                        characterId: character.id,
-                                        ownerId: OBR.player.id,
-                                        roomId,
-                                        tokenId: token.id,
-                                        kind: "vitals-label"
+
+                        if (
+                            !hudImage
+                        ) {
+
+                            return null;
+
+                        }
+
+
+                        const sceneDpi =
+                            await OBR.scene.grid.getDpi();
+
+
+                        const desiredWidth =
+                            Math.max(
+                                115,
+                                bounds.width * 1.12
+                            );
+
+
+                        const desiredHeight =
+                            desiredWidth *
+                            (
+                                hudImage.height /
+                                hudImage.width
+                            );
+
+
+                        const imageDpi =
+                            hudImage.width *
+                            sceneDpi /
+                            desiredWidth;
+
+
+                        const item =
+                            buildImage(
+                                {
+                                    width:
+                                        hudImage.width,
+                                    height:
+                                        hudImage.height,
+                                    url:
+                                        hudImage.url,
+                                    mime:
+                                        "image/png"
+                                },
+                                {
+                                    dpi:
+                                        imageDpi,
+                                    offset: {
+                                        x:
+                                            hudImage.width / 2,
+                                        y:
+                                            hudImage.height / 2
                                     }
-                                })
-                                .build();
+                                }
+                            )
+                            .position(
+                                {
+                                    x:
+                                        bounds.center.x,
+                                    y:
+                                        bounds.max.y +
+                                        8 +
+                                        (
+                                            desiredHeight / 2
+                                        )
+                                }
+                            )
+                            .layer(
+                                "ATTACHMENT"
+                            )
+                            .attachedTo(
+                                token.id
+                            )
+                            .locked(
+                                true
+                            )
+                            .disableHit(
+                                true
+                            )
+                            .metadata(
+                                {
+                                    [TOKEN_HUD_METADATA_KEY]:
+                                        {
+                                            characterId:
+                                                character.id,
+                                            ownerId:
+                                                ownerIdOverride ||
+                                                OBR.player.id,
+                                            roomId,
+                                            tokenId:
+                                                token.id,
+                                            kind:
+                                                "vitals-hud-image"
+                                        }
+                                }
+                            )
+                            .build();
+
 
                         await OBR.scene.items.addItems(
-                            [label]
+                            [item]
                         );
 
-                        return label;
+
+                        return item;
+
                     }
 
-                    async function removeCharacterHudItems(character, link = null) {
+
+                    async function removeCharacterHudItems(
+                        character,
+                        link = null,
+                        ownerIdOverride = null
+                    ) {
+
                         const found =
                             await findCharacterHudItems(
-                                character.id
+                                character.id,
+                                ownerIdOverride
                             );
+
 
                         const ids =
                             new Set(
@@ -1682,25 +2354,47 @@ async function initializeOwlbear() {
                                 )
                             );
 
-                        getHudItemIdsFromLink(link)
-                            .forEach(
-                                id => ids.add(id)
+
+                        getHudItemIdsFromLink(
+                            link
+                        )
+                        .forEach(
+                            id => ids.add(
+                                id
+                            )
+                        );
+
+
+                        if (
+                            ids.size
+                        ) {
+
+                            await OBR.scene.items.deleteItems(
+                                Array.from(
+                                    ids
+                                )
                             );
 
-                        if (ids.size) {
-                            await OBR.scene.items.deleteItems(
-                                Array.from(ids)
-                            );
                         }
+
                     }
 
-                    async function updateCharacterTokenDisplay(character, vitalsOverride = null) {
+
+                    async function updateCharacterTokenDisplay(
+                        character,
+                        vitalsOverride = null,
+                        ownerIdOverride = null
+                    ) {
+
                         if (
                             !character ||
                             !(await OBR.scene.isReady())
                         ) {
+
                             return false;
+
                         }
+
 
                         const storedCharacter =
                             await window.RPGCharacterStore
@@ -1708,9 +2402,11 @@ async function initializeOwlbear() {
                                     character.id
                                 );
 
+
                         const sourceCharacter =
                             storedCharacter ||
                             character;
+
 
                         const link =
                             getRoomTokenLink(
@@ -1718,96 +2414,62 @@ async function initializeOwlbear() {
                                 roomId
                             );
 
-                        if (!link?.tokenId) {
+
+                        if (
+                            !link?.tokenId
+                        ) {
+
                             return false;
+
                         }
+
 
                         const tokenItems =
                             await OBR.scene.items.getItems(
                                 [link.tokenId]
                             );
 
+
                         const token =
                             tokenItems[0];
 
+
                         if (
                             !token ||
-                            token.layer !== "CHARACTER"
+                            token.layer !==
+                                "CHARACTER"
                         ) {
+
                             return false;
+
                         }
+
 
                         const vitals =
                             vitalsOverride
-                                ? normalizeVitals(vitalsOverride)
-                                : getVitalsFromCharacterRecord(character);
-
-                        const text =
-                            makeTokenHudText(
-                                vitals
-                            );
-
-                        let labels = [];
-
-                        if (
-                            Array.isArray(link.hudItemIds) &&
-                            link.hudItemIds.length
-                        ) {
-                            labels =
-                                await OBR.scene.items.getItems(
-                                    link.hudItemIds
+                                ? normalizeVitals(
+                                    vitalsOverride
+                                )
+                                : getVitalsFromCharacterRecord(
+                                    character
                                 );
-                        }
 
-                        if (
-                            !labels.length &&
-                            link.labelId
-                        ) {
-                            labels =
-                                await OBR.scene.items.getItems(
-                                    [link.labelId]
-                                );
-                        }
-
-                        if (!labels.length) {
-                            labels =
-                                await findCharacterHudItems(
-                                    character.id
-                                );
-                        }
-
-                        const label =
-                            labels.find(
-                                item => item.type === "LABEL"
-                            );
-
-                        if (label) {
-                            await OBR.scene.items.updateItems(
-                                [label.id],
-                                items => {
-                                    for (const item of items) {
-                                        if (item.text) {
-                                            item.text.plainText =
-                                                text;
-                                        }
-                                    }
-                                }
-                            );
-
-                            return true;
-                        }
 
                         await removeCharacterHudItems(
                             sourceCharacter,
-                            link
+                            link,
+                            ownerIdOverride
                         );
 
+
                         const created =
-                            await createCharacterHudLabel(
+                            await createCharacterHudImage(
                                 sourceCharacter,
                                 token,
-                                vitals
+                                vitals,
+                                ownerIdOverride
                             );
+
 
                         const latest =
                             await window.RPGCharacterStore
@@ -1815,23 +2477,42 @@ async function initializeOwlbear() {
                                     character.id
                                 );
 
-                        if (latest) {
-                            await window.RPGCharacterStore.putCharacter({
-                                ...latest,
-                                owlbearTokenLinks: {
-                                    ...(latest.owlbearTokenLinks || {}),
-                                    [roomId]: {
-                                        tokenId: token.id,
-                                        hudItemIds: [created.id],
-                                        labelId: created.id,
-                                        linkedAt: Date.now()
+
+                        if (
+                            latest
+                        ) {
+
+                            await window.RPGCharacterStore
+                                .putCharacter(
+                                    {
+                                        ...latest,
+                                        owlbearTokenLinks:
+                                            {
+                                                ...(latest.owlbearTokenLinks || {}),
+                                                [roomId]:
+                                                    {
+                                                        tokenId:
+                                                            token.id,
+                                                        hudItemIds:
+                                                            created
+                                                                ? [created.id]
+                                                                : [],
+                                                        labelId:
+                                                            null,
+                                                        linkedAt:
+                                                            Date.now()
+                                                    }
+                                            }
                                     }
-                                }
-                            });
+                                );
+
                         }
 
+
                         return true;
+
                     }
+
 
                     async function unlinkCharacterToken(character) {
                         if (!character) {
