@@ -46,14 +46,10 @@ const CONDITION_ASSET_HEIGHT =
 
 
 const TOKEN_HUD_ASSETS = {
-    hpFill:
-        "/assets/tokenhud/hp-fill.png",
-    hpFrame:
-        "/assets/tokenhud/hp-frame.png",
-    manaFill:
-        "/assets/tokenhud/mana-fill.png",
-    manaFrame:
-        "/assets/tokenhud/mana-frame.png",
+    hpStates:
+        "/assets/tokenhud/hp/",
+    manaStates:
+        "/assets/tokenhud/mana/",
     drIcon:
         "/assets/tokenhud/dr-icon.png",
     nlIcon:
@@ -1134,7 +1130,22 @@ async function initializeOwlbear() {
                         isBackgroundContext
                     ) {
 
-                        await setupConditionsContextMenu();
+                        try {
+
+                            await setupConditionsContextMenu();
+
+                        }
+
+                        catch (
+                            error
+                        ) {
+
+                            console.error(
+                                "Could not register RPG Unleashed context menu:",
+                                error
+                            );
+
+                        }
 
                     }
 
@@ -1564,28 +1575,24 @@ async function initializeOwlbear() {
                                     icon:
                                         "/icons/icon-192.png",
                                     label:
-                                        "RPG Conditions",
-                                    filter: {
-                                        min:
-                                            1,
-                                        max:
-                                            1,
-                                        every: [
-                                            {
-                                                key:
-                                                    "layer",
-                                                value:
-                                                    "CHARACTER"
-                                            }
-                                        ]
-                                    }
+                                        "RPG Controls"
+                                }
+                            ],
+                            every: [
+                                {
+                                    key:
+                                        "layer",
+                                    value:
+                                        "CHARACTER"
                                 }
                             ],
                             embed: {
                                 url:
                                     "/owlbear-conditions.html",
                                 height:
-                                    520
+                                    520,
+                                width:
+                                    360
                             }
                         });
 
@@ -1703,6 +1710,47 @@ async function initializeOwlbear() {
                     }
 
 
+                    function getHudBarStatePath(
+                        type,
+                        fraction
+                    ) {
+
+                        const percent =
+                            Math.max(
+                                0,
+                                Math.min(
+                                    100,
+                                    Math.round(
+                                        fraction *
+                                        100
+                                    )
+                                )
+                            );
+
+
+                        const base =
+                            type ===
+                            "mana"
+                                ? TOKEN_HUD_ASSETS.manaStates
+                                : TOKEN_HUD_ASSETS.hpStates;
+
+
+                        return (
+                            base +
+                            type +
+                            "-" +
+                            String(
+                                percent
+                            ).padStart(
+                                3,
+                                "0"
+                            ) +
+                            ".png"
+                        );
+
+                    }
+
+
                     function buildHudImageItem({
                         character,
                         token,
@@ -1715,7 +1763,6 @@ async function initializeOwlbear() {
                         centerX,
                         centerY,
                         kind,
-                        scaleX = 1,
                         text = null
                     }) {
 
@@ -1757,12 +1804,6 @@ async function initializeOwlbear() {
                                 y:
                                     centerY
                             })
-                            .scale({
-                                x:
-                                    scaleX,
-                                y:
-                                    1
-                            })
                             .layer(
                                 "ATTACHMENT"
                             )
@@ -1803,11 +1844,23 @@ async function initializeOwlbear() {
                                             text
                                         )
                                     )
+                                    .textType(
+                                        "PLAIN"
+                                    )
                                     .textItemType(
                                         "TEXT"
                                     )
+                                    .textWidth(
+                                        pixelWidth
+                                    )
+                                    .textHeight(
+                                        pixelHeight
+                                    )
+                                    .textPadding(
+                                        0
+                                    )
                                     .fontSize(
-                                        28
+                                        30
                                     )
                                     .fontWeight(
                                         700
@@ -1821,8 +1874,14 @@ async function initializeOwlbear() {
                                     .textFillColor(
                                         "#ffffff"
                                     )
+                                    .textFillOpacity(
+                                        1
+                                    )
                                     .textStrokeColor(
                                         "#000000"
+                                    )
+                                    .textStrokeOpacity(
+                                        1
                                     )
                                     .textStrokeWidth(
                                         5
@@ -1914,26 +1973,28 @@ async function initializeOwlbear() {
 
                         const addBar =
                             (
-                                framePath,
-                                fillPath,
-                                fraction,
-                                kindPrefix
+                                type,
+                                fraction
                             ) => {
 
                                 const centerY =
                                     cursorY +
                                     (
-                                        desiredBarHeight / 2
+                                        desiredBarHeight /
+                                        2
                                     );
 
 
-                                const frame =
+                                items.push(
                                     buildHudImageItem({
                                         character,
                                         token,
                                         ownerIdOverride,
                                         assetPath:
-                                            framePath,
+                                            getHudBarStatePath(
+                                                type,
+                                                fraction
+                                            ),
                                         pixelWidth:
                                             TOKEN_HUD_BAR_WIDTH,
                                         pixelHeight:
@@ -1945,63 +2006,10 @@ async function initializeOwlbear() {
                                             bounds.center.x,
                                         centerY,
                                         kind:
-                                            kindPrefix +
-                                            "-frame"
-                                    });
-
-
-                                items.push(
-                                    frame
+                                            type +
+                                            "-bar"
+                                    })
                                 );
-
-
-                                if (
-                                    fraction >
-                                    0
-                                ) {
-
-                                    const fillCenterX =
-                                        bounds.center.x -
-                                        (
-                                            desiredBarWidth *
-                                            (
-                                                1 -
-                                                fraction
-                                            ) /
-                                            2
-                                        );
-
-
-                                    const fill =
-                                        buildHudImageItem({
-                                            character,
-                                            token,
-                                            ownerIdOverride,
-                                            assetPath:
-                                                fillPath,
-                                            pixelWidth:
-                                                TOKEN_HUD_BAR_WIDTH,
-                                            pixelHeight:
-                                                TOKEN_HUD_BAR_HEIGHT,
-                                            sceneDpi,
-                                            desiredWidth:
-                                                desiredBarWidth,
-                                            centerX:
-                                                fillCenterX,
-                                            centerY,
-                                            kind:
-                                                kindPrefix +
-                                                "-fill",
-                                            scaleX:
-                                                fraction
-                                        });
-
-
-                                    items.push(
-                                        fill
-                                    );
-
-                                }
 
 
                                 cursorY +=
@@ -2017,13 +2025,11 @@ async function initializeOwlbear() {
                         ) {
 
                             addBar(
-                                TOKEN_HUD_ASSETS.hpFrame,
-                                TOKEN_HUD_ASSETS.hpFill,
+                                "hp",
                                 clampHudFraction(
                                     vitals.hpCurrent,
                                     vitals.hpMax
-                                ),
-                                "hp"
+                                )
                             );
 
                         }
@@ -2035,13 +2041,11 @@ async function initializeOwlbear() {
                         ) {
 
                             addBar(
-                                TOKEN_HUD_ASSETS.manaFrame,
-                                TOKEN_HUD_ASSETS.manaFill,
+                                "mana",
                                 clampHudFraction(
                                     vitals.manaCurrent,
                                     vitals.manaMax
-                                ),
-                                "mana"
+                                )
                             );
 
                         }
@@ -2118,17 +2122,20 @@ async function initializeOwlbear() {
                             let iconCenterX =
                                 bounds.center.x -
                                 (
-                                    totalIconWidth / 2
+                                    totalIconWidth /
+                                    2
                                 ) +
                                 (
-                                    desiredIconWidth / 2
+                                    desiredIconWidth /
+                                    2
                                 );
 
 
                             const iconCenterY =
                                 cursorY +
                                 (
-                                    desiredIconHeight / 2
+                                    desiredIconHeight /
+                                    2
                                 );
 
 
