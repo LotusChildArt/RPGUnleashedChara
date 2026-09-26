@@ -18,6 +18,10 @@ const TOKEN_CONDITION_METADATA_KEY =
     "com.rpgunleashed.character-sheet/tokenCondition";
 
 
+const TOKEN_LINK_METADATA_KEY =
+    "com.rpgunleashed.character-sheet/tokenLink";
+
+
 const CONDITION_OVERLAY_ASSETS = {
     "fear": "/assets/conditions/fear.png",
     "wounded": "/assets/conditions/wounded.png",
@@ -1160,6 +1164,360 @@ async function initializeOwlbear() {
                     }
 
 
+                    async function setTokenLinkMetadata(
+                        tokenId,
+                        characterId,
+                        ownerId = OBR.player.id
+                    ) {
+
+                        if (
+                            !tokenId ||
+                            !characterId ||
+                            !(await OBR.scene.isReady())
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        await OBR.scene.items.updateItems(
+                            [
+                                tokenId
+                            ],
+                            items => {
+
+                                for (
+                                    const item
+                                    of items
+                                ) {
+
+                                    item.metadata =
+                                        item.metadata ||
+                                        {};
+
+
+                                    item.metadata[
+                                        TOKEN_LINK_METADATA_KEY
+                                    ] = {
+                                        characterId,
+                                        ownerId,
+                                        roomId,
+                                        tokenId,
+                                        linkedAt:
+                                            Date.now()
+                                    };
+
+                                }
+
+                            }
+                        );
+
+                    }
+
+
+                    async function clearTokenLinkMetadata(
+                        tokenId,
+                        characterId = null,
+                        ownerId = OBR.player.id
+                    ) {
+
+                        if (
+                            !tokenId ||
+                            !(await OBR.scene.isReady())
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        await OBR.scene.items.updateItems(
+                            [
+                                tokenId
+                            ],
+                            items => {
+
+                                for (
+                                    const item
+                                    of items
+                                ) {
+
+                                    const linkMeta =
+                                        item.metadata?.[
+                                            TOKEN_LINK_METADATA_KEY
+                                        ];
+
+
+                                    if (
+                                        !linkMeta
+                                    ) {
+
+                                        continue;
+
+                                    }
+
+
+                                    if (
+                                        characterId &&
+                                        linkMeta.characterId !==
+                                            characterId
+                                    ) {
+
+                                        continue;
+
+                                    }
+
+
+                                    if (
+                                        ownerId &&
+                                        linkMeta.ownerId !==
+                                            ownerId
+                                    ) {
+
+                                        continue;
+
+                                    }
+
+
+                                    delete item.metadata[
+                                        TOKEN_LINK_METADATA_KEY
+                                    ];
+
+                                }
+
+                            }
+                        );
+
+                    }
+
+
+                    async function repairLocalTokenLinks() {
+
+                        if (
+                            !(await OBR.scene.isReady())
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        const localCharacters =
+                            await getLocalCharacters();
+
+
+                        if (
+                            !localCharacters.length
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        const characterById =
+                            new Map(
+                                localCharacters.map(
+                                    character => [
+                                        character.id,
+                                        character
+                                    ]
+                                )
+                            );
+
+
+                        const sceneItems =
+                            await OBR.scene.items.getItems();
+
+
+                        const tokenById =
+                            new Map(
+                                sceneItems
+                                    .filter(
+                                        item =>
+                                            item.layer ===
+                                            "CHARACTER"
+                                    )
+                                    .map(
+                                        item => [
+                                            item.id,
+                                            item
+                                        ]
+                                    )
+                            );
+
+
+                        const recovered =
+                            new Map();
+
+
+                        sceneItems.forEach(
+                            item => {
+
+                                const directMeta =
+                                    item.layer ===
+                                        "CHARACTER"
+                                        ? item.metadata?.[
+                                            TOKEN_LINK_METADATA_KEY
+                                        ]
+                                        : null;
+
+
+                                const hudMeta =
+                                    item.metadata?.[
+                                        TOKEN_HUD_METADATA_KEY
+                                    ];
+
+
+                                const conditionMeta =
+                                    item.metadata?.[
+                                        TOKEN_CONDITION_METADATA_KEY
+                                    ];
+
+
+                                const meta =
+                                    directMeta ||
+                                    hudMeta ||
+                                    conditionMeta;
+
+
+                                if (
+                                    !meta?.characterId ||
+                                    meta.ownerId !==
+                                        OBR.player.id ||
+                                    meta.roomId !==
+                                        roomId ||
+                                    !meta.tokenId
+                                ) {
+
+                                    return;
+
+                                }
+
+
+                                if (
+                                    !characterById.has(
+                                        meta.characterId
+                                    ) ||
+                                    !tokenById.has(
+                                        meta.tokenId
+                                    )
+                                ) {
+
+                                    return;
+
+                                }
+
+
+                                recovered.set(
+                                    meta.characterId,
+                                    meta.tokenId
+                                );
+
+                            }
+                        );
+
+
+                        for (
+                            const character
+                            of localCharacters
+                        ) {
+
+                            const existingLink =
+                                getRoomTokenLink(
+                                    character,
+                                    roomId
+                                );
+
+
+                            let tokenId =
+                                existingLink?.tokenId ||
+                                recovered.get(
+                                    character.id
+                                ) ||
+                                null;
+
+
+                            if (
+                                !tokenId ||
+                                !tokenById.has(
+                                    tokenId
+                                )
+                            ) {
+
+                                continue;
+
+                            }
+
+
+                            await setTokenLinkMetadata(
+                                tokenId,
+                                character.id,
+                                OBR.player.id
+                            );
+
+
+                            const hudItems =
+                                sceneItems.filter(
+                                    item =>
+                                        item.metadata?.[
+                                            TOKEN_HUD_METADATA_KEY
+                                        ]?.characterId ===
+                                            character.id &&
+                                        item.metadata?.[
+                                            TOKEN_HUD_METADATA_KEY
+                                        ]?.ownerId ===
+                                            OBR.player.id &&
+                                        item.metadata?.[
+                                            TOKEN_HUD_METADATA_KEY
+                                        ]?.roomId ===
+                                            roomId &&
+                                        item.metadata?.[
+                                            TOKEN_HUD_METADATA_KEY
+                                        ]?.tokenId ===
+                                            tokenId
+                                );
+
+
+                            if (
+                                !existingLink ||
+                                existingLink.tokenId !==
+                                    tokenId
+                            ) {
+
+                                const repairedRecord = {
+                                    ...character,
+                                    owlbearTokenLinks: {
+                                        ...(character.owlbearTokenLinks || {}),
+                                        [roomId]: {
+                                            tokenId,
+                                            hudItemIds:
+                                                hudItems.map(
+                                                    item =>
+                                                        item.id
+                                                ),
+                                            labelId:
+                                                null,
+                                            linkedAt:
+                                                Date.now()
+                                        }
+                                    }
+                                };
+
+
+                                await window.RPGCharacterStore
+                                    ?.putCharacter(
+                                        repairedRecord
+                                    );
+
+                            }
+
+                        }
+
+                    }
+
+
                     async function getLocalCharacters() {
 
                         if (
@@ -1191,6 +1549,47 @@ async function initializeOwlbear() {
                         ) {
 
                             return null;
+
+                        }
+
+
+                        const tokenItems =
+                            await OBR.scene.items.getItems(
+                                [
+                                    tokenId
+                                ]
+                            );
+
+
+                        const token =
+                            tokenItems[0];
+
+
+                        const directMeta =
+                            token?.metadata?.[
+                                TOKEN_LINK_METADATA_KEY
+                            ];
+
+
+                        if (
+                            directMeta?.characterId &&
+                            directMeta?.ownerId &&
+                            directMeta?.roomId ===
+                                roomId
+                        ) {
+
+                            return {
+                                ownerId:
+                                    directMeta.ownerId,
+                                characterId:
+                                    directMeta.characterId,
+                                tokenId,
+                                source:
+                                    directMeta.ownerId ===
+                                        OBR.player.id
+                                            ? "local"
+                                            : "remote"
+                            };
 
                         }
 
@@ -1262,61 +1661,60 @@ async function initializeOwlbear() {
 
 
                         if (
-                            !firstMeta?.characterId
+                            firstMeta?.characterId
                         ) {
 
-                            const localCharacters =
-                                await getLocalCharacters();
-
-
-                            const localMatch =
-                                localCharacters.find(
-                                    character =>
-                                        getRoomTokenLink(
-                                            character,
-                                            roomId
-                                        )?.tokenId ===
-                                        tokenId
-                                );
-
-
-                            if (
-                                localMatch
-                            ) {
-
-                                return {
-                                    ownerId:
-                                        ownerIdOverride ||
-                                        OBR.player.id,
-                                    characterId:
-                                        localMatch.id,
-                                    tokenId,
-                                    source:
-                                        "local"
-                                };
-
-                            }
-
-
-                            return null;
+                            return {
+                                ownerId:
+                                    firstMeta.ownerId ||
+                                    "",
+                                characterId:
+                                    firstMeta.characterId,
+                                tokenId,
+                                source:
+                                    firstMeta.ownerId &&
+                                    firstMeta.ownerId !==
+                                        OBR.player.id
+                                            ? "remote"
+                                            : "local"
+                            };
 
                         }
 
 
-                        return {
-                            ownerId:
-                                firstMeta.ownerId ||
-                                "",
-                            characterId:
-                                firstMeta.characterId,
-                            tokenId,
-                            source:
-                                firstMeta.ownerId &&
-                                firstMeta.ownerId !==
-                                    OBR.player.id
-                                        ? "remote"
-                                        : "local"
-                        };
+                        const localCharacters =
+                            await getLocalCharacters();
+
+
+                        const localMatch =
+                            localCharacters.find(
+                                character =>
+                                    getRoomTokenLink(
+                                        character,
+                                        roomId
+                                    )?.tokenId ===
+                                        tokenId
+                            );
+
+
+                        if (
+                            localMatch
+                        ) {
+
+                            return {
+                                ownerId:
+                                    OBR.player.id,
+                                characterId:
+                                    localMatch.id,
+                                tokenId,
+                                source:
+                                    "local"
+                            };
+
+                        }
+
+
+                        return null;
 
                     }
 
@@ -2464,6 +2862,18 @@ async function initializeOwlbear() {
                             await removeCharacterConditionOverlays(
                                 latest
                             );
+
+                            if (
+                                link?.tokenId
+                            ) {
+
+                                await clearTokenLinkMetadata(
+                                    link.tokenId,
+                                    latest.id,
+                                    OBR.player.id
+                                );
+
+                            }
                         }
 
                         const links = {
@@ -2532,6 +2942,14 @@ async function initializeOwlbear() {
                             latest
                         );
 
+
+                        await setTokenLinkMetadata(
+                            token.id,
+                            latest.id,
+                            OBR.player.id
+                        );
+
+
                         const hudItems =
                             await createCharacterHudItems(
                                 latest,
@@ -2574,7 +2992,8 @@ async function initializeOwlbear() {
 
 
                     async function findCharacterConditionOverlayItems(
-                        characterId
+                        characterId,
+                        ownerIdOverride = null
                     ) {
 
                         if (
@@ -2599,7 +3018,10 @@ async function initializeOwlbear() {
                                     meta?.characterId ===
                                         characterId &&
                                     meta?.ownerId ===
-                                        OBR.player.id &&
+                                        (
+                                            ownerIdOverride ||
+                                            OBR.player.id
+                                        ) &&
                                     meta?.roomId ===
                                         roomId
                                 );
@@ -2611,12 +3033,14 @@ async function initializeOwlbear() {
 
 
                     async function removeCharacterConditionOverlays(
-                        character
+                        character,
+                        ownerIdOverride = null
                     ) {
 
                         const items =
                             await findCharacterConditionOverlayItems(
-                                character.id
+                                character.id,
+                                ownerIdOverride
                             );
 
 
@@ -2736,6 +3160,7 @@ async function initializeOwlbear() {
                                     characterId:
                                         character.id,
                                     ownerId:
+                                        ownerIdOverride ||
                                         OBR.player.id,
                                     roomId,
                                     tokenId:
@@ -2829,7 +3254,8 @@ async function initializeOwlbear() {
 
 
                         await removeCharacterConditionOverlays(
-                            sourceCharacter
+                            sourceCharacter,
+                            ownerIdOverride
                         );
 
 
@@ -4443,6 +4869,30 @@ async function initializeOwlbear() {
                     }
 
 
+                    if (
+                        isBackgroundContext
+                    ) {
+
+                        try {
+
+                            await repairLocalTokenLinks();
+
+                        }
+
+                        catch (
+                            error
+                        ) {
+
+                            console.error(
+                                "Could not repair RPG Unleashed token links:",
+                                error
+                            );
+
+                        }
+
+                    }
+
+
                     window.RPGOwlbear = {
                         ready:
                             true,
@@ -4469,6 +4919,7 @@ async function initializeOwlbear() {
                         loadCharacterForTokenId,
                         saveTokenLinkedCharacter,
                         getSelectedCharacterTokenId,
+                        repairLocalTokenLinks,
                         conditionDefinitions:
                             CONDITION_DEFINITIONS
                     };
