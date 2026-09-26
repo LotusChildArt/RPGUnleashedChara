@@ -1826,19 +1826,6 @@ async function initializeOwlbear() {
 
 
                         if (
-                            !reference.ownerId ||
-                            reference.ownerId ===
-                                OBR.player.id
-                        ) {
-
-                            throw new Error(
-                                "This token is linked, but its owner could not be resolved to a connected shared character."
-                            );
-
-                        }
-
-
-                        if (
                             playerRole !==
                             "GM"
                         ) {
@@ -1859,23 +1846,35 @@ async function initializeOwlbear() {
                             };
 
 
-                        const record =
+                        const remote =
                             await requestCharacterSheet(
                                 sharedCharacter
                             );
 
 
+                        reference.ownerId =
+                            remote.ownerId;
+
+
+                        await setTokenLinkMetadata(
+                            tokenId,
+                            reference.characterId,
+                            remote.ownerId
+                        );
+
+
                         return {
                             reference,
-                            record,
+                            record:
+                                remote.record,
                             remoteEditSession: {
                                 ownerId:
-                                    reference.ownerId,
+                                    remote.ownerId,
                                 characterId:
                                     reference.characterId,
                                 baseRevision:
                                     Number(
-                                        record.revision ||
+                                        remote.record.revision ||
                                         0
                                     )
                             }
@@ -3915,8 +3914,55 @@ async function initializeOwlbear() {
 
                     async function getMySharedCharacters() {
 
-                        const characters =
-                            await getLocalCharacters();
+                        const [
+                            characters,
+                            playerMetadata,
+                            registry
+                        ] =
+                            await Promise.all([
+                                getLocalCharacters(),
+                                OBR.player.getMetadata(),
+                                getRoomSharedRegistry()
+                            ]);
+
+
+                        const legacy =
+                            cleanSharedCharacters(
+                                playerMetadata[
+                                    SHARED_CHARACTERS_KEY
+                                ]
+                            )
+                            .filter(
+                                item =>
+                                    item.roomId ===
+                                    roomId
+                            );
+
+
+                        const legacyIds =
+                            new Set(
+                                legacy.map(
+                                    item =>
+                                        item.characterId
+                                )
+                            );
+
+
+                        const registryIds =
+                            new Set(
+                                registry
+                                    .filter(
+                                        item =>
+                                            item.roomId ===
+                                                roomId &&
+                                            item.ownerId ===
+                                                OBR.player.id
+                                    )
+                                    .map(
+                                        item =>
+                                            item.characterId
+                                    )
+                            );
 
 
                         return characters
@@ -3924,6 +3970,12 @@ async function initializeOwlbear() {
                                 character =>
                                     isCharacterSharedLocally(
                                         character
+                                    ) ||
+                                    legacyIds.has(
+                                        character.id
+                                    ) ||
+                                    registryIds.has(
+                                        character.id
                                     )
                             )
                             .map(
@@ -4450,9 +4502,7 @@ async function initializeOwlbear() {
 
                                     if (
                                         message.type ===
-                                            "sheet-request" &&
-                                        message.ownerId ===
-                                            OBR.player.id
+                                            "sheet-request"
                                     ) {
 
                                         if (
@@ -4478,22 +4528,6 @@ async function initializeOwlbear() {
                                             !record
                                         ) {
 
-                                            await OBR.broadcast.sendMessage(
-                                                LIVE_SHEET_CHANNEL,
-                                                {
-                                                    type:
-                                                        "sheet-error",
-                                                    requestId:
-                                                        message.requestId,
-                                                    recipientId:
-                                                        message.requesterId,
-                                                    roomId,
-                                                    message:
-                                                        "The player no longer has this character saved on this device."
-                                                }
-                                            );
-
-
                                             return;
 
                                         }
@@ -4511,6 +4545,9 @@ async function initializeOwlbear() {
                                                     message.requesterId,
                                                 ownerId:
                                                     OBR.player.id,
+                                                ownerName:
+                                                    playerName ||
+                                                    "Player",
                                                 characterId:
                                                     message.characterId
                                             }
@@ -4918,6 +4955,9 @@ async function initializeOwlbear() {
                                             message.requestId,
                                         ownerId:
                                             message.ownerId,
+                                        ownerName:
+                                            message.ownerName ||
+                                            "Player",
                                         characterId:
                                             message.characterId,
                                         chunks:
@@ -5032,11 +5072,17 @@ async function initializeOwlbear() {
                                     }
 
 
-                                    pending.resolve(
-                                        deserializeChunks(
-                                            transfer.chunks
-                                        )
-                                    );
+                                    pending.resolve({
+                                        record:
+                                            deserializeChunks(
+                                                transfer.chunks
+                                            ),
+                                        ownerId:
+                                            transfer.ownerId,
+                                        ownerName:
+                                            transfer.ownerName ||
+                                            "Player"
+                                    });
 
                                 }
 
@@ -5164,13 +5210,13 @@ async function initializeOwlbear() {
                     ) {
 
                         if (
-                            !canEditPartyCharacter(
-                                character
-                            )
+                            playerRole !==
+                                "GM" ||
+                            !character?.characterId
                         ) {
 
                             throw new Error(
-                                "Only the GM can remotely edit another player's character."
+                                "Only the GM can remotely edit a shared character."
                             );
 
                         }
@@ -5231,8 +5277,6 @@ async function initializeOwlbear() {
                                 requesterName:
                                     playerName ||
                                     "GM",
-                                ownerId:
-                                    character.ownerId,
                                 characterId:
                                     character.characterId,
                                 roomId

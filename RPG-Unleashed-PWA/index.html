@@ -8760,9 +8760,8 @@ async function renderPartyCharacters(
 
                 const canRemoteEditPartyCharacter =
                     window.RPGOwlbear
-                        ?.canEditPartyCharacter(
-                            character
-                        );
+                        ?.playerRole ===
+                    "GM";
 
 
                 if (
@@ -8818,26 +8817,15 @@ async function renderPartyCharacters(
 
                             try {
 
+                                const localCharacter =
+                                    await getCharacterById(
+                                        character.characterId
+                                    );
+
+
                                 if (
-                                    isMyPartyCharacter
+                                    localCharacter
                                 ) {
-
-                                    const localCharacter =
-                                        await getCharacterById(
-                                            character.characterId
-                                        );
-
-
-                                    if (
-                                        !localCharacter
-                                    ) {
-
-                                        throw new Error(
-                                            "This character is shared in Owlbear, but its local save could not be found on this device."
-                                        );
-
-                                    }
-
 
                                     openSavedCharacter(
                                         localCharacter
@@ -8849,16 +8837,40 @@ async function renderPartyCharacters(
                                 }
 
 
-                                const record =
+                                if (
+                                    window.RPGOwlbear
+                                        ?.playerRole !==
+                                    "GM"
+                                ) {
+
+                                    throw new Error(
+                                        "This shared character is not saved on this device."
+                                    );
+
+                                }
+
+
+                                const remote =
                                     await window.RPGOwlbear
                                         .requestCharacterSheet(
                                             character
                                         );
 
 
+                                const resolvedCharacter = {
+                                    ...character,
+                                    ownerId:
+                                        remote.ownerId ||
+                                        character.ownerId,
+                                    ownerName:
+                                        remote.ownerName ||
+                                        character.ownerName
+                                };
+
+
                                 openRemoteCharacterForEdit(
-                                    character,
-                                    record
+                                    resolvedCharacter,
+                                    remote.record
                                 );
 
                             }
