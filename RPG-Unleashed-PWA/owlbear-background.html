@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1,viewport-fit=cover"
+    >
+    <title>RPG Unleashed Background</title>
+</head>
+<body>
+<script>
+window.RPGOwlbear = window.RPGOwlbear || {
+    ready: false
+};
+
+const RPG_DB_NAME =
+    "rpgUnleashedCharactersDB";
+
+const RPG_DB_VERSION =
+    1;
+
+const RPG_CHARACTER_STORE =
+    "characters";
+
+function openCharacterDatabase() {
+    return new Promise(
+        (
+            resolve,
+            reject
+        ) => {
+            if (!("indexedDB" in window)) {
+                reject(
+                    new Error(
+                        "IndexedDB is unavailable in this browser context."
+                    )
+                );
+                return;
+            }
+
+            const request =
+                indexedDB.open(
+                    RPG_DB_NAME,
+                    RPG_DB_VERSION
+                );
+
+            request.addEventListener(
+                "upgradeneeded",
+                event => {
+                    const db =
+                        event.target.result;
+
+                    if (
+                        !db.objectStoreNames.contains(
+                            RPG_CHARACTER_STORE
+                        )
+                    ) {
+                        const store =
+                            db.createObjectStore(
+                                RPG_CHARACTER_STORE,
+                                {
+                                    keyPath:
+                                        "id"
+                                }
+                            );
+
+                        store.createIndex(
+                            "updatedAt",
+                            "updatedAt",
+                            {
+                                unique:
+                                    false
+                            }
+                        );
+                    }
+                }
+            );
+
+            request.addEventListener(
+                "success",
+                () => {
+                    resolve(
+                        request.result
+                    );
+                }
+            );
+
+            request.addEventListener(
+                "error",
+                () => {
+                    reject(
+                        request.error
+                    );
+                }
+            );
+        }
+    );
+}
+
+async function getAllCharacters() {
+    const db =
+        await openCharacterDatabase();
+
+    return new Promise(
+        (
+            resolve,
+            reject
+        ) => {
+            const transaction =
+                db.transaction(
+                    RPG_CHARACTER_STORE,
+                    "readonly"
+                );
+
+            const request =
+                transaction
+                    .objectStore(
+                        RPG_CHARACTER_STORE
+                    )
+                    .getAll();
+
+            request.addEventListener(
+                "success",
+                () => {
+                    const characters =
+                        request.result || [];
+
+                    characters.sort(
+                        (
+                            a,
+                            b
+                        ) =>
+                            (b.updatedAt || 0) -
+                            (a.updatedAt || 0)
+                    );
+
+                    resolve(
+                        characters
+                    );
+                }
+            );
+
+            request.addEventListener(
+                "error",
+                () => {
+                    reject(
+                        request.error
+                    );
+                }
+            );
+
+            transaction.addEventListener(
+                "complete",
+                () => {
+                    db.close();
+                }
+            );
+        }
+    );
+}
+
+async function getCharacterById(
+    characterId
+) {
+    const db =
+        await openCharacterDatabase();
+
+    return new Promise(
+        (
+            resolve,
+            reject
+        ) => {
+            const transaction =
+                db.transaction(
+                    RPG_CHARACTER_STORE,
+                    "readonly"
+                );
+
+            const request =
+                transaction
+                    .objectStore(
+                        RPG_CHARACTER_STORE
+                    )
+                    .get(
+                        characterId
+                    );
+
+            request.addEventListener(
+                "success",
+                () => {
+                    resolve(
+                        request.result ||
+                        null
+                    );
+                }
+            );
+
+            request.addEventListener(
+                "error",
+                () => {
+                    reject(
+                        request.error
+                    );
+                }
+            );
+
+            transaction.addEventListener(
+                "complete",
+                () => {
+                    db.close();
+                }
+            );
+        }
+    );
+}
+
+async function putCharacter(
+    character
+) {
+    const db =
+        await openCharacterDatabase();
+
+    return new Promise(
+        (
+            resolve,
+            reject
+        ) => {
+            const transaction =
+                db.transaction(
+                    RPG_CHARACTER_STORE,
+                    "readwrite"
+                );
+
+            transaction
+                .objectStore(
+                    RPG_CHARACTER_STORE
+                )
+                .put(
+                    character
+                );
+
+            transaction.addEventListener(
+                "complete",
+                () => {
+                    db.close();
+
+                    resolve(
+                        character
+                    );
+                }
+            );
+
+            transaction.addEventListener(
+                "error",
+                () => {
+                    reject(
+                        transaction.error
+                    );
+                }
+            );
+        }
+    );
+}
+
+async function deleteCharacter(
+    characterId
+) {
+    const db =
+        await openCharacterDatabase();
+
+    return new Promise(
+        (
+            resolve,
+            reject
+        ) => {
+            const transaction =
+                db.transaction(
+                    RPG_CHARACTER_STORE,
+                    "readwrite"
+                );
+
+            transaction
+                .objectStore(
+                    RPG_CHARACTER_STORE
+                )
+                .delete(
+                    characterId
+                );
+
+            transaction.addEventListener(
+                "complete",
+                () => {
+                    db.close();
+
+                    resolve();
+                }
+            );
+
+            transaction.addEventListener(
+                "error",
+                () => {
+                    reject(
+                        transaction.error
+                    );
+                }
+            );
+        }
+    );
+}
+
+window.RPGCharacterStore = {
+    getAllCharacters,
+    getCharacterById,
+    putCharacter,
+    deleteCharacter
+};
+</script>
+
+<script
+    type="module"
+    src="./owlbear-integration.js"
+></script>
+</body>
+</html>

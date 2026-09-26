@@ -1,4 +1,4 @@
-const CACHE_NAME = "rpg-unleashed-v44";
+const CACHE_NAME = "rpg-unleashed-v45";
 
 const APP_SHELL = [
     "./",
@@ -9,6 +9,7 @@ const APP_SHELL = [
     "./icons/icon-512.png",
     "./icons/apple-touch-icon.png",
     "./owlbear-conditions.html",
+    "./owlbear-background.html",
     "./assets/tokenhud/dr-icon.png",
     "./assets/tokenhud/nl-icon.png",
     "./assets/conditions/fear.png",

@@ -26,6 +26,10 @@ const TOKEN_LINK_METADATA_KEY =
     "com.rpgunleashed.character-sheet/tokenLink";
 
 
+const BACKGROUND_HEARTBEAT_KEY =
+    "com.rpgunleashed.character-sheet/backgroundHeartbeat";
+
+
 const CONDITION_OVERLAY_ASSETS = {
     "fear": "/assets/conditions/fear.png",
     "wounded": "/assets/conditions/wounded.png",
@@ -980,8 +984,9 @@ function waitForOwlbearRetry(
 async function loadOwlbearSdk() {
 
     const sources = [
-        "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk/+esm",
-        "https://esm.sh/@owlbear-rodeo/sdk"
+        "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm",
+        "https://esm.sh/@owlbear-rodeo/sdk@3.1.0",
+        "https://unpkg.com/@owlbear-rodeo/sdk@3.1.0?module"
     ];
 
 
@@ -1005,21 +1010,7 @@ async function loadOwlbearSdk() {
         try {
 
             return await import(
-                source +
-                (
-                    attempt ===
-                    0
-                        ? ""
-                        : (
-                            source.includes(
-                                "?"
-                            )
-                                ? "&"
-                                : "?"
-                        ) +
-                        "rpgRetry=" +
-                        Date.now()
-                )
+                source
             );
 
         }
@@ -1140,9 +1131,60 @@ async function initializeOwlbear() {
                     const buildText = sdkModule.buildText;
 
 
+                    async function publishBackgroundHeartbeat() {
+
+                        await OBR.player.setMetadata({
+                            [BACKGROUND_HEARTBEAT_KEY]: {
+                                roomId,
+                                playerId:
+                                    OBR.player.id,
+                                connectionId:
+                                    playerConnectionId,
+                                updatedAt:
+                                    Date.now()
+                            }
+                        });
+
+                    }
+
+
                     if (
                         isBackgroundContext
                     ) {
+
+                        try {
+
+                            await publishBackgroundHeartbeat();
+
+
+                            window.setInterval(
+                                () => {
+                                    publishBackgroundHeartbeat()
+                                        .catch(
+                                            error => {
+                                                console.error(
+                                                    "Could not refresh RPG Unleashed background heartbeat:",
+                                                    error
+                                                );
+                                            }
+                                        );
+                                },
+                                15000
+                            );
+
+                        }
+
+                        catch (
+                            error
+                        ) {
+
+                            console.error(
+                                "Could not publish RPG Unleashed background heartbeat:",
+                                error
+                            );
+
+                        }
+
 
                         try {
 
@@ -4268,6 +4310,28 @@ async function initializeOwlbear() {
                                         );
 
 
+                                    const heartbeat =
+                                        owner?.metadata?.[
+                                            BACKGROUND_HEARTBEAT_KEY
+                                        ];
+
+
+                                    const backgroundReady =
+                                        Boolean(
+                                            heartbeat &&
+                                            heartbeat.roomId ===
+                                                roomId &&
+                                            (
+                                                Date.now() -
+                                                Number(
+                                                    heartbeat.updatedAt ||
+                                                    0
+                                                )
+                                            ) <
+                                                45000
+                                        );
+
+
                                     return {
                                         ...character,
                                         ownerName:
@@ -4280,7 +4344,8 @@ async function initializeOwlbear() {
                                         ownerOnline:
                                             Boolean(
                                                 owner
-                                            )
+                                            ),
+                                        backgroundReady
                                     };
 
                                 }
@@ -4298,19 +4363,39 @@ async function initializeOwlbear() {
                             await OBR.party.getPlayers();
 
 
-                        const sender =
+                        const exactSender =
                             players.find(
                                 player =>
                                     player.connectionId ===
-                                    connectionId
+                                    connectionId &&
+                                    player.id ===
+                                    requesterId
+                            );
+
+
+                        if (
+                            exactSender
+                        ) {
+
+                            return (
+                                exactSender.role ===
+                                "GM"
+                            );
+
+                        }
+
+
+                        const idMatchedSender =
+                            players.find(
+                                player =>
+                                    player.id ===
+                                    requesterId
                             );
 
 
                         return Boolean(
-                            sender &&
-                            sender.id ===
-                                requesterId &&
-                            sender.role ===
+                            idMatchedSender &&
+                            idMatchedSender.role ===
                                 "GM"
                         );
 
@@ -5244,7 +5329,7 @@ async function initializeOwlbear() {
 
                                                 reject(
                                                     new Error(
-                                                        "The player did not respond. Make sure they are still connected to this Owlbear room."
+                                                        "The character owner did not respond to the live sheet request. Their RPG Unleashed background connection may not be running."
                                                     )
                                                 );
 
