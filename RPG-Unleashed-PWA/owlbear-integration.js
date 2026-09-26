@@ -1678,95 +1678,6 @@ async function initializeOwlbear() {
                     }
 
 
-                    let tokenHudAssetPromise =
-                        null;
-
-
-                    function loadTokenHudImage(
-                        assetPath
-                    ) {
-
-                        return new Promise(
-                            (
-                                resolve,
-                                reject
-                            ) => {
-
-                                const image =
-                                    new Image();
-
-
-                                image.addEventListener(
-                                    "load",
-                                    () => resolve(
-                                        image
-                                    )
-                                );
-
-
-                                image.addEventListener(
-                                    "error",
-                                    () =>
-                                        reject(
-                                            new Error(
-                                                "Could not load token HUD asset: " +
-                                                assetPath
-                                            )
-                                        )
-                                );
-
-
-                                image.src =
-                                    new URL(
-                                        assetPath,
-                                        window.location.origin
-                                    ).href;
-
-                            }
-                        );
-
-                    }
-
-
-                    async function getTokenHudAssets() {
-
-                        if (
-                            !tokenHudAssetPromise
-                        ) {
-
-                            tokenHudAssetPromise =
-                                Promise.all(
-                                    Object.entries(
-                                        TOKEN_HUD_ASSETS
-                                    ).map(
-                                        async (
-                                            [
-                                                key,
-                                                path
-                                            ]
-                                        ) => [
-                                            key,
-                                            await loadTokenHudImage(
-                                                path
-                                            )
-                                        ]
-                                    )
-                                )
-                                .then(
-                                    entries =>
-                                        Object.fromEntries(
-                                            entries
-                                        )
-                                );
-
-                        }
-
-
-                        return tokenHudAssetPromise;
-
-                    }
-
-
                     function clampHudFraction(
                         current,
                         maximum
@@ -1792,409 +1703,140 @@ async function initializeOwlbear() {
                     }
 
 
-                    function buildTokenHudLayout(
-                        vitals
-                    ) {
+                    function buildHudImageItem({
+                        character,
+                        token,
+                        ownerIdOverride,
+                        assetPath,
+                        pixelWidth,
+                        pixelHeight,
+                        sceneDpi,
+                        desiredWidth,
+                        centerX,
+                        centerY,
+                        kind,
+                        scaleX = 1,
+                        text = null
+                    }) {
 
-                        const rows =
-                            [];
+                        const imageDpi =
+                            pixelWidth *
+                            sceneDpi /
+                            desiredWidth;
 
 
-                        const totalDr =
-                            vitals.drArmor +
-                            vitals.drNatural +
-                            vitals.drMagic;
-
-
-                        if (
-                            vitals.hpMax > 0 ||
-                            vitals.hpCurrent > 0
-                        ) {
-
-                            rows.push(
+                        let builder =
+                            buildImage(
                                 {
-                                    type:
-                                        "bar",
-                                    fillKey:
-                                        "hpFill",
-                                    frameKey:
-                                        "hpFrame",
-                                    fraction:
-                                        clampHudFraction(
-                                            vitals.hpCurrent,
-                                            vitals.hpMax
-                                        )
-                                }
-                            );
-
-                        }
-
-
-                        if (
-                            vitals.manaMax > 0 ||
-                            vitals.manaCurrent > 0
-                        ) {
-
-                            rows.push(
+                                    width:
+                                        pixelWidth,
+                                    height:
+                                        pixelHeight,
+                                    url:
+                                        new URL(
+                                            assetPath,
+                                            window.location.origin
+                                        ).href,
+                                    mime:
+                                        "image/png"
+                                },
                                 {
-                                    type:
-                                        "bar",
-                                    fillKey:
-                                        "manaFill",
-                                    frameKey:
-                                        "manaFrame",
-                                    fraction:
-                                        clampHudFraction(
-                                            vitals.manaCurrent,
-                                            vitals.manaMax
-                                        )
-                                }
-                            );
-
-                        }
-
-
-                        const iconEntries =
-                            [];
-
-
-                        if (
-                            totalDr > 0
-                        ) {
-
-                            iconEntries.push(
-                                {
-                                    iconKey:
-                                        "drIcon",
-                                    value:
-                                        totalDr
-                                }
-                            );
-
-                        }
-
-
-                        if (
-                            vitals.nl > 0
-                        ) {
-
-                            iconEntries.push(
-                                {
-                                    iconKey:
-                                        "nlIcon",
-                                    value:
-                                        vitals.nl
-                                }
-                            );
-
-                        }
-
-
-                        if (
-                            iconEntries.length
-                        ) {
-
-                            rows.push(
-                                {
-                                    type:
-                                        "icons",
-                                    entries:
-                                        iconEntries
-                                }
-                            );
-
-                        }
-
-
-                        return rows;
-
-                    }
-
-
-                    async function createTokenHudData(
-                        vitals
-                    ) {
-
-                        const rows =
-                            buildTokenHudLayout(
-                                vitals
-                            );
-
-
-                        if (
-                            !rows.length
-                        ) {
-
-                            return null;
-
-                        }
-
-
-                        const assets =
-                            await getTokenHudAssets();
-
-
-                        const padding =
-                            4;
-
-
-                        const gap =
-                            4;
-
-
-                        const iconGap =
-                            18;
-
-
-                        const canvasWidth =
-                            TOKEN_HUD_BAR_WIDTH;
-
-
-                        const rowHeights =
-                            rows.map(
-                                row =>
-                                    row.type ===
-                                    "icons"
-                                        ? TOKEN_HUD_ICON_HEIGHT
-                                        : TOKEN_HUD_BAR_HEIGHT
-                            );
-
-
-                        const canvasHeight =
-                            (padding * 2) +
-                            rowHeights.reduce(
-                                (
-                                    total,
-                                    height
-                                ) =>
-                                    total +
-                                    height,
-                                0
-                            ) +
-                            (gap * Math.max(
-                                0,
-                                rows.length - 1
-                            ));
-
-
-                        const canvas =
-                            document.createElement(
-                                "canvas"
-                            );
-
-
-                        canvas.width =
-                            canvasWidth;
-
-
-                        canvas.height =
-                            canvasHeight;
-
-
-                        const context =
-                            canvas.getContext(
-                                "2d"
-                            );
-
-
-                        let cursorY =
-                            padding;
-
-
-                        rows.forEach(
-                            row => {
-
-                                if (
-                                    row.type ===
-                                    "bar"
-                                ) {
-
-                                    context.drawImage(
-                                        assets[
-                                            row.frameKey
-                                        ],
-                                        0,
-                                        cursorY,
-                                        TOKEN_HUD_BAR_WIDTH,
-                                        TOKEN_HUD_BAR_HEIGHT
-                                    );
-
-
-                                    const fillWidth =
-                                        Math.round(
-                                            TOKEN_HUD_BAR_WIDTH *
-                                            row.fraction
-                                        );
-
-
-                                    if (
-                                        fillWidth > 0
-                                    ) {
-
-                                        context.drawImage(
-                                            assets[
-                                                row.fillKey
-                                            ],
-                                            0,
-                                            0,
-                                            fillWidth,
-                                            TOKEN_HUD_BAR_HEIGHT,
-                                            0,
-                                            cursorY,
-                                            fillWidth,
-                                            TOKEN_HUD_BAR_HEIGHT
-                                        );
-
+                                    dpi:
+                                        imageDpi,
+                                    offset: {
+                                        x:
+                                            pixelWidth / 2,
+                                        y:
+                                            pixelHeight / 2
                                     }
-
-
-                                    cursorY +=
-                                        TOKEN_HUD_BAR_HEIGHT +
-                                        gap;
-
-
-                                    return;
-
                                 }
+                            )
+                            .position({
+                                x:
+                                    centerX,
+                                y:
+                                    centerY
+                            })
+                            .scale({
+                                x:
+                                    scaleX,
+                                y:
+                                    1
+                            })
+                            .layer(
+                                "ATTACHMENT"
+                            )
+                            .attachedTo(
+                                token.id
+                            )
+                            .locked(
+                                true
+                            )
+                            .disableHit(
+                                true
+                            )
+                            .metadata({
+                                [TOKEN_HUD_METADATA_KEY]:
+                                    {
+                                        characterId:
+                                            character.id,
+                                        ownerId:
+                                            ownerIdOverride ||
+                                            OBR.player.id,
+                                        roomId,
+                                        tokenId:
+                                            token.id,
+                                        kind
+                                    }
+                            });
 
 
-                                if (
-                                    row.type ===
-                                    "icons"
-                                ) {
+                        if (
+                            text !== null &&
+                            text !== undefined
+                        ) {
 
-                                    const rowWidth =
-                                        (
-                                            row.entries.length *
-                                            TOKEN_HUD_ICON_WIDTH
-                                        ) +
-                                        (
-                                            Math.max(
-                                                0,
-                                                row.entries.length - 1
-                                            ) *
-                                            iconGap
-                                        );
-
-
-                                    let cursorX =
-                                        Math.round(
-                                            (
-                                                canvasWidth -
-                                                rowWidth
-                                            ) / 2
-                                        );
-
-
-                                    row.entries.forEach(
-                                        entry => {
-
-                                            context.drawImage(
-                                                assets[
-                                                    entry.iconKey
-                                                ],
-                                                cursorX,
-                                                cursorY,
-                                                TOKEN_HUD_ICON_WIDTH,
-                                                TOKEN_HUD_ICON_HEIGHT
-                                            );
-
-
-                                            context.textAlign =
-                                                "center";
-
-
-                                            context.textBaseline =
-                                                "middle";
-
-
-                                            context.font =
-                                                "bold 29px Arial";
-
-
-                                            context.lineJoin =
-                                                "round";
-
-
-                                            context.lineWidth =
-                                                5;
-
-
-                                            context.strokeStyle =
-                                                "#000000";
-
-
-                                            context.fillStyle =
-                                                "#ffffff";
-
-
-                                            const textX =
-                                                cursorX +
-                                                (
-                                                    TOKEN_HUD_ICON_WIDTH / 2
-                                                );
-
-
-                                            const textY =
-                                                cursorY +
-                                                (
-                                                    TOKEN_HUD_ICON_HEIGHT / 2
-                                                ) + 1;
-
-
-                                            const text =
-                                                String(
-                                                    entry.value
-                                                );
-
-
-                                            context.strokeText(
-                                                text,
-                                                textX,
-                                                textY
-                                            );
-
-
-                                            context.fillText(
-                                                text,
-                                                textX,
-                                                textY
-                                            );
-
-
-                                            cursorX +=
-                                                TOKEN_HUD_ICON_WIDTH +
-                                                iconGap;
-
-                                        }
+                            builder =
+                                builder
+                                    .plainText(
+                                        String(
+                                            text
+                                        )
+                                    )
+                                    .textItemType(
+                                        "TEXT"
+                                    )
+                                    .fontSize(
+                                        28
+                                    )
+                                    .fontWeight(
+                                        700
+                                    )
+                                    .textAlign(
+                                        "CENTER"
+                                    )
+                                    .textAlignVertical(
+                                        "MIDDLE"
+                                    )
+                                    .textFillColor(
+                                        "#ffffff"
+                                    )
+                                    .textStrokeColor(
+                                        "#000000"
+                                    )
+                                    .textStrokeWidth(
+                                        5
                                     );
 
-
-                                    cursorY +=
-                                        TOKEN_HUD_ICON_HEIGHT +
-                                        gap;
-
-                                }
-
-                            }
-                        );
+                        }
 
 
-                        return {
-                            url:
-                                canvas.toDataURL(
-                                    "image/png"
-                                ),
-                            width:
-                                canvas.width,
-                            height:
-                                canvas.height
-                        };
+                        return builder.build();
 
                     }
 
 
-                    async function createCharacterHudImage(
+                    async function createCharacterHudItems(
                         character,
                         token,
                         vitalsOverride = null,
@@ -2217,119 +1859,331 @@ async function initializeOwlbear() {
                                 );
 
 
-                        const hudImage =
-                            await createTokenHudData(
-                                vitals
-                            );
-
-
-                        if (
-                            !hudImage
-                        ) {
-
-                            return null;
-
-                        }
-
-
                         const sceneDpi =
                             await OBR.scene.grid.getDpi();
 
 
-                        const desiredWidth =
+                        const desiredBarWidth =
                             Math.max(
                                 115,
-                                bounds.width * 1.12
+                                bounds.width *
+                                1.12
                             );
 
 
-                        const desiredHeight =
-                            desiredWidth *
+                        const desiredBarHeight =
+                            desiredBarWidth *
                             (
-                                hudImage.height /
-                                hudImage.width
+                                TOKEN_HUD_BAR_HEIGHT /
+                                TOKEN_HUD_BAR_WIDTH
                             );
 
 
-                        const imageDpi =
-                            hudImage.width *
-                            sceneDpi /
-                            desiredWidth;
+                        const desiredIconWidth =
+                            Math.max(
+                                26,
+                                bounds.width *
+                                0.28
+                            );
 
 
-                        const item =
-                            buildImage(
-                                {
-                                    width:
-                                        hudImage.width,
-                                    height:
-                                        hudImage.height,
-                                    url:
-                                        hudImage.url,
-                                    mime:
-                                        "image/png"
-                                },
-                                {
-                                    dpi:
-                                        imageDpi,
-                                    offset: {
-                                        x:
-                                            hudImage.width / 2,
-                                        y:
-                                            hudImage.height / 2
-                                    }
-                                }
-                            )
-                            .position(
-                                {
-                                    x:
-                                        bounds.center.x,
-                                    y:
-                                        bounds.max.y +
-                                        8 +
+                        const desiredIconHeight =
+                            desiredIconWidth *
+                            (
+                                TOKEN_HUD_ICON_HEIGHT /
+                                TOKEN_HUD_ICON_WIDTH
+                            );
+
+
+                        const gap =
+                            Math.max(
+                                3,
+                                bounds.height *
+                                0.025
+                            );
+
+
+                        let cursorY =
+                            bounds.max.y +
+                            gap;
+
+
+                        const items =
+                            [];
+
+
+                        const addBar =
+                            (
+                                framePath,
+                                fillPath,
+                                fraction,
+                                kindPrefix
+                            ) => {
+
+                                const centerY =
+                                    cursorY +
+                                    (
+                                        desiredBarHeight / 2
+                                    );
+
+
+                                const frame =
+                                    buildHudImageItem({
+                                        character,
+                                        token,
+                                        ownerIdOverride,
+                                        assetPath:
+                                            framePath,
+                                        pixelWidth:
+                                            TOKEN_HUD_BAR_WIDTH,
+                                        pixelHeight:
+                                            TOKEN_HUD_BAR_HEIGHT,
+                                        sceneDpi,
+                                        desiredWidth:
+                                            desiredBarWidth,
+                                        centerX:
+                                            bounds.center.x,
+                                        centerY,
+                                        kind:
+                                            kindPrefix +
+                                            "-frame"
+                                    });
+
+
+                                items.push(
+                                    frame
+                                );
+
+
+                                if (
+                                    fraction >
+                                    0
+                                ) {
+
+                                    const fillCenterX =
+                                        bounds.center.x -
                                         (
-                                            desiredHeight / 2
-                                        )
-                                }
-                            )
-                            .layer(
-                                "ATTACHMENT"
-                            )
-                            .attachedTo(
-                                token.id
-                            )
-                            .locked(
-                                true
-                            )
-                            .disableHit(
-                                true
-                            )
-                            .metadata(
-                                {
-                                    [TOKEN_HUD_METADATA_KEY]:
-                                        {
-                                            characterId:
-                                                character.id,
-                                            ownerId:
-                                                ownerIdOverride ||
-                                                OBR.player.id,
-                                            roomId,
-                                            tokenId:
-                                                token.id,
+                                            desiredBarWidth *
+                                            (
+                                                1 -
+                                                fraction
+                                            ) /
+                                            2
+                                        );
+
+
+                                    const fill =
+                                        buildHudImageItem({
+                                            character,
+                                            token,
+                                            ownerIdOverride,
+                                            assetPath:
+                                                fillPath,
+                                            pixelWidth:
+                                                TOKEN_HUD_BAR_WIDTH,
+                                            pixelHeight:
+                                                TOKEN_HUD_BAR_HEIGHT,
+                                            sceneDpi,
+                                            desiredWidth:
+                                                desiredBarWidth,
+                                            centerX:
+                                                fillCenterX,
+                                            centerY,
                                             kind:
-                                                "vitals-hud-image"
-                                        }
+                                                kindPrefix +
+                                                "-fill",
+                                            scaleX:
+                                                fraction
+                                        });
+
+
+                                    items.push(
+                                        fill
+                                    );
+
                                 }
-                            )
-                            .build();
 
 
-                        await OBR.scene.items.addItems(
-                            [item]
-                        );
+                                cursorY +=
+                                    desiredBarHeight +
+                                    gap;
+
+                            };
 
 
-                        return item;
+                        if (
+                            vitals.hpMax > 0 ||
+                            vitals.hpCurrent > 0
+                        ) {
+
+                            addBar(
+                                TOKEN_HUD_ASSETS.hpFrame,
+                                TOKEN_HUD_ASSETS.hpFill,
+                                clampHudFraction(
+                                    vitals.hpCurrent,
+                                    vitals.hpMax
+                                ),
+                                "hp"
+                            );
+
+                        }
+
+
+                        if (
+                            vitals.manaMax > 0 ||
+                            vitals.manaCurrent > 0
+                        ) {
+
+                            addBar(
+                                TOKEN_HUD_ASSETS.manaFrame,
+                                TOKEN_HUD_ASSETS.manaFill,
+                                clampHudFraction(
+                                    vitals.manaCurrent,
+                                    vitals.manaMax
+                                ),
+                                "mana"
+                            );
+
+                        }
+
+
+                        const totalDr =
+                            vitals.drArmor +
+                            vitals.drNatural +
+                            vitals.drMagic;
+
+
+                        const iconEntries =
+                            [];
+
+
+                        if (
+                            totalDr > 0
+                        ) {
+
+                            iconEntries.push({
+                                assetPath:
+                                    TOKEN_HUD_ASSETS.drIcon,
+                                value:
+                                    totalDr,
+                                kind:
+                                    "dr"
+                            });
+
+                        }
+
+
+                        if (
+                            vitals.nl > 0
+                        ) {
+
+                            iconEntries.push({
+                                assetPath:
+                                    TOKEN_HUD_ASSETS.nlIcon,
+                                value:
+                                    vitals.nl,
+                                kind:
+                                    "nl"
+                            });
+
+                        }
+
+
+                        if (
+                            iconEntries.length
+                        ) {
+
+                            const iconGap =
+                                Math.max(
+                                    4,
+                                    desiredIconWidth *
+                                    0.18
+                                );
+
+
+                            const totalIconWidth =
+                                (
+                                    iconEntries.length *
+                                    desiredIconWidth
+                                ) +
+                                (
+                                    Math.max(
+                                        0,
+                                        iconEntries.length - 1
+                                    ) *
+                                    iconGap
+                                );
+
+
+                            let iconCenterX =
+                                bounds.center.x -
+                                (
+                                    totalIconWidth / 2
+                                ) +
+                                (
+                                    desiredIconWidth / 2
+                                );
+
+
+                            const iconCenterY =
+                                cursorY +
+                                (
+                                    desiredIconHeight / 2
+                                );
+
+
+                            iconEntries.forEach(
+                                entry => {
+
+                                    items.push(
+                                        buildHudImageItem({
+                                            character,
+                                            token,
+                                            ownerIdOverride,
+                                            assetPath:
+                                                entry.assetPath,
+                                            pixelWidth:
+                                                TOKEN_HUD_ICON_WIDTH,
+                                            pixelHeight:
+                                                TOKEN_HUD_ICON_HEIGHT,
+                                            sceneDpi,
+                                            desiredWidth:
+                                                desiredIconWidth,
+                                            centerX:
+                                                iconCenterX,
+                                            centerY:
+                                                iconCenterY,
+                                            kind:
+                                                entry.kind +
+                                                "-icon",
+                                            text:
+                                                entry.value
+                                        })
+                                    );
+
+
+                                    iconCenterX +=
+                                        desiredIconWidth +
+                                        iconGap;
+
+                                }
+                            );
+
+                        }
+
+
+                        if (
+                            items.length
+                        ) {
+
+                            await OBR.scene.items.addItems(
+                                items
+                            );
+
+                        }
+
+
+                        return items;
 
                     }
 
@@ -2462,8 +2316,8 @@ async function initializeOwlbear() {
                         );
 
 
-                        const created =
-                            await createCharacterHudImage(
+                        const createdItems =
+                            await createCharacterHudItems(
                                 sourceCharacter,
                                 token,
                                 vitals,
@@ -2483,28 +2337,25 @@ async function initializeOwlbear() {
                         ) {
 
                             await window.RPGCharacterStore
-                                .putCharacter(
-                                    {
-                                        ...latest,
-                                        owlbearTokenLinks:
-                                            {
-                                                ...(latest.owlbearTokenLinks || {}),
-                                                [roomId]:
-                                                    {
-                                                        tokenId:
-                                                            token.id,
-                                                        hudItemIds:
-                                                            created
-                                                                ? [created.id]
-                                                                : [],
-                                                        labelId:
-                                                            null,
-                                                        linkedAt:
-                                                            Date.now()
-                                                    }
-                                            }
+                                .putCharacter({
+                                    ...latest,
+                                    owlbearTokenLinks: {
+                                        ...(latest.owlbearTokenLinks || {}),
+                                        [roomId]: {
+                                            tokenId:
+                                                token.id,
+                                            hudItemIds:
+                                                createdItems.map(
+                                                    item =>
+                                                        item.id
+                                                ),
+                                            labelId:
+                                                null,
+                                            linkedAt:
+                                                Date.now()
+                                        }
                                     }
-                                );
+                                });
 
                         }
 
@@ -2609,8 +2460,8 @@ async function initializeOwlbear() {
                             latest
                         );
 
-                        const hudItem =
-                            await createCharacterHudImage(
+                        const hudItems =
+                            await createCharacterHudItems(
                                 latest,
                                 token
                             );
@@ -2620,13 +2471,17 @@ async function initializeOwlbear() {
                             owlbearTokenLinks: {
                                 ...(latest.owlbearTokenLinks || {}),
                                 [roomId]: {
-                                    tokenId: token.id,
+                                    tokenId:
+                                        token.id,
                                     hudItemIds:
-                                        hudItem
-                                            ? [hudItem.id]
-                                            : [],
-                                    labelId: null,
-                                    linkedAt: Date.now()
+                                        hudItems.map(
+                                            item =>
+                                                item.id
+                                        ),
+                                    labelId:
+                                        null,
+                                    linkedAt:
+                                        Date.now()
                                 }
                             }
                         };
