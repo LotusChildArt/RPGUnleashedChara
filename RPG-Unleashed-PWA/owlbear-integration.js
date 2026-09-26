@@ -1575,24 +1575,29 @@ async function initializeOwlbear() {
                                     icon:
                                         "/icons/icon-192.png",
                                     label:
-                                        "RPG Controls"
+                                        "RPG Controls",
+                                    filter: {
+                                        min:
+                                            1,
+                                        max:
+                                            1,
+                                        every: [
+                                            {
+                                                key:
+                                                    "layer",
+                                                value:
+                                                    "CHARACTER"
+                                            }
+                                        ]
+                                    }
                                 }
                             ],
-                            every: [
-                                {
-                                    key:
-                                        "layer",
-                                    value:
-                                        "CHARACTER"
-                                }
-                            ],
+                            onClick() {},
                             embed: {
                                 url:
                                     "/owlbear-conditions.html",
                                 height:
-                                    520,
-                                width:
-                                    360
+                                    520
                             }
                         });
 
