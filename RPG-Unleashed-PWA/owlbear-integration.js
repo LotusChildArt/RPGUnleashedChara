@@ -6,6 +6,10 @@ const REMOVED_PARTY_CHARACTERS_KEY =
     "com.rpgunleashed.character-sheet/removedPartyCharacters";
 
 
+const ROOM_SHARED_CHARACTERS_KEY =
+    "com.rpgunleashed.character-sheet/roomSharedCharactersV2";
+
+
 const LIVE_SHEET_CHANNEL =
     "com.rpgunleashed.character-sheet/liveSheetV1";
 
@@ -874,6 +878,11 @@ function preserveOwnerPicture(
         {};
 
 
+    next.owlbearSharedRooms =
+        currentRecord.owlbearSharedRooms ||
+        {};
+
+
     const incomingTab =
         next.state?.tabs?.tab4;
 
@@ -1384,8 +1393,6 @@ async function initializeOwlbear() {
 
                                 if (
                                     !meta?.characterId ||
-                                    meta.ownerId !==
-                                        OBR.player.id ||
                                     meta.roomId !==
                                         roomId ||
                                     !meta.tokenId
@@ -1738,25 +1745,30 @@ async function initializeOwlbear() {
                         }
 
 
+                        const localRecord =
+                            await window.RPGCharacterStore
+                                ?.getCharacterById(
+                                    reference.characterId
+                                );
+
+
                         if (
-                            !reference.ownerId ||
-                            reference.ownerId ===
-                                OBR.player.id
+                            localRecord
                         ) {
 
-                            const record =
-                                await window.RPGCharacterStore
-                                    ?.getCharacterById(
-                                        reference.characterId
-                                    );
-
-
                             if (
-                                !record
+                                reference.ownerId !==
+                                OBR.player.id
                             ) {
 
-                                throw new Error(
-                                    "This token is linked, but the character record was not found on this device."
+                                reference.ownerId =
+                                    OBR.player.id;
+
+
+                                await setTokenLinkMetadata(
+                                    tokenId,
+                                    reference.characterId,
+                                    OBR.player.id
                                 );
 
                             }
@@ -1764,10 +1776,64 @@ async function initializeOwlbear() {
 
                             return {
                                 reference,
-                                record,
+                                record:
+                                    localRecord,
                                 remoteEditSession:
                                     null
                             };
+
+                        }
+
+
+                        if (
+                            playerRole ===
+                            "GM"
+                        ) {
+
+                            const registry =
+                                await getRoomSharedRegistry();
+
+
+                            const shared =
+                                registry.find(
+                                    item =>
+                                        item.characterId ===
+                                        reference.characterId &&
+                                        item.roomId ===
+                                        roomId
+                                );
+
+
+                            if (
+                                shared?.ownerId &&
+                                shared.ownerId !==
+                                    OBR.player.id
+                            ) {
+
+                                reference.ownerId =
+                                    shared.ownerId;
+
+
+                                await setTokenLinkMetadata(
+                                    tokenId,
+                                    reference.characterId,
+                                    shared.ownerId
+                                );
+
+                            }
+
+                        }
+
+
+                        if (
+                            !reference.ownerId ||
+                            reference.ownerId ===
+                                OBR.player.id
+                        ) {
+
+                            throw new Error(
+                                "This token is linked, but its owner could not be resolved to a connected shared character."
+                            );
 
                         }
 
@@ -3375,6 +3441,245 @@ async function initializeOwlbear() {
                     }
 
 
+                    function isCharacterSharedLocally(
+                        character
+                    ) {
+
+                        return Boolean(
+                            character?.owlbearSharedRooms?.[
+                                roomId
+                            ]
+                        );
+
+                    }
+
+
+                    async function getRoomSharedRegistry() {
+
+                        const metadata =
+                            await OBR.room.getMetadata();
+
+
+                        return cleanSharedCharacters(
+                            metadata[
+                                ROOM_SHARED_CHARACTERS_KEY
+                            ]
+                        );
+
+                    }
+
+
+                    async function setRoomSharedRegistry(
+                        characters
+                    ) {
+
+                        await OBR.room.setMetadata({
+                            [ROOM_SHARED_CHARACTERS_KEY]:
+                                cleanSharedCharacters(
+                                    characters
+                                )
+                        });
+
+                    }
+
+
+                    async function upsertRoomSharedCharacter(
+                        character
+                    ) {
+
+                        const registry =
+                            await getRoomSharedRegistry();
+
+
+                        const index =
+                            registry.findIndex(
+                                item =>
+                                    item.characterId ===
+                                        character.id
+                            );
+
+
+                        const entry = {
+                            characterId:
+                                character.id,
+                            name:
+                                character.name ||
+                                "Unnamed Character",
+                            race:
+                                character.race ||
+                                "",
+                            level:
+                                character.level ||
+                                "",
+                            campaign:
+                                character.campaign ||
+                                "",
+                            ownerId:
+                                OBR.player.id,
+                            ownerName:
+                                playerName ||
+                                "Player",
+                            roomId,
+                            updatedAt:
+                                Date.now()
+                        };
+
+
+                        if (
+                            index >= 0
+                        ) {
+
+                            registry[
+                                index
+                            ] = {
+                                ...registry[
+                                    index
+                                ],
+                                ...entry
+                            };
+
+                        }
+
+                        else {
+
+                            registry.push(
+                                entry
+                            );
+
+                        }
+
+
+                        await setRoomSharedRegistry(
+                            registry
+                        );
+
+
+                        return entry;
+
+                    }
+
+
+                    async function removeRoomSharedCharacter(
+                        characterId
+                    ) {
+
+                        const registry =
+                            await getRoomSharedRegistry();
+
+
+                        const next =
+                            registry.filter(
+                                item =>
+                                    item.characterId !==
+                                        characterId
+                            );
+
+
+                        if (
+                            next.length !==
+                            registry.length
+                        ) {
+
+                            await setRoomSharedRegistry(
+                                next
+                            );
+
+                        }
+
+                    }
+
+
+                    async function migrateAndRestoreSharedCharacters() {
+
+                        const localCharacters =
+                            await getLocalCharacters();
+
+
+                        const playerMetadata =
+                            await OBR.player.getMetadata();
+
+
+                        const legacyShared =
+                            cleanSharedCharacters(
+                                playerMetadata[
+                                    SHARED_CHARACTERS_KEY
+                                ]
+                            )
+                            .filter(
+                                item =>
+                                    item.roomId ===
+                                    roomId
+                            );
+
+
+                        const legacyIds =
+                            new Set(
+                                legacyShared.map(
+                                    item =>
+                                        item.characterId
+                                )
+                            );
+
+
+                        for (
+                            const character
+                            of localCharacters
+                        ) {
+
+                            let shared =
+                                isCharacterSharedLocally(
+                                    character
+                                );
+
+
+                            if (
+                                !shared &&
+                                legacyIds.has(
+                                    character.id
+                                )
+                            ) {
+
+                                const migrated = {
+                                    ...character,
+                                    owlbearSharedRooms: {
+                                        ...(character.owlbearSharedRooms || {}),
+                                        [roomId]:
+                                            true
+                                    }
+                                };
+
+
+                                await window.RPGCharacterStore
+                                    ?.putCharacter(
+                                        migrated
+                                    );
+
+
+                                character.owlbearSharedRooms =
+                                    migrated.owlbearSharedRooms;
+
+
+                                shared =
+                                    true;
+
+                            }
+
+
+                            if (
+                                shared
+                            ) {
+
+                                await upsertRoomSharedCharacter(
+                                    character
+                                );
+
+                            }
+
+                        }
+
+                    }
+
+
                     async function syncSharedCharacter(
                         character
                     ) {
@@ -3411,12 +3716,30 @@ async function initializeOwlbear() {
                             );
 
 
+                        const locallyShared =
+                            isCharacterSharedLocally(
+                                character
+                            );
+
+
                         if (
                             currentIndex <
-                            0
+                            0 &&
+                            !locallyShared
                         ) {
 
                             return false;
+
+                        }
+
+
+                        if (
+                            locallyShared
+                        ) {
+
+                            await upsertRoomSharedCharacter(
+                                character
+                            );
 
                         }
 
@@ -3439,7 +3762,10 @@ async function initializeOwlbear() {
 
                         }
 
-                        else {
+                        else if (
+                            currentIndex >=
+                            0
+                        ) {
 
                             allShared[
                                 currentIndex
@@ -3463,6 +3789,34 @@ async function initializeOwlbear() {
                                 updatedAt:
                                     Date.now()
                             };
+
+                        }
+
+
+                        else if (
+                            locallyShared
+                        ) {
+
+                            allShared.push({
+                                characterId:
+                                    character.id,
+                                name:
+                                    character.name ||
+                                    "Unnamed Character",
+                                race:
+                                    character.race ||
+                                    "",
+                                level:
+                                    character.level ||
+                                    "",
+                                campaign,
+                                ownerName:
+                                    playerName ||
+                                    "Player",
+                                roomId,
+                                updatedAt:
+                                    Date.now()
+                            });
 
                         }
 
@@ -3508,7 +3862,9 @@ async function initializeOwlbear() {
                                 "GM" &&
                             character?.ownerId &&
                             character.ownerId !==
-                                OBR.player.id
+                                OBR.player.id &&
+                            character.ownerOnline !==
+                                false
                         );
 
                     }
@@ -3559,19 +3915,43 @@ async function initializeOwlbear() {
 
                     async function getMySharedCharacters() {
 
-                        const metadata =
-                            await OBR.player.getMetadata();
+                        const characters =
+                            await getLocalCharacters();
 
 
-                        return cleanSharedCharacters(
-                            metadata[
-                                SHARED_CHARACTERS_KEY
-                            ]
-                        )
+                        return characters
                             .filter(
                                 character =>
-                                    character.roomId ===
-                                    roomId
+                                    isCharacterSharedLocally(
+                                        character
+                                    )
+                            )
+                            .map(
+                                character => ({
+                                    characterId:
+                                        character.id,
+                                    name:
+                                        character.name ||
+                                        "Unnamed Character",
+                                    race:
+                                        character.race ||
+                                        "",
+                                    level:
+                                        character.level ||
+                                        "",
+                                    campaign:
+                                        character.campaign ||
+                                        "",
+                                    ownerName:
+                                        playerName ||
+                                        "Player",
+                                    ownerId:
+                                        OBR.player.id,
+                                    roomId,
+                                    updatedAt:
+                                        character.updatedAt ||
+                                        Date.now()
+                                })
                             );
 
                     }
@@ -3580,6 +3960,52 @@ async function initializeOwlbear() {
                     async function toggleCharacterShare(
                         character
                     ) {
+
+                        const latest =
+                            await window.RPGCharacterStore
+                                ?.getCharacterById(
+                                    character.id
+                                ) ||
+                            character;
+
+
+                        const currentlyShared =
+                            isCharacterSharedLocally(
+                                latest
+                            );
+
+
+                        const nextShared =
+                            !currentlyShared;
+
+
+                        const updated = {
+                            ...latest,
+                            owlbearSharedRooms: {
+                                ...(latest.owlbearSharedRooms || {}),
+                                [roomId]:
+                                    nextShared
+                            }
+                        };
+
+
+                        if (
+                            !nextShared
+                        ) {
+
+                            delete updated
+                                .owlbearSharedRooms[
+                                    roomId
+                                ];
+
+                        }
+
+
+                        await window.RPGCharacterStore
+                            ?.putCharacter(
+                                updated
+                            );
+
 
                         const metadata =
                             await OBR.player.getMetadata();
@@ -3604,33 +4030,23 @@ async function initializeOwlbear() {
 
 
                         if (
-                            currentIndex >=
-                            0
+                            nextShared
                         ) {
 
-                            allShared.splice(
-                                currentIndex,
-                                1
-                            );
-
-                        }
-
-                        else {
-
-                            allShared.push({
+                            const entry = {
                                 characterId:
-                                    character.id,
+                                    updated.id,
                                 name:
-                                    character.name ||
+                                    updated.name ||
                                     "Unnamed Character",
                                 race:
-                                    character.race ||
+                                    updated.race ||
                                     "",
                                 level:
-                                    character.level ||
+                                    updated.level ||
                                     "",
                                 campaign:
-                                    character.campaign ||
+                                    updated.campaign ||
                                     "",
                                 ownerName:
                                     playerName ||
@@ -3638,12 +4054,58 @@ async function initializeOwlbear() {
                                 roomId,
                                 updatedAt:
                                     Date.now()
-                            });
+                            };
+
+
+                            if (
+                                currentIndex >=
+                                0
+                            ) {
+
+                                allShared[
+                                    currentIndex
+                                ] = entry;
+
+                            }
+
+                            else {
+
+                                allShared.push(
+                                    entry
+                                );
+
+                            }
+
+
+                            await upsertRoomSharedCharacter(
+                                updated
+                            );
 
 
                             await clearPartyCharacterRemoval(
                                 OBR.player.id,
-                                character.id
+                                updated.id
+                            );
+
+                        }
+
+                        else {
+
+                            if (
+                                currentIndex >=
+                                0
+                            ) {
+
+                                allShared.splice(
+                                    currentIndex,
+                                    1
+                                );
+
+                            }
+
+
+                            await removeRoomSharedCharacter(
+                                updated.id
                             );
 
                         }
@@ -3662,8 +4124,7 @@ async function initializeOwlbear() {
                         );
 
 
-                        return currentIndex <
-                            0;
+                        return nextShared;
 
                     }
 
@@ -3671,14 +4132,12 @@ async function initializeOwlbear() {
                     async function getPartySharedCharacters() {
 
                         const [
-                            myMetadata,
-                            partyPlayers,
-                            roomMetadata
+                            roomMetadata,
+                            partyPlayers
                         ] =
                             await Promise.all([
-                                OBR.player.getMetadata(),
-                                OBR.party.getPlayers(),
-                                OBR.room.getMetadata()
+                                OBR.room.getMetadata(),
+                                OBR.party.getPlayers()
                             ]);
 
 
@@ -3692,96 +4151,88 @@ async function initializeOwlbear() {
                             );
 
 
-                        const sources = [
-                            {
-                                id:
-                                    OBR.player.id,
-                                role:
-                                    playerRole,
-                                metadata:
-                                    myMetadata,
-                                fallbackName:
-                                    playerName ||
-                                    "Player"
-                            },
-                            ...partyPlayers.map(
-                                player => ({
-                                    id:
-                                        player.id,
-                                    role:
-                                        player.role,
-                                    metadata:
-                                        player.metadata ||
-                                        {},
-                                    fallbackName:
-                                        "Player"
-                                })
+                        const registry =
+                            cleanSharedCharacters(
+                                roomMetadata[
+                                    ROOM_SHARED_CHARACTERS_KEY
+                                ]
                             )
-                        ];
+                            .filter(
+                                character =>
+                                    character.roomId ===
+                                    roomId
+                            );
 
 
-                        const unique =
-                            new Map();
-
-
-                        sources.forEach(
-                            source => {
-
-                                cleanSharedCharacters(
-                                    source.metadata[
-                                        SHARED_CHARACTERS_KEY
+                        const onlinePlayers =
+                            new Map(
+                                [
+                                    {
+                                        id:
+                                            OBR.player.id,
+                                        role:
+                                            playerRole,
+                                        name:
+                                            playerName ||
+                                            "Player"
+                                    },
+                                    ...partyPlayers.map(
+                                        player => ({
+                                            id:
+                                                player.id,
+                                            role:
+                                                player.role,
+                                            name:
+                                                player.name ||
+                                                "Player"
+                                        })
+                                    )
+                                ]
+                                .map(
+                                    player => [
+                                        player.id,
+                                        player
                                     ]
                                 )
-                                    .filter(
-                                        character =>
-                                            character.roomId ===
-                                            roomId
+                            );
+
+
+                        return registry
+                            .filter(
+                                character =>
+                                    !removed.has(
+                                        partyCharacterKey(
+                                            character.ownerId,
+                                            character.characterId
+                                        )
                                     )
-                                    .forEach(
-                                        character => {
+                            )
+                            .map(
+                                character => {
 
-                                            const key =
-                                                partyCharacterKey(
-                                                    source.id,
-                                                    character.characterId
-                                                );
-
-
-                                            if (
-                                                removed.has(
-                                                    key
-                                                )
-                                            ) {
-
-                                                return;
-
-                                            }
+                                    const owner =
+                                        onlinePlayers.get(
+                                            character.ownerId
+                                        );
 
 
-                                            unique.set(
-                                                key,
-                                                {
-                                                    ...character,
-                                                    ownerId:
-                                                        source.id,
-                                                    ownerName:
-                                                        character.ownerName ||
-                                                        source.fallbackName,
-                                                    ownerRole:
-                                                        source.role
-                                                }
-                                            );
+                                    return {
+                                        ...character,
+                                        ownerName:
+                                            character.ownerName ||
+                                            owner?.name ||
+                                            "Player",
+                                        ownerRole:
+                                            owner?.role ||
+                                            "PLAYER",
+                                        ownerOnline:
+                                            Boolean(
+                                                owner
+                                            )
+                                    };
 
-                                        }
-                                    );
-
-                            }
-                        );
-
-
-                        return Array.from(
-                            unique.values()
-                        );
+                                }
+                            );
 
                     }
 
@@ -3951,6 +4402,19 @@ async function initializeOwlbear() {
                             [SHARED_CHARACTERS_KEY]:
                                 allShared
                         });
+
+
+                        if (
+                            isCharacterSharedLocally(
+                                character
+                            )
+                        ) {
+
+                            await upsertRoomSharedCharacter(
+                                character
+                            );
+
+                        }
 
                     }
 
@@ -4875,6 +5339,9 @@ async function initializeOwlbear() {
 
                         try {
 
+                            await migrateAndRestoreSharedCharacters();
+
+
                             await repairLocalTokenLinks();
 
                         }
@@ -4884,7 +5351,31 @@ async function initializeOwlbear() {
                         ) {
 
                             console.error(
-                                "Could not repair RPG Unleashed token links:",
+                                "Could not restore RPG Unleashed sharing/token links:",
+                                error
+                            );
+
+                        }
+
+                    }
+
+
+                    if (
+                        !isBackgroundContext
+                    ) {
+
+                        try {
+
+                            await migrateAndRestoreSharedCharacters();
+
+                        }
+
+                        catch (
+                            error
+                        ) {
+
+                            console.error(
+                                "Could not restore RPG Unleashed shared characters:",
                                 error
                             );
 
@@ -4920,6 +5411,7 @@ async function initializeOwlbear() {
                         saveTokenLinkedCharacter,
                         getSelectedCharacterTokenId,
                         repairLocalTokenLinks,
+                        migrateAndRestoreSharedCharacters,
                         conditionDefinitions:
                             CONDITION_DEFINITIONS
                     };
