@@ -2609,8 +2609,8 @@ async function initializeOwlbear() {
                             latest
                         );
 
-                        const label =
-                            await createCharacterHudLabel(
+                        const hudItem =
+                            await createCharacterHudImage(
                                 latest,
                                 token
                             );
@@ -2621,8 +2621,11 @@ async function initializeOwlbear() {
                                 ...(latest.owlbearTokenLinks || {}),
                                 [roomId]: {
                                     tokenId: token.id,
-                                    hudItemIds: [label.id],
-                                    labelId: label.id,
+                                    hudItemIds:
+                                        hudItem
+                                            ? [hudItem.id]
+                                            : [],
+                                    labelId: null,
                                     linkedAt: Date.now()
                                 }
                             }
