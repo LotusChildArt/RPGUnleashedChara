@@ -1124,6 +1124,7 @@ async function initializeOwlbear() {
 
                     const buildLabel = sdkModule.buildLabel;
                     const buildImage = sdkModule.buildImage;
+                    const buildText = sdkModule.buildText;
 
 
                     if (
@@ -1767,8 +1768,7 @@ async function initializeOwlbear() {
                         desiredWidth,
                         centerX,
                         centerY,
-                        kind,
-                        text = null
+                        kind
                     }) {
 
                         const imageDpi =
@@ -1837,65 +1837,109 @@ async function initializeOwlbear() {
                             });
 
 
-                        if (
-                            text !== null &&
-                            text !== undefined
-                        ) {
-
-                            builder =
-                                builder
-                                    .plainText(
-                                        String(
-                                            text
-                                        )
-                                    )
-                                    .textType(
-                                        "PLAIN"
-                                    )
-                                    .textItemType(
-                                        "TEXT"
-                                    )
-                                    .textWidth(
-                                        "AUTO"
-                                    )
-                                    .textHeight(
-                                        "AUTO"
-                                    )
-                                    .textPadding(
-                                        0
-                                    )
-                                    .fontSize(
-                                        30
-                                    )
-                                    .fontWeight(
-                                        900
-                                    )
-                                    .textAlign(
-                                        "CENTER"
-                                    )
-                                    .textAlignVertical(
-                                        "MIDDLE"
-                                    )
-                                    .textFillColor(
-                                        "#ffffff"
-                                    )
-                                    .textFillOpacity(
-                                        1
-                                    )
-                                    .textStrokeColor(
-                                        "#000000"
-                                    )
-                                    .textStrokeOpacity(
-                                        1
-                                    )
-                                    .textStrokeWidth(
-                                        6
-                                    );
-
-                        }
-
-
                         return builder.build();
+
+                    }
+
+
+                    function buildHudNumberItem({
+                        character,
+                        token,
+                        ownerIdOverride,
+                        value,
+                        centerX,
+                        centerY,
+                        desiredIconWidth,
+                        kind
+                    }) {
+
+                        return buildText()
+                            .plainText(
+                                String(
+                                    value
+                                )
+                            )
+                            .textType(
+                                "PLAIN"
+                            )
+                            .width(
+                                Math.max(
+                                    34,
+                                    desiredIconWidth *
+                                    1.4
+                                )
+                            )
+                            .height(
+                                Math.max(
+                                    28,
+                                    desiredIconWidth
+                                )
+                            )
+                            .padding(
+                                0
+                            )
+                            .fontSize(
+                                30
+                            )
+                            .fontWeight(
+                                900
+                            )
+                            .textAlign(
+                                "CENTER"
+                            )
+                            .textAlignVertical(
+                                "MIDDLE"
+                            )
+                            .fillColor(
+                                "#ffffff"
+                            )
+                            .fillOpacity(
+                                1
+                            )
+                            .strokeColor(
+                                "#000000"
+                            )
+                            .strokeOpacity(
+                                1
+                            )
+                            .strokeWidth(
+                                6
+                            )
+                            .position({
+                                x:
+                                    centerX,
+                                y:
+                                    centerY
+                            })
+                            .layer(
+                                "ATTACHMENT"
+                            )
+                            .attachedTo(
+                                token.id
+                            )
+                            .locked(
+                                true
+                            )
+                            .disableHit(
+                                true
+                            )
+                            .metadata({
+                                [TOKEN_HUD_METADATA_KEY]:
+                                    {
+                                        characterId:
+                                            character.id,
+                                        ownerId:
+                                            ownerIdOverride ||
+                                            OBR.player.id,
+                                        roomId,
+                                        tokenId:
+                                            token.id,
+                                        kind:
+                                            kind +
+                                            "-number"
+                                    }
+                            })
+                            .build();
 
                     }
 
@@ -2167,9 +2211,25 @@ async function initializeOwlbear() {
                                                 iconCenterY,
                                             kind:
                                                 entry.kind +
-                                                "-icon",
-                                            text:
-                                                entry.value
+                                                "-icon"
+                                        })
+                                    );
+
+
+                                    items.push(
+                                        buildHudNumberItem({
+                                            character,
+                                            token,
+                                            ownerIdOverride,
+                                            value:
+                                                entry.value,
+                                            centerX:
+                                                iconCenterX,
+                                            centerY:
+                                                iconCenterY,
+                                            desiredIconWidth,
+                                            kind:
+                                                entry.kind
                                         })
                                     );
 
