@@ -1367,6 +1367,121 @@ async function publishBackgroundHeartbeat() {
                     }
 
 
+                    async function findSceneTokenLink(
+                        characterId,
+                        ownerId = null
+                    ) {
+
+                        if (
+                            !characterId ||
+                            !(await OBR.scene.isReady())
+                        ) {
+
+                            return null;
+
+                        }
+
+
+                        const tokens =
+                            await OBR.scene.items.getItems(
+                                item => {
+
+                                    const meta =
+                                        item.metadata?.[
+                                            TOKEN_LINK_METADATA_KEY
+                                        ];
+
+
+                                    return (
+                                        item.layer ===
+                                            "CHARACTER" &&
+                                        meta?.characterId ===
+                                            characterId &&
+                                        meta?.roomId ===
+                                            roomId &&
+                                        (
+                                            !ownerId ||
+                                            meta.ownerId ===
+                                                ownerId
+                                        )
+                                    );
+
+                                }
+                            );
+
+
+                        const token =
+                            tokens[0];
+
+
+                        if (
+                            !token
+                        ) {
+
+                            return null;
+
+                        }
+
+
+                        const meta =
+                            token.metadata?.[
+                                TOKEN_LINK_METADATA_KEY
+                            ];
+
+
+                        return {
+                            tokenId:
+                                token.id,
+                            ownerId:
+                                meta?.ownerId ||
+                                ownerId ||
+                                "",
+                            snapshot:
+                                meta?.snapshot ||
+                                null,
+                            linkedAt:
+                                meta?.linkedAt ||
+                                0
+                        };
+
+                    }
+
+
+                    async function resolveCharacterTokenLink(
+                        character,
+                        ownerIdOverride = null
+                    ) {
+
+                        const localLink =
+                            getRoomTokenLink(
+                                character,
+                                roomId
+                            );
+
+
+                        if (
+                            localLink?.tokenId
+                        ) {
+
+                            return {
+                                ...localLink,
+                                ownerId:
+                                    ownerIdOverride ||
+                                    OBR.player.id
+                            };
+
+                        }
+
+
+                        return findSceneTokenLink(
+                            character?.id,
+                            ownerIdOverride ||
+                            null
+                        );
+
+                    }
+
+
                     async function clearTokenLinkMetadata(
                         tokenId,
                         characterId = null,
@@ -1600,10 +1715,20 @@ async function publishBackgroundHeartbeat() {
                             }
 
 
+                            const existingTokenMeta =
+                                tokenById.get(
+                                    tokenId
+                                )?.metadata?.[
+                                    TOKEN_LINK_METADATA_KEY
+                                ];
+
+
                             await setTokenLinkMetadata(
                                 tokenId,
                                 character.id,
-                                OBR.player.id
+                                OBR.player.id,
+                                existingTokenMeta?.snapshot ||
+                                null
                             );
 
 
@@ -2305,7 +2430,7 @@ async function publishBackgroundHeartbeat() {
                                 }
 
 
-                                await OBR.popover.open({
+                                await OBR.modal.open({
                                     id:
                                         "com.rpgunleashed.character-sheet/token-controls",
                                     url:
@@ -2316,13 +2441,7 @@ async function publishBackgroundHeartbeat() {
                                     width:
                                         390,
                                     height:
-                                        560,
-                                    anchorElementId:
-                                        elementId,
-                                    anchorReference:
-                                        "ELEMENT",
-                                    disableClickAway:
-                                        false
+                                        560
                                 });
 
                             }
@@ -3061,9 +3180,9 @@ async function publishBackgroundHeartbeat() {
 
 
                         const link =
-                            getRoomTokenLink(
+                            await resolveCharacterTokenLink(
                                 sourceCharacter,
-                                roomId
+                                ownerIdOverride
                             );
 
 
@@ -3163,10 +3282,19 @@ async function publishBackgroundHeartbeat() {
                     }
 
 
-                    async function unlinkCharacterToken(character) {
-                        if (!character) {
+                    async function unlinkCharacterToken(
+                        character,
+                        ownerIdOverride = null
+                    ) {
+
+                        if (
+                            !character
+                        ) {
+
                             return character;
+
                         }
+
 
                         const latest =
                             await window.RPGCharacterStore
@@ -3175,21 +3303,35 @@ async function publishBackgroundHeartbeat() {
                                 ) ||
                             character;
 
+
+                        const expectedOwnerId =
+                            ownerIdOverride ||
+                            OBR.player.id;
+
+
                         const link =
-                            getRoomTokenLink(
+                            await resolveCharacterTokenLink(
                                 latest,
-                                roomId
+                                expectedOwnerId
                             );
 
-                        if (await OBR.scene.isReady()) {
+
+                        if (
+                            await OBR.scene.isReady()
+                        ) {
+
                             await removeCharacterHudItems(
                                 latest,
-                                link
+                                link,
+                                expectedOwnerId
                             );
 
+
                             await removeCharacterConditionOverlays(
-                                latest
+                                latest,
+                                expectedOwnerId
                             );
+
 
                             if (
                                 link?.tokenId
@@ -3198,30 +3340,150 @@ async function publishBackgroundHeartbeat() {
                                 await clearTokenLinkMetadata(
                                     link.tokenId,
                                     latest.id,
-                                    OBR.player.id
+                                    expectedOwnerId
                                 );
 
                             }
+
                         }
+
 
                         const links = {
                             ...(latest.owlbearTokenLinks || {})
                         };
 
-                        delete links[roomId];
+
+                        delete links[
+                            roomId
+                        ];
+
 
                         const updated = {
                             ...latest,
-                            owlbearTokenLinks: links
+                            owlbearTokenLinks:
+                                links
                         };
 
-                        await window.RPGCharacterStore
-                            ?.putCharacter(
-                                updated
-                            );
+
+                        if (
+                            expectedOwnerId ===
+                                OBR.player.id
+                        ) {
+
+                            await window.RPGCharacterStore
+                                ?.putCharacter(
+                                    updated
+                                );
+
+                        }
+
 
                         return updated;
+
                     }
+
+
+                    async function unlinkPartyCharacterToken(
+                        character
+                    ) {
+
+                        if (
+                            playerRole !==
+                                "GM"
+                        ) {
+
+                            throw new Error(
+                                "Only the GM can unlink another player's shared character token."
+                            );
+
+                        }
+
+
+                        const ownerId =
+                            character?.ownerId;
+
+
+                        const characterId =
+                            character?.characterId;
+
+
+                        if (
+                            !ownerId ||
+                            !characterId
+                        ) {
+
+                            throw new Error(
+                                "This shared character is missing its owner or character ID."
+                            );
+
+                        }
+
+
+                        const link =
+                            await findSceneTokenLink(
+                                characterId,
+                                ownerId
+                            );
+
+
+                        if (
+                            !link?.tokenId
+                        ) {
+
+                            throw new Error(
+                                "No linked token was found for this character in the current scene."
+                            );
+
+                        }
+
+
+                        const record =
+                            character.snapshot
+                                ? (
+                                    await decodeSharedSnapshot(
+                                        character.snapshot
+                                    )
+                                )
+                                : {
+                                    id:
+                                        characterId,
+                                    state: {
+                                        tabs: {}
+                                    }
+                                };
+
+
+                        const remoteCharacter = {
+                            ...record,
+                            id:
+                                characterId
+                        };
+
+
+                        await removeCharacterHudItems(
+                            remoteCharacter,
+                            link,
+                            ownerId
+                        );
+
+
+                        await removeCharacterConditionOverlays(
+                            remoteCharacter,
+                            ownerId
+                        );
+
+
+                        await clearTokenLinkMetadata(
+                            link.tokenId,
+                            characterId,
+                            ownerId
+                        );
+
+
+                        return true;
+
+                    }
+
 
                     async function linkCharacterToSelectedToken(character) {
                         if (!(await OBR.scene.isReady())) {
@@ -3722,9 +3984,9 @@ async function publishBackgroundHeartbeat() {
 
 
                         const link =
-                            getRoomTokenLink(
+                            await resolveCharacterTokenLink(
                                 sourceCharacter,
-                                roomId
+                                ownerIdOverride
                             );
 
 
@@ -4967,6 +5229,58 @@ async function publishBackgroundHeartbeat() {
                             );
 
 
+                        let sceneTokenLinks =
+                            new Map();
+
+
+                        if (
+                            await OBR.scene.isReady()
+                        ) {
+
+                            const linkedTokens =
+                                await OBR.scene.items.getItems(
+                                    item =>
+                                        item.layer ===
+                                            "CHARACTER" &&
+                                        item.metadata?.[
+                                            TOKEN_LINK_METADATA_KEY
+                                        ]?.roomId ===
+                                            roomId
+                                );
+
+
+                            sceneTokenLinks =
+                                new Map(
+                                    linkedTokens.map(
+                                        token => {
+
+                                            const meta =
+                                                token.metadata[
+                                                    TOKEN_LINK_METADATA_KEY
+                                                ];
+
+
+                                            return [
+                                                partyCharacterKey(
+                                                    meta.ownerId,
+                                                    meta.characterId
+                                                ),
+                                                {
+                                                    tokenId:
+                                                        token.id,
+                                                    snapshot:
+                                                        meta.snapshot ||
+                                                        null
+                                                }
+                                            ];
+
+                                        }
+                                    )
+                                );
+
+                        }
+
+
                         const onlinePlayers =
                             new Map(
                                 [
@@ -5068,7 +5382,28 @@ async function publishBackgroundHeartbeat() {
                                         backgroundReady,
                                         snapshot:
                                             ownerShared?.snapshot ||
+                                            sceneTokenLinks.get(
+                                                partyCharacterKey(
+                                                    character.ownerId,
+                                                    character.characterId
+                                                )
+                                            )?.snapshot ||
                                             null,
+                                        tokenId:
+                                            sceneTokenLinks.get(
+                                                partyCharacterKey(
+                                                    character.ownerId,
+                                                    character.characterId
+                                                )
+                                            )?.tokenId ||
+                                            "",
+                                        tokenLinked:
+                                            sceneTokenLinks.has(
+                                                partyCharacterKey(
+                                                    character.ownerId,
+                                                    character.characterId
+                                                )
+                                            ),
                                         assignedCampaign:
                                             assignmentByCharacter.get(
                                                 partyCharacterKey(
@@ -6565,6 +6900,7 @@ async function publishBackgroundHeartbeat() {
                         getPartyCampaignAssignments,
                         setPartyCharacterCampaign,
                         linkPartyCharacterToSelectedToken,
+                        unlinkPartyCharacterToken,
                         canRemovePartyCharacter,
                         removePartyCharacter,
                         canEditPartyCharacter,
