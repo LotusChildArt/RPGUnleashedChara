@@ -8,16 +8,19 @@
 * { box-sizing: border-box; }
 body {
     margin: 0;
-    padding: 10px;
+    padding: 8px;
     font-family: Arial, sans-serif;
-    background: white;
+    background: #f4f4f4;
     color: #111;
 }
 .panel {
+    width: min(100%, 430px);
+    margin: 0 auto;
     border: 2px solid black;
     border-radius: 18px;
-    padding: 10px;
+    padding: 9px;
     background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
 }
 .header { margin-bottom: 8px; }
 .header h1 { margin: 0 0 3px 0; font-size: 18px; }
@@ -31,9 +34,9 @@ body {
 .status.error { color: #8d0000; }
 
 .control-section {
-    margin-top: 8px;
-    border: 2px solid black;
-    border-radius: 16px;
+    margin-top: 7px;
+    border: 1.5px solid black;
+    border-radius: 14px;
     background: white;
     overflow: hidden;
 }
@@ -53,7 +56,7 @@ body {
 .control-section[open] summary::after { content: "▾"; }
 .section-body {
     border-top: 1px solid #bbb;
-    padding: 9px;
+    padding: 8px;
 }
 
 .resource-row, .dr-row {
@@ -63,10 +66,11 @@ body {
     margin-bottom: 7px;
 }
 .resource-row {
-    grid-template-columns: 56px 32px minmax(52px, 1fr) 32px auto minmax(52px, 1fr);
+    grid-template-columns: 48px 30px minmax(46px, .8fr) 30px 14px minmax(46px, .8fr);
 }
 .resource-row.single {
-    grid-template-columns: 56px 32px minmax(52px, 1fr) 32px;
+    grid-template-columns: 48px 30px minmax(46px, .8fr) 30px;
+    max-width: 220px;
 }
 .resource-label, .dr-label { font-weight: bold; }
 .divider { text-align: center; color: #666; }
@@ -79,19 +83,19 @@ body {
 .number-input {
     width: 100%;
     min-width: 0;
-    min-height: 34px;
-    padding: 5px 6px;
+    min-height: 32px;
+    padding: 4px 5px;
     text-align: center;
 }
 .adjust-button, .icon-button {
-    min-height: 34px;
-    min-width: 32px;
+    min-height: 32px;
+    min-width: 30px;
     padding: 0;
     cursor: pointer;
     font-weight: bold;
 }
 
-.dr-row { grid-template-columns: 70px 32px minmax(52px, 1fr) 32px; }
+.dr-row { grid-template-columns: 64px 30px minmax(46px, 1fr) 30px; }
 
 .dr-section {
     margin-top: 10px;
@@ -157,18 +161,18 @@ select { min-height: 36px; padding: 6px 8px; }
     cursor: pointer;
     font-weight: bold;
 }
-.condition-list { display: grid; gap: 7px; }
+.condition-list { display: grid; gap: 6px; }
 .condition-row {
-    border: 1.5px solid #888;
-    border-radius: 14px;
-    padding: 7px;
+    border: 1px solid #888;
+    border-radius: 12px;
+    padding: 6px;
     background: #fafafa;
 }
 .condition-top {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 32px 28px 32px 32px;
+    grid-template-columns: minmax(0, 1fr) 30px 26px 30px 30px;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
 }
 .condition-name { font-weight: bold; }
 .stack-value { text-align: center; font-weight: bold; }
