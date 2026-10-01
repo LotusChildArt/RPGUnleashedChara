@@ -1,0 +1,15 @@
+{
+  "name": "RPG Unleashed Character Sheet",
+  "version": "1.19.0",
+  "manifest_version": 1,
+  "description": "Character library, party sharing, and live GM character editing for RPG Unleashed.",
+  "icon": "/icons/icon-192.png",
+  "action": {
+    "title": "RPG Unleashed",
+    "icon": "/icons/icon-192.png",
+    "popover": "/?owlbear=1",
+    "width": 760,
+    "height": 800
+  },
+  "background_url": "/owlbear-background.html?owlbearBackground=1"
+}

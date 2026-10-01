@@ -1,3 +1,5 @@
+import OBR, { buildImage, buildLabel, buildText } from "@owlbear-rodeo/sdk";
+
 const SHARED_CHARACTERS_KEY =
     "com.rpgunleashed.character-sheet/sharedCharacters";
 
@@ -989,113 +991,6 @@ function setOwlbearConnectionState(
 }
 
 
-function waitForOwlbearRetry(
-    milliseconds
-) {
-
-    return new Promise(
-        resolve => {
-
-            window.setTimeout(
-                resolve,
-                milliseconds
-            );
-
-        }
-    );
-
-}
-
-
-async function loadOwlbearSdk() {
-
-    setOwlbearConnectionState(
-        "loading-sdk",
-        "Loading Owlbear SDK"
-    );
-
-
-    const sources = [
-        "https://esm.run/@owlbear-rodeo/sdk@3.1.0",
-        "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm",
-        "https://esm.sh/@owlbear-rodeo/sdk@3.1.0",
-        "https://unpkg.com/@owlbear-rodeo/sdk@3.1.0?module"
-    ];
-
-
-    let lastError =
-        null;
-
-
-    for (
-        let attempt = 0;
-        attempt < 8;
-        attempt += 1
-    ) {
-
-        const source =
-            sources[
-                attempt %
-                sources.length
-            ];
-
-
-        try {
-
-            return await import(
-                source
-            );
-
-        }
-
-        catch (
-            error
-        ) {
-
-            lastError =
-                error;
-
-
-            setOwlbearConnectionState(
-                "retrying-sdk",
-                "SDK source " +
-                (
-                    attempt +
-                    1
-                ) +
-                " failed: " +
-                (
-                    error?.message ||
-                    String(
-                        error
-                    )
-                )
-            );
-
-
-            await waitForOwlbearRetry(
-                700 +
-                (
-                    attempt *
-                    500
-                )
-            );
-
-        }
-
-    }
-
-
-    throw (
-        lastError ||
-        new Error(
-            "Could not load the Owlbear Rodeo SDK."
-        )
-    );
-
-}
-
-
 async function initializeOwlbear() {
 
     if (
@@ -1121,32 +1016,9 @@ async function initializeOwlbear() {
 
     try {
 
-        const sdkModule =
-            await loadOwlbearSdk();
-
-
-        const OBR =
-            sdkModule.default ||
-            sdkModule.OBR ||
-            sdkModule;
-
-
-        if (
-            !OBR ||
-            typeof OBR.onReady !==
-                "function"
-        ) {
-
-            throw new Error(
-                "The Owlbear SDK loaded without a usable OBR API."
-            );
-
-        }
-
-
         setOwlbearConnectionState(
             "sdk-loaded",
-            "Owlbear SDK loaded"
+            "Bundled Owlbear SDK loaded"
         );
 
 
@@ -1169,14 +1041,7 @@ async function initializeOwlbear() {
 
                     const roomId =
                         OBR.room.id;
-
-
-                    const buildLabel = sdkModule.buildLabel;
-                    const buildImage = sdkModule.buildImage;
-                    const buildText = sdkModule.buildText;
-
-
-                    async function publishBackgroundHeartbeat() {
+async function publishBackgroundHeartbeat() {
 
                         await OBR.player.setMetadata({
                             [BACKGROUND_HEARTBEAT_KEY]: {
@@ -5751,7 +5616,7 @@ async function initializeOwlbear() {
     ) {
 
         console.error(
-            "Could not load the Owlbear Rodeo SDK:",
+            "Could not initialize the bundled Owlbear Rodeo SDK:",
             error
         );
 

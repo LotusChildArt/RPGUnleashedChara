@@ -1,0 +1,10 @@
+RPG UNLEASHED — OWLBEAR RODEO EXTENSION
+
+Deploy the entire RPG-Unleashed-PWA folder.
+
+Owlbear install URL:
+https://YOUR-SITE/owbear/manifest.json
+
+Version 1.3.0 adds live GM character-sheet viewing/editing. The manifest now uses a background page so connected players can answer sheet requests even while the action popover is closed.
+
+Shared character summaries are stored in Owlbear player metadata. Full sheets are transferred ephemerally through Owlbear broadcasts when the GM opens a shared character. Character pictures remain local and are not transferred.
