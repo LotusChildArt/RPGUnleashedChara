@@ -4873,7 +4873,13 @@ async function publishBackgroundHeartbeat() {
                         );
 
 
-                        return;
+                        if (
+                            isBackgroundContext
+                        ) {
+
+                            return;
+
+                        }
 
                     }
 
