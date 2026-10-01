@@ -649,6 +649,7 @@ input::placeholder {
 
     grid-template-columns:
         minmax(0, 1fr)
+        auto
         auto;
 
     gap: 8px;
@@ -668,6 +669,18 @@ input::placeholder {
     border-radius: 16px;
 
     background: white;
+}
+
+
+.condition-add-row .condition-add-bone[hidden] {
+
+    display: none;
+}
+
+
+.condition-add-row .condition-add-bone {
+
+    min-width: 86px;
 }
 
 
@@ -797,6 +810,17 @@ input::placeholder {
     width: 78px;
 
     text-align: center;
+}
+
+
+.condition-detail-field .condition-bleed-per-turn,
+.condition-detail-field .condition-poison-stacks-per-interval {
+
+    width: 52px;
+
+    min-width: 52px;
+
+    max-width: 52px;
 }
 
 
@@ -4378,6 +4402,18 @@ if (
                 <option value="">
                     Select condition…
                 </option>
+            </select>
+
+            <select
+                class="condition-add-bone"
+                hidden
+                aria-label="Bone break location"
+            >
+                <option value="Rib">Rib</option>
+                <option value="Arm">Arm</option>
+                <option value="Leg">Leg</option>
+                <option value="Skull">Skull</option>
+                <option value="Neck">Neck</option>
             </select>
 
             <button
@@ -9793,6 +9829,15 @@ function getConditionDefinition(
 }
 
 
+const BONE_BREAK_EFFECTS = {
+    Rib: "-2 to Atk/Def, -2 to running checks.",
+    Arm: "Cannot hold things using the broken arm. -2 to Atk/Def, -10 on climbing checks.",
+    Leg: "Cannot run, 1/2 speed, -2 to Atk/Def, -10 on climbing checks. If both legs are broken, speed is reduced to 5 ft and -6 to Atk/Def.",
+    Skull: "-4 to all checks, 30% chance to lose turn (roll at the start of the turn).",
+    Neck: "No rules text has been set for a Neck break yet."
+};
+
+
 function ensureConditionManager() {
 
     const tab =
@@ -9906,6 +9951,21 @@ function getConditionDetailMarkup(
             "Damage";
 
 
+        const interval =
+            values.poisonInterval ||
+            "Round";
+
+
+        const stacksPerInterval =
+            Math.max(
+                0,
+                Number(
+                    values.poisonStacksPerInterval
+                ) ||
+                1
+            );
+
+
         return `
             <label class="condition-detail-field">
                 Type
@@ -9916,6 +9976,28 @@ function getConditionDetailMarkup(
                         ">" + option + "</option>"
                     ).join("")}
                 </select>
+            </label>
+
+            <label class="condition-detail-field">
+                Interval
+                <select class="condition-poison-interval">
+                    ${["Round", "Minute", "Hour", "Day"].map(option =>
+                        '<option value="' + option + '"' +
+                        (option === interval ? " selected" : "") +
+                        ">" + option + "</option>"
+                    ).join("")}
+                </select>
+            </label>
+
+            <label class="condition-detail-field">
+                Stacks / Interval
+                <input
+                    class="condition-poison-stacks-per-interval"
+                    type="number"
+                    min="0"
+                    step="1"
+                    value="${stacksPerInterval}"
+                >
             </label>
         `;
 
@@ -10027,6 +10109,10 @@ function ensureConditionDetailFields(
             {
                 poisonType:
                     card.dataset.poisonType,
+                poisonInterval:
+                    card.dataset.poisonInterval,
+                poisonStacksPerInterval:
+                    card.dataset.poisonStacksPerInterval,
                 boneType:
                     card.dataset.boneType,
                 bleedPerTurn:
@@ -10105,6 +10191,26 @@ function getLiveConditionState() {
                     )?.value ||
                     card.dataset.poisonType ||
                     "",
+                poisonInterval:
+                    card.querySelector(
+                        ".condition-poison-interval"
+                    )?.value ||
+                    card.dataset.poisonInterval ||
+                    "Round",
+                poisonStacksPerInterval:
+                    Math.max(
+                        0,
+                        Math.floor(
+                            Number(
+                                card.querySelector(
+                                    ".condition-poison-stacks-per-interval"
+                                )?.value ??
+                                card.dataset.poisonStacksPerInterval ??
+                                1
+                            ) ||
+                            0
+                        )
+                    ),
                 boneType:
                     card.querySelector(
                         ".condition-bone-type"
@@ -10329,6 +10435,18 @@ function setupConditionCard(
                 );
 
 
+            const poisonInterval =
+                card.querySelector(
+                    ".condition-poison-interval"
+                );
+
+
+            const poisonStacks =
+                card.querySelector(
+                    ".condition-poison-stacks-per-interval"
+                );
+
+
             const bone =
                 card.querySelector(
                     ".condition-bone-type"
@@ -10352,11 +10470,106 @@ function setupConditionCard(
 
 
             if (
+                poisonInterval
+            ) {
+
+                card.dataset.poisonInterval =
+                    poisonInterval.value;
+
+            }
+
+
+            if (
+                poisonStacks
+            ) {
+
+                card.dataset.poisonStacksPerInterval =
+                    String(
+                        Math.max(
+                            0,
+                            Math.floor(
+                                Number(
+                                    poisonStacks.value
+                                ) ||
+                                0
+                            )
+                        )
+                    );
+
+            }
+
+
+            if (
                 bone
             ) {
 
                 card.dataset.boneType =
                     bone.value;
+
+
+                const duplicate =
+                    Array.from(
+                        document.querySelectorAll(
+                            '#tab1 .condition-card[data-condition-id="broken-bone"]'
+                        )
+                    )
+                    .find(
+                        other =>
+                            other !==
+                                card &&
+                            (
+                                other.querySelector(
+                                    ".condition-bone-type"
+                                )?.value ||
+                                other.dataset.boneType ||
+                                "Rib"
+                            ) ===
+                                bone.value
+                    );
+
+
+                if (
+                    duplicate
+                ) {
+
+                    const targetStacks =
+                        duplicate.querySelector(
+                            ".condition-stacks"
+                        );
+
+
+                    if (
+                        targetStacks
+                    ) {
+
+                        targetStacks.value =
+                            Math.max(
+                                1,
+                                Number(
+                                    targetStacks.value ||
+                                    1
+                                )
+                            ) +
+                            Math.max(
+                                1,
+                                Number(
+                                    stacks?.value ||
+                                    1
+                                )
+                            );
+
+                    }
+
+
+                    card.remove();
+
+                    renderConditionEmptyState();
+
+                    queueConditionOverlayUpdate();
+
+                    return;
+
+                }
 
             }
 
@@ -10414,7 +10627,7 @@ function setupConditionCard(
 
     card
         .querySelectorAll(
-            ".condition-poison-type, .condition-bone-type, .condition-bleed-per-turn"
+            ".condition-poison-type, .condition-poison-interval, .condition-poison-stacks-per-interval, .condition-bone-type, .condition-bleed-per-turn"
         )
         .forEach(
             control => {
@@ -10431,9 +10644,6 @@ function setupConditionCard(
 
             }
         );
-
-
-    updateDetails();
 
 
     remove?.addEventListener(
@@ -10454,7 +10664,8 @@ function setupConditionCard(
 
 function addConditionCard(
     conditionId,
-    stacks = 1
+    stacks = 1,
+    options = {}
 ) {
 
     const definition =
@@ -10479,9 +10690,34 @@ function addConditionCard(
     }
 
 
+    const boneType =
+        conditionId ===
+            "broken-bone"
+            ? (
+                options.boneType ||
+                "Rib"
+            )
+            : "";
+
+
     const existing =
-        list.querySelector(
-            `.condition-card[data-condition-id="${conditionId}"]`
+        Array.from(
+            list.querySelectorAll(
+                `.condition-card[data-condition-id="${conditionId}"]`
+            )
+        )
+        .find(
+            card =>
+                conditionId !==
+                    "broken-bone" ||
+                (
+                    card.querySelector(
+                        ".condition-bone-type"
+                    )?.value ||
+                    card.dataset.boneType ||
+                    "Rib"
+                ) ===
+                    boneType
         );
 
 
@@ -10563,6 +10799,12 @@ function addConditionCard(
         card.dataset.poisonType =
             "Damage";
 
+        card.dataset.poisonInterval =
+            "Round";
+
+        card.dataset.poisonStacksPerInterval =
+            "1";
+
     }
 
 
@@ -10572,7 +10814,7 @@ function addConditionCard(
     ) {
 
         card.dataset.boneType =
-            "Rib";
+            boneType;
 
     }
 
@@ -10622,6 +10864,10 @@ function addConditionCard(
             {
                 poisonType:
                     card.dataset.poisonType,
+                poisonInterval:
+                    card.dataset.poisonInterval,
+                poisonStacksPerInterval:
+                    card.dataset.poisonStacksPerInterval,
                 boneType:
                     card.dataset.boneType,
                 bleedPerTurn:
@@ -10669,6 +10915,12 @@ function setupConditionManager() {
     const add =
         document.querySelector(
             "#tab1 .add-condition"
+        );
+
+
+    const addBone =
+        document.querySelector(
+            "#tab1 .condition-add-bone"
         );
 
 
@@ -10720,6 +10972,31 @@ function setupConditionManager() {
         currentValue;
 
 
+    const updateAddDetail =
+        () => {
+
+            if (
+                addBone
+            ) {
+
+                addBone.hidden =
+                    picker.value !==
+                    "broken-bone";
+
+            }
+
+        };
+
+
+    picker.addEventListener(
+        "change",
+        updateAddDetail
+    );
+
+
+    updateAddDetail();
+
+
     document
         .querySelectorAll(
             "#tab1 .condition-card"
@@ -10744,12 +11021,20 @@ function setupConditionManager() {
 
             addConditionCard(
                 picker.value,
-                1
+                1,
+                {
+                    boneType:
+                        addBone?.value ||
+                        "Rib"
+                }
             );
 
 
             picker.value =
                 "";
+
+
+            updateAddDetail();
 
         }
     );
