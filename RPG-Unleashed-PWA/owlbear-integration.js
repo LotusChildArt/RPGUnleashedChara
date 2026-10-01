@@ -984,6 +984,7 @@ function waitForOwlbearRetry(
 async function loadOwlbearSdk() {
 
     const sources = [
+        "https://esm.run/@owlbear-rodeo/sdk@3.1.0",
         "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm",
         "https://esm.sh/@owlbear-rodeo/sdk@3.1.0",
         "https://unpkg.com/@owlbear-rodeo/sdk@3.1.0?module"
@@ -996,7 +997,7 @@ async function loadOwlbearSdk() {
 
     for (
         let attempt = 0;
-        attempt < 6;
+        attempt < 8;
         attempt += 1
     ) {
 
@@ -1092,15 +1093,20 @@ async function initializeOwlbear() {
 
 
         const OBR =
-            sdkModule.default;
+            sdkModule.default ||
+            sdkModule.OBR ||
+            sdkModule;
 
 
         if (
             !OBR ||
-            !OBR.isAvailable
+            typeof OBR.onReady !==
+                "function"
         ) {
 
-            return;
+            throw new Error(
+                "The Owlbear SDK loaded without a usable OBR API."
+            );
 
         }
 
@@ -5693,3 +5699,50 @@ document.addEventListener(
 
     }
 );
+
+
+
+const RPG_IS_EMBEDDED_OWLBEAR_CONTEXT =
+    isBackgroundContext ||
+    (() => {
+
+        try {
+
+            return (
+                window.self !==
+                window.top
+            );
+
+        }
+
+        catch (
+            error
+        ) {
+
+            return true;
+
+        }
+
+    })();
+
+
+if (
+    RPG_IS_EMBEDDED_OWLBEAR_CONTEXT
+) {
+
+    window.setInterval(
+        () => {
+
+            if (
+                !window.RPGOwlbear?.ready
+            ) {
+
+                initializeOwlbear();
+
+            }
+
+        },
+        2500
+    );
+
+}

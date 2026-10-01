@@ -3463,13 +3463,32 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
 <body>
 
 <script>
-const RPG_IS_OWLBEAR_POPOVER =
+let RPG_IS_OWLBEAR_POPOVER =
     new URLSearchParams(
         window.location.search
     ).get(
         "owlbear"
     ) ===
     "1";
+
+
+try {
+
+    RPG_IS_OWLBEAR_POPOVER =
+        RPG_IS_OWLBEAR_POPOVER ||
+        window.self !==
+            window.top;
+
+}
+
+catch (
+    error
+) {
+
+    RPG_IS_OWLBEAR_POPOVER =
+        true;
+
+}
 
 if (
     RPG_IS_OWLBEAR_POPOVER
@@ -7982,7 +8001,8 @@ async function renderCharacterLibrary() {
 
                 if (
                     window.RPGOwlbear?.ready ||
-                    window.RPG_IS_OWLBEAR_POPOVER
+                    window.RPG_IS_OWLBEAR_POPOVER ||
+                    RPG_IS_OWLBEAR_POPOVER
                 ) {
 
                     const shareButton =
