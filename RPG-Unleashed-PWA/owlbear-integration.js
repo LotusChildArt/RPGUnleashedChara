@@ -4986,15 +4986,11 @@ async function publishBackgroundHeartbeat() {
                     }
 
 
-                    function canRemovePartyCharacter(
-                        character
-                    ) {
+                    function canRemovePartyCharacter() {
 
                         return (
                             playerRole ===
-                                "GM" ||
-                            character?.ownerId ===
-                                OBR.player.id
+                            "GM"
                         );
 
                     }
@@ -5022,33 +5018,152 @@ async function publishBackgroundHeartbeat() {
                     ) {
 
                         if (
-                            !canRemovePartyCharacter(
-                                character
-                            )
+                            playerRole !==
+                            "GM"
                         ) {
 
                             throw new Error(
-                                "Only the GM or the character owner can remove this character from the campaign."
+                                "Only the GM can unshare a party character from the GM roster."
                             );
 
                         }
 
 
-                        const removed =
-                            await getRemovedPartyCharacters();
+                        const ownerId =
+                            character?.ownerId;
 
 
-                        removed.push(
+                        const characterId =
+                            character?.characterId;
+
+
+                        if (
+                            !ownerId ||
+                            !characterId
+                        ) {
+
+                            throw new Error(
+                                "This shared character is missing its owner or character ID."
+                            );
+
+                        }
+
+
+                        const key =
                             partyCharacterKey(
-                                character.ownerId,
-                                character.characterId
-                            )
-                        );
+                                ownerId,
+                                characterId
+                            );
 
 
-                        await setRemovedPartyCharacters(
-                            removed
-                        );
+                        const metadata =
+                            await OBR.room.getMetadata();
+
+
+                        const removed =
+                            cleanRemovedPartyCharacters(
+                                metadata[
+                                    REMOVED_PARTY_CHARACTERS_KEY
+                                ]
+                            );
+
+
+                        const registry =
+                            cleanSharedCharacters(
+                                metadata[
+                                    ROOM_SHARED_CHARACTERS_KEY
+                                ]
+                            );
+
+
+                        const assignments =
+                            cleanCampaignAssignments(
+                                metadata[
+                                    PARTY_CAMPAIGN_ASSIGNMENTS_KEY
+                                ]
+                            );
+
+
+                        const nextRegistry =
+                            registry.filter(
+                                item =>
+                                    !(
+                                        item.roomId ===
+                                            roomId &&
+                                        item.ownerId ===
+                                            ownerId &&
+                                        item.characterId ===
+                                            characterId
+                                    )
+                            );
+
+
+                        const nextAssignments =
+                            assignments.filter(
+                                item =>
+                                    !(
+                                        item.roomId ===
+                                            roomId &&
+                                        item.ownerId ===
+                                            ownerId &&
+                                        item.characterId ===
+                                            characterId
+                                    )
+                            );
+
+
+                        await OBR.room.setMetadata({
+                            [REMOVED_PARTY_CHARACTERS_KEY]:
+                                Array.from(
+                                    new Set([
+                                        ...removed,
+                                        key
+                                    ])
+                                ),
+                            [ROOM_SHARED_CHARACTERS_KEY]:
+                                nextRegistry,
+                            [PARTY_CAMPAIGN_ASSIGNMENTS_KEY]:
+                                nextAssignments
+                        });
+
+
+                        try {
+
+                            const link =
+                                await findSceneTokenLink(
+                                    characterId,
+                                    ownerId
+                                );
+
+
+                            if (
+                                link?.tokenId
+                            ) {
+
+                                await unlinkPartyCharacterToken({
+                                    ...character,
+                                    ownerId,
+                                    characterId,
+                                    tokenId:
+                                        link.tokenId,
+                                    tokenLinked:
+                                        true
+                                });
+
+                            }
+
+                        }
+
+                        catch (
+                            error
+                        ) {
+
+                            console.error(
+                                "Could not unlink token while unsharing party character:",
+                                error
+                            );
+
+                        }
 
 
                         window.dispatchEvent(
@@ -5056,6 +5171,9 @@ async function publishBackgroundHeartbeat() {
                                 "rpg-owlbear-party-change"
                             )
                         );
+
+
+                        return true;
 
                     }
 
@@ -5497,6 +5615,16 @@ async function publishBackgroundHeartbeat() {
                             );
 
 
+                        const removedKeys =
+                            new Set(
+                                cleanRemovedPartyCharacters(
+                                    roomMetadata[
+                                        REMOVED_PARTY_CHARACTERS_KEY
+                                    ]
+                                )
+                            );
+
+
                         const registry =
                             cleanSharedCharacters(
                                 roomMetadata[
@@ -5506,7 +5634,13 @@ async function publishBackgroundHeartbeat() {
                             .filter(
                                 character =>
                                     character.roomId ===
-                                    roomId
+                                        roomId &&
+                                    !removedKeys.has(
+                                        partyCharacterKey(
+                                            character.ownerId,
+                                            character.characterId
+                                        )
+                                    )
                             );
 
 
