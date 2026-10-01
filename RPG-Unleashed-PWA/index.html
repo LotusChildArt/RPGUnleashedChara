@@ -3455,6 +3455,39 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
     color: #555;
 }
 
+.party-section-heading {
+    margin: 20px 0 10px;
+    font-size: 20px;
+}
+
+.party-section-heading:first-child {
+    margin-top: 0;
+}
+
+.party-unassigned-list {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.party-add-campaign-button,
+.party-backup-button,
+.party-token-button {
+    border: 2px solid black;
+    border-radius: 18px;
+    background: white;
+    min-height: 34px;
+    padding: 5px 12px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.party-add-campaign-button:hover,
+.party-backup-button:hover,
+.party-token-button:hover {
+    background: #eee;
+}
+
 </style>
 
 </head>
@@ -3652,7 +3685,7 @@ if (
         </div>
 
         <p class="party-section-note">
-            Select a campaign to view characters shared by players currently connected to this Owlbear room.
+            Shared characters appear here first. Add them to a campaign when you are ready to organize the party.
         </p>
 
         <div
@@ -6009,8 +6042,11 @@ if (
         <input
             id="campaign-name-input"
             type="text"
-            placeholder="Campaign Name (optional)"
+            placeholder="Campaign Name"
+            list="campaign-name-suggestions"
         >
+
+        <datalist id="campaign-name-suggestions"></datalist>
 
         <div class="campaign-modal-actions">
 
@@ -7566,6 +7602,47 @@ function askForCampaignName(
                 "";
 
 
+            const suggestions =
+                document.getElementById(
+                    "campaign-name-suggestions"
+                );
+
+
+            if (
+                suggestions
+            ) {
+
+                suggestions.innerHTML =
+                    "";
+
+
+                (
+                    options.campaignSuggestions ||
+                    []
+                )
+                .forEach(
+                    campaign => {
+
+                        const option =
+                            document.createElement(
+                                "option"
+                            );
+
+
+                        option.value =
+                            campaign;
+
+
+                        suggestions.appendChild(
+                            option
+                        );
+
+                    }
+                );
+
+            }
+
+
             overlay.classList.add(
                 "active"
             );
@@ -7812,11 +7889,6 @@ async function renderCharacterLibrary() {
                     [
                         "Level",
                         character.level ||
-                        "—"
-                    ],
-                    [
-                        "Campaign",
-                        character.campaign ||
                         "—"
                     ]
                 ].forEach(
@@ -8158,60 +8230,6 @@ async function renderCharacterLibrary() {
 
                             try {
 
-                                if (
-                                    !character.campaign ||
-                                    !character.campaign.trim()
-                                ) {
-
-                                    const campaign =
-                                        window.prompt(
-                                            "Enter a campaign name before sharing this character:"
-                                        );
-
-
-                                    if (
-                                        campaign ===
-                                        null
-                                    ) {
-
-                                        return;
-
-                                    }
-
-
-                                    const cleanCampaign =
-                                        campaign.trim();
-
-
-                                    if (
-                                        !cleanCampaign
-                                    ) {
-
-                                        window.alert(
-                                            "A campaign name is required to share a character."
-                                        );
-
-
-                                        return;
-
-                                    }
-
-
-                                    character.campaign =
-                                        cleanCampaign;
-
-
-                                    character.updatedAt =
-                                        Date.now();
-
-
-                                    await putCharacter(
-                                        character
-                                    );
-
-                                }
-
-
                                 await window.RPGOwlbear
                                     .toggleCharacterShare(
                                         character
@@ -8399,6 +8417,592 @@ function normalizeCampaignName(
 }
 
 
+async function getPartyCharacterRecord(
+    character
+) {
+
+    const localCharacter =
+        await getCharacterById(
+            character.characterId
+        );
+
+
+    if (
+        localCharacter
+    ) {
+
+        return {
+            record:
+                localCharacter,
+            ownerId:
+                character.ownerId,
+            ownerName:
+                character.ownerName ||
+                "Player"
+        };
+
+    }
+
+
+    return window.RPGOwlbear
+        .requestCharacterSheet(
+            character
+        );
+
+}
+
+
+function makePartyCharacterCard(
+    character,
+    options = {}
+) {
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+
+    card.className =
+        "party-character-card";
+
+
+    const name =
+        document.createElement(
+            "h2"
+        );
+
+
+    name.textContent =
+        character.name ||
+        "Unnamed Character";
+
+
+    card.appendChild(
+        name
+    );
+
+
+    [
+        [
+            "Race",
+            character.race ||
+            "—"
+        ],
+        [
+            "Level",
+            character.level ||
+            "—"
+        ],
+        [
+            "Shared by",
+            character.ownerName ||
+            "Player"
+        ]
+    ]
+    .forEach(
+        (
+            [
+                label,
+                value
+            ]
+        ) => {
+
+            const line =
+                document.createElement(
+                    "div"
+                );
+
+
+            line.className =
+                "party-character-detail";
+
+
+            line.textContent =
+                label +
+                ": " +
+                value;
+
+
+            card.appendChild(
+                line
+            );
+
+        }
+    );
+
+
+    const actions =
+        document.createElement(
+            "div"
+        );
+
+
+    actions.className =
+        "party-character-actions";
+
+
+    if (
+        options.unassigned
+    ) {
+
+        const addCampaignButton =
+            document.createElement(
+                "button"
+            );
+
+
+        addCampaignButton.className =
+            "party-add-campaign-button";
+
+
+        addCampaignButton.type =
+            "button";
+
+
+        addCampaignButton.textContent =
+            "+ Campaign";
+
+
+        addCampaignButton.addEventListener(
+            "click",
+            async () => {
+
+                const result =
+                    await askForCampaignName({
+                        title:
+                            "Add to Campaign",
+                        message:
+                            "Choose an existing campaign or enter a new campaign name.",
+                        confirmLabel:
+                            "Add",
+                        campaignSuggestions:
+                            options.campaignNames ||
+                            []
+                    });
+
+
+                if (
+                    result.cancelled
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+                    !result.campaign
+                ) {
+
+                    window.alert(
+                        "Enter a campaign name."
+                    );
+
+
+                    return;
+
+                }
+
+
+                addCampaignButton.disabled =
+                    true;
+
+
+                try {
+
+                    await window.RPGOwlbear
+                        .setPartyCharacterCampaign(
+                            character,
+                            result.campaign
+                        );
+
+
+                    await renderPartyCampaigns();
+
+                }
+
+                catch (
+                    error
+                ) {
+
+                    console.error(
+                        "Could not add the shared character to a campaign:",
+                        error
+                    );
+
+
+                    window.alert(
+                        error?.message ||
+                        "Could not add this character to a campaign."
+                    );
+
+                }
+
+                finally {
+
+                    addCampaignButton.disabled =
+                        false;
+
+                }
+
+            }
+        );
+
+
+        actions.appendChild(
+            addCampaignButton
+        );
+
+    }
+
+    else {
+
+        const editButton =
+            document.createElement(
+                "button"
+            );
+
+
+        editButton.className =
+            "party-edit-button";
+
+
+        editButton.type =
+            "button";
+
+
+        editButton.textContent =
+            "View / Edit";
+
+
+        editButton.addEventListener(
+            "click",
+            async () => {
+
+                const originalText =
+                    editButton.textContent;
+
+
+                editButton.disabled =
+                    true;
+
+
+                editButton.textContent =
+                    "Loading…";
+
+
+                try {
+
+                    const remote =
+                        await getPartyCharacterRecord(
+                            character
+                        );
+
+
+                    const resolvedCharacter = {
+                        ...character,
+                        campaign:
+                            options.campaignName ||
+                            "",
+                        ownerId:
+                            remote.ownerId ||
+                            character.ownerId,
+                        ownerName:
+                            remote.ownerName ||
+                            character.ownerName
+                    };
+
+
+                    openRemoteCharacterForEdit(
+                        resolvedCharacter,
+                        remote.record
+                    );
+
+                }
+
+                catch (
+                    error
+                ) {
+
+                    console.error(
+                        "Could not open the party character sheet:",
+                        error
+                    );
+
+
+                    window.alert(
+                        error?.message ||
+                        "Could not retrieve this character sheet."
+                    );
+
+
+                    editButton.disabled =
+                        false;
+
+
+                    editButton.textContent =
+                        originalText;
+
+                }
+
+            }
+        );
+
+
+        const removeButton =
+            document.createElement(
+                "button"
+            );
+
+
+        removeButton.className =
+            "party-remove-button";
+
+
+        removeButton.type =
+            "button";
+
+
+        removeButton.textContent =
+            "Remove";
+
+
+        removeButton.addEventListener(
+            "click",
+            async () => {
+
+                if (
+                    !window.confirm(
+                        "Remove " +
+                        (
+                            character.name ||
+                            "this character"
+                        ) +
+                        " from " +
+                        options.campaignName +
+                        "? The character will return to the unassigned list."
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                removeButton.disabled =
+                    true;
+
+
+                try {
+
+                    await window.RPGOwlbear
+                        .setPartyCharacterCampaign(
+                            character,
+                            ""
+                        );
+
+
+                    await renderPartyCharacters(
+                        options.campaignName
+                    );
+
+                }
+
+                catch (
+                    error
+                ) {
+
+                    console.error(
+                        "Could not remove the character from the campaign:",
+                        error
+                    );
+
+
+                    window.alert(
+                        error?.message ||
+                        "Could not remove this character from the campaign."
+                    );
+
+                }
+
+                finally {
+
+                    removeButton.disabled =
+                        false;
+
+                }
+
+            }
+        );
+
+
+        const backupButton =
+            document.createElement(
+                "button"
+            );
+
+
+        backupButton.className =
+            "party-backup-button";
+
+
+        backupButton.type =
+            "button";
+
+
+        backupButton.textContent =
+            "Backup";
+
+
+        backupButton.addEventListener(
+            "click",
+            async () => {
+
+                backupButton.disabled =
+                    true;
+
+
+                try {
+
+                    const remote =
+                        await getPartyCharacterRecord(
+                            character
+                        );
+
+
+                    exportCharacterRecord({
+                        ...remote.record,
+                        id:
+                            character.characterId,
+                        name:
+                            character.name ||
+                            remote.record?.name ||
+                            "Unnamed Character"
+                    });
+
+                }
+
+                catch (
+                    error
+                ) {
+
+                    console.error(
+                        "Could not back up the party character:",
+                        error
+                    );
+
+
+                    window.alert(
+                        error?.message ||
+                        "Could not create a backup for this character."
+                    );
+
+                }
+
+                finally {
+
+                    backupButton.disabled =
+                        false;
+
+                }
+
+            }
+        );
+
+
+        const tokenButton =
+            document.createElement(
+                "button"
+            );
+
+
+        tokenButton.className =
+            "party-token-button";
+
+
+        tokenButton.type =
+            "button";
+
+
+        tokenButton.textContent =
+            "Link to Token";
+
+
+        tokenButton.addEventListener(
+            "click",
+            async () => {
+
+                tokenButton.disabled =
+                    true;
+
+
+                try {
+
+                    await window.RPGOwlbear
+                        .linkPartyCharacterToSelectedToken(
+                            character
+                        );
+
+
+                    window.alert(
+                        (
+                            character.name ||
+                            "Character"
+                        ) +
+                        " is linked to the selected token."
+                    );
+
+                }
+
+                catch (
+                    error
+                ) {
+
+                    console.error(
+                        "Could not link the party character to a token:",
+                        error
+                    );
+
+
+                    window.alert(
+                        error?.message ||
+                        "Could not link this character to the selected token."
+                    );
+
+                }
+
+                finally {
+
+                    tokenButton.disabled =
+                        false;
+
+                }
+
+            }
+        );
+
+
+        actions.append(
+            editButton,
+            removeButton,
+            backupButton,
+            tokenButton
+        );
+
+    }
+
+
+    card.appendChild(
+        actions
+    );
+
+
+    return card;
+
+}
+
+
 async function renderPartyCampaigns() {
 
     const list =
@@ -8431,27 +9035,53 @@ async function renderPartyCampaigns() {
                 .getPartySharedCharacters();
 
 
+        const assigned =
+            characters.filter(
+                character =>
+                    String(
+                        character.assignedCampaign ||
+                        ""
+                    ).trim()
+            );
+
+
+        const unassigned =
+            characters
+                .filter(
+                    character =>
+                        !String(
+                            character.assignedCampaign ||
+                            ""
+                        ).trim()
+                )
+                .sort(
+                    (
+                        a,
+                        b
+                    ) =>
+                        String(
+                            a.name ||
+                            ""
+                        ).localeCompare(
+                            String(
+                                b.name ||
+                                ""
+                            )
+                        )
+                );
+
+
         const campaignMap =
             new Map();
 
 
-        characters.forEach(
+        assigned.forEach(
             character => {
 
                 const campaign =
                     String(
-                        character.campaign ||
-                        ""
+                        character.assignedCampaign
                     ).trim();
-
-
-                if (
-                    !campaign
-                ) {
-
-                    return;
-
-                }
 
 
                 const key =
@@ -8503,17 +9133,122 @@ async function renderPartyCampaigns() {
             );
 
 
+        const campaignNames =
+            campaigns.map(
+                campaign =>
+                    campaign.name
+            );
+
+
         list.innerHTML =
             "";
 
 
+        const floatingHeading =
+            document.createElement(
+                "h2"
+            );
+
+
+        floatingHeading.className =
+            "party-section-heading";
+
+
+        floatingHeading.textContent =
+            "Shared Characters";
+
+
+        list.appendChild(
+            floatingHeading
+        );
+
+
+        const floatingList =
+            document.createElement(
+                "div"
+            );
+
+
+        floatingList.className =
+            "party-unassigned-list";
+
+
         if (
-            campaigns.length ===
-            0
+            unassigned.length
         ) {
 
-            list.innerHTML =
-                '<div class="library-empty">No characters are currently shared to this Owlbear room.</div>';
+            unassigned.forEach(
+                character => {
+
+                    floatingList.appendChild(
+                        makePartyCharacterCard(
+                            character,
+                            {
+                                unassigned:
+                                    true,
+                                campaignNames
+                            }
+                        )
+                    );
+
+                }
+            );
+
+        }
+
+        else {
+
+            floatingList.innerHTML =
+                '<div class="library-empty">No unassigned shared characters.</div>';
+
+        }
+
+
+        list.appendChild(
+            floatingList
+        );
+
+
+        const campaignHeading =
+            document.createElement(
+                "h2"
+            );
+
+
+        campaignHeading.className =
+            "party-section-heading";
+
+
+        campaignHeading.textContent =
+            "Campaigns";
+
+
+        list.appendChild(
+            campaignHeading
+        );
+
+
+        if (
+            !campaigns.length
+        ) {
+
+            const empty =
+                document.createElement(
+                    "div"
+                );
+
+
+            empty.className =
+                "library-empty";
+
+
+            empty.textContent =
+                "No campaigns yet.";
+
+
+            list.appendChild(
+                empty
+            );
 
 
             return;
@@ -8566,7 +9301,7 @@ async function renderPartyCampaigns() {
                     campaign.count +
                     (
                         campaign.count ===
-                        1
+                            1
                             ? " character"
                             : " characters"
                     );
@@ -8677,7 +9412,7 @@ async function renderPartyCharacters(
                 .filter(
                     character =>
                         normalizeCampaignName(
-                            character.campaign
+                            character.assignedCampaign
                         ) ===
                         campaignKey
                 )
@@ -8703,12 +9438,11 @@ async function renderPartyCharacters(
 
 
         if (
-            characters.length ===
-            0
+            !characters.length
         ) {
 
             list.innerHTML =
-                '<div class="library-empty">No connected players are currently sharing characters for this campaign.</div>';
+                '<div class="library-empty">No characters are assigned to this campaign.</div>';
 
 
             return;
@@ -8719,355 +9453,13 @@ async function renderPartyCharacters(
         characters.forEach(
             character => {
 
-                const card =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                card.className =
-                    "party-character-card";
-
-
-                const name =
-                    document.createElement(
-                        "h2"
-                    );
-
-
-                name.textContent =
-                    character.name ||
-                    "Unnamed Character";
-
-
-                card.appendChild(
-                    name
-                );
-
-
-                [
-                    [
-                        "Race",
-                        character.race ||
-                        "—"
-                    ],
-                    [
-                        "Level",
-                        character.level ||
-                        "—"
-                    ],
-                    [
-                        "Shared by",
-                        character.ownerName ||
-                        "Player"
-                    ]
-                ].forEach(
-                    ([
-                        label,
-                        value
-                    ]) => {
-
-                        const line =
-                            document.createElement(
-                                "div"
-                            );
-
-
-                        line.className =
-                            "party-character-detail";
-
-
-                        line.textContent =
-                            label +
-                            ": " +
-                            value;
-
-
-                        card.appendChild(
-                            line
-                        );
-
-                    }
-                );
-
-
-                const isMyPartyCharacter =
-                    character.ownerId ===
-                    window.RPGOwlbear?.playerId;
-
-
-                const canRemoteEditPartyCharacter =
-                    window.RPGOwlbear
-                        ?.playerRole ===
-                    "GM";
-
-
-                if (
-                    isMyPartyCharacter ||
-                    canRemoteEditPartyCharacter
-                ) {
-
-                    const editActions =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    editActions.className =
-                        "party-character-actions";
-
-
-                    const editButton =
-                        document.createElement(
-                            "button"
-                        );
-
-
-                    editButton.className =
-                        "party-edit-button";
-
-
-                    editButton.type =
-                        "button";
-
-
-                    editButton.textContent =
-                        isMyPartyCharacter
-                            ? "Edit Sheet"
-                            : "View / Edit Sheet";
-
-
-                    editButton.addEventListener(
-                        "click",
-                        async () => {
-
-                            const originalText =
-                                editButton.textContent;
-
-
-                            editButton.disabled =
-                                true;
-
-
-                            editButton.textContent =
-                                "Loading…";
-
-
-                            try {
-
-                                const localCharacter =
-                                    await getCharacterById(
-                                        character.characterId
-                                    );
-
-
-                                if (
-                                    localCharacter
-                                ) {
-
-                                    openSavedCharacter(
-                                        localCharacter
-                                    );
-
-
-                                    return;
-
-                                }
-
-
-                                if (
-                                    window.RPGOwlbear
-                                        ?.playerRole !==
-                                    "GM"
-                                ) {
-
-                                    throw new Error(
-                                        "This shared character is not saved on this device."
-                                    );
-
-                                }
-
-
-                                const remote =
-                                    await window.RPGOwlbear
-                                        .requestCharacterSheet(
-                                            character
-                                        );
-
-
-                                const resolvedCharacter = {
-                                    ...character,
-                                    ownerId:
-                                        remote.ownerId ||
-                                        character.ownerId,
-                                    ownerName:
-                                        remote.ownerName ||
-                                        character.ownerName
-                                };
-
-
-                                openRemoteCharacterForEdit(
-                                    resolvedCharacter,
-                                    remote.record
-                                );
-
-                            }
-
-                            catch (
-                                error
-                            ) {
-
-                                console.error(
-                                    "Could not open the party character sheet:",
-                                    error
-                                );
-
-
-                                window.alert(
-                                    error?.message ||
-                                    "Could not retrieve this character sheet. Make sure the player is still connected to the Owlbear room."
-                                );
-
-
-                                editButton.disabled =
-                                    false;
-
-
-                                editButton.textContent =
-                                    originalText;
-
-                            }
-
-                        }
-                    );
-
-
-                    editActions.appendChild(
-                        editButton
-                    );
-
-
-                    card.appendChild(
-                        editActions
-                    );
-
-                }
-
-
-                if (
-                    window.RPGOwlbear
-                        ?.canRemovePartyCharacter(
-                            character
-                        )
-                ) {
-
-                    const actions =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    actions.className =
-                        "party-character-actions";
-
-
-                    const removeButton =
-                        document.createElement(
-                            "button"
-                        );
-
-
-                    removeButton.className =
-                        "party-remove-button";
-
-
-                    removeButton.type =
-                        "button";
-
-
-                    removeButton.textContent =
-                        "Remove";
-
-
-                    removeButton.addEventListener(
-                        "click",
-                        async () => {
-
-                            if (
-                                !window.confirm(
-                                    "Remove " +
-                                    (character.name ||
-                                    "this character") +
-                                    " from " +
-                                    campaignName +
-                                    "? This does not delete the player's saved character."
-                                )
-                            ) {
-
-                                return;
-
-                            }
-
-
-                            removeButton.disabled =
-                                true;
-
-
-                            try {
-
-                                await window.RPGOwlbear
-                                    .removePartyCharacter(
-                                        character
-                                    );
-
-
-                                await renderPartyCharacters(
-                                    campaignName
-                                );
-
-                            }
-
-                            catch (
-                                error
-                            ) {
-
-                                console.error(
-                                    "Could not remove the party character:",
-                                    error
-                                );
-
-
-                                window.alert(
-                                    "Could not remove this character from the campaign."
-                                );
-
-                            }
-
-                            finally {
-
-                                removeButton.disabled =
-                                    false;
-
-                            }
-
-                        }
-                    );
-
-
-                    actions.appendChild(
-                        removeButton
-                    );
-
-
-                    card.appendChild(
-                        actions
-                    );
-
-                }
-
-
                 list.appendChild(
-                    card
+                    makePartyCharacterCard(
+                        character,
+                        {
+                            campaignName
+                        }
+                    )
                 );
 
             }
@@ -13332,32 +13724,9 @@ async function saveCharacterSheet() {
     }
 
 
-    let campaign =
+    const campaign =
         currentCharacterRecord?.campaign ||
         "";
-
-
-    if (
-        !currentCharacterRecord
-    ) {
-
-        const campaignResult =
-            await askForCampaignName();
-
-
-        if (
-            campaignResult.cancelled
-        ) {
-
-            return;
-
-        }
-
-
-        campaign =
-            campaignResult.campaign;
-
-    }
 
 
     const state = {
