@@ -2250,8 +2250,8 @@ body.halloween-page-mode #tab4 .halloween-sheet {
 
 .halloween-list-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
+    grid-template-columns: 1fr;
+    gap: 14px;
     margin-top: 14px;
 }
 
@@ -2279,7 +2279,7 @@ body.halloween-page-mode #tab4 .halloween-sheet {
     grid-template-columns: minmax(0, 1fr) 70px 30px;
 }
 
-.halloween-entry-row input,
+.halloween-entry-row textarea,
 .halloween-entry-row select,
 .halloween-goal-input {
     width: 100%;
@@ -2289,6 +2289,13 @@ body.halloween-page-mode #tab4 .halloween-sheet {
     background: white;
     padding: 6px 10px;
     outline: none;
+}
+
+.halloween-entry-row textarea {
+    min-height: 38px;
+    resize: none;
+    overflow: hidden;
+    line-height: 1.35;
 }
 
 .halloween-entry-row select {
@@ -3180,8 +3187,19 @@ body.mobile-mode .option-row {
     gap: 5px;
 }
 
-body.mobile-mode .option-button {
+body.mobile-mode .option-button,
+.option-select {
     min-height: 46px;
+}
+
+.option-select {
+    width: 100%;
+    border: 2px solid black;
+    border-radius: 23px;
+    background: white;
+    padding: 7px 14px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 body.mobile-mode .option-save-status {
@@ -4013,14 +4031,14 @@ if (
 
             <div class="app-option-row">
 
-                <button
-                    class="option-button"
+                <select
+                    class="option-select"
                     id="app-mobile-toggle"
-                    type="button"
-                    data-enabled="false"
+                    aria-label="Display Mode"
                 >
-                    Mobile: Off
-                </button>
+                    <option value="desktop">Desktop</option>
+                    <option value="mobile">Mobile</option>
+                </select>
 
                 <div class="app-option-description">
                     Use the phone-friendly stacked layout throughout the app.
@@ -4090,7 +4108,7 @@ if (
         data-tab="tab4"
         id="background-path-tab-button"
     >
-        Background / Path
+        Special / Background
     </button>
 
     <button
@@ -5444,7 +5462,7 @@ if (
     <div class="sheet">
 
         <h1>
-            Background / Path
+            Special / Background
         </h1>
 
 
@@ -5788,7 +5806,7 @@ if (
         <div class="halloween-sheet" id="halloween-sheet">
 
             <h1>
-                Halloween
+                Special / Background
             </h1>
 
 
@@ -6390,14 +6408,14 @@ if (
 
             <div class="option-row">
 
-                <button
-                    class="option-button"
+                <select
+                    class="option-select"
                     id="magic-toggle"
-                    type="button"
-                    data-enabled="false"
+                    aria-label="Caster Mode"
                 >
-                    Magic: Off
-                </button>
+                    <option value="non-caster">Non Caster</option>
+                    <option value="caster">Caster</option>
+                </select>
 
                 <div class="option-description">
                     Show or hide the Magic tab. Magic is off by default.
@@ -6408,14 +6426,14 @@ if (
 
             <div class="option-row">
 
-                <button
-                    class="option-button"
+                <select
+                    class="option-select"
                     id="halloween-toggle"
-                    type="button"
-                    data-enabled="false"
+                    aria-label="Character Page Mode"
                 >
-                    Halloween: Off
-                </button>
+                    <option value="classic">Classic</option>
+                    <option value="halloween">Halloween</option>
+                </select>
 
                 <div class="option-description">
                     Replace Background / Path with the Halloween Game character page.
@@ -6426,14 +6444,14 @@ if (
 
             <div class="option-row">
 
-                <button
-                    class="option-button"
+                <select
+                    class="option-select"
                     id="mobile-toggle"
-                    type="button"
-                    data-enabled="false"
+                    aria-label="Display Mode"
                 >
-                    Mobile: Off
-                </button>
+                    <option value="desktop">Desktop</option>
+                    <option value="mobile">Mobile</option>
+                </select>
 
                 <div class="option-description">
                     Switch the character sheet to a phone-friendly stacked layout. Mobile mode is off by default.
@@ -7671,7 +7689,7 @@ function ensureHalloweenSheetMarkup() {
     wrapper.innerHTML = `
         <div class="halloween-sheet" id="halloween-sheet">
 
-            <h1>Halloween</h1>
+            <h1>Special / Background</h1>
 
             <div class="halloween-ex-machinas">
                 <strong>Ex Machinas</strong>
@@ -8041,16 +8059,10 @@ function setGlobalMobileMode(
         appButton
     ) {
 
-        appButton.dataset.enabled =
+        appButton.value =
             enabled
-                ? "true"
-                : "false";
-
-
-        appButton.textContent =
-            enabled
-                ? "Mobile: On"
-                : "Mobile: Off";
+                ? "mobile"
+                : "desktop";
 
     }
 
@@ -8065,16 +8077,10 @@ function setGlobalMobileMode(
         sheetButton
     ) {
 
-        sheetButton.dataset.enabled =
+        sheetButton.value =
             enabled
-                ? "true"
-                : "false";
-
-
-        sheetButton.textContent =
-            enabled
-                ? "Mobile: On"
-                : "Mobile: Off";
+                ? "mobile"
+                : "desktop";
 
     }
 
@@ -14126,6 +14132,33 @@ function setupHalloweenEntryRow(
         );
 
 
+    row
+        .querySelectorAll(
+            ".halloween-entry-expand"
+        )
+        .forEach(
+            textarea => {
+
+                textarea.addEventListener(
+                    "input",
+                    () => {
+
+                        autoResizeHalloweenField(
+                            textarea
+                        );
+
+                    }
+                );
+
+
+                autoResizeHalloweenField(
+                    textarea
+                );
+
+            }
+        );
+
+
     remove?.addEventListener(
         "click",
         () => {
@@ -14163,11 +14196,11 @@ function createHalloweenEntryRow(
     ) {
 
         row.innerHTML = `
-            <input
-                type="text"
+            <textarea
+                class="halloween-entry-expand"
+                rows="1"
                 placeholder="Fear"
-                value="${String(value).replace(/"/g, "&quot;")}"
-            >
+            >${String(value)}</textarea>
 
             <select
                 class="halloween-fear-dice"
@@ -14211,11 +14244,11 @@ function createHalloweenEntryRow(
 
 
         row.innerHTML = `
-            <input
-                type="text"
+            <textarea
+                class="halloween-entry-expand"
+                rows="1"
                 placeholder="${label}"
-                value="${String(value).replace(/"/g, "&quot;")}"
-            >
+            >${String(value)}</textarea>
 
             <button
                 class="halloween-remove-button"
@@ -14276,7 +14309,52 @@ function setupHalloweenPage() {
             "#halloween-sheet .halloween-entry-row"
         )
         .forEach(
-            setupHalloweenEntryRow
+            row => {
+
+                const oldInput =
+                    row.querySelector(
+                        'input[type="text"]'
+                    );
+
+
+                if (
+                    oldInput
+                ) {
+
+                    const textarea =
+                        document.createElement(
+                            "textarea"
+                        );
+
+
+                    textarea.className =
+                        "halloween-entry-expand";
+
+
+                    textarea.rows =
+                        1;
+
+
+                    textarea.placeholder =
+                        oldInput.placeholder;
+
+
+                    textarea.value =
+                        oldInput.value;
+
+
+                    oldInput.replaceWith(
+                        textarea
+                    );
+
+                }
+
+
+                setupHalloweenEntryRow(
+                    row
+                );
+
+            }
         );
 
 
@@ -14320,7 +14398,7 @@ function setupHalloweenPage() {
 
 
             row.querySelector(
-                "input"
+                "textarea"
             )?.focus();
 
         }
@@ -14349,7 +14427,7 @@ function setupHalloweenPage() {
 
 
             row.querySelector(
-                "input"
+                "textarea"
             )?.focus();
 
         }
@@ -14378,7 +14456,7 @@ function setupHalloweenPage() {
 
 
             row.querySelector(
-                "input"
+                "textarea"
             )?.focus();
 
         }
@@ -14930,16 +15008,16 @@ function setMagicEnabled(
     enabled
 ) {
 
-    magicToggleButton.dataset.enabled =
-        enabled
-            ? "true"
-            : "false";
+    if (
+        magicToggleButton
+    ) {
 
+        magicToggleButton.value =
+            enabled
+                ? "caster"
+                : "non-caster";
 
-    magicToggleButton.textContent =
-        enabled
-            ? "Magic: On"
-            : "Magic: Off";
+    }
 
 
     magicTabButton.classList.toggle(
@@ -14999,16 +15077,10 @@ function setHalloweenEnabled(
         halloweenToggleButton
     ) {
 
-        halloweenToggleButton.dataset.enabled =
+        halloweenToggleButton.value =
             enabled
-                ? "true"
-                : "false";
-
-
-        halloweenToggleButton.textContent =
-            enabled
-                ? "Halloween: On"
-                : "Halloween: Off";
+                ? "halloween"
+                : "classic";
 
     }
 
@@ -15018,16 +15090,14 @@ function setHalloweenEnabled(
     ) {
 
         backgroundPathTabButton.textContent =
-            enabled
-                ? "Halloween"
-                : "Background / Path";
+            "Special / Background";
 
     }
 
 
     document
         .querySelectorAll(
-            "#halloween-sheet .halloween-expand"
+            "#halloween-sheet .halloween-expand, #halloween-sheet .halloween-entry-expand"
         )
         .forEach(
             autoResizeHalloweenField
@@ -15310,11 +15380,11 @@ async function saveRemoteCharacterSheet() {
 
     const state = {
         magicEnabled:
-            magicToggleButton.dataset.enabled ===
-            "true",
+            magicToggleButton?.value ===
+            "caster",
         pageMode:
-            halloweenToggleButton?.dataset.enabled ===
-                "true"
+            halloweenToggleButton?.value ===
+                "halloween"
                 ? "halloween"
                 : "standard",
         tabs: {}
@@ -15476,11 +15546,11 @@ async function saveCharacterSheet() {
 
     const state = {
         magicEnabled:
-            magicToggleButton.dataset.enabled ===
-            "true",
+            magicToggleButton?.value ===
+            "caster",
         pageMode:
-            halloweenToggleButton?.dataset.enabled ===
-                "true"
+            halloweenToggleButton?.value ===
+                "halloween"
                 ? "halloween"
                 : "standard",
         tabs: {}
@@ -15671,16 +15741,12 @@ exportCharacterButton.addEventListener(
 
 
 magicToggleButton.addEventListener(
-    "click",
+    "change",
     () => {
 
-        const currentlyEnabled =
-            magicToggleButton.dataset.enabled ===
-            "true";
-
-
         setMagicEnabled(
-            !currentlyEnabled
+            magicToggleButton.value ===
+            "caster"
         );
 
     }
@@ -15688,16 +15754,12 @@ magicToggleButton.addEventListener(
 
 
 mobileToggleButton.addEventListener(
-    "click",
+    "change",
     () => {
 
-        const currentlyEnabled =
-            mobileToggleButton.dataset.enabled ===
-            "true";
-
-
         setMobileEnabled(
-            !currentlyEnabled
+            mobileToggleButton.value ===
+            "mobile"
         );
 
     }
@@ -15705,16 +15767,12 @@ mobileToggleButton.addEventListener(
 
 
 halloweenToggleButton?.addEventListener(
-    "click",
+    "change",
     () => {
 
-        const currentlyEnabled =
-            halloweenToggleButton.dataset.enabled ===
-            "true";
-
-
         setHalloweenEnabled(
-            !currentlyEnabled
+            halloweenToggleButton.value ===
+            "halloween"
         );
 
     }
@@ -16168,20 +16226,12 @@ document
         "app-mobile-toggle"
     )
     .addEventListener(
-        "click",
-        () => {
-
-            const enabled =
-                document
-                    .getElementById(
-                        "app-mobile-toggle"
-                    )
-                    .dataset.enabled ===
-                "true";
-
+        "change",
+        event => {
 
             setGlobalMobileMode(
-                !enabled
+                event.target.value ===
+                "mobile"
             );
 
         }
