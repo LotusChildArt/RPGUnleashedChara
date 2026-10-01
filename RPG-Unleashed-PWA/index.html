@@ -712,6 +712,7 @@ input::placeholder {
     grid-template-columns:
         minmax(0, 1fr)
         auto
+        auto
         auto;
 
     align-items: center;
@@ -748,6 +749,54 @@ input::placeholder {
     white-space: nowrap;
 
     color: #666;
+}
+
+
+.condition-detail-field {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    white-space: nowrap;
+
+    color: #666;
+}
+
+
+.condition-detail-field select,
+.condition-detail-field input {
+
+    min-height: 34px;
+
+    border:
+        2px
+        solid
+        black;
+
+    border-radius: 16px;
+
+    background: white;
+
+    padding:
+        4px
+        7px;
+}
+
+
+.condition-detail-field select {
+
+    min-width: 100px;
+}
+
+
+.condition-detail-field input {
+
+    width: 78px;
+
+    text-align: center;
 }
 
 
@@ -9710,21 +9759,22 @@ function initializeCharacterSheet(
    ========================================= */
 
 const RPG_CONDITION_DEFINITIONS = [
-    { id: "fear", name: "Fear" },
+    { id: "fear", name: "Fear", maxStacks: 5 },
     { id: "wounded", name: "Acid" },
-    { id: "arrowed", name: "Arrowed" },
-    { id: "bleeding", name: "Bleeding" },
-    { id: "broken-bone", name: "Broken Bone" },
+    { id: "arrowed", name: "Pierced" },
+    { id: "bleeding", name: "Bleed", detailType: "bleedPerTurn" },
+    { id: "broken-bone", name: "Bone Break", detailType: "boneBreak" },
     { id: "burning", name: "Burning" },
     { id: "charmed", name: "Charmed" },
     { id: "poisoned", name: "Dead" },
     { id: "drunk", name: "Drunk" },
     { id: "confused", name: "Unconscious" },
     { id: "frozen", name: "Frozen" },
-    { id: "unconscious", name: "Poisoned" },
-    { id: "taunted", name: "Taunted" },
+    { id: "unconscious", name: "Poison", detailType: "poisonType" },
+    { id: "taunted", name: "Rage" },
     { id: "shocked", name: "Shocked" },
-    { id: "stunned", name: "Stunned" }
+    { id: "stunned", name: "Stunned" },
+    { id: "taunt", name: "Taunt", maxStacks: 5 }
 ];
 
 
@@ -9841,6 +9891,170 @@ function ensureConditionManager() {
 }
 
 
+function getConditionDetailMarkup(
+    conditionId,
+    values = {}
+) {
+
+    if (
+        conditionId ===
+        "unconscious"
+    ) {
+
+        const selected =
+            values.poisonType ||
+            "Damage";
+
+
+        return `
+            <label class="condition-detail-field">
+                Type
+                <select class="condition-poison-type">
+                    ${["Damage", "Attribute", "Mana", "+ Poison"].map(option =>
+                        '<option value="' + option + '"' +
+                        (option === selected ? " selected" : "") +
+                        ">" + option + "</option>"
+                    ).join("")}
+                </select>
+            </label>
+        `;
+
+    }
+
+
+    if (
+        conditionId ===
+        "broken-bone"
+    ) {
+
+        const selected =
+            values.boneType ||
+            "Rib";
+
+
+        return `
+            <label class="condition-detail-field">
+                Break
+                <select class="condition-bone-type">
+                    ${["Rib", "Arm", "Leg", "Skull", "Neck"].map(option =>
+                        '<option value="' + option + '"' +
+                        (option === selected ? " selected" : "") +
+                        ">" + option + "</option>"
+                    ).join("")}
+                </select>
+            </label>
+        `;
+
+    }
+
+
+    if (
+        conditionId ===
+        "bleeding"
+    ) {
+
+        return `
+            <label class="condition-detail-field">
+                / Turn
+                <input
+                    class="condition-bleed-per-turn"
+                    type="number"
+                    min="0"
+                    step="1"
+                    value="${Math.max(0, Number(values.bleedPerTurn) || 0)}"
+                >
+            </label>
+        `;
+
+    }
+
+
+    return "";
+
+}
+
+
+function ensureConditionDetailFields(
+    card
+) {
+
+    if (
+        !card
+    ) {
+
+        return;
+
+    }
+
+
+    const id =
+        card.dataset.conditionId ||
+        "";
+
+
+    if (
+        !["unconscious", "broken-bone", "bleeding"]
+            .includes(
+                id
+            )
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        card.querySelector(
+            ".condition-detail-field"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    const holder =
+        document.createElement(
+            "div"
+        );
+
+
+    holder.innerHTML =
+        getConditionDetailMarkup(
+            id,
+            {
+                poisonType:
+                    card.dataset.poisonType,
+                boneType:
+                    card.dataset.boneType,
+                bleedPerTurn:
+                    card.dataset.bleedPerTurn
+            }
+        );
+
+
+    const detail =
+        holder.firstElementChild;
+
+
+    if (
+        detail
+    ) {
+
+        card.insertBefore(
+            detail,
+            card.querySelector(
+                ".remove-condition"
+            )
+        );
+
+    }
+
+}
+
+
 function getLiveConditionState() {
 
     return Array.from(
@@ -9860,6 +10074,16 @@ function getLiveConditionState() {
                 );
 
 
+            const bleedPerTurn =
+                Number(
+                    card.querySelector(
+                        ".condition-bleed-per-turn"
+                    )?.value ??
+                    card.dataset.bleedPerTurn ??
+                    0
+                );
+
+
             return {
                 id:
                     card.dataset.conditionId ||
@@ -9874,7 +10098,30 @@ function getLiveConditionState() {
                                 stacks
                             )
                         )
-                        : 1
+                        : 1,
+                poisonType:
+                    card.querySelector(
+                        ".condition-poison-type"
+                    )?.value ||
+                    card.dataset.poisonType ||
+                    "",
+                boneType:
+                    card.querySelector(
+                        ".condition-bone-type"
+                    )?.value ||
+                    card.dataset.boneType ||
+                    "",
+                bleedPerTurn:
+                    Number.isFinite(
+                        bleedPerTurn
+                    )
+                        ? Math.max(
+                            0,
+                            Math.floor(
+                                bleedPerTurn
+                            )
+                        )
+                        : 0
             };
 
         }
@@ -10022,10 +10269,49 @@ function setupConditionCard(
     card
 ) {
 
+    ensureConditionDetailFields(
+        card
+    );
+
+
+    const definition =
+        getConditionDefinition(
+            card.dataset.conditionId
+        );
+
+
     const stacks =
         card.querySelector(
             ".condition-stacks"
         );
+
+
+    if (
+        definition?.maxStacks &&
+        stacks
+    ) {
+
+        stacks.max =
+            String(
+                definition.maxStacks
+            );
+
+
+        if (
+            Number(
+                stacks.value
+            ) >
+            definition.maxStacks
+        ) {
+
+            stacks.value =
+                String(
+                    definition.maxStacks
+                );
+
+        }
+
+    }
 
 
     const remove =
@@ -10034,10 +10320,120 @@ function setupConditionCard(
         );
 
 
+    const updateDetails =
+        () => {
+
+            const poison =
+                card.querySelector(
+                    ".condition-poison-type"
+                );
+
+
+            const bone =
+                card.querySelector(
+                    ".condition-bone-type"
+                );
+
+
+            const bleed =
+                card.querySelector(
+                    ".condition-bleed-per-turn"
+                );
+
+
+            if (
+                poison
+            ) {
+
+                card.dataset.poisonType =
+                    poison.value;
+
+            }
+
+
+            if (
+                bone
+            ) {
+
+                card.dataset.boneType =
+                    bone.value;
+
+            }
+
+
+            if (
+                bleed
+            ) {
+
+                card.dataset.bleedPerTurn =
+                    String(
+                        Math.max(
+                            0,
+                            Math.floor(
+                                Number(
+                                    bleed.value
+                                ) ||
+                                0
+                            )
+                        )
+                    );
+
+            }
+
+
+            queueConditionOverlayUpdate();
+
+        };
+
+
     stacks?.addEventListener(
         "input",
-        queueConditionOverlayUpdate
+        () => {
+
+            if (
+                definition?.maxStacks &&
+                Number(
+                    stacks.value
+                ) >
+                definition.maxStacks
+            ) {
+
+                stacks.value =
+                    String(
+                        definition.maxStacks
+                    );
+
+            }
+
+
+            queueConditionOverlayUpdate();
+
+        }
     );
+
+
+    card
+        .querySelectorAll(
+            ".condition-poison-type, .condition-bone-type, .condition-bleed-per-turn"
+        )
+        .forEach(
+            control => {
+
+                control.addEventListener(
+                    "change",
+                    updateDetails
+                );
+
+                control.addEventListener(
+                    "input",
+                    updateDetails
+                );
+
+            }
+        );
+
+
+    updateDetails();
 
 
     remove?.addEventListener(
@@ -10103,7 +10499,7 @@ function addConditionCard(
             input
         ) {
 
-            input.value =
+            let next =
                 Math.max(
                     1,
                     Number(
@@ -10112,6 +10508,23 @@ function addConditionCard(
                     ) +
                     1
                 );
+
+
+            if (
+                definition.maxStacks
+            ) {
+
+                next =
+                    Math.min(
+                        definition.maxStacks,
+                        next
+                    );
+
+            }
+
+
+            input.value =
+                next;
 
         }
 
@@ -10142,6 +10555,47 @@ function addConditionCard(
         conditionId;
 
 
+    if (
+        conditionId ===
+        "unconscious"
+    ) {
+
+        card.dataset.poisonType =
+            "Damage";
+
+    }
+
+
+    if (
+        conditionId ===
+        "broken-bone"
+    ) {
+
+        card.dataset.boneType =
+            "Rib";
+
+    }
+
+
+    if (
+        conditionId ===
+        "bleeding"
+    ) {
+
+        card.dataset.bleedPerTurn =
+            "0";
+
+    }
+
+
+    const maxAttribute =
+        definition.maxStacks
+            ? ' max="' +
+                definition.maxStacks +
+                '"'
+            : "";
+
+
     card.innerHTML = `
 
         <span class="condition-card-name">
@@ -10155,9 +10609,25 @@ function addConditionCard(
                 type="number"
                 min="1"
                 step="1"
-                value="${Math.max(1, Number(stacks) || 1)}"
+                ${maxAttribute}
+                value="${Math.min(
+                    definition.maxStacks || Infinity,
+                    Math.max(1, Number(stacks) || 1)
+                )}"
             >
         </label>
+
+        ${getConditionDetailMarkup(
+            conditionId,
+            {
+                poisonType:
+                    card.dataset.poisonType,
+                boneType:
+                    card.dataset.boneType,
+                bleedPerTurn:
+                    card.dataset.bleedPerTurn
+            }
+        )}
 
         <button
             class="remove-condition"
