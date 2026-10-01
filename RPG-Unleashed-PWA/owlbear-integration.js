@@ -54,6 +54,7 @@ const CONDITION_OVERLAY_ASSETS = {
     "frozen": "/assets/conditions/frozen.png",
     "unconscious": "/assets/conditions/unconscious.png",
     "taunted": "/assets/conditions/taunted.png",
+    "taunt": "/assets/conditions/taunt.png",
     "shocked": "/assets/conditions/shocked.png",
     "stunned": "/assets/conditions/stunned.png"
 };
@@ -99,7 +100,8 @@ const CONDITION_DEFINITIONS = [
     {
         id: "fear",
         name: "Fear",
-        description: "No rules text has been set for this condition yet."
+        maxStacks: 5,
+        description: "You receive a -1 to attack the source of your fear or any creature within 5 feet of the source of your fear. Failing an attempt to attack the source opens you up for an attack of opportunity. Max 5. At max fear, you flee in a direction opposite the source of your fear. Remove all stacks once you have dealt damage to the source of Fear. If a second source would cause you Fear, prioritize the newest source."
     },
     {
         id: "wounded",
@@ -108,18 +110,20 @@ const CONDITION_DEFINITIONS = [
     },
     {
         id: "arrowed",
-        name: "Arrowed",
-        description: "No rules text has been set for this condition yet."
+        name: "Pierced",
+        description: "Receive a -1 penalty on all physical actions per stack. Receive 1 damage per stack for any physical action taken. Remove 1 stack with a DC 20 Heal check; failing the check still removes the stack but deals 1d4 damage and bleed stacks equal to damage taken."
     },
     {
         id: "bleeding",
-        name: "Bleeding",
-        description: "No rules text has been set for this condition yet."
+        name: "Bleed",
+        detailType: "bleedPerTurn",
+        description: "Enter bleed stacks per turn. You receive a number of Bleed Stacks at the beginning of each turn equal to the maximum die roll of the weapon that inflicted the condition. For weapons with multiple dice, only count the dice that rolled maximum. For magic, follow the rules the magic provides. Receive a -2 to all checks per 10 bleed stacks. At 40 stacks, make BOD saves each round with a DC of 10 + 1/4 Bleed stacks rounded down or fall unconscious. Stop the accumulation of bleed stacks with a DC 20 Heal check and fabric; a health potion also stops the accumulation. Bleed stacks are removed before your HP can be healed at a rate of 2 stacks of bleed for every 1 point of HP that would have been regained."
     },
     {
         id: "broken-bone",
-        name: "Broken Bone",
-        description: "No rules text has been set for this condition yet."
+        name: "Bone Break",
+        detailType: "boneBreak",
+        description: "Select Rib, Arm, Leg, Skull, or Neck. Skull: -4 to all checks, 30% chance to lose turn (roll at the start of the turn). Arm: cannot hold things using broken arm, -2 to Atk/Def, -10 on climbing checks. Leg: cannot run, 1/2 speed, -2 to Atk/Def, -10 on climbing; if both legs are broken, speed is reduced to 5 ft and -6 to Atk/Def. Rib: -2 to Atk/Def, -2 to running checks."
     },
     {
         id: "burning",
@@ -139,7 +143,7 @@ const CONDITION_DEFINITIONS = [
     {
         id: "drunk",
         name: "Drunk",
-        description: "No rules text has been set for this condition yet."
+        description: "Receive a -2 penalty per 10 stacks on all skill checks and DEX/MND saves. When you reach 20 stacks, you receive a +2 bonus to BOD and CHA based checks. When you reach 40 stacks, begin making BOD saves every minute outside of combat or 1d4 rounds in combat to prevent yourself from falling unconscious/blacking out. DC to remain conscious is 10 + 1/4 your Drunk Stacks rounded down. Make a BOD save in the morning with a DC equal to 1/2 your Drunk stacks to prevent a hangover."
     },
     {
         id: "confused",
@@ -153,13 +157,14 @@ const CONDITION_DEFINITIONS = [
     },
     {
         id: "unconscious",
-        name: "Poisoned",
-        description: "No rules text has been set for this condition yet."
+        name: "Poison",
+        detailType: "poisonType",
+        description: "Effect specific to poison used. Poison stacks may only be removed once you have successfully made a BOD save against it; otherwise it continues to increase on each time interval (round, minute, hour, day). Once you have succeeded in your BOD save, reduce by a number of d4 equal to 1/4 BOD score per hour of rest or drink antidote."
     },
     {
         id: "taunted",
-        name: "Taunted",
-        description: "No rules text has been set for this condition yet."
+        name: "Rage",
+        description: "Berserker Rage is active. See the Berserker Rage feat for its effects."
     },
     {
         id: "shocked",
@@ -170,6 +175,12 @@ const CONDITION_DEFINITIONS = [
         id: "stunned",
         name: "Stunned",
         description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "taunt",
+        name: "Taunt",
+        maxStacks: 5,
+        description: "You receive +1 to attack the source of Taunt and a -1 to attack anyone else per stack of Taunt. Max 5. At max Taunt, you charge or focus all attacks on the source of Taunt, regardless of enemy threat. Remove all stacks of Taunt once you have dealt damage to the source of Taunt. If a second source would Taunt you, prioritize the newest source."
     }
 ];
 
