@@ -150,9 +150,15 @@ body {
 
 .add-row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     gap: 7px;
     margin-bottom: 9px;
+}
+.add-row .add-bone-picker[hidden] {
+    display: none;
+}
+.add-row .add-bone-picker {
+    min-width: 82px;
 }
 select { min-height: 36px; padding: 6px 8px; }
 .add-row button {
@@ -191,6 +197,20 @@ select { min-height: 36px; padding: 6px 8px; }
     display: grid;
     gap: 5px;
     margin-top: 6px;
+}
+.condition-detail-editor.poison-details {
+    grid-template-columns: minmax(90px, 1fr) minmax(82px, .8fr) 62px;
+    align-items: end;
+}
+.condition-detail-editor.bleed-details {
+    grid-template-columns: max-content;
+}
+.condition-detail-editor .condition-bleed-per-turn,
+.condition-detail-editor .condition-poison-stacks-per-interval {
+    width: 52px;
+    min-width: 52px;
+    max-width: 52px;
+    text-align: center;
 }
 .condition-detail-editor label {
     display: grid;
@@ -305,6 +325,13 @@ select { min-height: 36px; padding: 6px 8px; }
             <div class="add-row">
                 <select id="condition-picker">
                     <option value="">Select condition…</option>
+                </select>
+                <select id="add-bone-picker" class="add-bone-picker" hidden aria-label="Bone break location">
+                    <option value="Rib">Rib</option>
+                    <option value="Arm">Arm</option>
+                    <option value="Leg">Leg</option>
+                    <option value="Skull">Skull</option>
+                    <option value="Neck">Neck</option>
                 </select>
                 <button id="add-condition-button" type="button">+ Condition</button>
             </div>
@@ -476,6 +503,7 @@ const statusMessage = document.getElementById("status-message");
 const characterContextLabel = document.getElementById("character-context");
 const conditionPicker = document.getElementById("condition-picker");
 const addConditionButton = document.getElementById("add-condition-button");
+const addBonePicker = document.getElementById("add-bone-picker");
 const conditionList = document.getElementById("condition-list");
 
 const statInputs = {
@@ -516,6 +544,63 @@ function setSavedInputValue(input, value) {
 
 function getConditionDefinition(conditionId) {
     return conditionDefinitions.find(definition => definition.id === conditionId) || null;
+}
+
+const BONE_BREAK_EFFECTS = {
+    Rib: "-2 to Atk/Def, -2 to running checks.",
+    Arm: "Cannot hold things using the broken arm. -2 to Atk/Def, -10 on climbing checks.",
+    Leg: "Cannot run, 1/2 speed, -2 to Atk/Def, -10 on climbing checks. If both legs are broken, speed is reduced to 5 ft and -6 to Atk/Def.",
+    Skull: "-4 to all checks, 30% chance to lose turn (roll at the start of the turn).",
+    Neck: "No rules text has been set for a Neck break yet."
+};
+
+function conditionIdentity(condition) {
+    if (condition?.id === "broken-bone") {
+        return "broken-bone:" + (condition.boneType || "Rib");
+    }
+
+    return condition?.id || "";
+}
+
+function normalizeBoneBreakConditions(conditions) {
+    const output = [];
+    const byBone = new Map();
+
+    for (const condition of conditions) {
+        if (condition.id !== "broken-bone") {
+            output.push(condition);
+            continue;
+        }
+
+        const boneType = condition.boneType || "Rib";
+        const existing = byBone.get(boneType);
+
+        if (existing) {
+            existing.stacks += Math.max(1, Number(condition.stacks) || 1);
+            continue;
+        }
+
+        const entry = {
+            ...condition,
+            boneType,
+            stacks: Math.max(1, Number(condition.stacks) || 1)
+        };
+
+        byBone.set(boneType, entry);
+        output.push(entry);
+    }
+
+    return output;
+}
+
+function getConditionHelpText(condition) {
+    if (condition?.id === "broken-bone") {
+        const boneType = condition.boneType || "Rib";
+        return boneType + ": " + (BONE_BREAK_EFFECTS[boneType] || "No rules text has been set for this break yet.");
+    }
+
+    return getConditionDefinition(condition?.id)?.description ||
+        "No rules text has been set for this condition yet.";
 }
 
 function parseVitalsFromRecord(record) {
@@ -636,6 +721,19 @@ function getConditionDetailValues(card, conditionId) {
         card?.dataset?.poisonType ||
         "";
 
+    const poisonInterval =
+        card?.querySelector(".condition-poison-interval")?.value ||
+        card?.dataset?.poisonInterval ||
+        "Round";
+
+    const poisonStacksRaw =
+        card?.querySelector(".condition-poison-stacks-per-interval")?.value ??
+        card?.dataset?.poisonStacksPerInterval ??
+        "1";
+
+    const poisonStacksPerInterval =
+        Number(poisonStacksRaw);
+
     const boneType =
         card?.querySelector(".condition-bone-type")?.value ||
         card?.dataset?.boneType ||
@@ -654,6 +752,15 @@ function getConditionDetailValues(card, conditionId) {
             conditionId === "unconscious"
                 ? poisonType
                 : "",
+        poisonInterval:
+            conditionId === "unconscious"
+                ? poisonInterval
+                : "",
+        poisonStacksPerInterval:
+            conditionId === "unconscious" &&
+            Number.isFinite(poisonStacksPerInterval)
+                ? Math.max(0, Math.floor(poisonStacksPerInterval))
+                : 0,
         boneType:
             conditionId === "broken-bone"
                 ? boneType
@@ -669,6 +776,9 @@ function getConditionDetailValues(card, conditionId) {
 function conditionDetailHtml(condition) {
     if (condition.id === "unconscious") {
         const value = condition.poisonType || "Damage";
+        const interval = condition.poisonInterval || "Round";
+        const stacksPerInterval = Math.max(0, Number(condition.poisonStacksPerInterval) || 1);
+
         return `
             <label class="condition-detail-field">
                 Poison Type
@@ -679,6 +789,28 @@ function conditionDetailHtml(condition) {
                         ">" + option + "</option>"
                     ).join("")}
                 </select>
+            </label>
+
+            <label class="condition-detail-field">
+                Interval
+                <select class="condition-poison-interval">
+                    ${["Round", "Minute", "Hour", "Day"].map(option =>
+                        '<option value="' + option + '"' +
+                        (option === interval ? " selected" : "") +
+                        ">" + option + "</option>"
+                    ).join("")}
+                </select>
+            </label>
+
+            <label class="condition-detail-field">
+                Stacks / Interval
+                <input
+                    class="condition-poison-stacks-per-interval"
+                    type="number"
+                    min="0"
+                    step="1"
+                    value="${stacksPerInterval}"
+                >
             </label>
         `;
     }
@@ -717,20 +849,46 @@ function conditionDetailHtml(condition) {
     return "";
 }
 
-function renderConditionDetailEditor(condition) {
+function renderConditionDetailEditor(condition, conditionKey) {
     if (condition.id === "unconscious") {
         const value = condition.poisonType || "Damage";
+        const interval = condition.poisonInterval || "Round";
+        const stacksPerInterval = Math.max(0, Number(condition.poisonStacksPerInterval) || 1);
+
         return `
-            <div class="condition-detail-editor">
+            <div class="condition-detail-editor poison-details">
                 <label>
                     Poison Type
-                    <select class="condition-poison-type" data-condition-id="${condition.id}">
+                    <select class="condition-poison-type" data-condition-key="${conditionKey}">
                         ${["Damage", "Attribute", "Mana", "+ Poison"].map(option =>
                             '<option value="' + option + '"' +
                             (option === value ? " selected" : "") +
                             ">" + option + "</option>"
                         ).join("")}
                     </select>
+                </label>
+
+                <label>
+                    Time Interval
+                    <select class="condition-poison-interval" data-condition-key="${conditionKey}">
+                        ${["Round", "Minute", "Hour", "Day"].map(option =>
+                            '<option value="' + option + '"' +
+                            (option === interval ? " selected" : "") +
+                            ">" + option + "</option>"
+                        ).join("")}
+                    </select>
+                </label>
+
+                <label>
+                    Stacks / Interval
+                    <input
+                        class="condition-poison-stacks-per-interval"
+                        data-condition-key="${conditionKey}"
+                        type="number"
+                        min="0"
+                        step="1"
+                        value="${stacksPerInterval}"
+                    >
                 </label>
             </div>
         `;
@@ -742,7 +900,7 @@ function renderConditionDetailEditor(condition) {
             <div class="condition-detail-editor">
                 <label>
                     Break
-                    <select class="condition-bone-type" data-condition-id="${condition.id}">
+                    <select class="condition-bone-type" data-condition-key="${conditionKey}">
                         ${["Rib", "Arm", "Leg", "Skull", "Neck"].map(option =>
                             '<option value="' + option + '"' +
                             (option === value ? " selected" : "") +
@@ -756,12 +914,12 @@ function renderConditionDetailEditor(condition) {
 
     if (condition.id === "bleeding") {
         return `
-            <div class="condition-detail-editor">
+            <div class="condition-detail-editor bleed-details">
                 <label>
-                    Bleed Stacks / Turn
+                    Bleed / Turn
                     <input
                         class="condition-bleed-per-turn"
-                        data-condition-id="${condition.id}"
+                        data-condition-key="${conditionKey}"
                         type="number"
                         min="0"
                         step="1"
@@ -837,6 +995,19 @@ function writeConditionsToRecord(record, conditions) {
 
         if (condition.poisonType) {
             card.dataset.poisonType = condition.poisonType;
+        }
+
+        if (condition.id === "unconscious") {
+            card.dataset.poisonInterval =
+                condition.poisonInterval ||
+                "Round";
+            card.dataset.poisonStacksPerInterval =
+                String(
+                    Math.max(
+                        0,
+                        Number(condition.poisonStacksPerInterval) || 1
+                    )
+                );
         }
 
         if (condition.boneType) {
@@ -939,8 +1110,27 @@ function renderConditionPicker() {
     });
 }
 
+function updateConditionAddOptions() {
+    if (!addBonePicker) return;
+
+    addBonePicker.hidden =
+        conditionPicker.value !==
+        "broken-bone";
+}
+
+conditionPicker.addEventListener(
+    "change",
+    updateConditionAddOptions
+);
+
 function renderConditions() {
-    const conditions = parseConditionsFromRecord(loadedRecord);
+    const conditions =
+        normalizeBoneBreakConditions(
+            parseConditionsFromRecord(
+                loadedRecord
+            )
+        );
+
     conditionList.innerHTML = "";
 
     if (!conditions.length) {
@@ -951,12 +1141,18 @@ function renderConditions() {
         return;
     }
 
-    conditions.forEach(condition => {
+    conditions.forEach((condition, index) => {
         const definition = getConditionDefinition(condition.id);
         const row = document.createElement("div");
-        const helpId = "help-" + condition.id;
+        const conditionKey = conditionIdentity(condition);
+        const helpId =
+            "help-" +
+            condition.id +
+            "-" +
+            index;
 
         row.className = "condition-row";
+        row.dataset.conditionKey = conditionKey;
         row.innerHTML = `
             <div class="condition-top">
                 <span class="condition-name">
@@ -966,7 +1162,7 @@ function renderConditions() {
                 <button
                     class="icon-button minus-condition"
                     type="button"
-                    data-condition-id="${condition.id}"
+                    data-condition-key="${conditionKey}"
                     title="Reduce stacks"
                 >
                     −
@@ -979,7 +1175,7 @@ function renderConditions() {
                 <button
                     class="icon-button plus-condition"
                     type="button"
-                    data-condition-id="${condition.id}"
+                    data-condition-key="${conditionKey}"
                     title="Add stacks"
                     ${definition?.maxStacks && condition.stacks >= definition.maxStacks ? "disabled" : ""}
                 >
@@ -996,10 +1192,10 @@ function renderConditions() {
                 </button>
             </div>
 
-            ${renderConditionDetailEditor(condition)}
+            ${renderConditionDetailEditor(condition, conditionKey)}
 
             <div class="condition-help" id="${helpId}">
-                ${definition?.description || "No rules text has been set for this condition yet."}
+                ${getConditionHelpText(condition)}
             </div>
         `;
 
@@ -1008,13 +1204,13 @@ function renderConditions() {
 
     conditionList.querySelectorAll(".minus-condition").forEach(button => {
         button.addEventListener("click", async () => {
-            await changeConditionStacks(button.dataset.conditionId, -1);
+            await changeConditionStacks(button.dataset.conditionKey, -1);
         });
     });
 
     conditionList.querySelectorAll(".plus-condition").forEach(button => {
         button.addEventListener("click", async () => {
-            await changeConditionStacks(button.dataset.conditionId, 1);
+            await changeConditionStacks(button.dataset.conditionKey, 1);
         });
     });
 
@@ -1025,18 +1221,18 @@ function renderConditions() {
                 ?.classList.toggle("active");
         });
     });
-}
 
     conditionList.querySelectorAll(
-        ".condition-poison-type, .condition-bone-type, .condition-bleed-per-turn"
+        ".condition-poison-type, .condition-poison-interval, .condition-poison-stacks-per-interval, .condition-bone-type, .condition-bleed-per-turn"
     ).forEach(control => {
         control.addEventListener("change", async () => {
             await updateConditionDetail(
-                control.dataset.conditionId,
+                control.dataset.conditionKey,
                 control
             );
         });
     });
+}
 
 async function persistRecord(nextRecord) {
     if (!nextRecord || !loadedContext || saving) return false;
@@ -1097,21 +1293,31 @@ async function adjustStat(stat, delta) {
     await persistVitals();
 }
 
-async function changeConditionStacks(conditionId, delta) {
+async function changeConditionStacks(conditionKey, delta) {
     if (saving || !loadedRecord) return;
 
-    const current = parseConditionsFromRecord(loadedRecord);
+    const current =
+        normalizeBoneBreakConditions(
+            parseConditionsFromRecord(
+                loadedRecord
+            )
+        );
+
     const next = [];
     let handled = false;
-    const definition = getConditionDefinition(conditionId);
 
     current.forEach(condition => {
-        if (condition.id !== conditionId) {
+        if (conditionIdentity(condition) !== conditionKey) {
             next.push(condition);
             return;
         }
 
         handled = true;
+
+        const definition =
+            getConditionDefinition(
+                condition.id
+            );
 
         let stacks =
             Math.max(
@@ -1135,13 +1341,6 @@ async function changeConditionStacks(conditionId, delta) {
         }
     });
 
-    if (!handled && delta > 0) {
-        next.push({
-            id: conditionId,
-            stacks: 1
-        });
-    }
-
     const nextRecord = writeConditionsToRecord(
         loadedRecord,
         next
@@ -1150,17 +1349,19 @@ async function changeConditionStacks(conditionId, delta) {
     await persistRecord(nextRecord);
 }
 
-async function updateConditionDetail(conditionId, control) {
+async function updateConditionDetail(conditionKey, control) {
     if (saving || !loadedRecord) return;
 
-    const current =
-        parseConditionsFromRecord(
-            loadedRecord
+    let current =
+        normalizeBoneBreakConditions(
+            parseConditionsFromRecord(
+                loadedRecord
+            )
         );
 
-    const next =
+    current =
         current.map(condition => {
-            if (condition.id !== conditionId) {
+            if (conditionIdentity(condition) !== conditionKey) {
                 return condition;
             }
 
@@ -1169,6 +1370,27 @@ async function updateConditionDetail(conditionId, control) {
                     ...condition,
                     poisonType:
                         control.value
+                };
+            }
+
+            if (control.classList.contains("condition-poison-interval")) {
+                return {
+                    ...condition,
+                    poisonInterval:
+                        control.value
+                };
+            }
+
+            if (control.classList.contains("condition-poison-stacks-per-interval")) {
+                return {
+                    ...condition,
+                    poisonStacksPerInterval:
+                        Math.max(
+                            0,
+                            Math.floor(
+                                Number(control.value) || 0
+                            )
+                        )
                 };
             }
 
@@ -1196,10 +1418,15 @@ async function updateConditionDetail(conditionId, control) {
             return condition;
         });
 
+    current =
+        normalizeBoneBreakConditions(
+            current
+        );
+
     await persistRecord(
         writeConditionsToRecord(
             loadedRecord,
-            next
+            current
         )
     );
 }
@@ -1223,48 +1450,171 @@ Object.values(statInputs).forEach(input => {
 addConditionButton.addEventListener("click", async () => {
     if (saving || !conditionPicker.value || !loadedRecord) return;
 
-    const current = parseConditionsFromRecord(loadedRecord);
-    const existing = current.find(
-        condition => condition.id === conditionPicker.value
-    );
+    const selectedId =
+        conditionPicker.value;
 
-    const next = existing
-        ? current.map(condition =>
-            condition.id === conditionPicker.value
-                ? {
-                    ...condition,
-                    stacks: condition.stacks + 1
-                }
-                : condition
-        )
-        : [
-            ...current,
-            {
-                id: conditionPicker.value,
-                stacks: 1,
+    const selectedBone =
+        selectedId === "broken-bone"
+            ? (
+                addBonePicker?.value ||
+                "Rib"
+            )
+            : "";
+
+    let current =
+        normalizeBoneBreakConditions(
+            parseConditionsFromRecord(
+                loadedRecord
+            )
+        );
+
+    if (
+        selectedId ===
+        "broken-bone"
+    ) {
+
+        const existing =
+            current.find(
+                condition =>
+                    condition.id ===
+                        "broken-bone" &&
+                    (
+                        condition.boneType ||
+                        "Rib"
+                    ) ===
+                        selectedBone
+            );
+
+        if (
+            existing
+        ) {
+
+            current =
+                current.map(
+                    condition =>
+                        condition ===
+                            existing
+                            ? {
+                                ...condition,
+                                stacks:
+                                    condition.stacks +
+                                    1
+                            }
+                            : condition
+                );
+
+        }
+
+        else {
+
+            current.push({
+                id:
+                    "broken-bone",
+                stacks:
+                    1,
+                boneType:
+                    selectedBone
+            });
+
+        }
+
+    }
+
+    else {
+
+        const existing =
+            current.find(
+                condition =>
+                    condition.id ===
+                    selectedId
+            );
+
+        if (
+            existing
+        ) {
+
+            const definition =
+                getConditionDefinition(
+                    selectedId
+                );
+
+            current =
+                current.map(
+                    condition => {
+
+                        if (
+                            condition !==
+                            existing
+                        ) {
+
+                            return condition;
+
+                        }
+
+
+                        const nextStacks =
+                            condition.stacks +
+                            1;
+
+
+                        return {
+                            ...condition,
+                            stacks:
+                                definition?.maxStacks
+                                    ? Math.min(
+                                        definition.maxStacks,
+                                        nextStacks
+                                    )
+                                    : nextStacks
+                        };
+
+                    }
+                );
+
+        }
+
+        else {
+
+            current.push({
+                id:
+                    selectedId,
+                stacks:
+                    1,
                 poisonType:
-                    conditionPicker.value === "unconscious"
+                    selectedId ===
+                        "unconscious"
                         ? "Damage"
                         : "",
-                boneType:
-                    conditionPicker.value === "broken-bone"
-                        ? "Rib"
+                poisonInterval:
+                    selectedId ===
+                        "unconscious"
+                        ? "Round"
                         : "",
+                poisonStacksPerInterval:
+                    selectedId ===
+                        "unconscious"
+                        ? 1
+                        : 0,
                 bleedPerTurn:
-                    conditionPicker.value === "bleeding"
+                    selectedId ===
+                        "bleeding"
                         ? 0
                         : 0
-            }
-        ];
+            });
+
+        }
+
+    }
 
     conditionPicker.value = "";
+    updateConditionAddOptions();
 
-    const nextRecord = writeConditionsToRecord(
-        loadedRecord,
-        next
+    await persistRecord(
+        writeConditionsToRecord(
+            loadedRecord,
+            current
+        )
     );
-
-    await persistRecord(nextRecord);
 });
 
 async function initializeTokenControls() {
@@ -1303,6 +1653,7 @@ async function initializeTokenControls() {
         }
 
         renderConditionPicker();
+        updateConditionAddOptions();
 
         loadedContext =
             await window.RPGOwlbear.loadCharacterForTokenId(
