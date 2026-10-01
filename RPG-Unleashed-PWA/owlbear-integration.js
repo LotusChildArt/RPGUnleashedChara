@@ -32,6 +32,10 @@ const BACKGROUND_HEARTBEAT_KEY =
     "com.rpgunleashed.character-sheet/backgroundHeartbeat";
 
 
+const REMOTE_UPDATES_KEY =
+    "com.rpgunleashed.character-sheet/remoteUpdatesV1";
+
+
 const CONDITION_OVERLAY_ASSETS = {
     "fear": "/assets/conditions/fear.png",
     "wounded": "/assets/conditions/wounded.png",
@@ -783,6 +787,143 @@ function deserializeChunks(
 
     return JSON.parse(
         json
+    );
+
+}
+
+
+async function encodeSharedSnapshot(
+    value
+) {
+
+    const json =
+        JSON.stringify(
+            value
+        );
+
+
+    if (
+        typeof CompressionStream ===
+        "function"
+    ) {
+
+        const stream =
+            new Blob(
+                [
+                    new TextEncoder()
+                        .encode(
+                            json
+                        )
+                ]
+            )
+            .stream()
+            .pipeThrough(
+                new CompressionStream(
+                    "gzip"
+                )
+            );
+
+
+        const bytes =
+            new Uint8Array(
+                await new Response(
+                    stream
+                ).arrayBuffer()
+            );
+
+
+        return {
+            encoding:
+                "gzip-json-v1",
+            data:
+                bytesToBase64(
+                    bytes
+                )
+        };
+
+    }
+
+
+    return {
+        encoding:
+            "json-base64-v1",
+        data:
+            bytesToBase64(
+                new TextEncoder()
+                    .encode(
+                        json
+                    )
+            )
+    };
+
+}
+
+
+async function decodeSharedSnapshot(
+    snapshot
+) {
+
+    if (
+        !snapshot?.data
+    ) {
+
+        return null;
+
+    }
+
+
+    let bytes =
+        base64ToBytes(
+            snapshot.data
+        );
+
+
+    if (
+        snapshot.encoding ===
+            "gzip-json-v1"
+    ) {
+
+        if (
+            typeof DecompressionStream !==
+            "function"
+        ) {
+
+            throw new Error(
+                "This browser cannot decompress the shared character snapshot."
+            );
+
+        }
+
+
+        const stream =
+            new Blob(
+                [
+                    bytes
+                ]
+            )
+            .stream()
+            .pipeThrough(
+                new DecompressionStream(
+                    "gzip"
+                )
+            );
+
+
+        bytes =
+            new Uint8Array(
+                await new Response(
+                    stream
+                ).arrayBuffer()
+            );
+
+    }
+
+
+    return JSON.parse(
+        new TextDecoder()
+            .decode(
+                bytes
+            )
     );
 
 }
@@ -3542,6 +3683,172 @@ async function publishBackgroundHeartbeat() {
                     }
 
 
+                    async function applyQueuedRemoteUpdates() {
+
+                        if (
+                            playerRole ===
+                                "GM"
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        const partyPlayers =
+                            await OBR.party.getPlayers();
+
+
+                        const pending =
+                            partyPlayers
+                                .filter(
+                                    player =>
+                                        player.role ===
+                                            "GM"
+                                )
+                                .flatMap(
+                                    player =>
+                                        Array.isArray(
+                                            player.metadata?.[
+                                                REMOTE_UPDATES_KEY
+                                            ]
+                                        )
+                                            ? player.metadata[
+                                                REMOTE_UPDATES_KEY
+                                            ]
+                                            : []
+                                )
+                                .filter(
+                                    update =>
+                                        update.ownerId ===
+                                            OBR.player.id &&
+                                        update.roomId ===
+                                            roomId
+                                )
+                                .sort(
+                                    (
+                                        a,
+                                        b
+                                    ) =>
+                                        Number(
+                                            a.updatedAt ||
+                                            0
+                                        ) -
+                                        Number(
+                                            b.updatedAt ||
+                                            0
+                                        )
+                                );
+
+
+                        for (
+                            const update
+                            of pending
+                        ) {
+
+                            const current =
+                                await window.RPGCharacterStore
+                                    ?.getCharacterById(
+                                        update.characterId
+                                    );
+
+
+                            if (
+                                !current
+                            ) {
+
+                                continue;
+
+                            }
+
+
+                            const currentRevision =
+                                Number(
+                                    current.revision ||
+                                    0
+                                );
+
+
+                            if (
+                                currentRevision >=
+                                    Number(
+                                        update.revision ||
+                                        0
+                                    ) ||
+                                currentRevision !==
+                                    Number(
+                                        update.baseRevision ||
+                                        0
+                                    )
+                            ) {
+
+                                continue;
+
+                            }
+
+
+                            const incoming =
+                                await decodeSharedSnapshot(
+                                    update.snapshot
+                                );
+
+
+                            if (
+                                !incoming
+                            ) {
+
+                                continue;
+
+                            }
+
+
+                            const next =
+                                preserveOwnerPicture(
+                                    {
+                                        ...incoming,
+                                        id:
+                                            current.id,
+                                        createdAt:
+                                            current.createdAt,
+                                        revision:
+                                            Number(
+                                                update.revision
+                                            ),
+                                        updatedAt:
+                                            Number(
+                                                update.updatedAt
+                                            ) ||
+                                            Date.now()
+                                    },
+                                    current
+                                );
+
+
+                            await window.RPGCharacterStore
+                                .putCharacter(
+                                    next
+                                );
+
+
+                            await syncSharedCharacter(
+                                next
+                            );
+
+
+                            await updateCharacterTokenDisplay(
+                                next
+                            );
+
+
+                            await updateCharacterConditionOverlays(
+                                next
+                            );
+
+                        }
+
+                    }
+
+
                     async function migrateAndRestoreSharedCharacters() {
 
                         const localCharacters =
@@ -3739,6 +4046,12 @@ async function publishBackgroundHeartbeat() {
                                 ownerName:
                                     playerName ||
                                     "Player",
+                                snapshot:
+                                    await encodeSharedSnapshot(
+                                        makeTransferRecord(
+                                            character
+                                        )
+                                    ),
                                 updatedAt:
                                     Date.now()
                             };
@@ -3767,6 +4080,12 @@ async function publishBackgroundHeartbeat() {
                                     playerName ||
                                     "Player",
                                 roomId,
+                                snapshot:
+                                    await encodeSharedSnapshot(
+                                        makeTransferRecord(
+                                            character
+                                        )
+                                    ),
                                 updatedAt:
                                     Date.now()
                             });
@@ -4058,6 +4377,12 @@ async function publishBackgroundHeartbeat() {
                                     playerName ||
                                     "Player",
                                 roomId,
+                                snapshot:
+                                    await encodeSharedSnapshot(
+                                        makeTransferRecord(
+                                            updated
+                                        )
+                                    ),
                                 updatedAt:
                                     Date.now()
                             };
@@ -4180,7 +4505,9 @@ async function publishBackgroundHeartbeat() {
                                             playerRole,
                                         name:
                                             playerName ||
-                                            "Player"
+                                            "Player",
+                                        metadata:
+                                            await OBR.player.getMetadata()
                                     },
                                     ...partyPlayers.map(
                                         player => ({
@@ -4190,7 +4517,10 @@ async function publishBackgroundHeartbeat() {
                                                 player.role,
                                             name:
                                                 player.name ||
-                                                "Player"
+                                                "Player",
+                                            metadata:
+                                                player.metadata ||
+                                                {}
                                         })
                                     )
                                 ]
@@ -4244,6 +4574,21 @@ async function publishBackgroundHeartbeat() {
                                         );
 
 
+                                    const ownerShared =
+                                        cleanSharedCharacters(
+                                            owner?.metadata?.[
+                                                SHARED_CHARACTERS_KEY
+                                            ]
+                                        )
+                                        .find(
+                                            shared =>
+                                                shared.characterId ===
+                                                    character.characterId &&
+                                                shared.roomId ===
+                                                    roomId
+                                        );
+
+
                                     return {
                                         ...character,
                                         ownerName:
@@ -4257,7 +4602,10 @@ async function publishBackgroundHeartbeat() {
                                             Boolean(
                                                 owner
                                             ),
-                                        backgroundReady
+                                        backgroundReady,
+                                        snapshot:
+                                            ownerShared?.snapshot ||
+                                            null
                                     };
 
                                 }
@@ -5304,6 +5652,36 @@ async function publishBackgroundHeartbeat() {
                         }
 
 
+                        if (
+                            character.snapshot
+                        ) {
+
+                            const record =
+                                await decodeSharedSnapshot(
+                                    character.snapshot
+                                );
+
+
+                            if (
+                                record
+                            ) {
+
+                                return {
+                                    record,
+                                    ownerId:
+                                        character.ownerId,
+                                    ownerName:
+                                        character.ownerName ||
+                                        "Player",
+                                    source:
+                                        "shared-snapshot"
+                                };
+
+                            }
+
+                        }
+
+
                         const requestId =
                             makeTransferId();
 
@@ -5389,6 +5767,90 @@ async function publishBackgroundHeartbeat() {
                     }
 
 
+                    async function queueRemoteCharacterUpdate({
+                        ownerId,
+                        characterId,
+                        baseRevision,
+                        record
+                    }) {
+
+                        const metadata =
+                            await OBR.player.getMetadata();
+
+
+                        const updates =
+                            Array.isArray(
+                                metadata[
+                                    REMOTE_UPDATES_KEY
+                                ]
+                            )
+                                ? metadata[
+                                    REMOTE_UPDATES_KEY
+                                ]
+                                : [];
+
+
+                        const snapshot =
+                            await encodeSharedSnapshot(
+                                makeTransferRecord(
+                                    record
+                                )
+                            );
+
+
+                        const entry = {
+                            ownerId,
+                            characterId,
+                            roomId,
+                            baseRevision:
+                                Number(
+                                    baseRevision ||
+                                    0
+                                ),
+                            revision:
+                                Number(
+                                    baseRevision ||
+                                    0
+                                ) +
+                                1,
+                            updatedAt:
+                                Date.now(),
+                            snapshot
+                        };
+
+
+                        const next =
+                            updates
+                                .filter(
+                                    update =>
+                                        !(
+                                            update.ownerId ===
+                                                ownerId &&
+                                            update.characterId ===
+                                                characterId &&
+                                            update.roomId ===
+                                                roomId
+                                        )
+                                )
+                                .concat(
+                                    entry
+                                )
+                                .slice(
+                                    -10
+                                );
+
+
+                        await OBR.player.setMetadata({
+                            [REMOTE_UPDATES_KEY]:
+                                next
+                        });
+
+
+                        return entry;
+
+                    }
+
+
                     async function updateRemoteCharacter({
                         ownerId,
                         characterId,
@@ -5428,10 +5890,26 @@ async function publishBackgroundHeartbeat() {
                                                 );
 
 
-                                                reject(
-                                                    new Error(
-                                                        "The player did not confirm the update. Make sure they are still connected to this Owlbear room."
-                                                    )
+                                                queueRemoteCharacterUpdate({
+                                                    ownerId,
+                                                    characterId,
+                                                    baseRevision,
+                                                    record
+                                                })
+                                                .then(
+                                                    queued => {
+                                                        resolve({
+                                                            revision:
+                                                                queued.revision,
+                                                            updatedAt:
+                                                                queued.updatedAt,
+                                                            queued:
+                                                                true
+                                                        });
+                                                    }
+                                                )
+                                                .catch(
+                                                    reject
                                                 );
 
                                             },
@@ -5512,6 +5990,9 @@ async function publishBackgroundHeartbeat() {
 
                             await migrateAndRestoreSharedCharacters();
 
+
+                            await applyQueuedRemoteUpdates();
+
                         }
 
                         catch (
@@ -5524,6 +6005,28 @@ async function publishBackgroundHeartbeat() {
                             );
 
                         }
+
+                    }
+
+
+                    if (
+                        !isBackgroundContext
+                    ) {
+
+                        window.setInterval(
+                            () => {
+                                applyQueuedRemoteUpdates()
+                                    .catch(
+                                        error => {
+                                            console.error(
+                                                "Could not apply queued GM character updates:",
+                                                error
+                                            );
+                                        }
+                                    );
+                            },
+                            5000
+                        );
 
                     }
 
