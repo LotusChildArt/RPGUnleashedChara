@@ -5462,7 +5462,7 @@ if (
     <div class="sheet">
 
         <h1>
-            Special/Background
+            Background / Path
         </h1>
 
 
@@ -5806,7 +5806,7 @@ if (
         <div class="halloween-sheet" id="halloween-sheet">
 
             <h1>
-                Special/Background
+                Halloween
             </h1>
 
 
@@ -7678,18 +7678,36 @@ function normalizeSpecialBackgroundLabels() {
     }
 
 
-    tab
-        .querySelectorAll(
-            "h1"
-        )
-        .forEach(
-            heading => {
-
-                heading.textContent =
-                    "Special/Background";
-
-            }
+    const classicHeading =
+        tab.querySelector(
+            ".sheet > h1"
         );
+
+
+    if (
+        classicHeading
+    ) {
+
+        classicHeading.textContent =
+            "Background / Path";
+
+    }
+
+
+    const halloweenHeading =
+        tab.querySelector(
+            "#halloween-sheet > h1"
+        );
+
+
+    if (
+        halloweenHeading
+    ) {
+
+        halloweenHeading.textContent =
+            "Halloween";
+
+    }
 
 
     const tabButton =
@@ -7739,7 +7757,7 @@ function ensureHalloweenSheetMarkup() {
     wrapper.innerHTML = `
         <div class="halloween-sheet" id="halloween-sheet">
 
-            <h1>Special/Background</h1>
+            <h1>Halloween</h1>
 
             <div class="halloween-ex-machinas">
                 <strong>Ex Machinas</strong>
