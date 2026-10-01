@@ -2123,6 +2123,124 @@ async function publishBackgroundHeartbeat() {
                             localRecord
                         ) {
 
+                            let resolvedLocalRecord =
+                                localRecord;
+
+
+                            if (
+                                reference.snapshot
+                            ) {
+
+                                try {
+
+                                    const tokenRecord =
+                                        await decodeSharedSnapshot(
+                                            reference.snapshot
+                                        );
+
+
+                                    const localRevision =
+                                        Number(
+                                            localRecord.revision ||
+                                            0
+                                        );
+
+
+                                    const tokenRevision =
+                                        Number(
+                                            tokenRecord?.revision ||
+                                            0
+                                        );
+
+
+                                    const localUpdatedAt =
+                                        Number(
+                                            localRecord.updatedAt ||
+                                            0
+                                        );
+
+
+                                    const tokenUpdatedAt =
+                                        Number(
+                                            tokenRecord?.updatedAt ||
+                                            0
+                                        );
+
+
+                                    const tokenIsNewer =
+                                        tokenRecord &&
+                                        (
+                                            tokenRevision >
+                                                localRevision ||
+                                            (
+                                                tokenRevision ===
+                                                    localRevision &&
+                                                tokenUpdatedAt >
+                                                    localUpdatedAt
+                                            )
+                                        );
+
+
+                                    if (
+                                        tokenIsNewer
+                                    ) {
+
+                                        resolvedLocalRecord =
+                                            preserveOwnerPicture(
+                                                {
+                                                    ...tokenRecord,
+                                                    id:
+                                                        localRecord.id,
+                                                    createdAt:
+                                                        localRecord.createdAt
+                                                },
+                                                localRecord
+                                            );
+
+
+                                        await window.RPGCharacterStore
+                                            ?.putCharacter(
+                                                resolvedLocalRecord
+                                            );
+
+
+                                        try {
+
+                                            await syncSharedCharacter(
+                                                resolvedLocalRecord
+                                            );
+
+                                        }
+
+                                        catch (
+                                            error
+                                        ) {
+
+                                            console.error(
+                                                "Could not publish refreshed player character snapshot:",
+                                                error
+                                            );
+
+                                        }
+
+                                    }
+
+                                }
+
+                                catch (
+                                    error
+                                ) {
+
+                                    console.error(
+                                        "Could not reconcile token snapshot with the local character:",
+                                        error
+                                    );
+
+                                }
+
+                            }
+
+
                             if (
                                 reference.ownerId !==
                                 OBR.player.id
@@ -2135,7 +2253,12 @@ async function publishBackgroundHeartbeat() {
                                 await setTokenLinkMetadata(
                                     tokenId,
                                     reference.characterId,
-                                    OBR.player.id
+                                    OBR.player.id,
+                                    await encodeSharedSnapshot(
+                                        makeTransferRecord(
+                                            resolvedLocalRecord
+                                        )
+                                    )
                                 );
 
                             }
@@ -2144,7 +2267,7 @@ async function publishBackgroundHeartbeat() {
                             return {
                                 reference,
                                 record:
-                                    localRecord,
+                                    resolvedLocalRecord,
                                 remoteEditSession:
                                     null
                             };
@@ -2445,6 +2568,31 @@ async function publishBackgroundHeartbeat() {
                         await updateCharacterConditionOverlays(
                             updatedRecord
                         );
+
+
+                        const localSceneLink =
+                            await resolveCharacterTokenLink(
+                                updatedRecord,
+                                OBR.player.id
+                            );
+
+
+                        if (
+                            localSceneLink?.tokenId
+                        ) {
+
+                            await setTokenLinkMetadata(
+                                localSceneLink.tokenId,
+                                updatedRecord.id,
+                                OBR.player.id,
+                                await encodeSharedSnapshot(
+                                    makeTransferRecord(
+                                        updatedRecord
+                                    )
+                                )
+                            );
+
+                        }
 
 
                         await OBR.broadcast.sendMessage(
@@ -4669,6 +4817,31 @@ async function publishBackgroundHeartbeat() {
                         );
 
 
+                        const sceneLink =
+                            await resolveCharacterTokenLink(
+                                character,
+                                OBR.player.id
+                            );
+
+
+                        if (
+                            sceneLink?.tokenId
+                        ) {
+
+                            await setTokenLinkMetadata(
+                                sceneLink.tokenId,
+                                character.id,
+                                OBR.player.id,
+                                await encodeSharedSnapshot(
+                                    makeTransferRecord(
+                                        character
+                                    )
+                                )
+                            );
+
+                        }
+
+
                         const metadata =
                             await OBR.player.getMetadata();
 
@@ -6166,6 +6339,24 @@ async function publishBackgroundHeartbeat() {
                             isBackgroundContext
                         ) {
 
+                            window.RPGOwlbear = {
+                                ready:
+                                    true,
+                                roomId,
+                                playerId:
+                                    OBR.player.id,
+                                playerName,
+                                playerRole,
+                                playerConnectionId
+                            };
+
+
+                            setOwlbearConnectionState(
+                                "connected",
+                                "RPG Unleashed background connection ready"
+                            );
+
+
                             return;
 
                         }
@@ -7247,7 +7438,7 @@ document.addEventListener(
 
 
 const RPG_IS_EMBEDDED_OWLBEAR_CONTEXT =
-    isBackgroundContext ||
+    !isBackgroundContext &&
     (() => {
 
         try {
