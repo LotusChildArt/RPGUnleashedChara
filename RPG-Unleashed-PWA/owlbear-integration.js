@@ -1452,6 +1452,23 @@ async function publishBackgroundHeartbeat() {
                         ownerIdOverride = null
                     ) {
 
+                        const ownerId =
+                            ownerIdOverride ||
+                            OBR.player.id;
+
+
+                        if (
+                            await OBR.scene.isReady()
+                        ) {
+
+                            return findSceneTokenLink(
+                                character?.id,
+                                ownerId
+                            );
+
+                        }
+
+
                         const localLink =
                             getRoomTokenLink(
                                 character,
@@ -1459,25 +1476,105 @@ async function publishBackgroundHeartbeat() {
                             );
 
 
+                        return localLink?.tokenId
+                            ? {
+                                ...localLink,
+                                ownerId
+                            }
+                            : null;
+
+                    }
+
+
+                    async function getLocalTokenLinkStates(
+                        characters
+                    ) {
+
+                        const result = {};
+
+
                         if (
-                            localLink?.tokenId
+                            !(await OBR.scene.isReady())
                         ) {
 
-                            return {
-                                ...localLink,
-                                ownerId:
-                                    ownerIdOverride ||
-                                    OBR.player.id
+                            return result;
+
+                        }
+
+
+                        const ids =
+                            new Set(
+                                (
+                                    characters ||
+                                    []
+                                )
+                                .map(
+                                    character =>
+                                        character?.id
+                                )
+                                .filter(
+                                    Boolean
+                                )
+                            );
+
+
+                        if (
+                            !ids.size
+                        ) {
+
+                            return result;
+
+                        }
+
+
+                        const tokens =
+                            await OBR.scene.items.getItems(
+                                item => {
+
+                                    const meta =
+                                        item.metadata?.[
+                                            TOKEN_LINK_METADATA_KEY
+                                        ];
+
+
+                                    return (
+                                        item.layer ===
+                                            "CHARACTER" &&
+                                        meta?.ownerId ===
+                                            OBR.player.id &&
+                                        meta?.roomId ===
+                                            roomId &&
+                                        ids.has(
+                                            meta?.characterId
+                                        )
+                                    );
+
+                                }
+                            );
+
+
+                        for (
+                            const token
+                            of tokens
+                        ) {
+
+                            const meta =
+                                token.metadata?.[
+                                    TOKEN_LINK_METADATA_KEY
+                                ];
+
+
+                            result[
+                                meta.characterId
+                            ] = {
+                                tokenId:
+                                    token.id
                             };
 
                         }
 
 
-                        return findSceneTokenLink(
-                            character?.id,
-                            ownerIdOverride ||
-                            null
-                        );
+                        return result;
 
                     }
 
@@ -6907,6 +7004,7 @@ async function publishBackgroundHeartbeat() {
                         requestCharacterSheet,
                         updateRemoteCharacter,
                         hasCharacterTokenLink,
+                        getLocalTokenLinkStates,
                         linkCharacterToSelectedToken,
                         unlinkCharacterToken,
                         updateCharacterTokenDisplay,
