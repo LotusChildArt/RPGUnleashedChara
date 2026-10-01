@@ -8652,6 +8652,102 @@ function makePartyCharacterCard(
         "party-character-actions";
 
 
+    const unshareButton =
+        document.createElement(
+            "button"
+        );
+
+
+    unshareButton.className =
+        "party-unshare-button";
+
+
+    unshareButton.type =
+        "button";
+
+
+    unshareButton.textContent =
+        "Unshare";
+
+
+    unshareButton.addEventListener(
+        "click",
+        async () => {
+
+            if (
+                !window.confirm(
+                    "Unshare " +
+                    (
+                        character.name ||
+                        "this character"
+                    ) +
+                    " from the GM roster? This removes it from Party Characters and unlinks its token. The player can share it again later."
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            unshareButton.disabled =
+                true;
+
+
+            try {
+
+                await window.RPGOwlbear
+                    .removePartyCharacter(
+                        character
+                    );
+
+
+                if (
+                    options.campaignName
+                ) {
+
+                    await renderPartyCharacters(
+                        options.campaignName
+                    );
+
+                }
+
+                else {
+
+                    await renderPartyCampaigns();
+
+                }
+
+            }
+
+            catch (
+                error
+            ) {
+
+                console.error(
+                    "Could not unshare the party character:",
+                    error
+                );
+
+
+                window.alert(
+                    error?.message ||
+                    "Could not unshare this character."
+                );
+
+            }
+
+            finally {
+
+                unshareButton.disabled =
+                    false;
+
+            }
+
+        }
+    );
+
+
     if (
         options.unassigned
     ) {
@@ -8760,8 +8856,9 @@ function makePartyCharacterCard(
         );
 
 
-        actions.appendChild(
-            addCampaignButton
+        actions.append(
+            addCampaignButton,
+            unshareButton
         );
 
     }
@@ -9134,7 +9231,8 @@ function makePartyCharacterCard(
             editButton,
             removeButton,
             backupButton,
-            tokenButton
+            tokenButton,
+            unshareButton
         );
 
     }
