@@ -188,12 +188,14 @@ const TRANSFER_TIMEOUT_MS =
 
 
 const isBackgroundContext =
+    window.RPG_IS_OWLBEAR_BACKGROUND ===
+        true ||
     new URLSearchParams(
         window.location.search
     ).get(
         "owlbearBackground"
     ) ===
-    "1";
+        "1";
 
 
 function cleanSharedCharacters(
@@ -4339,6 +4341,10 @@ async function publishBackgroundHeartbeat() {
                                     chunks.length,
                                 roomId,
                                 ...details
+                            },
+                            {
+                                destination:
+                                    "REMOTE"
                             }
                         );
 
@@ -4361,6 +4367,10 @@ async function publishBackgroundHeartbeat() {
                                         chunks[index],
                                     roomId,
                                     ...details
+                                },
+                                {
+                                    destination:
+                                        "REMOTE"
                                 }
                             );
 
@@ -4376,6 +4386,10 @@ async function publishBackgroundHeartbeat() {
                                 transferId,
                                 roomId,
                                 ...details
+                            },
+                            {
+                                destination:
+                                    "REMOTE"
                             }
                         );
 
@@ -4466,10 +4480,11 @@ async function publishBackgroundHeartbeat() {
                     }
 
 
-                    if (
-                        isBackgroundContext
-                    ) {
-
+                    {
+                        // Keep live GM editing available from both the hidden
+                        // background page and the visible Owlbear sheet panel.
+                        // Mobile Safari can suspend hidden iframes; the visible
+                        // panel is therefore a valid owner-side responder too.
                         const incomingUpdates =
                             new Map();
 
@@ -5239,7 +5254,7 @@ async function publishBackgroundHeartbeat() {
 
                                                 reject(
                                                     new Error(
-                                                        "The character owner did not respond to the live sheet request. Their RPG Unleashed background connection may not be running."
+                                                        "The character owner did not respond to the live sheet request. Keep the owner's RPG Unleashed panel open while testing; v49 can respond from either the visible panel or the background connection."
                                                     )
                                                 );
 
@@ -5275,6 +5290,10 @@ async function publishBackgroundHeartbeat() {
                                 characterId:
                                     character.characterId,
                                 roomId
+                            },
+                            {
+                                destination:
+                                    "REMOTE"
                             }
                         );
 
