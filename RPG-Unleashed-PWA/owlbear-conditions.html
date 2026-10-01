@@ -187,6 +187,27 @@ select { min-height: 36px; padding: 6px 8px; }
     line-height: 1.35;
 }
 .condition-help.active { display: block; }
+.condition-detail-editor {
+    display: grid;
+    gap: 5px;
+    margin-top: 6px;
+}
+.condition-detail-editor label {
+    display: grid;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #555;
+}
+.condition-detail-editor select,
+.condition-detail-editor input {
+    width: 100%;
+    min-height: 32px;
+    padding: 4px 7px;
+    border: 1.5px solid #777;
+    border-radius: 10px;
+    background: white;
+}
 .empty, .loading, .error-message {
     color: #777;
     font-size: 13px;
@@ -362,21 +383,91 @@ window.RPGCharacterStore = {
 };
 
 const DEFAULT_CONDITION_DEFINITIONS = [
-    { id: "fear", name: "Fear", description: "No rules text has been set for this condition yet." },
-    { id: "wounded", name: "Acid", description: "No rules text has been set for this condition yet." },
-    { id: "arrowed", name: "Arrowed", description: "No rules text has been set for this condition yet." },
-    { id: "bleeding", name: "Bleeding", description: "No rules text has been set for this condition yet." },
-    { id: "broken-bone", name: "Broken Bone", description: "No rules text has been set for this condition yet." },
-    { id: "burning", name: "Burning", description: "No rules text has been set for this condition yet." },
-    { id: "charmed", name: "Charmed", description: "No rules text has been set for this condition yet." },
-    { id: "poisoned", name: "Dead", description: "No rules text has been set for this condition yet." },
-    { id: "drunk", name: "Drunk", description: "No rules text has been set for this condition yet." },
-    { id: "confused", name: "Unconscious", description: "No rules text has been set for this condition yet." },
-    { id: "frozen", name: "Frozen", description: "No rules text has been set for this condition yet." },
-    { id: "unconscious", name: "Poisoned", description: "No rules text has been set for this condition yet." },
-    { id: "taunted", name: "Taunted", description: "No rules text has been set for this condition yet." },
-    { id: "shocked", name: "Shocked", description: "No rules text has been set for this condition yet." },
-    { id: "stunned", name: "Stunned", description: "No rules text has been set for this condition yet." }
+    {
+        id: "fear",
+        name: "Fear",
+        maxStacks: 5,
+        description: "You receive a -1 to attack the source of your fear or any creature within 5 feet of the source of your fear. Failing an attempt to attack the source opens you up for an attack of opportunity. Max 5. At max fear, you flee in a direction opposite the source of your fear. Remove all stacks once you have dealt damage to the source of Fear. If a second source would cause you Fear, prioritize the newest source."
+    },
+    {
+        id: "wounded",
+        name: "Acid",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "arrowed",
+        name: "Pierced",
+        description: "Receive a -1 penalty on all physical actions per stack. Receive 1 damage per stack for any physical action taken. Remove 1 stack with a DC 20 Heal check; failing the check still removes the stack but deals 1d4 damage and bleed stacks equal to damage taken."
+    },
+    {
+        id: "bleeding",
+        name: "Bleed",
+        detailType: "bleedPerTurn",
+        description: "Enter bleed stacks per turn. You receive a number of Bleed Stacks at the beginning of each turn equal to the maximum die roll of the weapon that inflicted the condition. For weapons with multiple dice, only count the dice that rolled maximum. For magic, follow the rules the magic provides. Receive a -2 to all checks per 10 bleed stacks. At 40 stacks, make BOD saves each round with a DC of 10 + 1/4 Bleed stacks rounded down or fall unconscious. Stop the accumulation of bleed stacks with a DC 20 Heal check and fabric; a health potion also stops the accumulation. Bleed stacks are removed before your HP can be healed at a rate of 2 stacks of bleed for every 1 point of HP that would have been regained."
+    },
+    {
+        id: "broken-bone",
+        name: "Bone Break",
+        detailType: "boneBreak",
+        description: "Select Rib, Arm, Leg, Skull, or Neck. Skull: -4 to all checks, 30% chance to lose turn (roll at the start of the turn). Arm: cannot hold things using broken arm, -2 to Atk/Def, -10 on climbing checks. Leg: cannot run, 1/2 speed, -2 to Atk/Def, -10 on climbing; if both legs are broken, speed is reduced to 5 ft and -6 to Atk/Def. Rib: -2 to Atk/Def, -2 to running checks."
+    },
+    {
+        id: "burning",
+        name: "Burning",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "charmed",
+        name: "Charmed",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "poisoned",
+        name: "Dead",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "drunk",
+        name: "Drunk",
+        description: "Receive a -2 penalty per 10 stacks on all skill checks and DEX/MND saves. When you reach 20 stacks, you receive a +2 bonus to BOD and CHA based checks. When you reach 40 stacks, begin making BOD saves every minute outside of combat or 1d4 rounds in combat to prevent yourself from falling unconscious/blacking out. DC to remain conscious is 10 + 1/4 your Drunk Stacks rounded down. Make a BOD save in the morning with a DC equal to 1/2 your Drunk stacks to prevent a hangover."
+    },
+    {
+        id: "confused",
+        name: "Unconscious",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "frozen",
+        name: "Frozen",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "unconscious",
+        name: "Poison",
+        detailType: "poisonType",
+        description: "Effect specific to poison used. Poison stacks may only be removed once you have successfully made a BOD save against it; otherwise it continues to increase on each time interval (round, minute, hour, day). Once you have succeeded in your BOD save, reduce by a number of d4 equal to 1/4 BOD score per hour of rest or drink antidote."
+    },
+    {
+        id: "taunted",
+        name: "Rage",
+        description: "Berserker Rage is active. See the Berserker Rage feat for its effects."
+    },
+    {
+        id: "shocked",
+        name: "Shocked",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "stunned",
+        name: "Stunned",
+        description: "No rules text has been set for this condition yet."
+    },
+    {
+        id: "taunt",
+        name: "Taunt",
+        maxStacks: 5,
+        description: "You receive +1 to attack the source of Taunt and a -1 to attack anyone else per stack of Taunt. Max 5. At max Taunt, you charge or focus all attacks on the source of Taunt, regardless of enemy threat. Remove all stacks of Taunt once you have dealt damage to the source of Taunt. If a second source would Taunt you, prioritize the newest source."
+    }
 ];
 
 let tokenId = new URLSearchParams(window.location.search).get("tokenId") || "";
@@ -539,6 +630,151 @@ function writeVitalsToRecord(record, vitals) {
     return nextRecord;
 }
 
+function getConditionDetailValues(card, conditionId) {
+    const poisonType =
+        card?.querySelector(".condition-poison-type")?.value ||
+        card?.dataset?.poisonType ||
+        "";
+
+    const boneType =
+        card?.querySelector(".condition-bone-type")?.value ||
+        card?.dataset?.boneType ||
+        "";
+
+    const bleedRaw =
+        card?.querySelector(".condition-bleed-per-turn")?.value ??
+        card?.dataset?.bleedPerTurn ??
+        "";
+
+    const bleedPerTurn =
+        Number(bleedRaw);
+
+    return {
+        poisonType:
+            conditionId === "unconscious"
+                ? poisonType
+                : "",
+        boneType:
+            conditionId === "broken-bone"
+                ? boneType
+                : "",
+        bleedPerTurn:
+            conditionId === "bleeding" &&
+            Number.isFinite(bleedPerTurn)
+                ? Math.max(0, Math.floor(bleedPerTurn))
+                : 0
+    };
+}
+
+function conditionDetailHtml(condition) {
+    if (condition.id === "unconscious") {
+        const value = condition.poisonType || "Damage";
+        return `
+            <label class="condition-detail-field">
+                Poison Type
+                <select class="condition-poison-type">
+                    ${["Damage", "Attribute", "Mana", "+ Poison"].map(option =>
+                        '<option value="' + option + '"' +
+                        (option === value ? " selected" : "") +
+                        ">" + option + "</option>"
+                    ).join("")}
+                </select>
+            </label>
+        `;
+    }
+
+    if (condition.id === "broken-bone") {
+        const value = condition.boneType || "Rib";
+        return `
+            <label class="condition-detail-field">
+                Break
+                <select class="condition-bone-type">
+                    ${["Rib", "Arm", "Leg", "Skull", "Neck"].map(option =>
+                        '<option value="' + option + '"' +
+                        (option === value ? " selected" : "") +
+                        ">" + option + "</option>"
+                    ).join("")}
+                </select>
+            </label>
+        `;
+    }
+
+    if (condition.id === "bleeding") {
+        return `
+            <label class="condition-detail-field">
+                Bleed / Turn
+                <input
+                    class="condition-bleed-per-turn"
+                    type="number"
+                    min="0"
+                    step="1"
+                    value="${Math.max(0, Number(condition.bleedPerTurn) || 0)}"
+                >
+            </label>
+        `;
+    }
+
+    return "";
+}
+
+function renderConditionDetailEditor(condition) {
+    if (condition.id === "unconscious") {
+        const value = condition.poisonType || "Damage";
+        return `
+            <div class="condition-detail-editor">
+                <label>
+                    Poison Type
+                    <select class="condition-poison-type" data-condition-id="${condition.id}">
+                        ${["Damage", "Attribute", "Mana", "+ Poison"].map(option =>
+                            '<option value="' + option + '"' +
+                            (option === value ? " selected" : "") +
+                            ">" + option + "</option>"
+                        ).join("")}
+                    </select>
+                </label>
+            </div>
+        `;
+    }
+
+    if (condition.id === "broken-bone") {
+        const value = condition.boneType || "Rib";
+        return `
+            <div class="condition-detail-editor">
+                <label>
+                    Break
+                    <select class="condition-bone-type" data-condition-id="${condition.id}">
+                        ${["Rib", "Arm", "Leg", "Skull", "Neck"].map(option =>
+                            '<option value="' + option + '"' +
+                            (option === value ? " selected" : "") +
+                            ">" + option + "</option>"
+                        ).join("")}
+                    </select>
+                </label>
+            </div>
+        `;
+    }
+
+    if (condition.id === "bleeding") {
+        return `
+            <div class="condition-detail-editor">
+                <label>
+                    Bleed Stacks / Turn
+                    <input
+                        class="condition-bleed-per-turn"
+                        data-condition-id="${condition.id}"
+                        type="number"
+                        min="0"
+                        step="1"
+                        value="${Math.max(0, Number(condition.bleedPerTurn) || 0)}"
+                    >
+                </label>
+            </div>
+        `;
+    }
+
+    return "";
+}
+
 function parseConditionsFromRecord(record) {
     const tab1Html = record?.state?.tabs?.tab1;
     if (typeof tab1Html !== "string") return [];
@@ -556,11 +792,19 @@ function parseConditionsFromRecord(record) {
             1
         );
 
+        const id =
+            card.dataset.conditionId ||
+            "";
+
         return {
-            id: card.dataset.conditionId || "",
+            id,
             stacks: Number.isFinite(stacks)
                 ? Math.max(1, Math.floor(stacks))
-                : 1
+                : 1,
+            ...getConditionDetailValues(
+                card,
+                id
+            )
         };
     }).filter(condition => Boolean(getConditionDefinition(condition.id)));
 }
@@ -590,6 +834,25 @@ function writeConditionsToRecord(record, conditions) {
 
         card.className = "condition-card";
         card.dataset.conditionId = condition.id;
+
+        if (condition.poisonType) {
+            card.dataset.poisonType = condition.poisonType;
+        }
+
+        if (condition.boneType) {
+            card.dataset.boneType = condition.boneType;
+        }
+
+        if (condition.id === "bleeding") {
+            card.dataset.bleedPerTurn =
+                String(Math.max(0, Number(condition.bleedPerTurn) || 0));
+        }
+
+        const maxAttribute =
+            definition?.maxStacks
+                ? ' max="' + definition.maxStacks + '"'
+                : "";
+
         card.innerHTML = `
             <span class="condition-card-name">
                 ${definition?.name || condition.id}
@@ -602,9 +865,12 @@ function writeConditionsToRecord(record, conditions) {
                     type="number"
                     min="1"
                     step="1"
+                    ${maxAttribute}
                     value="${Math.max(1, Number(condition.stacks) || 1)}"
                 >
             </label>
+
+            ${conditionDetailHtml(condition)}
 
             <button
                 class="remove-condition"
@@ -715,6 +981,7 @@ function renderConditions() {
                     type="button"
                     data-condition-id="${condition.id}"
                     title="Add stacks"
+                    ${definition?.maxStacks && condition.stacks >= definition.maxStacks ? "disabled" : ""}
                 >
                     +
                 </button>
@@ -728,6 +995,8 @@ function renderConditions() {
                     ?
                 </button>
             </div>
+
+            ${renderConditionDetailEditor(condition)}
 
             <div class="condition-help" id="${helpId}">
                 ${definition?.description || "No rules text has been set for this condition yet."}
@@ -757,6 +1026,17 @@ function renderConditions() {
         });
     });
 }
+
+    conditionList.querySelectorAll(
+        ".condition-poison-type, .condition-bone-type, .condition-bleed-per-turn"
+    ).forEach(control => {
+        control.addEventListener("change", async () => {
+            await updateConditionDetail(
+                control.dataset.conditionId,
+                control
+            );
+        });
+    });
 
 async function persistRecord(nextRecord) {
     if (!nextRecord || !loadedContext || saving) return false;
@@ -823,6 +1103,7 @@ async function changeConditionStacks(conditionId, delta) {
     const current = parseConditionsFromRecord(loadedRecord);
     const next = [];
     let handled = false;
+    const definition = getConditionDefinition(conditionId);
 
     current.forEach(condition => {
         if (condition.id !== conditionId) {
@@ -831,7 +1112,20 @@ async function changeConditionStacks(conditionId, delta) {
         }
 
         handled = true;
-        const stacks = Math.max(0, condition.stacks + delta);
+
+        let stacks =
+            Math.max(
+                0,
+                condition.stacks + delta
+            );
+
+        if (definition?.maxStacks) {
+            stacks =
+                Math.min(
+                    definition.maxStacks,
+                    stacks
+                );
+        }
 
         if (stacks > 0) {
             next.push({
@@ -854,6 +1148,60 @@ async function changeConditionStacks(conditionId, delta) {
     );
 
     await persistRecord(nextRecord);
+}
+
+async function updateConditionDetail(conditionId, control) {
+    if (saving || !loadedRecord) return;
+
+    const current =
+        parseConditionsFromRecord(
+            loadedRecord
+        );
+
+    const next =
+        current.map(condition => {
+            if (condition.id !== conditionId) {
+                return condition;
+            }
+
+            if (control.classList.contains("condition-poison-type")) {
+                return {
+                    ...condition,
+                    poisonType:
+                        control.value
+                };
+            }
+
+            if (control.classList.contains("condition-bone-type")) {
+                return {
+                    ...condition,
+                    boneType:
+                        control.value
+                };
+            }
+
+            if (control.classList.contains("condition-bleed-per-turn")) {
+                return {
+                    ...condition,
+                    bleedPerTurn:
+                        Math.max(
+                            0,
+                            Math.floor(
+                                Number(control.value) || 0
+                            )
+                        )
+                };
+            }
+
+            return condition;
+        });
+
+    await persistRecord(
+        writeConditionsToRecord(
+            loadedRecord,
+            next
+        )
+    );
 }
 
 document.querySelectorAll(".adjust-button").forEach(button => {
@@ -893,7 +1241,19 @@ addConditionButton.addEventListener("click", async () => {
             ...current,
             {
                 id: conditionPicker.value,
-                stacks: 1
+                stacks: 1,
+                poisonType:
+                    conditionPicker.value === "unconscious"
+                        ? "Damage"
+                        : "",
+                boneType:
+                    conditionPicker.value === "broken-bone"
+                        ? "Rib"
+                        : "",
+                bleedPerTurn:
+                    conditionPicker.value === "bleeding"
+                        ? 0
+                        : 0
             }
         ];
 
