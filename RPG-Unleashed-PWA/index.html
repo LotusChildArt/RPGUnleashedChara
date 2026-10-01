@@ -4108,7 +4108,7 @@ if (
         data-tab="tab4"
         id="background-path-tab-button"
     >
-        Special/Background
+        Background / Path
     </button>
 
     <button
@@ -7656,12 +7656,16 @@ function restoreCharacterTabs(
 
 
     ensureHalloweenSheetMarkup();
-    normalizeSpecialBackgroundLabels();
+    normalizeSpecialBackgroundLabels(
+        state
+    );
 
 }
 
 
-function normalizeSpecialBackgroundLabels() {
+function normalizeSpecialBackgroundLabels(
+    state = null
+) {
 
     const tab =
         document.getElementById(
@@ -7721,7 +7725,10 @@ function normalizeSpecialBackgroundLabels() {
     ) {
 
         tabButton.textContent =
-            "Special/Background";
+            state?.pageMode ===
+                "halloween"
+                ? "Special/Background"
+                : "Background / Path";
 
     }
 
@@ -15158,7 +15165,9 @@ function setHalloweenEnabled(
     ) {
 
         backgroundPathTabButton.textContent =
-            "Special/Background";
+            enabled
+                ? "Special/Background"
+                : "Background / Path";
 
     }
 
