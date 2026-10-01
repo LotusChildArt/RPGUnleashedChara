@@ -1311,7 +1311,8 @@ async function publishBackgroundHeartbeat() {
                     async function setTokenLinkMetadata(
                         tokenId,
                         characterId,
-                        ownerId = OBR.player.id
+                        ownerId = OBR.player.id,
+                        snapshot = null
                     ) {
 
                         if (
@@ -1348,6 +1349,12 @@ async function publishBackgroundHeartbeat() {
                                         ownerId,
                                         roomId,
                                         tokenId,
+                                        snapshot:
+                                            snapshot ||
+                                            item.metadata?.[
+                                                TOKEN_LINK_METADATA_KEY
+                                            ]?.snapshot ||
+                                            null,
                                         linkedAt:
                                             Date.now()
                                     };
@@ -1726,6 +1733,9 @@ async function publishBackgroundHeartbeat() {
                                 characterId:
                                     directMeta.characterId,
                                 tokenId,
+                                snapshot:
+                                    directMeta.snapshot ||
+                                    null,
                                 source:
                                     directMeta.ownerId ===
                                         OBR.player.id
@@ -1972,29 +1982,78 @@ async function publishBackgroundHeartbeat() {
                         }
 
 
-                        const sharedCharacter =
-                            {
-                                ownerId:
-                                    reference.ownerId,
-                                characterId:
-                                    reference.characterId
-                            };
+                        let remote = null;
 
 
-                        const remote =
-                            await requestCharacterSheet(
-                                sharedCharacter
-                            );
+                        if (
+                            reference.snapshot
+                        ) {
+
+                            const tokenRecord =
+                                await decodeSharedSnapshot(
+                                    reference.snapshot
+                                );
+
+
+                            if (
+                                tokenRecord
+                            ) {
+
+                                remote = {
+                                    record:
+                                        tokenRecord,
+                                    ownerId:
+                                        reference.ownerId,
+                                    source:
+                                        "token-snapshot",
+                                    snapshot:
+                                        reference.snapshot
+                                };
+
+                            }
+
+                        }
+
+
+                        if (
+                            !remote
+                        ) {
+
+                            const sharedCharacter =
+                                {
+                                    ownerId:
+                                        reference.ownerId,
+                                    characterId:
+                                        reference.characterId
+                                };
+
+
+                            remote =
+                                await requestCharacterSheet(
+                                    sharedCharacter
+                                );
+
+                        }
 
 
                         reference.ownerId =
                             remote.ownerId;
 
 
+                        const remoteSnapshot =
+                            remote.snapshot ||
+                            await encodeSharedSnapshot(
+                                makeTransferRecord(
+                                    remote.record
+                                )
+                            );
+
+
                         await setTokenLinkMetadata(
                             tokenId,
                             reference.characterId,
-                            remote.ownerId
+                            remote.ownerId,
+                            remoteSnapshot
                         );
 
 
@@ -2011,7 +2070,12 @@ async function publishBackgroundHeartbeat() {
                                     Number(
                                         remote.record.revision ||
                                         0
-                                    )
+                                    ),
+                                preferQueued:
+                                    remote.source ===
+                                        "shared-snapshot" ||
+                                    remote.source ===
+                                        "token-snapshot"
                             }
                         };
 
@@ -2028,15 +2092,25 @@ async function publishBackgroundHeartbeat() {
                         ) {
 
                             const result =
-                                await updateRemoteCharacter({
-                                    ownerId:
-                                        remoteEditSession.ownerId,
-                                    characterId:
-                                        remoteEditSession.characterId,
-                                    baseRevision:
-                                        remoteEditSession.baseRevision,
-                                    record
-                                });
+                                remoteEditSession.preferQueued
+                                    ? await queueRemoteCharacterUpdate({
+                                        ownerId:
+                                            remoteEditSession.ownerId,
+                                        characterId:
+                                            remoteEditSession.characterId,
+                                        baseRevision:
+                                            remoteEditSession.baseRevision,
+                                        record
+                                    })
+                                    : await updateRemoteCharacter({
+                                        ownerId:
+                                            remoteEditSession.ownerId,
+                                        characterId:
+                                            remoteEditSession.characterId,
+                                        baseRevision:
+                                            remoteEditSession.baseRevision,
+                                        record
+                                    });
 
 
                             const updatedRecord =
@@ -2061,6 +2135,28 @@ async function publishBackgroundHeartbeat() {
                                 null,
                                 remoteEditSession.ownerId
                             );
+
+
+                            const selectedTokenId =
+                                await getSelectedCharacterTokenId();
+
+
+                            if (
+                                selectedTokenId
+                            ) {
+
+                                await setTokenLinkMetadata(
+                                    selectedTokenId,
+                                    remoteEditSession.characterId,
+                                    remoteEditSession.ownerId,
+                                    await encodeSharedSnapshot(
+                                        makeTransferRecord(
+                                            updatedRecord
+                                        )
+                                    )
+                                );
+
+                            }
 
 
                             return {
@@ -2191,12 +2287,44 @@ async function publishBackgroundHeartbeat() {
                                     }
                                 }
                             ],
-                            onClick() {},
-                            embed: {
-                                url:
-                                    "/owlbear-conditions.html",
-                                height:
-                                    520
+                            async onClick(
+                                context,
+                                elementId
+                            ) {
+
+                                const tokenId =
+                                    context.items?.[0]?.id;
+
+
+                                if (
+                                    !tokenId
+                                ) {
+
+                                    return;
+
+                                }
+
+
+                                await OBR.popover.open({
+                                    id:
+                                        "com.rpgunleashed.character-sheet/token-controls",
+                                    url:
+                                        "/owlbear-conditions.html?tokenId=" +
+                                        encodeURIComponent(
+                                            tokenId
+                                        ),
+                                    width:
+                                        390,
+                                    height:
+                                        560,
+                                    anchorElementId:
+                                        elementId,
+                                    anchorReference:
+                                        "ELEMENT",
+                                    disableClickAway:
+                                        false
+                                });
+
                             }
                         });
 
@@ -3346,7 +3474,13 @@ async function publishBackgroundHeartbeat() {
                         await setTokenLinkMetadata(
                             token.id,
                             character.characterId,
-                            ownerId
+                            ownerId,
+                            remote.snapshot ||
+                            await encodeSharedSnapshot(
+                                makeTransferRecord(
+                                    record
+                                )
+                            )
                         );
 
 
@@ -4151,7 +4285,7 @@ async function publishBackgroundHeartbeat() {
                                 shared
                             ) {
 
-                                await upsertRoomSharedCharacter(
+                                await syncSharedCharacter(
                                     character
                                 );
 
@@ -5989,13 +6123,57 @@ async function publishBackgroundHeartbeat() {
                         }
 
 
+                        let durableSnapshot =
+                            character.snapshot ||
+                            null;
+
+
                         if (
-                            character.snapshot
+                            !durableSnapshot &&
+                            character.ownerId
+                        ) {
+
+                            const partyPlayers =
+                                await OBR.party.getPlayers();
+
+
+                            const owner =
+                                partyPlayers.find(
+                                    player =>
+                                        player.id ===
+                                        character.ownerId
+                                );
+
+
+                            const ownerShared =
+                                cleanSharedCharacters(
+                                    owner?.metadata?.[
+                                        SHARED_CHARACTERS_KEY
+                                    ]
+                                )
+                                .find(
+                                    shared =>
+                                        shared.characterId ===
+                                            character.characterId &&
+                                        shared.roomId ===
+                                            roomId
+                                );
+
+
+                            durableSnapshot =
+                                ownerShared?.snapshot ||
+                                null;
+
+                        }
+
+
+                        if (
+                            durableSnapshot
                         ) {
 
                             const record =
                                 await decodeSharedSnapshot(
-                                    character.snapshot
+                                    durableSnapshot
                                 );
 
 
@@ -6011,7 +6189,9 @@ async function publishBackgroundHeartbeat() {
                                         character.ownerName ||
                                         "Player",
                                     source:
-                                        "shared-snapshot"
+                                        "shared-snapshot",
+                                    snapshot:
+                                        durableSnapshot
                                 };
 
                             }
