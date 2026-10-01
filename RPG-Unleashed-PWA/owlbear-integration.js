@@ -4267,47 +4267,24 @@ async function publishBackgroundHeartbeat() {
 
 
                     async function verifyGmSender(
-                        connectionId,
-                        requesterId
+                        connectionId
                     ) {
 
                         const players =
                             await OBR.party.getPlayers();
 
 
-                        const exactSender =
+                        const sender =
                             players.find(
                                 player =>
                                     player.connectionId ===
-                                    connectionId &&
-                                    player.id ===
-                                    requesterId
-                            );
-
-
-                        if (
-                            exactSender
-                        ) {
-
-                            return (
-                                exactSender.role ===
-                                "GM"
-                            );
-
-                        }
-
-
-                        const idMatchedSender =
-                            players.find(
-                                player =>
-                                    player.id ===
-                                    requesterId
+                                    connectionId
                             );
 
 
                         return Boolean(
-                            idMatchedSender &&
-                            idMatchedSender.role ===
+                            sender &&
+                            sender.role ===
                                 "GM"
                         );
 
@@ -4515,12 +4492,54 @@ async function publishBackgroundHeartbeat() {
                                             "sheet-request"
                                     ) {
 
+                                        // Acknowledge immediately so the GM can tell
+                                        // whether the request reached an owner-side
+                                        // RPG Unleashed listener at all.
+                                        await OBR.broadcast.sendMessage(
+                                            LIVE_SHEET_CHANNEL,
+                                            {
+                                                type:
+                                                    "sheet-ack",
+                                                requestId:
+                                                    message.requestId,
+                                                recipientId:
+                                                    message.requesterId,
+                                                ownerId:
+                                                    OBR.player.id,
+                                                roomId
+                                            },
+                                            {
+                                                destination:
+                                                    "REMOTE"
+                                            }
+                                        );
+
+
                                         if (
                                             !(await verifyGmSender(
-                                                event.connectionId,
-                                                message.requesterId
+                                                event.connectionId
                                             ))
                                         ) {
+
+                                            await OBR.broadcast.sendMessage(
+                                                LIVE_SHEET_CHANNEL,
+                                                {
+                                                    type:
+                                                        "sheet-error",
+                                                    requestId:
+                                                        message.requestId,
+                                                    recipientId:
+                                                        message.requesterId,
+                                                    roomId,
+                                                    message:
+                                                        "The character owner received the request, but Owlbear did not identify the sender as the GM."
+                                                },
+                                                {
+                                                    destination:
+                                                        "REMOTE"
+                                                }
+                                            );
+
 
                                             return;
 
@@ -4537,6 +4556,26 @@ async function publishBackgroundHeartbeat() {
                                         if (
                                             !record
                                         ) {
+
+                                            await OBR.broadcast.sendMessage(
+                                                LIVE_SHEET_CHANNEL,
+                                                {
+                                                    type:
+                                                        "sheet-error",
+                                                    requestId:
+                                                        message.requestId,
+                                                    recipientId:
+                                                        message.requesterId,
+                                                    roomId,
+                                                    message:
+                                                        "The character owner received the request, but this Owlbear frame could not find that character in its local save."
+                                                },
+                                                {
+                                                    destination:
+                                                        "REMOTE"
+                                                }
+                                            );
+
 
                                             return;
 
@@ -4578,8 +4617,7 @@ async function publishBackgroundHeartbeat() {
 
                                         if (
                                             !(await verifyGmSender(
-                                                event.connectionId,
-                                                message.requesterId
+                                                event.connectionId
                                             ))
                                         ) {
 
@@ -4909,6 +4947,34 @@ async function publishBackgroundHeartbeat() {
                                 message.roomId !==
                                     roomId
                             ) {
+
+                                return;
+
+                            }
+
+
+                            if (
+                                message.type ===
+                                    "sheet-ack" &&
+                                message.recipientId ===
+                                    OBR.player.id
+                            ) {
+
+                                const pending =
+                                    pendingSheetRequests.get(
+                                        message.requestId
+                                    );
+
+
+                                if (
+                                    pending
+                                ) {
+
+                                    pending.acknowledged =
+                                        true;
+
+                                }
+
 
                                 return;
 
@@ -5258,9 +5324,21 @@ async function publishBackgroundHeartbeat() {
                                                 );
 
 
+                                                const pending =
+                                                    pendingSheetRequests.get(
+                                                        requestId
+                                                    );
+
+
+                                                const message =
+                                                    pending?.acknowledged
+                                                        ? "The character owner received the request, but did not finish sending the character sheet."
+                                                        : "The live sheet request never reached an active RPG Unleashed listener on the character owner's device.";
+
+
                                                 reject(
                                                     new Error(
-                                                        "The character owner did not respond to the live sheet request. Keep the owner's RPG Unleashed panel open while testing; v49 can respond from either the visible panel or the background connection."
+                                                        message
                                                     )
                                                 );
 
@@ -5274,7 +5352,9 @@ async function publishBackgroundHeartbeat() {
                                         {
                                             resolve,
                                             reject,
-                                            timer
+                                            timer,
+                                            acknowledged:
+                                                false
                                         }
                                     );
 
