@@ -7692,11 +7692,17 @@ function normalizeSpecialBackgroundLabels() {
         );
 
 
+    const tabButton =
+        document.getElementById(
+            "background-path-tab-button"
+        );
+
+
     if (
-        backgroundPathTabButton
+        tabButton
     ) {
 
-        backgroundPathTabButton.textContent =
+        tabButton.textContent =
             "Special/Background";
 
     }
