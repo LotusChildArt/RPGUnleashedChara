@@ -12,6 +12,10 @@ const ROOM_SHARED_CHARACTERS_KEY =
     "com.rpgunleashed.character-sheet/roomSharedCharactersV2";
 
 
+const PARTY_CAMPAIGN_ASSIGNMENTS_KEY =
+    "com.rpgunleashed.character-sheet/partyCampaignAssignmentsV1";
+
+
 const LIVE_SHEET_CHANNEL =
     "com.rpgunleashed.character-sheet/liveSheetV1";
 
@@ -222,6 +226,35 @@ function cleanSharedCharacters(
             character &&
             typeof character ===
             "object"
+    );
+
+}
+
+
+function cleanCampaignAssignments(
+    value
+) {
+
+    if (
+        !Array.isArray(
+            value
+        )
+    ) {
+
+        return [];
+
+    }
+
+
+    return value.filter(
+        assignment =>
+            assignment &&
+            typeof assignment ===
+                "object" &&
+            assignment.ownerId &&
+            assignment.characterId &&
+            typeof assignment.campaign ===
+                "string"
     );
 
 }
@@ -3151,6 +3184,189 @@ async function publishBackgroundHeartbeat() {
                     }
 
 
+                    async function linkPartyCharacterToSelectedToken(
+                        character
+                    ) {
+
+                        if (
+                            playerRole !==
+                                "GM"
+                        ) {
+
+                            throw new Error(
+                                "Only the GM can link another player's shared character to a token."
+                            );
+
+                        }
+
+
+                        if (
+                            !(await OBR.scene.isReady())
+                        ) {
+
+                            throw new Error(
+                                "Open an Owlbear scene before linking a token."
+                            );
+
+                        }
+
+
+                        const selection =
+                            await OBR.player.getSelection();
+
+
+                        if (
+                            !selection ||
+                            selection.length !==
+                                1
+                        ) {
+
+                            throw new Error(
+                                "Select exactly one Character token in Owlbear, then press Link Token."
+                            );
+
+                        }
+
+
+                        const selectedItems =
+                            await OBR.scene.items.getItems(
+                                selection
+                            );
+
+
+                        const token =
+                            selectedItems[
+                                0
+                            ];
+
+
+                        if (
+                            !token ||
+                            token.layer !==
+                                "CHARACTER"
+                        ) {
+
+                            throw new Error(
+                                "The selected Owlbear item must be on the Character layer."
+                            );
+
+                        }
+
+
+                        const remote =
+                            await requestCharacterSheet(
+                                character
+                            );
+
+
+                        const ownerId =
+                            remote.ownerId ||
+                            character.ownerId;
+
+
+                        const record = {
+                            ...remote.record,
+                            id:
+                                character.characterId,
+                            owlbearTokenLinks: {
+                                ...(remote.record?.owlbearTokenLinks || {}),
+                                [roomId]: {
+                                    tokenId:
+                                        token.id,
+                                    hudItemIds:
+                                        [],
+                                    labelId:
+                                        null,
+                                    linkedAt:
+                                        Date.now()
+                                }
+                            }
+                        };
+
+
+                        const oldTokens =
+                            await OBR.scene.items.getItems(
+                                item => {
+
+                                    const meta =
+                                        item.metadata?.[
+                                            TOKEN_LINK_METADATA_KEY
+                                        ];
+
+
+                                    return (
+                                        item.layer ===
+                                            "CHARACTER" &&
+                                        meta?.characterId ===
+                                            character.characterId &&
+                                        meta?.ownerId ===
+                                            ownerId &&
+                                        meta?.roomId ===
+                                            roomId
+                                    );
+
+                                }
+                            );
+
+
+                        for (
+                            const oldToken
+                            of oldTokens
+                        ) {
+
+                            await clearTokenLinkMetadata(
+                                oldToken.id,
+                                character.characterId,
+                                ownerId
+                            );
+
+                        }
+
+
+                        await removeCharacterHudItems(
+                            record,
+                            null,
+                            ownerId
+                        );
+
+
+                        await removeCharacterConditionOverlays(
+                            record,
+                            ownerId
+                        );
+
+
+                        await setTokenLinkMetadata(
+                            token.id,
+                            character.characterId,
+                            ownerId
+                        );
+
+
+                        await createCharacterHudItems(
+                            record,
+                            token,
+                            null,
+                            ownerId
+                        );
+
+
+                        await updateCharacterConditionOverlays(
+                            record,
+                            null,
+                            ownerId
+                        );
+
+
+                        return {
+                            tokenId:
+                                token.id,
+                            ownerId
+                        };
+
+                    }
+
+
                     async function findCharacterConditionOverlayItems(
                         characterId,
                         ownerIdOverride = null
@@ -3606,7 +3822,6 @@ async function publishBackgroundHeartbeat() {
                                 character.level ||
                                 "",
                             campaign:
-                                character.campaign ||
                                 "",
                             ownerId:
                                 OBR.player.id,
@@ -4371,7 +4586,6 @@ async function publishBackgroundHeartbeat() {
                                     updated.level ||
                                     "",
                                 campaign:
-                                    updated.campaign ||
                                     "",
                                 ownerName:
                                     playerName ||
@@ -4460,6 +4674,130 @@ async function publishBackgroundHeartbeat() {
                     }
 
 
+                    async function getPartyCampaignAssignments() {
+
+                        const metadata =
+                            await OBR.room.getMetadata();
+
+
+                        return cleanCampaignAssignments(
+                            metadata[
+                                PARTY_CAMPAIGN_ASSIGNMENTS_KEY
+                            ]
+                        )
+                        .filter(
+                            assignment =>
+                                assignment.roomId ===
+                                    roomId
+                        );
+
+                    }
+
+
+                    async function setPartyCharacterCampaign(
+                        character,
+                        campaignName
+                    ) {
+
+                        if (
+                            playerRole !==
+                                "GM"
+                        ) {
+
+                            throw new Error(
+                                "Only the GM can assign party characters to campaigns."
+                            );
+
+                        }
+
+
+                        const metadata =
+                            await OBR.room.getMetadata();
+
+
+                        const assignments =
+                            cleanCampaignAssignments(
+                                metadata[
+                                    PARTY_CAMPAIGN_ASSIGNMENTS_KEY
+                                ]
+                            );
+
+
+                        const ownerId =
+                            character?.ownerId;
+
+
+                        const characterId =
+                            character?.characterId;
+
+
+                        if (
+                            !ownerId ||
+                            !characterId
+                        ) {
+
+                            throw new Error(
+                                "This shared character is missing its Owlbear owner information."
+                            );
+
+                        }
+
+
+                        const campaign =
+                            String(
+                                campaignName ||
+                                ""
+                            ).trim();
+
+
+                        const next =
+                            assignments.filter(
+                                assignment =>
+                                    !(
+                                        assignment.roomId ===
+                                            roomId &&
+                                        assignment.ownerId ===
+                                            ownerId &&
+                                        assignment.characterId ===
+                                            characterId
+                                    )
+                            );
+
+
+                        if (
+                            campaign
+                        ) {
+
+                            next.push({
+                                roomId,
+                                ownerId,
+                                characterId,
+                                campaign,
+                                updatedAt:
+                                    Date.now()
+                            });
+
+                        }
+
+
+                        await OBR.room.setMetadata({
+                            [PARTY_CAMPAIGN_ASSIGNMENTS_KEY]:
+                                next
+                        });
+
+
+                        window.dispatchEvent(
+                            new CustomEvent(
+                                "rpg-owlbear-party-change"
+                            )
+                        );
+
+
+                        return campaign;
+
+                    }
+
+
                     async function getPartySharedCharacters() {
 
                         const [
@@ -4472,11 +4810,28 @@ async function publishBackgroundHeartbeat() {
                             ]);
 
 
-                        const removed =
-                            new Set(
-                                cleanRemovedPartyCharacters(
-                                    roomMetadata[
-                                        REMOVED_PARTY_CHARACTERS_KEY
+                        const assignments =
+                            cleanCampaignAssignments(
+                                roomMetadata[
+                                    PARTY_CAMPAIGN_ASSIGNMENTS_KEY
+                                ]
+                            )
+                            .filter(
+                                assignment =>
+                                    assignment.roomId ===
+                                        roomId
+                            );
+
+
+                        const assignmentByCharacter =
+                            new Map(
+                                assignments.map(
+                                    assignment => [
+                                        partyCharacterKey(
+                                            assignment.ownerId,
+                                            assignment.characterId
+                                        ),
+                                        assignment.campaign
                                     ]
                                 )
                             );
@@ -4534,15 +4889,6 @@ async function publishBackgroundHeartbeat() {
 
 
                         return registry
-                            .filter(
-                                character =>
-                                    !removed.has(
-                                        partyCharacterKey(
-                                            character.ownerId,
-                                            character.characterId
-                                        )
-                                    )
-                            )
                             .map(
                                 character => {
 
@@ -4605,7 +4951,15 @@ async function publishBackgroundHeartbeat() {
                                         backgroundReady,
                                         snapshot:
                                             ownerShared?.snapshot ||
-                                            null
+                                            null,
+                                        assignedCampaign:
+                                            assignmentByCharacter.get(
+                                                partyCharacterKey(
+                                                    character.ownerId,
+                                                    character.characterId
+                                                )
+                                            ) ||
+                                            ""
                                     };
 
                                 }
@@ -6050,6 +6404,9 @@ async function publishBackgroundHeartbeat() {
                         toggleCharacterShare,
                         syncSharedCharacter,
                         getPartySharedCharacters,
+                        getPartyCampaignAssignments,
+                        setPartyCharacterCampaign,
+                        linkPartyCharacterToSelectedToken,
                         canRemovePartyCharacter,
                         removePartyCharacter,
                         canEditPartyCharacter,
