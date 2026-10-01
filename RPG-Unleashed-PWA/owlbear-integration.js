@@ -206,6 +206,13 @@ const isBackgroundContext =
         "1";
 
 
+const isTokenControlsContext =
+    window.location.pathname
+        .endsWith(
+            "/owlbear-conditions.html"
+        );
+
+
 function cleanSharedCharacters(
     value
 ) {
@@ -4198,46 +4205,68 @@ async function publishBackgroundHeartbeat() {
 
 
                         if (
-                            currentIndex <
-                            0 &&
                             !locallyShared
                         ) {
+
+                            if (
+                                currentIndex >=
+                                0
+                            ) {
+
+                                allShared.splice(
+                                    currentIndex,
+                                    1
+                                );
+
+
+                                await OBR.player.setMetadata({
+                                    [SHARED_CHARACTERS_KEY]:
+                                        allShared
+                                });
+
+                            }
+
 
                             return false;
 
                         }
 
 
+                        await upsertRoomSharedCharacter(
+                            character
+                        );
+
+
+                        const entry = {
+                            characterId:
+                                character.id,
+                            name:
+                                character.name ||
+                                "Unnamed Character",
+                            race:
+                                character.race ||
+                                "",
+                            level:
+                                character.level ||
+                                "",
+                            campaign:
+                                "",
+                            ownerName:
+                                playerName ||
+                                "Player",
+                            roomId,
+                            snapshot:
+                                await encodeSharedSnapshot(
+                                    makeTransferRecord(
+                                        character
+                                    )
+                                ),
+                            updatedAt:
+                                Date.now()
+                        };
+
+
                         if (
-                            locallyShared
-                        ) {
-
-                            await upsertRoomSharedCharacter(
-                                character
-                            );
-
-                        }
-
-
-                        const campaign =
-                            String(
-                                character.campaign ||
-                                ""
-                            ).trim();
-
-
-                        if (
-                            !campaign
-                        ) {
-
-                            allShared.splice(
-                                currentIndex,
-                                1
-                            );
-
-                        }
-
-                        else if (
                             currentIndex >=
                             0
                         ) {
@@ -4248,62 +4277,16 @@ async function publishBackgroundHeartbeat() {
                                 ...allShared[
                                     currentIndex
                                 ],
-                                name:
-                                    character.name ||
-                                    "Unnamed Character",
-                                race:
-                                    character.race ||
-                                    "",
-                                level:
-                                    character.level ||
-                                    "",
-                                campaign,
-                                ownerName:
-                                    playerName ||
-                                    "Player",
-                                snapshot:
-                                    await encodeSharedSnapshot(
-                                        makeTransferRecord(
-                                            character
-                                        )
-                                    ),
-                                updatedAt:
-                                    Date.now()
+                                ...entry
                             };
 
                         }
 
+                        else {
 
-                        else if (
-                            locallyShared
-                        ) {
-
-                            allShared.push({
-                                characterId:
-                                    character.id,
-                                name:
-                                    character.name ||
-                                    "Unnamed Character",
-                                race:
-                                    character.race ||
-                                    "",
-                                level:
-                                    character.level ||
-                                    "",
-                                campaign,
-                                ownerName:
-                                    playerName ||
-                                    "Player",
-                                roomId,
-                                snapshot:
-                                    await encodeSharedSnapshot(
-                                        makeTransferRecord(
-                                            character
-                                        )
-                                    ),
-                                updatedAt:
-                                    Date.now()
-                            });
+                            allShared.push(
+                                entry
+                            );
 
                         }
 
@@ -6337,7 +6320,8 @@ async function publishBackgroundHeartbeat() {
 
 
                     if (
-                        !isBackgroundContext
+                        !isBackgroundContext &&
+                        !isTokenControlsContext
                     ) {
 
                         try {
@@ -6360,12 +6344,6 @@ async function publishBackgroundHeartbeat() {
 
                         }
 
-                    }
-
-
-                    if (
-                        !isBackgroundContext
-                    ) {
 
                         window.setInterval(
                             () => {
