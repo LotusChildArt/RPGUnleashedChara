@@ -963,6 +963,32 @@ let owlbearInitializationPromise =
     null;
 
 
+function setOwlbearConnectionState(
+    state,
+    message = ""
+) {
+
+    window.RPGOwlbearConnectionState = {
+        state,
+        message,
+        updatedAt:
+            Date.now()
+    };
+
+
+    window.dispatchEvent(
+        new CustomEvent(
+            "rpg-owlbear-connection-state",
+            {
+                detail:
+                    window.RPGOwlbearConnectionState
+            }
+        )
+    );
+
+}
+
+
 function waitForOwlbearRetry(
     milliseconds
 ) {
@@ -982,6 +1008,12 @@ function waitForOwlbearRetry(
 
 
 async function loadOwlbearSdk() {
+
+    setOwlbearConnectionState(
+        "loading-sdk",
+        "Loading Owlbear SDK"
+    );
+
 
     const sources = [
         "https://esm.run/@owlbear-rodeo/sdk@3.1.0",
@@ -1024,18 +1056,19 @@ async function loadOwlbearSdk() {
                 error;
 
 
-            window.dispatchEvent(
-                new CustomEvent(
-                    "rpg-owlbear-connection-state",
-                    {
-                        detail: {
-                            state:
-                                "retrying",
-                            attempt:
-                                attempt +
-                                1
-                        }
-                    }
+            setOwlbearConnectionState(
+                "retrying-sdk",
+                "SDK source " +
+                (
+                    attempt +
+                    1
+                ) +
+                " failed: " +
+                (
+                    error?.message ||
+                    String(
+                        error
+                    )
                 )
             );
 
@@ -1111,7 +1144,13 @@ async function initializeOwlbear() {
         }
 
 
-        OBR.onReady(
+        setOwlbearConnectionState(
+            "sdk-loaded",
+            "Owlbear SDK loaded"
+        );
+
+
+        const handleOwlbearReady =
             async () => {
 
                 try {
@@ -5519,6 +5558,12 @@ async function initializeOwlbear() {
                     }
 
 
+                    setOwlbearConnectionState(
+                        "connected",
+                        "Connected to Owlbear Rodeo"
+                    );
+
+
                     window.RPGOwlbear = {
                         ready:
                             true,
@@ -5628,8 +5673,76 @@ async function initializeOwlbear() {
 
                 }
 
-            }
-        );
+            };
+
+
+        if (
+            OBR.isReady
+        ) {
+
+            setOwlbearConnectionState(
+                "ready-already",
+                "Owlbear bridge was already ready"
+            );
+
+
+            await handleOwlbearReady();
+
+        }
+
+        else if (
+            OBR.isAvailable ===
+            false
+        ) {
+
+            setOwlbearConnectionState(
+                "host-unavailable",
+                "SDK loaded, but this frame is not connected to the Owlbear host"
+            );
+
+
+            throw new Error(
+                "Owlbear SDK loaded, but OBR.isAvailable is false."
+            );
+
+        }
+
+        else {
+
+            setOwlbearConnectionState(
+                "waiting-for-host",
+                "SDK loaded; waiting for Owlbear host handshake"
+            );
+
+
+            OBR.onReady(
+                () => {
+
+                    handleOwlbearReady()
+                        .catch(
+                            error => {
+
+                                console.error(
+                                    "RPG Unleashed Owlbear ready handler failed:",
+                                    error
+                                );
+
+
+                                setOwlbearConnectionState(
+                                    "ready-handler-error",
+                                    error?.message ||
+                                    String(
+                                        error
+                                    )
+                                );
+
+                            }
+                        );
+
+                }
+            );
+
+        }
 
     }
 
@@ -5640,6 +5753,15 @@ async function initializeOwlbear() {
         console.error(
             "Could not load the Owlbear Rodeo SDK:",
             error
+        );
+
+
+        setOwlbearConnectionState(
+            "error",
+            error?.message ||
+            String(
+                error
+            )
         );
 
     }

@@ -8023,8 +8023,25 @@ async function renderCharacterLibrary() {
                         !window.RPGOwlbear?.ready
                     ) {
 
+                        const connectionState =
+                            window.RPGOwlbearConnectionState;
+
+
+                        const connectionLabel =
+                            connectionState?.state ===
+                                "host-unavailable"
+                                ? "Owlbear host unavailable"
+                                : connectionState?.state ===
+                                    "waiting-for-host"
+                                    ? "Waiting for Owlbear…"
+                                    : connectionState?.state ===
+                                        "error"
+                                        ? "Owlbear connection error"
+                                        : "Connecting…";
+
+
                         shareButton.textContent =
-                            "Connecting…";
+                            connectionLabel;
 
 
                         shareButton.disabled =
@@ -8032,6 +8049,7 @@ async function renderCharacterLibrary() {
 
 
                         shareButton.title =
+                            connectionState?.message ||
                             "Connecting to Owlbear Rodeo";
 
 
@@ -14152,9 +14170,25 @@ window.addEventListener(
 
 window.addEventListener(
     "rpg-owlbear-connection-state",
-    () => {
+    async () => {
 
         updateOwlbearConnectionUi();
+
+
+        if (
+            document
+                .getElementById(
+                    "character-library-screen"
+                )
+                .classList
+                .contains(
+                    "active"
+                )
+        ) {
+
+            await renderCharacterLibrary();
+
+        }
 
     }
 );
