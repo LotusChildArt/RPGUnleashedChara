@@ -8926,7 +8926,9 @@ function makePartyCharacterCard(
 
 
         tokenButton.textContent =
-            "Link to Token";
+            character.tokenLinked
+                ? "Unlink Token"
+                : "Link to Token";
 
 
         tokenButton.addEventListener(
@@ -8939,19 +8941,54 @@ function makePartyCharacterCard(
 
                 try {
 
-                    await window.RPGOwlbear
-                        .linkPartyCharacterToSelectedToken(
-                            character
+                    if (
+                        character.tokenLinked
+                    ) {
+
+                        await window.RPGOwlbear
+                            .unlinkPartyCharacterToken(
+                                character
+                            );
+
+
+                        window.alert(
+                            (
+                                character.name ||
+                                "Character"
+                            ) +
+                            " is unlinked from its token."
                         );
 
+                    }
 
-                    window.alert(
-                        (
-                            character.name ||
-                            "Character"
-                        ) +
-                        " is linked to the selected token."
-                    );
+                    else {
+
+                        await window.RPGOwlbear
+                            .linkPartyCharacterToSelectedToken(
+                                character
+                            );
+
+
+                        window.alert(
+                            (
+                                character.name ||
+                                "Character"
+                            ) +
+                            " is linked to the selected token."
+                        );
+
+                    }
+
+
+                    if (
+                        options.campaignName
+                    ) {
+
+                        await renderPartyCharacters(
+                            options.campaignName
+                        );
+
+                    }
 
                 }
 
