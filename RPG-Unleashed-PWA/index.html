@@ -7793,15 +7793,28 @@ async function renderCharacterLibrary() {
             [];
 
 
+        let localTokenLinkStates =
+            {};
+
+
         if (
             window.RPGOwlbear?.ready
         ) {
 
             try {
 
-                mySharedCharacters =
-                    await window.RPGOwlbear
-                        .getMySharedCharacters();
+                [
+                    mySharedCharacters,
+                    localTokenLinkStates
+                ] =
+                    await Promise.all([
+                        window.RPGOwlbear
+                            .getMySharedCharacters(),
+                        window.RPGOwlbear
+                            .getLocalTokenLinkStates(
+                                characters
+                            )
+                    ]);
 
             }
 
@@ -7810,7 +7823,7 @@ async function renderCharacterLibrary() {
             ) {
 
                 console.error(
-                    "Could not read Owlbear shared characters:",
+                    "Could not read Owlbear character state:",
                     error
                 );
 
@@ -8051,7 +8064,9 @@ async function renderCharacterLibrary() {
 
                         if (
                             window.RPGOwlbear?.ready &&
-                            window.RPGOwlbear.hasCharacterTokenLink(character)
+                            localTokenLinkStates[
+                                character.id
+                            ]
                         ) {
                             try {
                                 await window.RPGOwlbear.unlinkCharacterToken(character);
@@ -8271,8 +8286,18 @@ async function renderCharacterLibrary() {
                     tokenButton.className = "library-token-button";
                     tokenButton.type = "button";
 
-                    const tokenLinked = window.RPGOwlbear.hasCharacterTokenLink(character);
-                    tokenButton.textContent = tokenLinked ? "Unlink Token" : "Link Token";
+                    const tokenLinked =
+                        Boolean(
+                            localTokenLinkStates[
+                                character.id
+                            ]
+                        );
+
+
+                    tokenButton.textContent =
+                        tokenLinked
+                            ? "Unlink Token"
+                            : "Link Token";
 
                     tokenButton.addEventListener("click", async () => {
                         tokenButton.disabled = true;
