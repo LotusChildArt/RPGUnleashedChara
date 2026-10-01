@@ -2177,6 +2177,172 @@ input::placeholder {
 
 
 /* =========================================
+   HALLOWEEN PAGE MODE
+   ========================================= */
+
+.halloween-sheet {
+    display: none;
+    max-width: 950px;
+}
+
+body.halloween-page-mode #tab4 .path-section,
+body.halloween-page-mode #tab4 .background-section {
+    display: none;
+}
+
+body.halloween-page-mode #tab4 .halloween-sheet {
+    display: block;
+}
+
+.halloween-ex-machinas {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border: 2px solid black;
+    border-radius: 20px;
+    background: white;
+}
+
+.halloween-ex-machinas strong {
+    margin-right: 4px;
+}
+
+.halloween-ex-machina-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: bold;
+}
+
+.halloween-ex-machina-check input {
+    width: 22px;
+    height: 22px;
+    accent-color: black;
+}
+
+.halloween-expand-box {
+    margin-bottom: 12px;
+    border: 2px solid black;
+    border-radius: 20px;
+    background: white;
+    overflow: hidden;
+}
+
+.halloween-expand-box > strong {
+    display: block;
+    padding: 8px 12px 0;
+}
+
+.halloween-expand {
+    width: 100%;
+    min-height: 76px;
+    border: none;
+    outline: none;
+    resize: none;
+    overflow: hidden;
+    padding: 8px 12px 12px;
+    background: transparent;
+    line-height: 1.4;
+}
+
+.halloween-list-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.halloween-list-section {
+    min-width: 0;
+}
+
+.halloween-list-section h3 {
+    margin: 0 0 6px;
+}
+
+.halloween-entry-list {
+    display: grid;
+    gap: 6px;
+}
+
+.halloween-entry-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 30px;
+    gap: 5px;
+    align-items: center;
+}
+
+.halloween-fear-row {
+    grid-template-columns: minmax(0, 1fr) 70px 30px;
+}
+
+.halloween-entry-row input,
+.halloween-entry-row select,
+.halloween-goal-input {
+    width: 100%;
+    min-height: 38px;
+    border: 2px solid black;
+    border-radius: 19px;
+    background: white;
+    padding: 6px 10px;
+    outline: none;
+}
+
+.halloween-entry-row select {
+    padding-left: 8px;
+    padding-right: 6px;
+}
+
+.halloween-add-button {
+    margin-top: 6px;
+    min-height: 36px;
+    padding: 6px 12px;
+    border: 2px solid black;
+    border-radius: 18px;
+    background: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.halloween-remove-button {
+    width: 30px;
+    height: 30px;
+    border: 1.5px solid black;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.halloween-add-button:hover,
+.halloween-remove-button:hover {
+    background: #eee;
+}
+
+.halloween-goal {
+    margin-top: 18px;
+}
+
+.halloween-goal strong {
+    display: block;
+    margin: 0 0 6px 10px;
+}
+
+@media (max-width: 700px) {
+    .halloween-list-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .halloween-ex-machinas {
+        gap: 10px;
+    }
+}
+
+
+/* =========================================
    MAGIC
    ========================================= */
 
@@ -2967,6 +3133,14 @@ body.mobile-mode .background-description-picture {
 body.mobile-mode .character-description-box,
 body.mobile-mode .character-picture-box {
     min-height: 180px;
+}
+
+body.mobile-mode .halloween-list-grid {
+    grid-template-columns: 1fr;
+}
+
+body.mobile-mode .halloween-ex-machinas {
+    align-items: flex-start;
 }
 
 
@@ -3914,6 +4088,7 @@ if (
     <button
         class="tab-button"
         data-tab="tab4"
+        id="background-path-tab-button"
     >
         Background / Path
     </button>
@@ -5609,6 +5784,165 @@ if (
 
         </div>
 
+
+        <div class="halloween-sheet" id="halloween-sheet">
+
+            <h1>
+                Halloween
+            </h1>
+
+
+            <div class="halloween-ex-machinas">
+
+                <strong>
+                    Ex Machinas
+                </strong>
+
+                <label class="halloween-ex-machina-check">
+                    <input
+                        type="checkbox"
+                        class="halloween-ex-machina"
+                    >
+                    1
+                </label>
+
+                <label class="halloween-ex-machina-check">
+                    <input
+                        type="checkbox"
+                        class="halloween-ex-machina"
+                    >
+                    2
+                </label>
+
+                <label class="halloween-ex-machina-check">
+                    <input
+                        type="checkbox"
+                        class="halloween-ex-machina"
+                    >
+                    3
+                </label>
+
+            </div>
+
+
+            <div class="halloween-expand-box">
+
+                <strong>
+                    Special
+                </strong>
+
+                <textarea
+                    class="halloween-expand"
+                    rows="1"
+                    placeholder="Special"
+                ></textarea>
+
+            </div>
+
+
+            <div class="halloween-expand-box">
+
+                <strong>
+                    Background
+                </strong>
+
+                <textarea
+                    class="halloween-expand"
+                    rows="1"
+                    placeholder="Background"
+                ></textarea>
+
+            </div>
+
+
+            <div class="halloween-list-grid">
+
+
+                <div class="halloween-list-section">
+
+                    <h3>
+                        Likes
+                    </h3>
+
+                    <div
+                        class="halloween-entry-list"
+                        id="halloween-likes-list"
+                    ></div>
+
+                    <button
+                        class="halloween-add-button"
+                        id="add-halloween-like"
+                        type="button"
+                    >
+                        + Likes
+                    </button>
+
+                </div>
+
+
+                <div class="halloween-list-section">
+
+                    <h3>
+                        Dislikes
+                    </h3>
+
+                    <div
+                        class="halloween-entry-list"
+                        id="halloween-dislikes-list"
+                    ></div>
+
+                    <button
+                        class="halloween-add-button"
+                        id="add-halloween-dislike"
+                        type="button"
+                    >
+                        + Dislikes
+                    </button>
+
+                </div>
+
+
+                <div class="halloween-list-section">
+
+                    <h3>
+                        Fears
+                    </h3>
+
+                    <div
+                        class="halloween-entry-list"
+                        id="halloween-fears-list"
+                    ></div>
+
+                    <button
+                        class="halloween-add-button"
+                        id="add-halloween-fear"
+                        type="button"
+                    >
+                        + Fears
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="halloween-goal">
+
+                <strong>
+                    Goal
+                </strong>
+
+                <input
+                    class="halloween-goal-input"
+                    type="text"
+                    placeholder="Goal"
+                >
+
+            </div>
+
+        </div>
+
     </div>
 
 </div>
@@ -6067,6 +6401,24 @@ if (
 
                 <div class="option-description">
                     Show or hide the Magic tab. Magic is off by default.
+                </div>
+
+            </div>
+
+
+            <div class="option-row">
+
+                <button
+                    class="option-button"
+                    id="halloween-toggle"
+                    type="button"
+                    data-enabled="false"
+                >
+                    Halloween: Off
+                </button>
+
+                <div class="option-description">
+                    Replace Background / Path with the Halloween Game character page.
                 </div>
 
             </div>
@@ -6996,6 +7348,11 @@ function normalizeImportedCharacter(
             magicEnabled:
                 source.state.magicEnabled ===
                 true,
+            pageMode:
+                source.state.pageMode ===
+                    "halloween"
+                    ? "halloween"
+                    : "standard",
             tabs
         }
     };
@@ -7278,6 +7635,106 @@ function restoreCharacterTabs(
 
         }
     );
+
+
+    ensureHalloweenSheetMarkup();
+
+}
+
+
+function ensureHalloweenSheetMarkup() {
+
+    const tab =
+        document.getElementById(
+            "tab4"
+        );
+
+
+    if (
+        !tab ||
+        tab.querySelector(
+            "#halloween-sheet"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    const wrapper =
+        document.createElement(
+            "div"
+        );
+
+
+    wrapper.innerHTML = `
+        <div class="halloween-sheet" id="halloween-sheet">
+
+            <h1>Halloween</h1>
+
+            <div class="halloween-ex-machinas">
+                <strong>Ex Machinas</strong>
+                <label class="halloween-ex-machina-check"><input type="checkbox" class="halloween-ex-machina">1</label>
+                <label class="halloween-ex-machina-check"><input type="checkbox" class="halloween-ex-machina">2</label>
+                <label class="halloween-ex-machina-check"><input type="checkbox" class="halloween-ex-machina">3</label>
+            </div>
+
+            <div class="halloween-expand-box">
+                <strong>Special</strong>
+                <textarea class="halloween-expand" rows="1" placeholder="Special"></textarea>
+            </div>
+
+            <div class="halloween-expand-box">
+                <strong>Background</strong>
+                <textarea class="halloween-expand" rows="1" placeholder="Background"></textarea>
+            </div>
+
+            <div class="halloween-list-grid">
+                <div class="halloween-list-section">
+                    <h3>Likes</h3>
+                    <div class="halloween-entry-list" id="halloween-likes-list"></div>
+                    <button class="halloween-add-button" id="add-halloween-like" type="button">+ Likes</button>
+                </div>
+
+                <div class="halloween-list-section">
+                    <h3>Dislikes</h3>
+                    <div class="halloween-entry-list" id="halloween-dislikes-list"></div>
+                    <button class="halloween-add-button" id="add-halloween-dislike" type="button">+ Dislikes</button>
+                </div>
+
+                <div class="halloween-list-section">
+                    <h3>Fears</h3>
+                    <div class="halloween-entry-list" id="halloween-fears-list"></div>
+                    <button class="halloween-add-button" id="add-halloween-fear" type="button">+ Fears</button>
+                </div>
+            </div>
+
+            <div class="halloween-goal">
+                <strong>Goal</strong>
+                <input class="halloween-goal-input" type="text" placeholder="Goal">
+            </div>
+
+        </div>
+    `;
+
+
+    const sheet =
+        tab.querySelector(
+            ".sheet"
+        );
+
+
+    if (
+        sheet &&
+        wrapper.firstElementChild
+    ) {
+
+        sheet.appendChild(
+            wrapper.firstElementChild
+        );
+
+    }
 
 }
 
@@ -13632,6 +14089,308 @@ document
 
 
 /* =========================================
+   HALLOWEEN PAGE MODE
+   ========================================= */
+
+function autoResizeHalloweenField(
+    textarea
+) {
+
+    if (
+        !textarea
+    ) {
+
+        return;
+
+    }
+
+
+    textarea.style.height =
+        "auto";
+
+
+    textarea.style.height =
+        textarea.scrollHeight +
+        "px";
+
+}
+
+
+function setupHalloweenEntryRow(
+    row
+) {
+
+    const remove =
+        row.querySelector(
+            ".halloween-remove-button"
+        );
+
+
+    remove?.addEventListener(
+        "click",
+        () => {
+
+            row.remove();
+
+        }
+    );
+
+}
+
+
+function createHalloweenEntryRow(
+    type,
+    value = "",
+    fearDice = "1d6"
+) {
+
+    const row =
+        document.createElement(
+            "div"
+        );
+
+
+    row.className =
+        type ===
+            "fear"
+            ? "halloween-entry-row halloween-fear-row"
+            : "halloween-entry-row";
+
+
+    if (
+        type ===
+        "fear"
+    ) {
+
+        row.innerHTML = `
+            <input
+                type="text"
+                placeholder="Fear"
+                value="${String(value).replace(/"/g, "&quot;")}"
+            >
+
+            <select
+                class="halloween-fear-dice"
+                aria-label="Fear dice"
+            >
+                ${["1d6", "2d6", "3d6", "4d6"].map(
+                    dice =>
+                        '<option value="' +
+                        dice +
+                        '"' +
+                        (
+                            dice ===
+                            fearDice
+                                ? " selected"
+                                : ""
+                        ) +
+                        ">" +
+                        dice +
+                        "</option>"
+                ).join("")}
+            </select>
+
+            <button
+                class="halloween-remove-button"
+                type="button"
+                title="Remove Fear"
+            >
+                ×
+            </button>
+        `;
+
+    }
+
+    else {
+
+        const label =
+            type ===
+                "like"
+                ? "Like"
+                : "Dislike";
+
+
+        row.innerHTML = `
+            <input
+                type="text"
+                placeholder="${label}"
+                value="${String(value).replace(/"/g, "&quot;")}"
+            >
+
+            <button
+                class="halloween-remove-button"
+                type="button"
+                title="Remove ${label}"
+            >
+                ×
+            </button>
+        `;
+
+    }
+
+
+    setupHalloweenEntryRow(
+        row
+    );
+
+
+    return row;
+
+}
+
+
+function setupHalloweenPage() {
+
+    ensureHalloweenSheetMarkup();
+
+
+    document
+        .querySelectorAll(
+            "#halloween-sheet .halloween-expand"
+        )
+        .forEach(
+            textarea => {
+
+                textarea.addEventListener(
+                    "input",
+                    () => {
+
+                        autoResizeHalloweenField(
+                            textarea
+                        );
+
+                    }
+                );
+
+
+                autoResizeHalloweenField(
+                    textarea
+                );
+
+            }
+        );
+
+
+    document
+        .querySelectorAll(
+            "#halloween-sheet .halloween-entry-row"
+        )
+        .forEach(
+            setupHalloweenEntryRow
+        );
+
+
+    const addLike =
+        document.getElementById(
+            "add-halloween-like"
+        );
+
+
+    const addDislike =
+        document.getElementById(
+            "add-halloween-dislike"
+        );
+
+
+    const addFear =
+        document.getElementById(
+            "add-halloween-fear"
+        );
+
+
+    addLike?.addEventListener(
+        "click",
+        () => {
+
+            const list =
+                document.getElementById(
+                    "halloween-likes-list"
+                );
+
+
+            const row =
+                createHalloweenEntryRow(
+                    "like"
+                );
+
+
+            list?.appendChild(
+                row
+            );
+
+
+            row.querySelector(
+                "input"
+            )?.focus();
+
+        }
+    );
+
+
+    addDislike?.addEventListener(
+        "click",
+        () => {
+
+            const list =
+                document.getElementById(
+                    "halloween-dislikes-list"
+                );
+
+
+            const row =
+                createHalloweenEntryRow(
+                    "dislike"
+                );
+
+
+            list?.appendChild(
+                row
+            );
+
+
+            row.querySelector(
+                "input"
+            )?.focus();
+
+        }
+    );
+
+
+    addFear?.addEventListener(
+        "click",
+        () => {
+
+            const list =
+                document.getElementById(
+                    "halloween-fears-list"
+                );
+
+
+            const row =
+                createHalloweenEntryRow(
+                    "fear"
+                );
+
+
+            list?.appendChild(
+                row
+            );
+
+
+            row.querySelector(
+                "input"
+            )?.focus();
+
+        }
+    );
+
+}
+
+
+setupHalloweenPage();
+
+
+/* =========================================
    MAGIC
    ========================================= */
 
@@ -14131,6 +14890,18 @@ const mobileToggleButton =
     );
 
 
+const halloweenToggleButton =
+    document.getElementById(
+        "halloween-toggle"
+    );
+
+
+const backgroundPathTabButton =
+    document.getElementById(
+        "background-path-tab-button"
+    );
+
+
 const saveSheetButton =
     document.getElementById(
         "save-sheet"
@@ -14207,6 +14978,60 @@ function setMobileEnabled(
     setGlobalMobileMode(
         enabled
     );
+
+}
+
+
+function setHalloweenEnabled(
+    enabled
+) {
+
+    ensureHalloweenSheetMarkup();
+
+
+    document.body.classList.toggle(
+        "halloween-page-mode",
+        enabled
+    );
+
+
+    if (
+        halloweenToggleButton
+    ) {
+
+        halloweenToggleButton.dataset.enabled =
+            enabled
+                ? "true"
+                : "false";
+
+
+        halloweenToggleButton.textContent =
+            enabled
+                ? "Halloween: On"
+                : "Halloween: Off";
+
+    }
+
+
+    if (
+        backgroundPathTabButton
+    ) {
+
+        backgroundPathTabButton.textContent =
+            enabled
+                ? "Halloween"
+                : "Background / Path";
+
+    }
+
+
+    document
+        .querySelectorAll(
+            "#halloween-sheet .halloween-expand"
+        )
+        .forEach(
+            autoResizeHalloweenField
+        );
 
 }
 
@@ -14487,6 +15312,11 @@ async function saveRemoteCharacterSheet() {
         magicEnabled:
             magicToggleButton.dataset.enabled ===
             "true",
+        pageMode:
+            halloweenToggleButton?.dataset.enabled ===
+                "true"
+                ? "halloween"
+                : "standard",
         tabs: {}
     };
 
@@ -14648,6 +15478,11 @@ async function saveCharacterSheet() {
         magicEnabled:
             magicToggleButton.dataset.enabled ===
             "true",
+        pageMode:
+            halloweenToggleButton?.dataset.enabled ===
+                "true"
+                ? "halloween"
+                : "standard",
         tabs: {}
     };
 
@@ -14869,9 +15704,32 @@ mobileToggleButton.addEventListener(
 );
 
 
+halloweenToggleButton?.addEventListener(
+    "click",
+    () => {
+
+        const currentlyEnabled =
+            halloweenToggleButton.dataset.enabled ===
+            "true";
+
+
+        setHalloweenEnabled(
+            !currentlyEnabled
+        );
+
+    }
+);
+
+
 setMagicEnabled(
     restoredSheetState?.magicEnabled ===
     true
+);
+
+
+setHalloweenEnabled(
+    restoredSheetState?.pageMode ===
+    "halloween"
 );
 
 
