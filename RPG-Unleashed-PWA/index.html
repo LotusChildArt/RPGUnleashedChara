@@ -4041,7 +4041,7 @@ if (
                 </select>
 
                 <div class="app-option-description">
-                    Use the phone-friendly stacked layout throughout the app.
+                    Choose Desktop or the phone-friendly Mobile layout throughout the app.
                 </div>
 
             </div>
@@ -4108,7 +4108,7 @@ if (
         data-tab="tab4"
         id="background-path-tab-button"
     >
-        Special / Background
+        Special/Background
     </button>
 
     <button
@@ -5462,7 +5462,7 @@ if (
     <div class="sheet">
 
         <h1>
-            Special / Background
+            Special/Background
         </h1>
 
 
@@ -5806,7 +5806,7 @@ if (
         <div class="halloween-sheet" id="halloween-sheet">
 
             <h1>
-                Special / Background
+                Special/Background
             </h1>
 
 
@@ -6418,7 +6418,7 @@ if (
                 </select>
 
                 <div class="option-description">
-                    Show or hide the Magic tab. Magic is off by default.
+                    Choose Non Caster to hide the Magic tab or Caster to show it.
                 </div>
 
             </div>
@@ -6436,7 +6436,7 @@ if (
                 </select>
 
                 <div class="option-description">
-                    Replace Background / Path with the Halloween Game character page.
+                    Choose Classic for the standard page or Halloween for the Halloween Game version.
                 </div>
 
             </div>
@@ -6454,7 +6454,7 @@ if (
                 </select>
 
                 <div class="option-description">
-                    Switch the character sheet to a phone-friendly stacked layout. Mobile mode is off by default.
+                    Choose Desktop or the phone-friendly Mobile layout.
                 </div>
 
             </div>
@@ -7656,6 +7656,50 @@ function restoreCharacterTabs(
 
 
     ensureHalloweenSheetMarkup();
+    normalizeSpecialBackgroundLabels();
+
+}
+
+
+function normalizeSpecialBackgroundLabels() {
+
+    const tab =
+        document.getElementById(
+            "tab4"
+        );
+
+
+    if (
+        !tab
+    ) {
+
+        return;
+
+    }
+
+
+    tab
+        .querySelectorAll(
+            "h1"
+        )
+        .forEach(
+            heading => {
+
+                heading.textContent =
+                    "Special/Background";
+
+            }
+        );
+
+
+    if (
+        backgroundPathTabButton
+    ) {
+
+        backgroundPathTabButton.textContent =
+            "Special/Background";
+
+    }
 
 }
 
@@ -7689,7 +7733,7 @@ function ensureHalloweenSheetMarkup() {
     wrapper.innerHTML = `
         <div class="halloween-sheet" id="halloween-sheet">
 
-            <h1>Special / Background</h1>
+            <h1>Special/Background</h1>
 
             <div class="halloween-ex-machinas">
                 <strong>Ex Machinas</strong>
@@ -15090,7 +15134,7 @@ function setHalloweenEnabled(
     ) {
 
         backgroundPathTabButton.textContent =
-            "Special / Background";
+            "Special/Background";
 
     }
 
