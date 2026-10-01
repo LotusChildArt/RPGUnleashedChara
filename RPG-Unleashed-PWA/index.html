@@ -13267,7 +13267,9 @@ async function saveRemoteCharacterSheet() {
 
 
         saveStatus.textContent =
-            "Changes saved to the player's character.";
+            result.queued
+                ? "Changes saved. They will sync to the player's character when their RPG Unleashed panel is active."
+                : "Changes saved to the player's character.";
 
     }
 
