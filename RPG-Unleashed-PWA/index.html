@@ -2190,6 +2190,22 @@ body.halloween-page-mode #tab4 .background-section {
     display: none;
 }
 
+.special-background-tab-label {
+    display: none;
+}
+
+body.halloween-page-mode .background-path-tab-label {
+    display: none;
+}
+
+body.halloween-page-mode .special-background-tab-label {
+    display: inline;
+}
+
+body.halloween-page-mode #tab4 > .sheet > h1 {
+    display: none;
+}
+
 body.halloween-page-mode #tab4 .halloween-sheet {
     display: block;
 }
@@ -4108,7 +4124,12 @@ if (
         data-tab="tab4"
         id="background-path-tab-button"
     >
-        Background / Path
+        <span class="background-path-tab-label">
+            Background / Path
+        </span>
+        <span class="special-background-tab-label">
+            Special/Background
+        </span>
     </button>
 
     <button
@@ -7708,33 +7729,7 @@ function normalizeSpecialBackgroundLabels(
     }
 
 
-    const tabButton =
-        document.getElementById(
-            "background-path-tab-button"
-        );
 
-
-    if (
-        tabButton
-    ) {
-
-        const halloweenSelected =
-            (
-                document.getElementById(
-                    "halloween-toggle"
-                )?.value ===
-                    "halloween"
-            ) ||
-            state?.pageMode ===
-                "halloween";
-
-
-        tabButton.textContent =
-            halloweenSelected
-                ? "Special/Background"
-                : "Background / Path";
-
-    }
 
 }
 
@@ -15162,22 +15157,6 @@ function setHalloweenEnabled(
     }
 
 
-    const modeTabButton =
-        document.getElementById(
-            "background-path-tab-button"
-        );
-
-
-    if (
-        modeTabButton
-    ) {
-
-        modeTabButton.textContent =
-            enabled
-                ? "Special/Background"
-                : "Background / Path";
-
-    }
 
 
     document
