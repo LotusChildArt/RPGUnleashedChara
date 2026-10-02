@@ -5805,11 +5805,6 @@ if (
 
         <div class="halloween-sheet" id="halloween-sheet">
 
-            <h1>
-                Halloween
-            </h1>
-
-
             <div class="halloween-ex-machinas">
 
                 <strong>
@@ -7708,8 +7703,7 @@ function normalizeSpecialBackgroundLabels(
         halloweenHeading
     ) {
 
-        halloweenHeading.textContent =
-            "Halloween";
+        halloweenHeading.remove();
 
     }
 
@@ -7724,9 +7718,19 @@ function normalizeSpecialBackgroundLabels(
         tabButton
     ) {
 
-        tabButton.textContent =
+        const halloweenSelected =
+            (
+                document.getElementById(
+                    "halloween-toggle"
+                )?.value ===
+                    "halloween"
+            ) ||
             state?.pageMode ===
-                "halloween"
+                "halloween";
+
+
+        tabButton.textContent =
+            halloweenSelected
                 ? "Special/Background"
                 : "Background / Path";
 
@@ -7763,8 +7767,6 @@ function ensureHalloweenSheetMarkup() {
 
     wrapper.innerHTML = `
         <div class="halloween-sheet" id="halloween-sheet">
-
-            <h1>Halloween</h1>
 
             <div class="halloween-ex-machinas">
                 <strong>Ex Machinas</strong>
@@ -15160,11 +15162,17 @@ function setHalloweenEnabled(
     }
 
 
+    const modeTabButton =
+        document.getElementById(
+            "background-path-tab-button"
+        );
+
+
     if (
-        backgroundPathTabButton
+        modeTabButton
     ) {
 
-        backgroundPathTabButton.textContent =
+        modeTabButton.textContent =
             enabled
                 ? "Special/Background"
                 : "Background / Path";
