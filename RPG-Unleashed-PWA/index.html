@@ -2202,8 +2202,12 @@ body.halloween-page-mode .special-background-tab-label {
     display: inline;
 }
 
-body.halloween-page-mode #tab4 > .sheet > h1 {
+body.halloween-page-mode #tab4 > .sheet > h1:first-child {
     display: none;
+}
+
+body.halloween-page-mode #tab4 .halloween-sheet > h1 {
+    display: block;
 }
 
 body.halloween-page-mode #tab4 .halloween-sheet {
@@ -4128,7 +4132,7 @@ if (
             Background / Path
         </span>
         <span class="special-background-tab-label">
-            Special/Background
+            Special / Background
         </span>
     </button>
 
@@ -5825,6 +5829,10 @@ if (
 
 
         <div class="halloween-sheet" id="halloween-sheet">
+
+            <h1>
+                Special / Background
+            </h1>
 
             <div class="halloween-ex-machinas">
 
@@ -7714,17 +7722,47 @@ function normalizeSpecialBackgroundLabels(
     }
 
 
-    const halloweenHeading =
+    let halloweenHeading =
         tab.querySelector(
             "#halloween-sheet > h1"
         );
 
 
     if (
+        !halloweenHeading
+    ) {
+
+        const halloweenSheet =
+            tab.querySelector(
+                "#halloween-sheet"
+            );
+
+
+        if (
+            halloweenSheet
+        ) {
+
+            halloweenHeading =
+                document.createElement(
+                    "h1"
+                );
+
+
+            halloweenSheet.prepend(
+                halloweenHeading
+            );
+
+        }
+
+    }
+
+
+    if (
         halloweenHeading
     ) {
 
-        halloweenHeading.remove();
+        halloweenHeading.textContent =
+            "Special / Background";
 
     }
 
@@ -7762,6 +7800,8 @@ function ensureHalloweenSheetMarkup() {
 
     wrapper.innerHTML = `
         <div class="halloween-sheet" id="halloween-sheet">
+
+            <h1>Special / Background</h1>
 
             <div class="halloween-ex-machinas">
                 <strong>Ex Machinas</strong>
