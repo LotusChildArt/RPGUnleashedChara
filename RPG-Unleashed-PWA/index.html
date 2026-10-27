@@ -3,7 +3,7 @@
 
 <head>
 
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="theme-color" content="#ffffff">
@@ -16601,7 +16601,7 @@ showAppScreen(
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker
-            .register("./service-worker.js")
+            .register("/service-worker.js", { scope: "/" })
             .catch(error => {
                 console.error(
                     "Service worker registration failed:",
