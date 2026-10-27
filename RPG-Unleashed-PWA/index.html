@@ -3988,6 +3988,78 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
     line-height: 1.4;
 }
 
+.creator-race-appearance {
+    display: grid;
+    gap: 6px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #bbb;
+}
+
+.creator-race-appearance div {
+    font-size: 12px;
+    line-height: 1.4;
+    color: #555;
+}
+
+.creator-race-appearance strong {
+    color: #222;
+}
+
+.creator-field select {
+    width: 100%;
+    min-height: 42px;
+    border: 2px solid black;
+    border-radius: 21px;
+    background: white;
+    padding: 7px 12px;
+}
+
+.creator-other-input {
+    margin-top: 4px;
+}
+
+.creator-multiselect {
+    position: relative;
+}
+
+.creator-multiselect details {
+    border: 2px solid black;
+    border-radius: 18px;
+    background: white;
+    overflow: hidden;
+}
+
+.creator-multiselect summary {
+    min-height: 42px;
+    padding: 10px 12px;
+    cursor: pointer;
+    font-weight: bold;
+    list-style-position: inside;
+}
+
+.creator-style-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px 10px;
+    max-height: 240px;
+    overflow-y: auto;
+    border-top: 1px solid #bbb;
+    padding: 10px 12px;
+}
+
+.creator-style-option {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+}
+
+.creator-style-option input {
+    width: auto;
+    min-height: 0;
+}
+
 .creator-race-choice-panel {
     display: flex;
     flex-wrap: wrap;
@@ -4470,6 +4542,14 @@ if (
                     <p id="creator-race-bonus"></p>
                     <p><strong>Age Phases:</strong> <span id="creator-race-age"></span></p>
                     <p><strong>Height:</strong> <span id="creator-race-height"></span></p>
+
+                    <div class="creator-race-appearance">
+                        <div><strong>Hair colors:</strong> <span id="creator-race-hair-colors"></span></div>
+                        <div><strong>Eye colors:</strong> <span id="creator-race-eye-colors"></span></div>
+                        <div><strong>Sclera:</strong> <span id="creator-race-sclera-colors"></span></div>
+                        <div><strong>Race styles:</strong> <span id="creator-race-styles"></span></div>
+                    </div>
+
                     <div id="creator-race-choice-wrap" hidden>
                         <p><strong>Choose racial attribute adjustment:</strong></p>
                         <div class="creator-race-choice-panel" id="creator-race-choice-panel"></div>
@@ -4519,13 +4599,30 @@ if (
                     </div>
 
                     <div class="creator-field">
-                        <span>Hair</span>
-                        <input type="text" data-creator-field="hair" placeholder="Hair">
+                        <span>Hair Color</span>
+                        <select id="creator-hair-color" data-creator-field="hairColor"></select>
+                        <input class="creator-other-input" id="creator-hair-other" type="text" data-creator-field="hairOther" data-creator-other placeholder="Custom hair color" hidden>
+                    </div>
+
+                    <div class="creator-field full creator-multiselect">
+                        <span>Hair Style <em>(optional)</em></span>
+                        <details id="creator-style-picker">
+                            <summary id="creator-style-summary">Choose styles (optional)</summary>
+                            <div class="creator-style-options" id="creator-style-options"></div>
+                        </details>
+                        <input class="creator-other-input" id="creator-style-other" type="text" data-creator-field="hairStyleOther" data-creator-other placeholder="Custom style" hidden>
                     </div>
 
                     <div class="creator-field">
-                        <span>Eyes</span>
-                        <input type="text" data-creator-field="eyes" placeholder="Eyes">
+                        <span>Eye Color</span>
+                        <select id="creator-eye-color" data-creator-field="eyeColor"></select>
+                        <input class="creator-other-input" id="creator-eye-other" type="text" data-creator-field="eyeOther" data-creator-other placeholder="Custom eye color" hidden>
+                    </div>
+
+                    <div class="creator-field">
+                        <span>Sclera <em>(optional)</em></span>
+                        <select id="creator-sclera-color" data-creator-field="scleraColor"></select>
+                        <input class="creator-other-input" id="creator-sclera-other" type="text" data-creator-field="scleraOther" data-creator-other placeholder="Custom sclera color" hidden>
                     </div>
                 </div>
             </section>
@@ -4611,8 +4708,10 @@ if (
                         <div class="creator-review-item"><span>Age</span><strong id="creator-review-age">—</strong></div>
                         <div class="creator-review-item"><span>Height</span><strong id="creator-review-height">—</strong></div>
                         <div class="creator-review-item"><span>Weight</span><strong id="creator-review-weight">—</strong></div>
-                        <div class="creator-review-item"><span>Hair</span><strong id="creator-review-hair">—</strong></div>
+                        <div class="creator-review-item"><span>Hair Color</span><strong id="creator-review-hair">—</strong></div>
+                        <div class="creator-review-item"><span>Hair Style</span><strong id="creator-review-style">—</strong></div>
                         <div class="creator-review-item"><span>Eyes</span><strong id="creator-review-eyes">—</strong></div>
+                        <div class="creator-review-item"><span>Sclera</span><strong id="creator-review-sclera">—</strong></div>
                         <div class="creator-review-item"><span>Level</span><strong>1</strong></div>
                     </div>
                 </div>
@@ -17295,6 +17394,109 @@ const RPG_CREATOR_RACES = [
     }
 ];
 
+const CREATOR_COMMON_HAIR_STYLES = [
+    "Short",
+    "Long",
+    "Spiky",
+    "Wavy",
+    "Curly",
+    "Straight",
+    "Coiled",
+    "Kinky",
+    "Braided",
+    "Mohawk"
+];
+
+const RPG_CREATOR_APPEARANCE = {
+    "Human": {
+        styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
+        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White"],
+        eyes: ["Brown", "Blue", "Green", "Hazel", "Grey", "Amber"],
+        sclera: []
+    },
+    "Elf": {
+        styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
+        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Gold", "Platinum", "Green", "Blue"],
+        eyes: ["Brown", "Blue", "Green", "Hazel", "Grey", "Amber", "Silver", "Gold", "Platinum", "Rain Drop"],
+        sclera: []
+    },
+    "Dwarf": {
+        styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
+        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Silver", "Gold", "Copper", "Brass"],
+        eyes: ["Brown", "Green", "Hazel", "Amber", "Copper", "Gold", "Charcoal"],
+        sclera: []
+    },
+    "Orc": {
+        styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
+        hair: ["Black", "Brown", "Red", "Auburn", "Gray", "White", "Dark Green", "Charcoal"],
+        eyes: ["Brown", "Blue", "Green", "Hazel", "Amber", "Charcoal", "Fire", "Yellow"],
+        sclera: ["White", "Yellow", "Orange", "Red", "Black", "Green"]
+    },
+    "Halfling": {
+        styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
+        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Brass"],
+        eyes: ["Brown", "Green", "Hazel", "Amber", "Copper", "Charcoal"],
+        sclera: []
+    },
+    "Gnome": {
+        styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
+        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Gold", "Copper", "Brass", "Pink", "Light Blue", "Pale Green"],
+        eyes: ["Brown", "Blue", "Green", "Hazel", "Amber", "Sapphire", "Emerald", "Grey", "Violet", "Starlight Blue"],
+        sclera: []
+    },
+    "Traiggoblin": {
+        styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky", "Frizzed", "Patchy"],
+        hair: ["Black", "Brown", "Red", "Auburn", "Gray", "White", "Dark Green", "Charcoal"],
+        eyes: ["Brown", "Blue", "Green", "Hazel", "Amber", "Charcoal", "Yellow", "White"],
+        sclera: ["White", "Yellow", "Orange", "Red", "Black", "Green"]
+    },
+    "Furfolk": {
+        styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
+        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White"],
+        eyes: ["Brown", "Green", "Hazel", "Amber", "Yellow", "Icy Blue", "Deep Blue", "Red", "Violet"],
+        sclera: []
+    },
+    "Zizses": {
+        styles: ["Mohawk Flange", "Vestigial Spikes", "Frilled Crest"],
+        hair: ["N/A"],
+        eyes: ["Yellow", "Green", "Red", "Orange", "Brown", "Gold", "Silver", "Copper"],
+        sclera: ["Black", "Red", "Orange", "White"],
+        sourceStylesOnly: true
+    },
+    "Av’riahl": {
+        styles: ["Wavy", "Straight", "Layered", "Spiked", "Flowing", "Braided-like Patterns"],
+        hair: ["Brown", "Black", "White", "Ash Gray", "Sandy", "Red", "Auburn", "Gold", "Copper", "Silver", "Crimson", "Emerald", "Sapphire", "Sunlit Yellow"],
+        eyes: ["Yellow", "Green", "Red", "Orange", "Brown", "Amber", "Golden", "Flame", "Charcoal"],
+        sclera: ["White", "Black", "Red", "Orange", "Golden", "Amber"]
+    },
+    "Arrahsect": {
+        styles: ["Straight", "Wavy", "Coiled", "Braided-like Patterns", "Tufted", "None"],
+        hair: ["Black", "Brown", "Auburn"],
+        eyes: ["Yellow", "Blue", "Green", "Red", "Orange", "Brown", "Gold", "Copper", "Silver", "Violet", "Pink"],
+        sclera: []
+    },
+    "Terrán": {
+        styles: ["Wavy", "Straight", "Layered", "Flowing", "Braided-like Patterns", "Wild Growth"],
+        hair: ["Green", "Gold", "Auburn", "Chestnut", "Brown", "Crimson", "Sapphire", "Sunlit Yellow", "Ash Gray", "White"],
+        eyes: ["Yellow", "Blue", "Green", "Red", "Orange", "Gold", "Violet", "Pink"],
+        sclera: ["Pink", "Red", "Orange", "White"],
+        sourceStylesOnly: true
+    },
+    "Shroomite": {
+        styles: ["Hanging Strands", "Veils", "Nets", "Caps", "Frills", "Flowing Fibers"],
+        hair: ["White", "Cream", "Tan", "Brown", "Red", "Orange", "Yellow", "Green", "Purple", "Black", "Speckled Patterns"],
+        eyes: ["Yellow", "Blue", "Green", "Red", "Orange", "Gold", "Violet", "Pink"],
+        sclera: ["Pink", "Red", "Orange", "White"],
+        sourceStylesOnly: true
+    },
+    "Manakeen": {
+        styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky", "Spiked", "Braided", "Layered", "Metallic-like Strands", "Neon-lit Wisps"],
+        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "White", "Grey", "Gold", "Copper", "Silver", "Neon Blue", "Bright Green", "Radiant Purple"],
+        eyes: ["Yellow", "Blue", "Green", "Red", "Orange", "Gold", "Violet", "Cyan", "Pink", "White", "Bright Neon Colors"],
+        sclera: ["White", "Black", "Red", "Blue", "Violet", "Green", "Matching Eye Color"]
+    }
+};
+
 let creatorStep = 0;
 let creatorDraft = null;
 
@@ -17308,8 +17510,14 @@ function makeFreshCreatorDraft() {
         heightFeet: 5,
         heightInches: 0,
         weight: "",
-        hair: "",
-        eyes: "",
+        hairColor: "",
+        hairOther: "",
+        hairStyles: [],
+        hairStyleOther: "",
+        eyeColor: "",
+        eyeOther: "",
+        scleraColor: "",
+        scleraOther: "",
         level: 1,
         attributeSpends: {
             bod: 0,
@@ -17706,6 +17914,389 @@ function syncCreatorFieldsFromInputs() {
         );
 }
 
+function creatorAppearanceData() {
+    return (
+        RPG_CREATOR_APPEARANCE[
+            creatorDraft?.race
+        ] || {
+            styles: [],
+            hair: [],
+            eyes: [],
+            sclera: []
+        }
+    );
+}
+
+function creatorUniqueValues(values) {
+    return [
+        ...new Set(
+            values.filter(
+                value =>
+                    String(
+                        value || ""
+                    ).trim()
+            )
+        )
+    ];
+}
+
+function creatorAvailableStyles() {
+    const appearance =
+        creatorAppearanceData();
+
+    const base =
+        appearance.sourceStylesOnly
+            ? []
+            : CREATOR_COMMON_HAIR_STYLES;
+
+    return creatorUniqueValues([
+        ...base,
+        ...(appearance.styles || [])
+    ]);
+}
+
+function creatorSelectedAppearanceValue(
+    field,
+    otherField
+) {
+    const selected =
+        String(
+            creatorDraft?.[field] ||
+            ""
+        ).trim();
+
+    if (
+        selected ===
+        "Other"
+    ) {
+        return String(
+            creatorDraft?.[otherField] ||
+            ""
+        ).trim();
+    }
+
+    return selected;
+}
+
+function creatorSelectedHairStyles() {
+    const selected =
+        Array.isArray(
+            creatorDraft?.hairStyles
+        )
+            ? creatorDraft.hairStyles
+            : [];
+
+    const values =
+        selected.filter(
+            value =>
+                value !==
+                "Other"
+        );
+
+    if (
+        selected.includes(
+            "Other"
+        )
+    ) {
+        const custom =
+            String(
+                creatorDraft?.hairStyleOther ||
+                ""
+            ).trim();
+
+        if (
+            custom
+        ) {
+            values.push(
+                custom
+            );
+        }
+    }
+
+    return creatorUniqueValues(
+        values
+    );
+}
+
+function creatorHairText() {
+    const color =
+        creatorSelectedAppearanceValue(
+            "hairColor",
+            "hairOther"
+        );
+
+    const styles =
+        creatorSelectedHairStyles();
+
+    const parts = [];
+
+    if (
+        color
+    ) {
+        parts.push(
+            color
+        );
+    }
+
+    if (
+        styles.length
+    ) {
+        parts.push(
+            "Style: " +
+            styles.join(
+                ", "
+            )
+        );
+    }
+
+    return parts.join(
+        " | "
+    );
+}
+
+function creatorEyesText() {
+    const eyes =
+        creatorSelectedAppearanceValue(
+            "eyeColor",
+            "eyeOther"
+        );
+
+    const sclera =
+        creatorSelectedAppearanceValue(
+            "scleraColor",
+            "scleraOther"
+        );
+
+    const parts = [];
+
+    if (
+        eyes
+    ) {
+        parts.push(
+            eyes
+        );
+    }
+
+    if (
+        sclera
+    ) {
+        parts.push(
+            "Sclera: " +
+            sclera
+        );
+    }
+
+    return parts.join(
+        " | "
+    );
+}
+
+function renderCreatorSelect(
+    id,
+    options,
+    value,
+    emptyLabel
+) {
+    const select =
+        document.getElementById(
+            id
+        );
+
+    if (
+        !select
+    ) {
+        return;
+    }
+
+    const cleanOptions =
+        creatorUniqueValues(
+            options
+        );
+
+    select.innerHTML =
+        '<option value="">' +
+        emptyLabel +
+        "</option>" +
+        cleanOptions
+            .map(
+                option =>
+                    '<option value="' +
+                    option +
+                    '">' +
+                    option +
+                    "</option>"
+            )
+            .join(
+                ""
+            ) +
+        '<option value="Other">Other</option>';
+
+    select.value =
+        cleanOptions.includes(
+            value
+        ) ||
+        value ===
+            "Other"
+            ? value
+            : "";
+}
+
+function renderCreatorAppearanceControls() {
+    const appearance =
+        creatorAppearanceData();
+
+    renderCreatorSelect(
+        "creator-hair-color",
+        appearance.hair || [],
+        creatorDraft?.hairColor || "",
+        "Choose hair color"
+    );
+
+    renderCreatorSelect(
+        "creator-eye-color",
+        appearance.eyes || [],
+        creatorDraft?.eyeColor || "",
+        "Choose eye color"
+    );
+
+    renderCreatorSelect(
+        "creator-sclera-color",
+        appearance.sclera || [],
+        creatorDraft?.scleraColor || "",
+        appearance.sclera?.length
+            ? "Choose sclera color"
+            : "Not specified"
+    );
+
+    const hairOther =
+        document.getElementById(
+            "creator-hair-other"
+        );
+
+    const eyeOther =
+        document.getElementById(
+            "creator-eye-other"
+        );
+
+    const scleraOther =
+        document.getElementById(
+            "creator-sclera-other"
+        );
+
+    const styleOther =
+        document.getElementById(
+            "creator-style-other"
+        );
+
+    if (
+        hairOther
+    ) {
+        hairOther.hidden =
+            creatorDraft?.hairColor !==
+            "Other";
+
+        hairOther.value =
+            creatorDraft?.hairOther ||
+            "";
+    }
+
+    if (
+        eyeOther
+    ) {
+        eyeOther.hidden =
+            creatorDraft?.eyeColor !==
+            "Other";
+
+        eyeOther.value =
+            creatorDraft?.eyeOther ||
+            "";
+    }
+
+    if (
+        scleraOther
+    ) {
+        scleraOther.hidden =
+            creatorDraft?.scleraColor !==
+            "Other";
+
+        scleraOther.value =
+            creatorDraft?.scleraOther ||
+            "";
+    }
+
+    const styles =
+        creatorAvailableStyles();
+
+    const styleOptions =
+        document.getElementById(
+            "creator-style-options"
+        );
+
+    if (
+        styleOptions
+    ) {
+        const selected =
+            Array.isArray(
+                creatorDraft?.hairStyles
+            )
+                ? creatorDraft.hairStyles
+                : [];
+
+        styleOptions.innerHTML =
+            [
+                ...styles,
+                "Other"
+            ]
+            .map(
+                style =>
+                    '<label class="creator-style-option">' +
+                    '<input type="checkbox" data-creator-style="' +
+                    style +
+                    '"' +
+                    (
+                        selected.includes(
+                            style
+                        )
+                            ? " checked"
+                            : ""
+                    ) +
+                    "> " +
+                    style +
+                    "</label>"
+            )
+            .join(
+                ""
+            );
+    }
+
+    if (
+        styleOther
+    ) {
+        styleOther.hidden =
+            !creatorDraft
+                ?.hairStyles
+                ?.includes(
+                    "Other"
+                );
+
+        styleOther.value =
+            creatorDraft?.hairStyleOther ||
+            "";
+    }
+
+    const selectedStyles =
+        creatorSelectedHairStyles();
+
+    setCreatorText(
+        "creator-style-summary",
+        selectedStyles.length
+            ? selectedStyles.join(
+                ", "
+            )
+            : "Choose styles (optional)"
+    );
+}
+
 function renderCreatorRaceGrid() {
     const grid =
         document.getElementById(
@@ -17798,6 +18389,37 @@ function renderCreatorRaceSummary() {
                 )
               )
             : "No height range is currently defined in Races and Templates One v1."
+    );
+
+    const appearance =
+        creatorAppearanceData();
+
+    setCreatorText(
+        "creator-race-hair-colors",
+        appearance.hair?.length
+            ? appearance.hair.join(", ")
+            : "No race-specific choices listed."
+    );
+
+    setCreatorText(
+        "creator-race-eye-colors",
+        appearance.eyes?.length
+            ? appearance.eyes.join(", ")
+            : "No race-specific choices listed."
+    );
+
+    setCreatorText(
+        "creator-race-sclera-colors",
+        appearance.sclera?.length
+            ? appearance.sclera.join(", ")
+            : "No race-specific sclera colors listed."
+    );
+
+    setCreatorText(
+        "creator-race-styles",
+        appearance.styles?.length
+            ? appearance.styles.join(", ")
+            : "No race-specific styles listed."
     );
 
     const choiceWrap =
@@ -18143,14 +18765,40 @@ function renderCreatorReview() {
     setCreatorText(
         "creator-review-hair",
         display(
-            creatorDraft?.hair
+            creatorSelectedAppearanceValue(
+                "hairColor",
+                "hairOther"
+            )
+        )
+    );
+
+    setCreatorText(
+        "creator-review-style",
+        display(
+            creatorSelectedHairStyles()
+                .join(
+                    ", "
+                )
         )
     );
 
     setCreatorText(
         "creator-review-eyes",
         display(
-            creatorDraft?.eyes
+            creatorSelectedAppearanceValue(
+                "eyeColor",
+                "eyeOther"
+            )
+        )
+    );
+
+    setCreatorText(
+        "creator-review-sclera",
+        display(
+            creatorSelectedAppearanceValue(
+                "scleraColor",
+                "scleraOther"
+            )
         )
     );
 
@@ -18315,6 +18963,7 @@ function renderCharacterCreator() {
     renderCreatorRaceGrid();
     renderCreatorRaceSummary();
     renderCreatorDetailGuidance();
+    renderCreatorAppearanceControls();
     renderCreatorDerivedValues();
     renderCreatorReview();
 
@@ -18587,14 +19236,14 @@ async function createGuidedCharacter() {
             backgroundSecondary?.querySelector(
                 'textarea[placeholder="Hair"]'
             ),
-            creatorDraft.hair
+            creatorHairText()
         );
 
         setInputValueAndNotify(
             backgroundSecondary?.querySelector(
                 'textarea[placeholder="Eyes"]'
             ),
-            creatorDraft.eyes
+            creatorEyesText()
         );
 
         [
@@ -18718,8 +19367,14 @@ document
     )
     .forEach(
         input => {
+            const eventName =
+                input.tagName ===
+                "SELECT"
+                    ? "change"
+                    : "input";
+
             input.addEventListener(
-                "input",
+                eventName,
                 () => {
                     if (
                         !creatorDraft
@@ -18732,9 +19387,68 @@ document
                     ] =
                         input.value;
 
+                    if (
+                        input.hasAttribute(
+                            "data-creator-other"
+                        )
+                    ) {
+                        renderCreatorReview();
+                        return;
+                    }
+
                     renderCharacterCreator();
                 }
             );
+        }
+    );
+
+document
+    .getElementById(
+        "creator-style-options"
+    )
+    .addEventListener(
+        "change",
+        event => {
+            const checkbox =
+                event.target.closest(
+                    "[data-creator-style]"
+                );
+
+            if (
+                !checkbox ||
+                !creatorDraft
+            ) {
+                return;
+            }
+
+            const style =
+                checkbox.dataset.creatorStyle;
+
+            const selected =
+                new Set(
+                    creatorDraft.hairStyles ||
+                    []
+                );
+
+            if (
+                checkbox.checked
+            ) {
+                selected.add(
+                    style
+                );
+            }
+            else {
+                selected.delete(
+                    style
+                );
+            }
+
+            creatorDraft.hairStyles =
+                Array.from(
+                    selected
+                );
+
+            renderCharacterCreator();
         }
     );
 
@@ -18776,6 +19490,15 @@ document
                     mnd: 0,
                     cha: 0
                 };
+
+                creatorDraft.hairColor = "";
+                creatorDraft.hairOther = "";
+                creatorDraft.hairStyles = [];
+                creatorDraft.hairStyleOther = "";
+                creatorDraft.eyeColor = "";
+                creatorDraft.eyeOther = "";
+                creatorDraft.scleraColor = "";
+                creatorDraft.scleraOther = "";
 
                 initializeCreatorHeightForRace();
 
