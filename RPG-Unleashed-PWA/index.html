@@ -4116,6 +4116,127 @@ if (
 
 
 <!-- =========================================
+     RPG UNLEASHED HANDBOOK
+     ========================================= -->
+
+<div id="handbook-screen" class="app-screen">
+    <div class="handbook-shell">
+        <div class="handbook-heading-row">
+            <h1>RPG Unleashed Handbook</h1>
+            <div class="handbook-actions">
+                <button class="handbook-button" id="handbook-save-character" type="button" hidden>Save Character</button>
+                <button class="handbook-button" id="handbook-back" type="button">Back</button>
+            </div>
+        </div>
+
+        <div class="handbook-tab-bar">
+            <button class="handbook-tab-button active" type="button">Conditions</button>
+        </div>
+
+        <div class="handbook-page">
+            <div class="handbook-condition">
+                <h2>Acid</h2>
+                <p>Acid damages afflicted gear and accumulates by <strong>1 stack each round</strong> until removed. Each Acid stack gives the affected item <strong>-1 Effectiveness</strong>.</p>
+                <p>When Acid is applied, select the affected item: <strong>Weapon 1, Weapon 2, Weapon 3, Armor, Inventory, or Other</strong>. Other allows the affected item to be specified.</p>
+                <p>Removing Acid is a <strong>Move Action</strong> and can be done by wiping it away with a rag or using <strong>Minor Magecraft</strong>. Removing Acid stops further stack accumulation but does not restore Effectiveness already lost. A rag used to remove Acid becomes unusable afterward.</p>
+                <p>If Acid reduces a weapon or armor to the point that it provides no damage, Defense, or DR, the item is considered <strong>Broken</strong>.</p>
+                <div class="handbook-table-wrap">
+                    <table class="handbook-table">
+                        <thead><tr><th>Material</th><th>Tiny or Smaller</th><th>Small</th><th>Medium</th><th>Large</th></tr></thead>
+                        <tbody>
+                            <tr><th>Wood</th><td>1 Acid</td><td>2 Acid</td><td>3 Acid</td><td>4 Acid</td></tr>
+                            <tr><th>Metal</th><td>2 Acid</td><td>3 Acid</td><td>4 Acid</td><td>5 Acid</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="handbook-note">The table lists the number of Acid stacks required to break an object of that material and size.</p>
+            </div>
+
+            <div class="handbook-condition">
+                <h2>Bleed</h2>
+                <p>At the beginning of each turn, gain Bleed stacks equal to the combined maximum values of all damage dice that caused the Bleed. If a 2d4 weapon rolls one 4, gain 4 Bleed per turn; if both dice roll 4, gain 8 Bleed per turn.</p>
+                <p>Receive a <strong>-2 penalty to all checks per 10 Bleed stacks</strong>. At <strong>40 or more Bleed stacks</strong>, make a BOD Save each round with a DC of <strong>10 + ¼ Bleed stacks, rounded down</strong>, or fall Unconscious.</p>
+                <p>A <strong>DC 15 Heal (MND) check</strong> using fabric stops further Bleed accumulation. A health potion also stops the accumulation.</p>
+                <p>When healing HP, remove <strong>2 Bleed stacks for every 1 HP</strong> that would have been restored before any HP is regained.</p>
+            </div>
+
+            <div class="handbook-condition">
+                <h2>Bone Break</h2>
+                <p>Bone Break represents physical damage severe enough to fracture or break a bone. Select <strong>Rib, Arm, Leg, Skull, or Neck</strong>. The effects of the break depend on the affected body part.</p>
+                <ul>
+                    <li><strong>Rib:</strong> -2 to Atk/Def and -2 to running checks.</li>
+                    <li><strong>Arm:</strong> Cannot hold things using the broken arm; -2 to Atk/Def and -10 on climbing checks.</li>
+                    <li><strong>Leg:</strong> Cannot run; ½ Speed; -2 to Atk/Def and -10 on climbing checks. If both legs are broken, Speed is reduced to 5 ft and Atk/Def becomes -6.</li>
+                    <li><strong>Skull:</strong> -4 to all checks and a 30% chance to lose your turn, rolled at the start of the turn.</li>
+                    <li><strong>Neck:</strong> Follow the Bone Break result and damage rolled for the Neck result.</li>
+                </ul>
+                <div class="handbook-table-wrap">
+                    <table class="handbook-table">
+                        <thead><tr><th>Damage Source</th><th>Just Damage</th><th>Ribs +1d6 Dmg</th><th>Arms +1d8 Dmg</th><th>Legs +1d10 Dmg</th><th>Skull +1d12 Dmg</th><th>Neck +1d12 Dmg</th></tr></thead>
+                        <tbody>
+                            <tr><th>Ranged Weapon</th><td>1%–80%</td><td>81%–88%</td><td>89%–93%</td><td>94%–98%</td><td>99%</td><td>100%</td></tr>
+                            <tr><th>Light Weapon/Unarmed</th><td>1%–60%</td><td>61%–79%</td><td>80%–89%</td><td>90%–97%</td><td>98%–99%</td><td>100%</td></tr>
+                            <tr><th>Medium Weapon</th><td>1%–50%</td><td>51%–74%</td><td>75%–85%</td><td>86%–95%</td><td>96%–99%</td><td>100%</td></tr>
+                            <tr><th>Heavy Weapon</th><td>1%–40%</td><td>41%–66%</td><td>67%–79%</td><td>80%–90%</td><td>91%–99%</td><td>100%</td></tr>
+                            <tr><th>Fall Damage</th><td>1%–30%</td><td>31%–50%</td><td>51%–69%</td><td>70%–88%</td><td>89%–95%</td><td>96%–100%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="handbook-condition">
+                <h2>Burning</h2>
+                <p>Burning stacks represent the number of rounds you will remain on fire. At the beginning of each round, take Fire damage based on your current Burning stacks, then reduce Burning by 1 stack.</p>
+                <ul><li><strong>1–4 stacks:</strong> 1d4 Fire damage.</li><li><strong>5–9 stacks:</strong> 2d4 Fire damage.</li><li><strong>10+ stacks:</strong> 4d4 Fire damage.</li></ul>
+                <p>You may attempt to extinguish the flames with a <strong>DC 20 DEX Save</strong>. The flames may also be suffocated with a <strong>large cloth material like a cloak, trousers, bed sheet, etc.</strong>, removing all Burning stacks but destroying the cloth material used.</p>
+            </div>
+
+            <div class="handbook-condition"><h2>Charmed</h2><p>Magic has ensnared your senses. Through the duration of the spell, your actions are influenced by someone else.</p><p><strong>Charmed does not stack.</strong></p></div>
+
+            <div class="handbook-condition"><h2>Dead</h2><p>You are dead. You were unable to stabilize after reaching <strong>-(BOD score)</strong> or have taken so much damage that you die outright. Without magic or advanced technology, dead is how you will stay.</p><p><strong>Dead does not stack.</strong></p></div>
+
+            <div class="handbook-condition">
+                <h2>Drunk</h2>
+                <ul>
+                    <li>Alcoholic drinks give Drunk stacks based on the drink consumed.</li>
+                    <li>Receive a <strong>-2 penalty to Skill checks and DEX/MND Saves per 10 Drunk stacks</strong>.</li>
+                    <li>At <strong>20+ stacks</strong>, receive <strong>+2 to BOD- and CHA-based checks</strong>.</li>
+                    <li><strong>20–39 stacks</strong> is the sweet spot: the BOD/CHA bonus applies without the blackout checks.</li>
+                    <li>At <strong>40+ stacks</strong>, make BOD Saves every minute outside combat or every <strong>1d4 rounds</strong> in combat. The DC is <strong>10 + ¼ Drunk stacks, rounded down</strong>. Failure causes you to fall Unconscious.</li>
+                    <li>Drunk decreases by <strong>5 stacks per hour</strong>, or <strong>10 stacks per hour while sleeping</strong>.</li>
+                    <li>The following morning, make a BOD Save with a DC equal to <strong>½ the Drunk stacks you had when you went to sleep</strong>. Failure causes a hangover, giving <strong>-2 to all rolls for 12 hours</strong>.</li>
+                </ul>
+            </div>
+
+            <div class="handbook-condition"><h2>Fear</h2><p>Receive a <strong>-1 penalty per stack</strong> to attacks against the source of your Fear or any creature within 5 feet of it. Failing an attempt to attack the source opens you to an Attack of Opportunity.</p><p>Fear has a maximum of <strong>5 stacks</strong>. At 5 stacks, flee in a direction opposite the source of your Fear. Remove all Fear stacks once you deal damage to the source. If a second source causes Fear, prioritize the newest source.</p></div>
+
+            <div class="handbook-condition">
+                <h2>Frozen</h2>
+                <p>Frozen stacks represent the number of rounds you will remain affected by accumulated ice and cold. At the beginning of each round, take Cold damage based on your current Frozen stacks, then reduce Frozen by 1 stack.</p>
+                <ul><li><strong>1–4 stacks:</strong> 1d4 Cold damage.</li><li><strong>5–9 stacks:</strong> 2d4 Cold damage.</li><li><strong>10+ stacks:</strong> 4d4 Cold damage.</li></ul>
+                <p>While within <strong>5 feet of an intense heat source</strong>, such as a fire, forge, stove, etc., you take no Frozen damage and reduce Frozen by <strong>2 stacks per round instead of 1</strong>.</p>
+            </div>
+
+            <div class="handbook-condition"><h2>Pierced</h2><p>Receive a <strong>-1 penalty on all physical actions per stack</strong>. Receive <strong>1 damage per stack</strong> for any physical action taken.</p><p>Remove 1 stack with a <strong>DC 15 Heal (MND) check</strong>. Failing the check still removes the stack but deals <strong>1d4 damage</strong> and Bleed stacks equal to the damage taken.</p></div>
+
+            <div class="handbook-condition"><h2>Poison</h2><p>The effect is specific to the poison used. Poison stacks may only be removed once you have successfully made a BOD Save against it; otherwise it continues to increase on each time interval: round, minute, hour, or day.</p><p>Once you have succeeded in your BOD Save, reduce Poison by a number of d4 equal to <strong>¼ BOD score per hour of rest</strong>, or drink an antidote.</p></div>
+
+            <div class="handbook-condition">
+                <h2>Rage</h2>
+                <ul><li>Gain <strong>¼ BOD DR +1 per Berserker Rage rank</strong>.</li><li>You may remain conscious while below <strong>0 HP</strong>.</li><li>Receive <strong>-4 to MND Saves</strong>.</li><li>Rage stacks may be spent on abilities provided by the <strong>Berserker Rage</strong> feat.</li><li>Unused Rage stacks dissipate according to the Berserker Rage feat.</li></ul>
+            </div>
+
+            <div class="handbook-condition"><h2>Slowed</h2><p>Move at <strong>½ Speed</strong>. During your turn, you may take either a <strong>Move Action</strong> or a <strong>Standard Action</strong>, but not both.</p><p><strong>Slowed does not stack.</strong></p></div>
+
+            <div class="handbook-condition"><h2>Taunted</h2><p>Receive a <strong>+1 bonus to attacks against the source of Taunted and a -1 penalty to attacks against anyone else per stack</strong>.</p><p>Taunted has a maximum of <strong>5 stacks</strong>. At 5 stacks, charge or focus all attacks on the source regardless of other threats. Remove all Taunted stacks once you deal damage to the source. If a second source Taunts you, prioritize the newest source.</p></div>
+
+            <div class="handbook-condition"><h2>Unconscious</h2><p>Either your HP has dropped below <strong>0</strong>, your NL has accumulated to equal or surpass your current HP, or a spell has rendered you Unconscious. While Unconscious, you are unable to perceive or act in the world around you.</p><p>You remain Unconscious until your <strong>NL is reduced to less than your current HP</strong>, your <strong>HP reaches 1 or higher</strong>, or the effect causing the condition ends.</p><p><strong>Unconscious does not stack.</strong></p></div>
+        </div>
+    </div>
+</div>
+
+
+<!-- =========================================
      CHARACTER SHEET APP
      ========================================= -->
 
