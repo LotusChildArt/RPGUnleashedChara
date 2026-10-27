@@ -672,7 +672,10 @@ input::placeholder {
 }
 
 
-.condition-add-row .condition-add-bone[hidden] {
+.condition-add-row .condition-add-bone[hidden],
+.condition-add-row .condition-add-acid[hidden],
+.condition-add-row .condition-add-acid-other[hidden],
+.condition-detail-field[hidden] {
 
     display: none;
 }
@@ -4796,6 +4799,17 @@ if (
                 <option value="Skull">Skull</option>
                 <option value="Neck">Neck</option>
             </select>
+
+            <select class="condition-add-acid" hidden aria-label="Acid target">
+                <option value="Weapon 1">Weapon 1</option>
+                <option value="Weapon 2">Weapon 2</option>
+                <option value="Weapon 3">Weapon 3</option>
+                <option value="Armor">Armor</option>
+                <option value="Inventory">Inventory</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <input class="condition-add-acid-other" type="text" placeholder="Specify item" hidden>
 
             <button
                 class="add-condition"
@@ -10750,6 +10764,25 @@ function ensureConditionManager() {
                 </option>
             </select>
 
+            <select class="condition-add-bone" hidden aria-label="Bone break location">
+                <option value="Rib">Rib</option>
+                <option value="Arm">Arm</option>
+                <option value="Leg">Leg</option>
+                <option value="Skull">Skull</option>
+                <option value="Neck">Neck</option>
+            </select>
+
+            <select class="condition-add-acid" hidden aria-label="Acid target">
+                <option value="Weapon 1">Weapon 1</option>
+                <option value="Weapon 2">Weapon 2</option>
+                <option value="Weapon 3">Weapon 3</option>
+                <option value="Armor">Armor</option>
+                <option value="Inventory">Inventory</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <input class="condition-add-acid-other" type="text" placeholder="Specify item" hidden>
+
             <button
                 class="add-condition"
                 type="button"
@@ -10858,6 +10891,45 @@ function getConditionDetailMarkup(
 
     if (
         conditionId ===
+        "wounded"
+    ) {
+
+        const selected =
+            values.acidTarget ||
+            "Weapon 1";
+
+        const otherValue =
+            values.acidOther ||
+            "";
+
+        return `
+            <label class="condition-detail-field">
+                Target
+                <select class="condition-acid-target">
+                    ${["Weapon 1", "Weapon 2", "Weapon 3", "Armor", "Inventory", "Other"].map(option =>
+                        '<option value="' + option + '"' +
+                        (option === selected ? " selected" : "") +
+                        ">" + option + "</option>"
+                    ).join("")}
+                </select>
+            </label>
+
+            <label class="condition-detail-field condition-acid-other-wrap"${selected === "Other" ? "" : " hidden"}>
+                Item
+                <input
+                    class="condition-acid-other"
+                    type="text"
+                    value="${String(otherValue).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}"
+                    placeholder="Specify item"
+                >
+            </label>
+        `;
+
+    }
+
+
+    if (
+        conditionId ===
         "broken-bone"
     ) {
 
@@ -10927,7 +10999,7 @@ function ensureConditionDetailFields(
 
 
     if (
-        !["unconscious", "broken-bone", "bleeding"]
+        !["unconscious", "broken-bone", "bleeding", "wounded"]
             .includes(
                 id
             )
@@ -10968,7 +11040,11 @@ function ensureConditionDetailFields(
                 boneType:
                     card.dataset.boneType,
                 bleedPerTurn:
-                    card.dataset.bleedPerTurn
+                    card.dataset.bleedPerTurn,
+                acidTarget:
+                    card.dataset.acidTarget,
+                acidOther:
+                    card.dataset.acidOther
             }
         );
 
@@ -11068,6 +11144,18 @@ function getLiveConditionState() {
                         ".condition-bone-type"
                     )?.value ||
                     card.dataset.boneType ||
+                    "",
+                acidTarget:
+                    card.querySelector(
+                        ".condition-acid-target"
+                    )?.value ||
+                    card.dataset.acidTarget ||
+                    "",
+                acidOther:
+                    card.querySelector(
+                        ".condition-acid-other"
+                    )?.value ||
+                    card.dataset.acidOther ||
                     "",
                 bleedPerTurn:
                     Number.isFinite(
@@ -11243,6 +11331,15 @@ function setupConditionCard(
             ".condition-stacks"
         );
 
+    if (
+        definition?.binary &&
+        stacks
+    ) {
+        stacks.closest(
+            ".condition-stack-field"
+        )?.remove();
+    }
+
 
     if (
         definition?.maxStacks &&
@@ -11308,6 +11405,16 @@ function setupConditionCard(
             const bleed =
                 card.querySelector(
                     ".condition-bleed-per-turn"
+                );
+
+            const acidTarget =
+                card.querySelector(
+                    ".condition-acid-target"
+                );
+
+            const acidOther =
+                card.querySelector(
+                    ".condition-acid-other"
                 );
 
 
@@ -11427,6 +11534,32 @@ function setupConditionCard(
 
 
             if (
+                acidTarget
+            ) {
+                card.dataset.acidTarget =
+                    acidTarget.value;
+
+                const otherWrap =
+                    card.querySelector(
+                        ".condition-acid-other-wrap"
+                    );
+
+                if (otherWrap) {
+                    otherWrap.hidden =
+                        acidTarget.value !==
+                        "Other";
+                }
+            }
+
+            if (
+                acidOther
+            ) {
+                card.dataset.acidOther =
+                    acidOther.value;
+            }
+
+
+            if (
                 bleed
             ) {
 
@@ -11479,7 +11612,7 @@ function setupConditionCard(
 
     card
         .querySelectorAll(
-            ".condition-poison-type, .condition-poison-interval, .condition-poison-stacks-per-interval, .condition-bone-type, .condition-bleed-per-turn"
+            ".condition-poison-type, .condition-poison-interval, .condition-poison-stacks-per-interval, .condition-bone-type, .condition-bleed-per-turn, .condition-acid-target, .condition-acid-other"
         )
         .forEach(
             control => {
@@ -11525,32 +11658,29 @@ function addConditionCard(
             conditionId
         );
 
-
     const list =
         document.querySelector(
             "#tab1 .active-condition-list"
         );
 
-
-    if (
-        !definition ||
-        !list
-    ) {
-
+    if (!definition || !list) {
         return;
-
     }
 
-
     const boneType =
-        conditionId ===
-            "broken-bone"
-            ? (
-                options.boneType ||
-                "Rib"
-            )
+        conditionId === "broken-bone"
+            ? (options.boneType || "Rib")
             : "";
 
+    const acidTarget =
+        conditionId === "wounded"
+            ? (options.acidTarget || "Weapon 1")
+            : "";
+
+    const acidOther =
+        conditionId === "wounded"
+            ? (options.acidOther || "")
+            : "";
 
     const existing =
         Array.from(
@@ -11558,172 +11688,140 @@ function addConditionCard(
                 `.condition-card[data-condition-id="${conditionId}"]`
             )
         )
-        .find(
-            card =>
-                conditionId !==
-                    "broken-bone" ||
-                (
-                    card.querySelector(
-                        ".condition-bone-type"
-                    )?.value ||
+        .find(card => {
+            if (conditionId === "broken-bone") {
+                return (
+                    card.querySelector(".condition-bone-type")?.value ||
                     card.dataset.boneType ||
                     "Rib"
-                ) ===
-                    boneType
-        );
+                ) === boneType;
+            }
 
+            if (conditionId === "wounded") {
+                const target =
+                    card.querySelector(".condition-acid-target")?.value ||
+                    card.dataset.acidTarget ||
+                    "Weapon 1";
 
-    if (
-        existing
-    ) {
+                const other =
+                    card.querySelector(".condition-acid-other")?.value ||
+                    card.dataset.acidOther ||
+                    "";
 
+                return (
+                    target === acidTarget &&
+                    (acidTarget !== "Other" || other === acidOther)
+                );
+            }
+
+            return true;
+        });
+
+    if (existing) {
         const input =
             existing.querySelector(
                 ".condition-stacks"
             );
 
-
-        if (
-            input
-        ) {
-
+        if (input && !definition.binary) {
             let next =
                 Math.max(
                     1,
-                    Number(
-                        input.value ||
-                        1
-                    ) +
-                    1
+                    Number(input.value || 1) + 1
                 );
 
-
-            if (
-                definition.maxStacks
-            ) {
-
+            if (definition.maxStacks) {
                 next =
                     Math.min(
                         definition.maxStacks,
                         next
                     );
-
             }
-
 
             input.value =
                 next;
-
         }
 
-
         queueConditionOverlayUpdate();
-
         return;
-
     }
-
 
     list.querySelector(
         ".condition-empty-message"
     )?.remove();
-
 
     const card =
         document.createElement(
             "div"
         );
 
-
     card.className =
         "condition-card";
-
 
     card.dataset.conditionId =
         conditionId;
 
-
-    if (
-        conditionId ===
-        "unconscious"
-    ) {
-
-        card.dataset.poisonType =
-            "Damage";
-
-        card.dataset.poisonInterval =
-            "Round";
-
-        card.dataset.poisonStacksPerInterval =
-            "1";
-
+    if (conditionId === "unconscious") {
+        card.dataset.poisonType = "Damage";
+        card.dataset.poisonInterval = "Round";
+        card.dataset.poisonStacksPerInterval = "1";
     }
 
-
-    if (
-        conditionId ===
-        "broken-bone"
-    ) {
-
-        card.dataset.boneType =
-            boneType;
-
+    if (conditionId === "broken-bone") {
+        card.dataset.boneType = boneType;
     }
 
-
-    if (
-        conditionId ===
-        "bleeding"
-    ) {
-
-        card.dataset.bleedPerTurn =
-            "0";
-
+    if (conditionId === "bleeding") {
+        card.dataset.bleedPerTurn = "0";
     }
 
+    if (conditionId === "wounded") {
+        card.dataset.acidTarget = acidTarget;
+        card.dataset.acidOther = acidOther;
+    }
 
     const maxAttribute =
         definition.maxStacks
-            ? ' max="' +
-                definition.maxStacks +
-                '"'
+            ? ' max="' + definition.maxStacks + '"'
             : "";
 
+    const stackMarkup =
+        definition.binary
+            ? ""
+            : `
+                <label class="condition-stack-field">
+                    Stacks
+                    <input
+                        class="condition-stacks"
+                        type="number"
+                        min="1"
+                        step="1"
+                        ${maxAttribute}
+                        value="${Math.min(
+                            definition.maxStacks || Infinity,
+                            Math.max(1, Number(stacks) || 1)
+                        )}"
+                    >
+                </label>
+            `;
 
     card.innerHTML = `
-
         <span class="condition-card-name">
             ${definition.name}
         </span>
 
-        <label class="condition-stack-field">
-            Stacks
-            <input
-                class="condition-stacks"
-                type="number"
-                min="1"
-                step="1"
-                ${maxAttribute}
-                value="${Math.min(
-                    definition.maxStacks || Infinity,
-                    Math.max(1, Number(stacks) || 1)
-                )}"
-            >
-        </label>
+        ${stackMarkup}
 
         ${getConditionDetailMarkup(
             conditionId,
             {
-                poisonType:
-                    card.dataset.poisonType,
-                poisonInterval:
-                    card.dataset.poisonInterval,
-                poisonStacksPerInterval:
-                    card.dataset.poisonStacksPerInterval,
-                boneType:
-                    card.dataset.boneType,
-                bleedPerTurn:
-                    card.dataset.bleedPerTurn
+                poisonType: card.dataset.poisonType,
+                poisonInterval: card.dataset.poisonInterval,
+                poisonStacksPerInterval: card.dataset.poisonStacksPerInterval,
+                boneType: card.dataset.boneType,
+                bleedPerTurn: card.dataset.bleedPerTurn,
+                acidTarget: card.dataset.acidTarget,
+                acidOther: card.dataset.acidOther
             }
         )}
 
@@ -11734,22 +11832,17 @@ function addConditionCard(
         >
             ×
         </button>
-
     `;
-
 
     list.appendChild(
         card
     );
 
-
     setupConditionCard(
         card
     );
 
-
     queueConditionOverlayUpdate();
-
 }
 
 
@@ -11757,97 +11850,96 @@ function setupConditionManager() {
 
     ensureConditionManager();
 
-
     const picker =
         document.querySelector(
             "#tab1 .condition-picker"
         );
-
 
     const add =
         document.querySelector(
             "#tab1 .add-condition"
         );
 
-
     const addBone =
         document.querySelector(
             "#tab1 .condition-add-bone"
         );
 
+    const addAcid =
+        document.querySelector(
+            "#tab1 .condition-add-acid"
+        );
 
-    if (
-        !picker ||
-        !add
-    ) {
+    const addAcidOther =
+        document.querySelector(
+            "#tab1 .condition-add-acid-other"
+        );
 
+    if (!picker || !add) {
         return;
-
     }
-
 
     const currentValue =
         picker.value;
 
-
     picker.innerHTML =
         '<option value="">Select condition…</option>';
 
-
     RPG_CONDITION_DEFINITIONS
-        .forEach(
-            definition => {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-
-                option.value =
-                    definition.id;
-
-
-                option.textContent =
-                    definition.name;
-
-
-                picker.appendChild(
-                    option
+        .forEach(definition => {
+            const option =
+                document.createElement(
+                    "option"
                 );
 
-            }
-        );
+            option.value =
+                definition.id;
 
+            option.textContent =
+                definition.name;
+
+            picker.appendChild(
+                option
+            );
+        });
 
     picker.value =
         currentValue;
 
-
     const updateAddDetail =
         () => {
-
-            if (
-                addBone
-            ) {
-
+            if (addBone) {
                 addBone.hidden =
                     picker.value !==
                     "broken-bone";
-
             }
 
-        };
+            if (addAcid) {
+                addAcid.hidden =
+                    picker.value !==
+                    "wounded";
+            }
 
+            if (addAcidOther) {
+                addAcidOther.hidden =
+                    picker.value !==
+                        "wounded" ||
+                    addAcid?.value !==
+                        "Other";
+            }
+        };
 
     picker.addEventListener(
         "change",
         updateAddDetail
     );
 
+    addAcid?.addEventListener(
+        "change",
+        updateAddDetail
+    );
 
     updateAddDetail();
-
 
     document
         .querySelectorAll(
@@ -11857,19 +11949,12 @@ function setupConditionManager() {
             setupConditionCard
         );
 
-
     add.addEventListener(
         "click",
         () => {
-
-            if (
-                !picker.value
-            ) {
-
+            if (!picker.value) {
                 return;
-
             }
-
 
             addConditionCard(
                 picker.value,
@@ -11877,23 +11962,29 @@ function setupConditionManager() {
                 {
                     boneType:
                         addBone?.value ||
-                        "Rib"
+                        "Rib",
+                    acidTarget:
+                        addAcid?.value ||
+                        "Weapon 1",
+                    acidOther:
+                        addAcidOther?.value.trim() ||
+                        ""
                 }
             );
-
 
             picker.value =
                 "";
 
+            if (addAcidOther) {
+                addAcidOther.value =
+                    "";
+            }
 
             updateAddDetail();
-
         }
     );
 
-
     renderConditionEmptyState();
-
 }
 
 
