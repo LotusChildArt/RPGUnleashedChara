@@ -16587,6 +16587,10 @@ saveSheetButton.addEventListener(
 );
 
 
+window.RPGSaveCurrentCharacter =
+    saveCharacterSheet;
+
+
 saveOptionsButton.addEventListener(
     "click",
     editSaveOptions
@@ -17320,7 +17324,16 @@ async function createGuidedCharacter() {
             );
         }
 
-        await saveCharacterSheet();
+        if (
+            typeof window.RPGSaveCurrentCharacter !==
+            "function"
+        ) {
+            throw new Error(
+                "Character save bridge is unavailable."
+            );
+        }
+
+        await window.RPGSaveCurrentCharacter();
 
         document
             .querySelector(
