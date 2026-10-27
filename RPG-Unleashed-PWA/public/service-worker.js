@@ -1,40 +1,23 @@
-const CACHE_NAME = "rpg-unleashed-v68";
+const CACHE_NAME = "rpg-unleashed-v69";
 
 const APP_SHELL = [
-    "./",
-    "./index.html",
-    "./manifest.json",
-    "./icons/icon-192.png",
-    "./icons/icon-512.png",
-    "./icons/apple-touch-icon.png",
-    "./owlbear-conditions.html",
-    "./owlbear-background.html",
-    "./assets/tokenhud/dr-icon.png",
-    "./assets/tokenhud/nl-icon.png",
-    "./assets/conditions/fear.png",
-    "./assets/conditions/wounded.png",
-    "./assets/conditions/arrowed.png",
-    "./assets/conditions/bleeding.png",
-    "./assets/conditions/broken-bone.png",
-    "./assets/conditions/burning.png",
-    "./assets/conditions/charmed.png",
-    "./assets/conditions/poisoned.png",
-    "./assets/conditions/drunk.png",
-    "./assets/conditions/confused.png",
-    "./assets/conditions/frozen.png",
-    "./assets/conditions/unconscious.png",
-    "./assets/conditions/taunted.png",
-    "./assets/conditions/taunt.png",
-    "./assets/conditions/shocked.png",
-    "./assets/conditions/stunned.png",
-    "./owlbear/manifest.json",
-    "./owlbear/INSTALL.txt"
+    "/",
+    "/index.html",
+    "/manifest.json",
+    "/icons/icon-192.png",
+    "/icons/icon-512.png"
 ];
 
 self.addEventListener("install", event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(APP_SHELL))
+            .then(async cache => {
+                // Do not let one missing optional asset make the whole PWA
+                // non-installable. Cache the guaranteed core one at a time.
+                await Promise.allSettled(
+                    APP_SHELL.map(url => cache.add(url))
+                );
+            })
             .then(() => self.skipWaiting())
     );
 });
