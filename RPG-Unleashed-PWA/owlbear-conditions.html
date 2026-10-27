@@ -154,7 +154,10 @@ body {
     gap: 7px;
     margin-bottom: 9px;
 }
-.add-row .add-bone-picker[hidden] {
+.add-row .add-bone-picker[hidden],
+.add-row .add-acid-picker[hidden],
+.add-row .add-acid-other[hidden],
+.condition-detail-editor [hidden] {
     display: none;
 }
 .add-row .add-bone-picker {
@@ -181,6 +184,9 @@ select { min-height: 36px; padding: 6px 8px; }
     gap: 4px;
 }
 .condition-name { font-weight: bold; }
+.condition-top.binary {
+    grid-template-columns: minmax(0, 1fr) 34px 30px;
+}
 .stack-value { text-align: center; font-weight: bold; }
 .condition-help {
     display: none;
@@ -333,6 +339,15 @@ select { min-height: 36px; padding: 6px 8px; }
                     <option value="Skull">Skull</option>
                     <option value="Neck">Neck</option>
                 </select>
+                <select id="add-acid-picker" class="add-acid-picker" hidden aria-label="Acid target">
+                    <option value="Weapon 1">Weapon 1</option>
+                    <option value="Weapon 2">Weapon 2</option>
+                    <option value="Weapon 3">Weapon 3</option>
+                    <option value="Armor">Armor</option>
+                    <option value="Inventory">Inventory</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input id="add-acid-other" class="add-acid-other" type="text" placeholder="Specify item" hidden>
                 <button id="add-condition-button" type="button">+ Condition</button>
             </div>
 
@@ -504,6 +519,8 @@ const characterContextLabel = document.getElementById("character-context");
 const conditionPicker = document.getElementById("condition-picker");
 const addConditionButton = document.getElementById("add-condition-button");
 const addBonePicker = document.getElementById("add-bone-picker");
+const addAcidPicker = document.getElementById("add-acid-picker");
+const addAcidOther = document.getElementById("add-acid-other");
 const conditionList = document.getElementById("condition-list");
 
 const statInputs = {
@@ -557,6 +574,11 @@ const BONE_BREAK_EFFECTS = {
 function conditionIdentity(condition) {
     if (condition?.id === "broken-bone") {
         return "broken-bone:" + (condition.boneType || "Rib");
+    }
+
+    if (condition?.id === "wounded") {
+        const target = condition.acidTarget || "Weapon 1";
+        return "wounded:" + target + ":" + (target === "Other" ? (condition.acidOther || "") : "");
     }
 
     return condition?.id || "";
@@ -747,6 +769,16 @@ function getConditionDetailValues(card, conditionId) {
     const bleedPerTurn =
         Number(bleedRaw);
 
+    const acidTarget =
+        card?.querySelector(".condition-acid-target")?.value ||
+        card?.dataset?.acidTarget ||
+        "";
+
+    const acidOther =
+        card?.querySelector(".condition-acid-other")?.value ||
+        card?.dataset?.acidOther ||
+        "";
+
     return {
         poisonType:
             conditionId === "unconscious"
@@ -769,7 +801,15 @@ function getConditionDetailValues(card, conditionId) {
             conditionId === "bleeding" &&
             Number.isFinite(bleedPerTurn)
                 ? Math.max(0, Math.floor(bleedPerTurn))
-                : 0
+                : 0,
+        acidTarget:
+            conditionId === "wounded"
+                ? (acidTarget || "Weapon 1")
+                : "",
+        acidOther:
+            conditionId === "wounded"
+                ? acidOther
+                : ""
     };
 }
 
@@ -811,6 +851,27 @@ function conditionDetailHtml(condition) {
                     step="1"
                     value="${stacksPerInterval}"
                 >
+            </label>
+        `;
+    }
+
+    if (condition.id === "wounded") {
+        const value = condition.acidTarget || "Weapon 1";
+        const other = condition.acidOther || "";
+        return `
+            <label class="condition-detail-field">
+                Target
+                <select class="condition-acid-target">
+                    ${["Weapon 1", "Weapon 2", "Weapon 3", "Armor", "Inventory", "Other"].map(option =>
+                        '<option value="' + option + '"' +
+                        (option === value ? " selected" : "") +
+                        ">" + option + "</option>"
+                    ).join("")}
+                </select>
+            </label>
+            <label class="condition-detail-field condition-acid-other-wrap"${value === "Other" ? "" : " hidden"}>
+                Item
+                <input class="condition-acid-other" type="text" value="${String(other).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}">
             </label>
         `;
     }
@@ -889,6 +950,27 @@ function renderConditionDetailEditor(condition, conditionKey) {
                         step="1"
                         value="${stacksPerInterval}"
                     >
+                </label>
+            </div>
+        `;
+    }
+
+    if (condition.id === "wounded") {
+        const value = condition.acidTarget || "Weapon 1";
+        const other = condition.acidOther || "";
+        return `
+            <div class="condition-detail-editor">
+                <label>Target
+                    <select class="condition-acid-target" data-condition-key="${conditionKey}">
+                        ${["Weapon 1", "Weapon 2", "Weapon 3", "Armor", "Inventory", "Other"].map(option =>
+                            '<option value="' + option + '"' +
+                            (option === value ? " selected" : "") +
+                            ">" + option + "</option>"
+                        ).join("")}
+                    </select>
+                </label>
+                <label class="condition-acid-other-wrap"${value === "Other" ? "" : " hidden"}>Item
+                    <input class="condition-acid-other" data-condition-key="${conditionKey}" type="text" value="${String(other).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}">
                 </label>
             </div>
         `;
@@ -1014,6 +1096,11 @@ function writeConditionsToRecord(record, conditions) {
             card.dataset.boneType = condition.boneType;
         }
 
+        if (condition.id === "wounded") {
+            card.dataset.acidTarget = condition.acidTarget || "Weapon 1";
+            card.dataset.acidOther = condition.acidOther || "";
+        }
+
         if (condition.id === "bleeding") {
             card.dataset.bleedPerTurn =
                 String(Math.max(0, Number(condition.bleedPerTurn) || 0));
@@ -1029,6 +1116,7 @@ function writeConditionsToRecord(record, conditions) {
                 ${definition?.name || condition.id}
             </span>
 
+            ${definition?.binary ? "" : `
             <label class="condition-stack-field">
                 Stacks
                 <input
@@ -1040,6 +1128,7 @@ function writeConditionsToRecord(record, conditions) {
                     value="${Math.max(1, Number(condition.stacks) || 1)}"
                 >
             </label>
+            `}
 
             ${conditionDetailHtml(condition)}
 
@@ -1111,14 +1200,29 @@ function renderConditionPicker() {
 }
 
 function updateConditionAddOptions() {
-    if (!addBonePicker) return;
+    if (addBonePicker) {
+        addBonePicker.hidden =
+            conditionPicker.value !== "broken-bone";
+    }
 
-    addBonePicker.hidden =
-        conditionPicker.value !==
-        "broken-bone";
+    if (addAcidPicker) {
+        addAcidPicker.hidden =
+            conditionPicker.value !== "wounded";
+    }
+
+    if (addAcidOther) {
+        addAcidOther.hidden =
+            conditionPicker.value !== "wounded" ||
+            addAcidPicker?.value !== "Other";
+    }
 }
 
 conditionPicker.addEventListener(
+    "change",
+    updateConditionAddOptions
+);
+
+addAcidPicker?.addEventListener(
     "change",
     updateConditionAddOptions
 );
@@ -1151,45 +1255,26 @@ function renderConditions() {
             "-" +
             index;
 
+        const controls = definition?.binary
+            ? `
+                <button class="icon-button minus-condition" type="button" data-condition-key="${conditionKey}" title="Remove condition">×</button>
+                <button class="icon-button info-condition" type="button" data-help-id="${helpId}" title="What does this do?">?</button>
+            `
+            : `
+                <button class="icon-button minus-condition" type="button" data-condition-key="${conditionKey}" title="Reduce stacks">−</button>
+                <span class="stack-value">${condition.stacks}</span>
+                <button class="icon-button plus-condition" type="button" data-condition-key="${conditionKey}" title="Add stacks" ${definition?.maxStacks && condition.stacks >= definition.maxStacks ? "disabled" : ""}>+</button>
+                <button class="icon-button info-condition" type="button" data-help-id="${helpId}" title="What does this do?">?</button>
+            `;
+
         row.className = "condition-row";
         row.dataset.conditionKey = conditionKey;
         row.innerHTML = `
-            <div class="condition-top">
+            <div class="condition-top${definition?.binary ? " binary" : ""}">
                 <span class="condition-name">
                     ${definition?.name || condition.id}
                 </span>
-
-                <button
-                    class="icon-button minus-condition"
-                    type="button"
-                    data-condition-key="${conditionKey}"
-                    title="Reduce stacks"
-                >
-                    −
-                </button>
-
-                <span class="stack-value">
-                    ${condition.stacks}
-                </span>
-
-                <button
-                    class="icon-button plus-condition"
-                    type="button"
-                    data-condition-key="${conditionKey}"
-                    title="Add stacks"
-                    ${definition?.maxStacks && condition.stacks >= definition.maxStacks ? "disabled" : ""}
-                >
-                    +
-                </button>
-
-                <button
-                    class="icon-button info-condition"
-                    type="button"
-                    data-help-id="${helpId}"
-                    title="What does this do?"
-                >
-                    ?
-                </button>
+                ${controls}
             </div>
 
             ${renderConditionDetailEditor(condition, conditionKey)}
@@ -1223,7 +1308,7 @@ function renderConditions() {
     });
 
     conditionList.querySelectorAll(
-        ".condition-poison-type, .condition-poison-interval, .condition-poison-stacks-per-interval, .condition-bone-type, .condition-bleed-per-turn"
+        ".condition-poison-type, .condition-poison-interval, .condition-poison-stacks-per-interval, .condition-bone-type, .condition-bleed-per-turn, .condition-acid-target, .condition-acid-other"
     ).forEach(control => {
         control.addEventListener("change", async () => {
             await updateConditionDetail(
@@ -1394,6 +1479,20 @@ async function updateConditionDetail(conditionKey, control) {
                 };
             }
 
+            if (control.classList.contains("condition-acid-target")) {
+                return {
+                    ...condition,
+                    acidTarget: control.value
+                };
+            }
+
+            if (control.classList.contains("condition-acid-other")) {
+                return {
+                    ...condition,
+                    acidOther: control.value
+                };
+            }
+
             if (control.classList.contains("condition-bone-type")) {
                 return {
                     ...condition,
@@ -1455,10 +1554,17 @@ addConditionButton.addEventListener("click", async () => {
 
     const selectedBone =
         selectedId === "broken-bone"
-            ? (
-                addBonePicker?.value ||
-                "Rib"
-            )
+            ? (addBonePicker?.value || "Rib")
+            : "";
+
+    const selectedAcid =
+        selectedId === "wounded"
+            ? (addAcidPicker?.value || "Weapon 1")
+            : "";
+
+    const selectedAcidOther =
+        selectedId === "wounded"
+            ? (addAcidOther?.value.trim() || "")
             : "";
 
     let current =
@@ -1469,6 +1575,33 @@ addConditionButton.addEventListener("click", async () => {
         );
 
     if (
+        selectedId ===
+        "wounded"
+    ) {
+        const existing =
+            current.find(condition =>
+                condition.id === "wounded" &&
+                (condition.acidTarget || "Weapon 1") === selectedAcid &&
+                (selectedAcid !== "Other" || (condition.acidOther || "") === selectedAcidOther)
+            );
+
+        if (existing) {
+            current = current.map(condition =>
+                condition === existing
+                    ? { ...condition, stacks: condition.stacks + 1 }
+                    : condition
+            );
+        } else {
+            current.push({
+                id: "wounded",
+                stacks: 1,
+                acidTarget: selectedAcid,
+                acidOther: selectedAcidOther
+            });
+        }
+    }
+
+    else     if (
         selectedId ===
         "broken-bone"
     ) {
@@ -1607,6 +1740,7 @@ addConditionButton.addEventListener("click", async () => {
     }
 
     conditionPicker.value = "";
+    if (addAcidOther) addAcidOther.value = "";
     updateConditionAddOptions();
 
     await persistRecord(
