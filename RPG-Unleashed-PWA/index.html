@@ -4522,6 +4522,11 @@ if (
                         <input type="text" data-creator-field="name" placeholder="Character Name">
                     </div>
 
+                    <div class="creator-field full">
+                        <span>Player Name</span>
+                        <input type="text" data-creator-field="playerName" placeholder="Player Name">
+                    </div>
+
                     <div class="creator-field">
                         <span>Starting Level</span>
                         <div class="creator-fixed-value">Level 1</div>
@@ -4703,6 +4708,7 @@ if (
                     <h3>Basics</h3>
                     <div class="creator-review-grid">
                         <div class="creator-review-item"><span>Name</span><strong id="creator-review-name">—</strong></div>
+                        <div class="creator-review-item"><span>Player</span><strong id="creator-review-player-name">—</strong></div>
                         <div class="creator-review-item"><span>Race</span><strong id="creator-review-race">—</strong></div>
                         <div class="creator-review-item"><span>Gender</span><strong id="creator-review-gender">—</strong></div>
                         <div class="creator-review-item"><span>Age</span><strong id="creator-review-age">—</strong></div>
@@ -17503,6 +17509,7 @@ let creatorDraft = null;
 function makeFreshCreatorDraft() {
     return {
         name: "",
+        playerName: "",
         race: "",
         raceChoice: "",
         gender: "",
@@ -17751,6 +17758,54 @@ function creatorHeightBand() {
             height >= row[0] &&
             height <= row[1]
     ) || null;
+}
+
+function creatorAverageWeightForHeight() {
+    const band =
+        creatorHeightBand();
+
+    if (
+        !band
+    ) {
+        return null;
+    }
+
+    return Math.round(
+        (
+            Number(
+                band[2]
+            ) +
+            Number(
+                band[3]
+            )
+        ) /
+        2
+    );
+}
+
+function setCreatorWeightToHeightAverage() {
+    const average =
+        creatorAverageWeightForHeight();
+
+    creatorDraft.weight =
+        average ===
+            null
+            ? ""
+            : String(
+                average
+            );
+
+    const weightInput =
+        document.querySelector(
+            '[data-creator-field="weight"]'
+        );
+
+    if (
+        weightInput
+    ) {
+        weightInput.value =
+            creatorDraft.weight;
+    }
 }
 
 function creatorInchesText(
@@ -18522,6 +18577,8 @@ function renderCreatorDetailGuidance() {
               band[2] +
               "–" +
               band[3] +
+              " lbs. Default average: " +
+              creatorAverageWeightForHeight() +
               " lbs."
             : (
                 bounds
@@ -18727,6 +18784,13 @@ function renderCreatorReview() {
         "creator-review-name",
         display(
             creatorDraft?.name
+        )
+    );
+
+    setCreatorText(
+        "creator-review-player-name",
+        display(
+            creatorDraft?.playerName
         )
     );
 
@@ -19165,6 +19229,13 @@ async function createGuidedCharacter() {
     try {
         startNewCharacter();
 
+        setInputValueAndNotify(
+            document.querySelector(
+                "#tab1 .player-row input"
+            ),
+            creatorDraft.playerName
+        );
+
         const headerInputs =
             document.querySelectorAll(
                 "#tab1 .character-header input"
@@ -19500,10 +19571,11 @@ document
                 creatorDraft.scleraColor = "";
                 creatorDraft.scleraOther = "";
 
-                initializeCreatorHeightForRace();
-
                 creatorDraft.weight =
                     "";
+
+                initializeCreatorHeightForRace();
+                setCreatorWeightToHeightAverage();
             }
 
             renderCharacterCreator();
@@ -19564,6 +19636,8 @@ document
                             button.dataset.creatorHeightAdjust
                         )
                     );
+
+                    setCreatorWeightToHeightAverage();
 
                     renderCharacterCreator();
                 }
