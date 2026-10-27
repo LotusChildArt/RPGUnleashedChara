@@ -16225,6 +16225,60 @@ queueOwlbearTokenHudUpdate();
 
 
 /* =========================================
+   HANDBOOK NAVIGATION
+   ========================================= */
+
+let handbookOpenedFromCharacter = false;
+let handbookReturnTab = "tab1";
+
+function openHandbook(fromCharacter = false) {
+    handbookOpenedFromCharacter = fromCharacter;
+
+    if (fromCharacter) {
+        handbookReturnTab =
+            document.querySelector("#character-app .tab-button.active")?.dataset?.tab ||
+            "tab1";
+    }
+
+    const saveButton = document.getElementById("handbook-save-character");
+    if (saveButton) saveButton.hidden = !fromCharacter;
+
+    showAppScreen("handbook-screen");
+}
+
+function returnFromHandbook() {
+    if (handbookOpenedFromCharacter) {
+        document.querySelectorAll(".app-screen").forEach(
+            screen => screen.classList.remove("active")
+        );
+
+        document.getElementById("character-app").classList.add("active");
+        document.querySelector(`.tab-button[data-tab="${handbookReturnTab}"]`)?.click();
+        return;
+    }
+
+    showAppScreen("main-menu-screen");
+}
+
+document.getElementById("open-handbook").addEventListener(
+    "click",
+    () => openHandbook(false)
+);
+
+document.getElementById("handbook-back").addEventListener(
+    "click",
+    returnFromHandbook
+);
+
+document.getElementById("handbook-save-character").addEventListener(
+    "click",
+    () => {
+        document.getElementById("save-sheet")?.click();
+    }
+);
+
+
+/* =========================================
    MAIN MENU EVENTS
    ========================================= */
 
@@ -16479,6 +16533,16 @@ document
             );
 
         }
+    );
+
+
+document
+    .getElementById(
+        "sheet-handbook"
+    )
+    .addEventListener(
+        "click",
+        () => openHandbook(true)
     );
 
 
