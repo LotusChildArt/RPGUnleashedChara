@@ -4111,6 +4111,23 @@ if (
 
             </div>
 
+
+            <div class="app-option-row">
+
+                <button
+                    class="option-button"
+                    id="app-handbook"
+                    type="button"
+                >
+                    RPG Unleashed Handbook
+                </button>
+
+                <div class="app-option-description">
+                    Open the RPG Unleashed Handbook.
+                </div>
+
+            </div>
+
         </div>
 
     </div>
@@ -4127,7 +4144,7 @@ if (
         <div class="handbook-heading-row">
             <h1>RPG Unleashed Handbook</h1>
             <div class="handbook-actions">
-                <button class="handbook-button" id="handbook-save-character" type="button" hidden>Save Character</button>
+                <button class="handbook-button" id="handbook-save-character" type="button" hidden>Save Character Sheet</button>
                 <button class="handbook-button" id="handbook-back" type="button">Back</button>
             </div>
         </div>
@@ -16321,9 +16338,14 @@ queueOwlbearTokenHudUpdate();
 
 let handbookOpenedFromCharacter = false;
 let handbookReturnTab = "tab1";
+let handbookReturnScreen = "main-menu-screen";
 
-function openHandbook(fromCharacter = false) {
+function openHandbook(
+    fromCharacter = false,
+    returnScreen = "main-menu-screen"
+) {
     handbookOpenedFromCharacter = fromCharacter;
+    handbookReturnScreen = returnScreen;
 
     if (fromCharacter) {
         handbookReturnTab =
@@ -16348,12 +16370,12 @@ function returnFromHandbook() {
         return;
     }
 
-    showAppScreen("main-menu-screen");
+    showAppScreen(handbookReturnScreen || "main-menu-screen");
 }
 
 document.getElementById("open-handbook").addEventListener(
     "click",
-    () => openHandbook(false)
+    () => openHandbook(false, "main-menu-screen")
 );
 
 document.getElementById("handbook-back").addEventListener(
@@ -16592,6 +16614,19 @@ document
             );
 
         }
+    );
+
+
+document
+    .getElementById(
+        "app-handbook"
+    )
+    .addEventListener(
+        "click",
+        () => openHandbook(
+            false,
+            "app-options-screen"
+        )
     );
 
 
