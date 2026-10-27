@@ -3817,7 +3817,7 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
 
 .character-creator-shell {
     width: 100%;
-    max-width: 900px;
+    max-width: 940px;
     margin: 0 auto;
 }
 
@@ -3835,7 +3835,9 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
 
 .character-creator-exit,
 .character-creator-nav button,
-.creator-adjust-button {
+.creator-adjust-button,
+.creator-race-card,
+.creator-race-choice {
     border: 2px solid black;
     background: white;
     cursor: pointer;
@@ -3850,7 +3852,7 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
 
 .character-creator-progress {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 6px;
     margin-bottom: 16px;
 }
@@ -3948,6 +3950,115 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
     font-weight: bold;
 }
 
+.creator-race-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.creator-race-card {
+    min-height: 48px;
+    border-radius: 18px;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+.creator-race-card.selected {
+    background: #111;
+    color: white;
+}
+
+.creator-race-summary {
+    margin-top: 16px;
+    border: 2px solid black;
+    border-radius: 20px;
+    padding: 14px;
+}
+
+.creator-race-summary[hidden] {
+    display: none;
+}
+
+.creator-race-summary h3 {
+    margin: 0 0 8px;
+}
+
+.creator-race-summary p {
+    margin: 6px 0;
+    line-height: 1.4;
+}
+
+.creator-race-choice-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 12px;
+}
+
+.creator-race-choice {
+    min-height: 38px;
+    border-radius: 19px;
+    padding: 6px 12px;
+}
+
+.creator-race-choice.selected {
+    background: #111;
+    color: white;
+}
+
+.creator-guidance {
+    border: 1.5px solid #999;
+    border-radius: 16px;
+    padding: 9px 11px;
+    margin-top: 4px;
+    color: #555;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.creator-height-control {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    min-height: 42px;
+}
+
+.creator-height-unit {
+    min-width: 58px;
+    min-height: 42px;
+    border: 2px solid black;
+    border-radius: 21px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    background: white;
+}
+
+.creator-weight-control {
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+    border: 2px solid black;
+    border-radius: 21px;
+    overflow: hidden;
+    background: white;
+}
+
+.creator-weight-control input {
+    min-width: 0;
+    border: 0;
+    border-radius: 0;
+    min-height: 38px;
+}
+
+.creator-weight-control span {
+    padding: 0 12px 0 4px;
+    font-weight: bold;
+    color: #555;
+}
+
 .creator-points-banner {
     display: flex;
     align-items: center;
@@ -4010,6 +4121,13 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
 .creator-quarter-preview {
     color: #555;
     font-size: 13px;
+}
+
+.creator-racial-baseline {
+    display: block;
+    margin-top: 2px;
+    color: #777;
+    font-size: 11px;
 }
 
 .creator-derived-grid,
@@ -4087,8 +4205,11 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
 
 .character-creator-nav button:hover:not(:disabled),
 .character-creator-exit:hover,
-.creator-adjust-button:hover:not(:disabled) {
+.creator-adjust-button:hover:not(:disabled),
+.creator-race-card:hover,
+.creator-race-choice:hover {
     background: #eee;
+    color: #111;
 }
 
 .character-creator-nav button:disabled {
@@ -4096,7 +4217,7 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
     cursor: default;
 }
 
-@media (max-width: 650px) {
+@media (max-width: 720px) {
     .character-creator-heading {
         align-items: flex-start;
         flex-direction: column;
@@ -4104,6 +4225,10 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
 
     .character-creator-progress {
         grid-template-columns: 1fr;
+    }
+
+    .creator-race-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .creator-grid,
@@ -4119,6 +4244,12 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
 
     .character-creator-nav {
         flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 430px) {
+    .creator-race-grid {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -4299,8 +4430,10 @@ if (
 
         <div class="character-creator-progress">
             <div class="creator-progress-step active" data-creator-progress="0">1. Basics</div>
-            <div class="creator-progress-step" data-creator-progress="1">2. Attributes</div>
-            <div class="creator-progress-step" data-creator-progress="2">3. Review</div>
+            <div class="creator-progress-step" data-creator-progress="1">2. Race</div>
+            <div class="creator-progress-step" data-creator-progress="2">3. Details</div>
+            <div class="creator-progress-step" data-creator-progress="3">4. Attributes</div>
+            <div class="creator-progress-step" data-creator-progress="4">5. Review</div>
         </div>
 
         <div class="character-creator-card">
@@ -4308,7 +4441,7 @@ if (
             <section class="creator-step active" data-creator-step="0">
                 <h2>Character Basics</h2>
                 <p class="creator-step-note">
-                    This first creator pass builds a Level 1 character. Race, Path, feats, traits, languages, and equipment will be added to later guided steps; after creation, the normal sheet remains fully editable.
+                    This creator currently builds Level 1 characters. The remaining guided Path, feat, trait, language, and equipment steps will be added after the core character foundation.
                 </p>
 
                 <div class="creator-grid">
@@ -4318,6 +4451,40 @@ if (
                     </div>
 
                     <div class="creator-field">
+                        <span>Starting Level</span>
+                        <div class="creator-fixed-value">Level 1</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="creator-step" data-creator-step="1">
+                <h2>Race</h2>
+                <p class="creator-step-note">
+                    Choose a base race from Races and Templates One v1. Racial variants and mixed-race creation will be added separately.
+                </p>
+
+                <div class="creator-race-grid" id="creator-race-grid"></div>
+
+                <div class="creator-race-summary" id="creator-race-summary" hidden>
+                    <h3 id="creator-race-name">Race</h3>
+                    <p id="creator-race-bonus"></p>
+                    <p><strong>Age Phases:</strong> <span id="creator-race-age"></span></p>
+                    <p><strong>Height:</strong> <span id="creator-race-height"></span></p>
+                    <div id="creator-race-choice-wrap" hidden>
+                        <p><strong>Choose racial attribute adjustment:</strong></p>
+                        <div class="creator-race-choice-panel" id="creator-race-choice-panel"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="creator-step" data-creator-step="2">
+                <h2>Character Details</h2>
+                <p class="creator-step-note">
+                    These details come after Race because the race selected can affect age, body size, appearance, and other physical characteristics.
+                </p>
+
+                <div class="creator-grid">
+                    <div class="creator-field">
                         <span>Gender</span>
                         <input type="text" data-creator-field="gender" placeholder="Gender">
                     </div>
@@ -4325,16 +4492,30 @@ if (
                     <div class="creator-field">
                         <span>Age</span>
                         <input type="number" min="0" data-creator-field="age" placeholder="Age">
+                        <div class="creator-guidance" id="creator-age-guidance"></div>
                     </div>
 
-                    <div class="creator-field">
+                    <div class="creator-field full">
                         <span>Height</span>
-                        <input type="text" data-creator-field="height" placeholder="Height">
+                        <div class="creator-height-control">
+                            <button class="creator-adjust-button" type="button" data-creator-height-adjust="-12">−</button>
+                            <div class="creator-height-unit"><span id="creator-height-feet">5</span>'</div>
+                            <button class="creator-adjust-button" type="button" data-creator-height-adjust="12">+</button>
+
+                            <button class="creator-adjust-button" type="button" data-creator-height-adjust="-1">−</button>
+                            <div class="creator-height-unit"><span id="creator-height-inches">0</span>"</div>
+                            <button class="creator-adjust-button" type="button" data-creator-height-adjust="1">+</button>
+                        </div>
+                        <div class="creator-guidance" id="creator-height-guidance"></div>
                     </div>
 
                     <div class="creator-field">
                         <span>Weight</span>
-                        <input type="text" data-creator-field="weight" placeholder="Weight">
+                        <div class="creator-weight-control">
+                            <input type="number" min="1" step="1" data-creator-field="weight" placeholder="Weight">
+                            <span>lbs</span>
+                        </div>
+                        <div class="creator-guidance" id="creator-weight-guidance"></div>
                     </div>
 
                     <div class="creator-field">
@@ -4346,18 +4527,13 @@ if (
                         <span>Eyes</span>
                         <input type="text" data-creator-field="eyes" placeholder="Eyes">
                     </div>
-
-                    <div class="creator-field">
-                        <span>Starting Level</span>
-                        <div class="creator-fixed-value">Level 1</div>
-                    </div>
                 </div>
             </section>
 
-            <section class="creator-step" data-creator-step="1">
+            <section class="creator-step" data-creator-step="3">
                 <h2>Attributes</h2>
                 <p class="creator-step-note">
-                    RPG Unleashed b4.1 starts BOD, DEX, MND, and CHA at 6. Spend all 6 starting Attribute Points before continuing.
+                    RPG Unleashed b4.1 begins from BOD 6, DEX 6, MND 6, and CHA 6. Your race adjusts that baseline, then you spend all 6 starting Attribute Points.
                 </p>
 
                 <div class="creator-points-banner">
@@ -4371,7 +4547,10 @@ if (
                         <button class="creator-adjust-button" type="button" data-creator-stat="bod" data-creator-adjust="-1">−</button>
                         <div class="creator-stat-value" data-creator-stat-value="bod">6</div>
                         <button class="creator-adjust-button" type="button" data-creator-stat="bod" data-creator-adjust="1">+</button>
-                        <div class="creator-quarter-preview" data-creator-quarter="bod">¼ BOD: 2</div>
+                        <div class="creator-quarter-preview">
+                            <span data-creator-quarter="bod">¼ BOD: 2</span>
+                            <span class="creator-racial-baseline" data-creator-baseline="bod"></span>
+                        </div>
                     </div>
 
                     <div class="creator-attribute-row" data-creator-stat-row="dex">
@@ -4379,7 +4558,10 @@ if (
                         <button class="creator-adjust-button" type="button" data-creator-stat="dex" data-creator-adjust="-1">−</button>
                         <div class="creator-stat-value" data-creator-stat-value="dex">6</div>
                         <button class="creator-adjust-button" type="button" data-creator-stat="dex" data-creator-adjust="1">+</button>
-                        <div class="creator-quarter-preview" data-creator-quarter="dex">¼ DEX: 2</div>
+                        <div class="creator-quarter-preview">
+                            <span data-creator-quarter="dex">¼ DEX: 2</span>
+                            <span class="creator-racial-baseline" data-creator-baseline="dex"></span>
+                        </div>
                     </div>
 
                     <div class="creator-attribute-row" data-creator-stat-row="mnd">
@@ -4387,7 +4569,10 @@ if (
                         <button class="creator-adjust-button" type="button" data-creator-stat="mnd" data-creator-adjust="-1">−</button>
                         <div class="creator-stat-value" data-creator-stat-value="mnd">6</div>
                         <button class="creator-adjust-button" type="button" data-creator-stat="mnd" data-creator-adjust="1">+</button>
-                        <div class="creator-quarter-preview" data-creator-quarter="mnd">¼ MND: 2</div>
+                        <div class="creator-quarter-preview">
+                            <span data-creator-quarter="mnd">¼ MND: 2</span>
+                            <span class="creator-racial-baseline" data-creator-baseline="mnd"></span>
+                        </div>
                     </div>
 
                     <div class="creator-attribute-row" data-creator-stat-row="cha">
@@ -4395,7 +4580,10 @@ if (
                         <button class="creator-adjust-button" type="button" data-creator-stat="cha" data-creator-adjust="-1">−</button>
                         <div class="creator-stat-value" data-creator-stat-value="cha">6</div>
                         <button class="creator-adjust-button" type="button" data-creator-stat="cha" data-creator-adjust="1">+</button>
-                        <div class="creator-quarter-preview" data-creator-quarter="cha">¼ CHA: 2</div>
+                        <div class="creator-quarter-preview">
+                            <span data-creator-quarter="cha">¼ CHA: 2</span>
+                            <span class="creator-racial-baseline" data-creator-baseline="cha"></span>
+                        </div>
                     </div>
                 </div>
 
@@ -4408,20 +4596,23 @@ if (
                 </div>
             </section>
 
-            <section class="creator-step" data-creator-step="2">
+            <section class="creator-step" data-creator-step="4">
                 <h2>Review Character</h2>
                 <p class="creator-step-note">
-                    Review the foundation of the character before creating the normal sheet.
+                    Review the current foundation before creating the normal character sheet.
                 </p>
 
                 <div class="creator-review-section">
                     <h3>Basics</h3>
                     <div class="creator-review-grid">
                         <div class="creator-review-item"><span>Name</span><strong id="creator-review-name">—</strong></div>
+                        <div class="creator-review-item"><span>Race</span><strong id="creator-review-race">—</strong></div>
                         <div class="creator-review-item"><span>Gender</span><strong id="creator-review-gender">—</strong></div>
                         <div class="creator-review-item"><span>Age</span><strong id="creator-review-age">—</strong></div>
                         <div class="creator-review-item"><span>Height</span><strong id="creator-review-height">—</strong></div>
                         <div class="creator-review-item"><span>Weight</span><strong id="creator-review-weight">—</strong></div>
+                        <div class="creator-review-item"><span>Hair</span><strong id="creator-review-hair">—</strong></div>
+                        <div class="creator-review-item"><span>Eyes</span><strong id="creator-review-eyes">—</strong></div>
                         <div class="creator-review-item"><span>Level</span><strong>1</strong></div>
                     </div>
                 </div>
@@ -4439,7 +4630,7 @@ if (
                 </div>
 
                 <div class="creator-review-warning">
-                    After creation, the normal character sheet opens with these values already filled in. Race, Path, feats, traits, languages, equipment, and any campaign-specific exceptions can currently be completed there while those guided steps are being built.
+                    Base racial attribute, HP, and natural DR adjustments are applied here. Cultural Traits, racial variants, mixed-race rules, Path, feats, languages, and equipment will be added to later guided steps.
                 </div>
             </section>
 
@@ -16853,7 +17044,219 @@ queueOwlbearTokenHudUpdate();
 
 const CREATOR_BASE_ATTRIBUTE = 6;
 const CREATOR_ATTRIBUTE_POINTS = 6;
-const CREATOR_STEP_COUNT = 3;
+const CREATOR_STEP_COUNT = 5;
+
+const RPG_CREATOR_RACES = [
+    {
+        name: "Human",
+        bonus: "+1 Feat at starting level; +1 Language.",
+        fixed: {},
+        hpBonus: 0,
+        naturalDr: 0,
+        age: "Child 8–13 • Young Adult 14–16 • Adult 17–49 • Prime 50–59 • Elderly 60+",
+        heights: [
+            [54, 59, 90, 110, "3d6"],
+            [60, 65, 115, 130, "4d6"],
+            [66, 71, 135, 155, "5d6"],
+            [72, 77, 160, 185, "6d6"]
+        ]
+    },
+    {
+        name: "Elf",
+        bonus: "+2 DEX, +1 MND or CHA, -1 BOD; Lowlight.",
+        fixed: { bod: -1, dex: 2 },
+        hpBonus: 0,
+        naturalDr: 0,
+        choices: [
+            { label: "+1 MND", mods: { mnd: 1 } },
+            { label: "+1 CHA", mods: { cha: 1 } }
+        ],
+        age: "Child 10–54 • Young Adult 55–99 • Adult 100–499 • Prime 500–749 • Elderly 750+",
+        heights: [
+            [54, 59, 90, 110, "3d6"],
+            [60, 65, 115, 130, "4d6"],
+            [66, 71, 135, 155, "5d6"],
+            [72, 77, 160, 185, "6d6"],
+            [78, 83, 190, 220, "7d6"]
+        ]
+    },
+    {
+        name: "Dwarf",
+        bonus: "+1 BOD, +1 MND, +1 HP, -2 CHA; Dark Vision.",
+        fixed: { bod: 1, mnd: 1, cha: -2 },
+        hpBonus: 1,
+        naturalDr: 0,
+        age: "Child 8–15 • Young Adult 16–49 • Adult 50–249 • Prime 250–399 • Elderly 400+",
+        heights: [
+            [42, 47, 80, 100, "2d6"],
+            [48, 53, 100, 125, "3d6"],
+            [54, 59, 125, 150, "4d6"]
+        ]
+    },
+    {
+        name: "Orc",
+        bonus: "+1 BOD or DEX, +2 HP, -1 MND, -1 CHA; Lowlight Vision.",
+        fixed: { mnd: -1, cha: -1 },
+        hpBonus: 2,
+        naturalDr: 0,
+        choices: [
+            { label: "+1 BOD", mods: { bod: 1 } },
+            { label: "+1 DEX", mods: { dex: 1 } }
+        ],
+        age: "Child 5–8 • Young Adult 9–11 • Adult 12–29 • Prime 30–39 • Elderly 40+",
+        heights: [
+            [60, 65, 155, 170, "3d6"],
+            [66, 71, 175, 195, "4d6"],
+            [72, 77, 200, 225, "5d6"],
+            [78, 83, 230, 250, "6d6"],
+            [84, 89, 255, 295, "7d6"]
+        ]
+    },
+    {
+        name: "Halfling",
+        bonus: "-1 BOD, +1 DEX, +2 CHA, -1 HP; Lowlight Vision; +1 Trait.",
+        fixed: { bod: -1, dex: 1, cha: 2 },
+        hpBonus: -1,
+        naturalDr: 0,
+        age: "Child 8–18 • Young Adult 19–29 • Adult 30–69 • Prime 70–99 • Elderly 100+",
+        heights: [
+            [30, 35, 30, 40, "2d6"],
+            [36, 41, 40, 55, "3d6"],
+            [42, 47, 55, 70, "4d6"]
+        ]
+    },
+    {
+        name: "Gnome",
+        bonus: "-1 BOD, +2 MND, +1 CHA, -1 HP; Dark Vision; +1 Trait.",
+        fixed: { bod: -1, mnd: 2, cha: 1 },
+        hpBonus: -1,
+        naturalDr: 0,
+        age: "Child 10–40 • Young Adult 41–99 • Adult 100–299 • Prime 300–449 • Elderly 450+",
+        heights: [
+            [30, 35, 30, 40, "2d6"],
+            [36, 41, 40, 55, "3d6"],
+            [42, 47, 55, 70, "4d6"]
+        ]
+    },
+    {
+        name: "Traiggoblin",
+        bonus: "+1 DEX, +1 MND or CHA, -1 BOD; Dark Vision.",
+        fixed: { bod: -1, dex: 1 },
+        hpBonus: 0,
+        naturalDr: 0,
+        choices: [
+            { label: "+1 MND", mods: { mnd: 1 } },
+            { label: "+1 CHA", mods: { cha: 1 } }
+        ],
+        age: "Child 3–5 • Young Adult 6–9 • Adult 10–24 • Prime 25–29 • Elderly 30+",
+        heights: [
+            [30, 35, 30, 40, "2d6"],
+            [36, 41, 40, 55, "2d6"],
+            [42, 47, 55, 70, "3d6"],
+            [48, 53, 70, 90, "3d6"],
+            [54, 59, 90, 110, "4d6"]
+        ]
+    },
+    {
+        name: "Furfolk",
+        bonus: "+2 to any one Attribute or +1 to two Attributes; Natural Weapons.",
+        fixed: {},
+        hpBonus: 0,
+        naturalDr: 0,
+        choices: [
+            { label: "+2 BOD", mods: { bod: 2 } },
+            { label: "+2 DEX", mods: { dex: 2 } },
+            { label: "+2 MND", mods: { mnd: 2 } },
+            { label: "+2 CHA", mods: { cha: 2 } },
+            { label: "+1 BOD / +1 DEX", mods: { bod: 1, dex: 1 } },
+            { label: "+1 BOD / +1 MND", mods: { bod: 1, mnd: 1 } },
+            { label: "+1 BOD / +1 CHA", mods: { bod: 1, cha: 1 } },
+            { label: "+1 DEX / +1 MND", mods: { dex: 1, mnd: 1 } },
+            { label: "+1 DEX / +1 CHA", mods: { dex: 1, cha: 1 } },
+            { label: "+1 MND / +1 CHA", mods: { mnd: 1, cha: 1 } }
+        ],
+        age: "No age ranges are currently defined in Races and Templates One v1.",
+        heights: [
+            [42, 47, 80, 100, "2d6"],
+            [48, 53, 100, 125, "3d6"],
+            [54, 59, 125, 150, "4d6"]
+        ]
+    },
+    {
+        name: "Zizses",
+        bonus: "+1 BOD, +1 DEX, +1 HP, -2 CHA; Natural Weapons.",
+        fixed: { bod: 1, dex: 1, cha: -2 },
+        hpBonus: 1,
+        naturalDr: 0,
+        age: "No age ranges are currently defined in Races and Templates One v1.",
+        heights: [
+            [42, 47, 80, 100, "2d6"],
+            [48, 53, 100, 125, "3d6"],
+            [54, 59, 125, 150, "4d6"]
+        ]
+    },
+    {
+        name: "Av’riahl",
+        bonus: "+2 DEX, +2 CHA, -2 BOD; Winged Flight.",
+        fixed: { bod: -2, dex: 2, cha: 2 },
+        hpBonus: 0,
+        naturalDr: 0,
+        age: "No age ranges are currently defined in Races and Templates One v1.",
+        heights: [
+            [42, 47, 80, 100, "2d6"],
+            [48, 53, 100, 125, "3d6"],
+            [54, 59, 125, 150, "4d6"]
+        ]
+    },
+    {
+        name: "Arrahsect",
+        bonus: "+1 CHA, +2 Natural DR; Compound Vision.",
+        fixed: { cha: 1 },
+        hpBonus: 0,
+        naturalDr: 2,
+        age: "No age ranges are currently defined in Races and Templates One v1.",
+        heights: []
+    },
+    {
+        name: "Terrán",
+        bonus: "+1 BOD, +2 HP, -1 MND; Terrán Physiology.",
+        fixed: { bod: 1, mnd: -1 },
+        hpBonus: 2,
+        naturalDr: 0,
+        age: "No age ranges are currently defined in Races and Templates One v1.",
+        heights: [
+            [42, 47, 80, 100, "2d6"],
+            [48, 53, 100, 125, "3d6"],
+            [54, 59, 125, 150, "4d6"]
+        ]
+    },
+    {
+        name: "Shroomite",
+        bonus: "-1 BOD, -1 HP; Dark Vision; Fungal Physiology.",
+        fixed: { bod: -1 },
+        hpBonus: -1,
+        naturalDr: 0,
+        age: "No age ranges are currently defined in Races and Templates One v1.",
+        heights: [
+            [42, 47, 80, 100, "2d6"],
+            [48, 53, 100, 125, "3d6"],
+            [54, 59, 125, 150, "4d6"]
+        ]
+    },
+    {
+        name: "Manakeen",
+        bonus: "+1 BOD, +1 MND, -1 CHA; Mana Keen Construct.",
+        fixed: { bod: 1, mnd: 1, cha: -1 },
+        hpBonus: 0,
+        naturalDr: 0,
+        age: "No age ranges are currently defined in Races and Templates One v1.",
+        heights: [
+            [42, 47, 80, 100, "2d6"],
+            [48, 53, 100, 125, "3d6"],
+            [54, 59, 125, 150, "4d6"]
+        ]
+    }
+];
 
 let creatorStep = 0;
 let creatorDraft = null;
@@ -16861,18 +17264,92 @@ let creatorDraft = null;
 function makeFreshCreatorDraft() {
     return {
         name: "",
+        race: "",
+        raceChoice: "",
         gender: "",
         age: "",
-        height: "",
+        heightFeet: 5,
+        heightInches: 0,
         weight: "",
         hair: "",
         eyes: "",
         level: 1,
-        bod: CREATOR_BASE_ATTRIBUTE,
-        dex: CREATOR_BASE_ATTRIBUTE,
-        mnd: CREATOR_BASE_ATTRIBUTE,
-        cha: CREATOR_BASE_ATTRIBUTE
+        attributeSpends: {
+            bod: 0,
+            dex: 0,
+            mnd: 0,
+            cha: 0
+        }
     };
+}
+
+function getCreatorRace() {
+    return RPG_CREATOR_RACES.find(
+        race =>
+            race.name ===
+            creatorDraft?.race
+    ) || null;
+}
+
+function getCreatorRaceChoice() {
+    const race = getCreatorRace();
+    if (!race?.choices?.length) return null;
+
+    return race.choices.find(
+        choice =>
+            choice.label ===
+            creatorDraft?.raceChoice
+    ) || null;
+}
+
+function creatorRaceModifiers() {
+    const race = getCreatorRace();
+    const choice = getCreatorRaceChoice();
+    const result = {
+        bod: 0,
+        dex: 0,
+        mnd: 0,
+        cha: 0
+    };
+
+    for (const stat of Object.keys(result)) {
+        result[stat] =
+            Number(race?.fixed?.[stat] || 0) +
+            Number(choice?.mods?.[stat] || 0);
+    }
+
+    return result;
+}
+
+function creatorAttributeBaseline(stat) {
+    return (
+        CREATOR_BASE_ATTRIBUTE +
+        Number(
+            creatorRaceModifiers()[stat] ||
+            0
+        )
+    );
+}
+
+function creatorAttributeValue(stat) {
+    return (
+        creatorAttributeBaseline(stat) +
+        Number(
+            creatorDraft?.attributeSpends?.[stat] ||
+            0
+        )
+    );
+}
+
+function creatorStartingHp() {
+    return (
+        creatorAttributeValue("bod") +
+        5 +
+        Number(
+            getCreatorRace()?.hpBonus ||
+            0
+        )
+    );
 }
 
 function creatorQuarter(value) {
@@ -16880,47 +17357,276 @@ function creatorQuarter(value) {
 }
 
 function creatorLandSpeed() {
-    const rawSpeed = Number(creatorDraft?.dex || CREATOR_BASE_ATTRIBUTE) * 3;
-    return Math.round(rawSpeed / 5) * 5;
+    const rawSpeed =
+        creatorAttributeValue("dex") *
+        3;
+
+    return Math.round(
+        rawSpeed / 5
+    ) * 5;
+}
+
+function creatorHeightTotal() {
+    return (
+        Number(
+            creatorDraft?.heightFeet ||
+            0
+        ) *
+        12 +
+        Number(
+            creatorDraft?.heightInches ||
+            0
+        )
+    );
+}
+
+function creatorHeightText() {
+    return (
+        Number(
+            creatorDraft?.heightFeet ||
+            0
+        ) +
+        "'" +
+        Number(
+            creatorDraft?.heightInches ||
+            0
+        ) +
+        '"'
+    );
+}
+
+function creatorHeightBounds() {
+    const race = getCreatorRace();
+
+    if (!race?.heights?.length) {
+        return null;
+    }
+
+    return {
+        min:
+            Math.min(
+                ...race.heights.map(
+                    row => row[0]
+                )
+            ),
+        max:
+            Math.max(
+                ...race.heights.map(
+                    row => row[1]
+                )
+            )
+    };
+}
+
+function setCreatorHeightFromTotal(
+    totalInches
+) {
+    let next =
+        Math.round(
+            Number(
+                totalInches ||
+                0
+            )
+        );
+
+    const bounds =
+        creatorHeightBounds();
+
+    if (bounds) {
+        next =
+            Math.max(
+                bounds.min,
+                Math.min(
+                    bounds.max,
+                    next
+                )
+            );
+    }
+    else {
+        next =
+            Math.max(
+                12,
+                Math.min(
+                    155,
+                    next
+                )
+            );
+    }
+
+    creatorDraft.heightFeet =
+        Math.floor(
+            next / 12
+        );
+
+    creatorDraft.heightInches =
+        next %
+        12;
+}
+
+function initializeCreatorHeightForRace() {
+    const race =
+        getCreatorRace();
+
+    if (!race?.heights?.length) {
+        setCreatorHeightFromTotal(
+            60
+        );
+        return;
+    }
+
+    const min =
+        Math.min(
+            ...race.heights.map(
+                row => row[0]
+            )
+        );
+
+    const max =
+        Math.max(
+            ...race.heights.map(
+                row => row[1]
+            )
+        );
+
+    setCreatorHeightFromTotal(
+        Math.round(
+            (min + max) /
+            2
+        )
+    );
+}
+
+function creatorHeightBand() {
+    const race = getCreatorRace();
+    const height =
+        creatorHeightTotal();
+
+    return race?.heights?.find(
+        row =>
+            height >= row[0] &&
+            height <= row[1]
+    ) || null;
+}
+
+function creatorInchesText(
+    totalInches
+) {
+    const feet =
+        Math.floor(
+            totalInches /
+            12
+        );
+
+    const inches =
+        totalInches %
+        12;
+
+    return (
+        feet +
+        "'" +
+        inches +
+        '"'
+    );
 }
 
 function creatorWeightNumber() {
-    const weight = parseFloat(String(creatorDraft?.weight || "").trim());
-    return Number.isFinite(weight) && weight > 0 ? weight : null;
+    const weight =
+        Number(
+            creatorDraft?.weight
+        );
+
+    return (
+        Number.isFinite(
+            weight
+        ) &&
+        weight >
+            0
+    )
+        ? weight
+        : null;
+}
+
+function creatorWeightText() {
+    const weight =
+        creatorWeightNumber();
+
+    return weight ===
+        null
+        ? ""
+        : creatorFormatNumber(
+            weight
+        ) +
+          " lbs";
 }
 
 function creatorDeadlift() {
-    const weight = creatorWeightNumber();
-    if (weight === null) return null;
+    const weight =
+        creatorWeightNumber();
+
+    if (
+        weight ===
+        null
+    ) {
+        return null;
+    }
 
     return (
-        Number(creatorDraft?.bod || CREATOR_BASE_ATTRIBUTE) *
+        creatorAttributeValue(
+            "bod"
+        ) *
         0.1 *
         weight
     );
 }
 
 function creatorFormatNumber(value) {
-    if (value === null || !Number.isFinite(Number(value))) return "—";
+    if (
+        value ===
+            null ||
+        !Number.isFinite(
+            Number(
+                value
+            )
+        )
+    ) {
+        return "—";
+    }
 
-    const rounded = Math.round(Number(value) * 100) / 100;
-    return String(rounded);
+    const rounded =
+        Math.round(
+            Number(
+                value
+            ) *
+            100
+        ) /
+        100;
+
+    return String(
+        rounded
+    );
 }
 
 function creatorPointsSpent() {
     if (!creatorDraft) return 0;
 
-    return ["bod", "dex", "mnd", "cha"]
-        .reduce(
-            (total, stat) =>
-                total +
-                Math.max(
-                    0,
-                    Number(creatorDraft[stat] || CREATOR_BASE_ATTRIBUTE) -
-                    CREATOR_BASE_ATTRIBUTE
-                ),
-            0
-        );
+    return Object.values(
+        creatorDraft.attributeSpends
+    )
+    .reduce(
+        (
+            total,
+            value
+        ) =>
+            total +
+            Math.max(
+                0,
+                Number(
+                    value ||
+                    0
+                )
+            ),
+        0
+    );
 }
 
 function creatorPointsRemaining() {
@@ -16931,132 +17637,573 @@ function creatorPointsRemaining() {
     );
 }
 
-function setCreatorText(id, value) {
-    const element = document.getElementById(id);
-    if (element) element.textContent = value;
+function setCreatorText(
+    id,
+    value
+) {
+    const element =
+        document.getElementById(
+            id
+        );
+
+    if (
+        element
+    ) {
+        element.textContent =
+            value;
+    }
 }
 
-function syncCreatorBasicsFromInputs() {
+function syncCreatorFieldsFromInputs() {
     document
-        .querySelectorAll("[data-creator-field]")
-        .forEach(input => {
-            creatorDraft[input.dataset.creatorField] = input.value;
-        });
+        .querySelectorAll(
+            "[data-creator-field]"
+        )
+        .forEach(
+            input => {
+                creatorDraft[
+                    input.dataset.creatorField
+                ] =
+                    input.value;
+            }
+        );
+}
+
+function renderCreatorRaceGrid() {
+    const grid =
+        document.getElementById(
+            "creator-race-grid"
+        );
+
+    if (
+        !grid
+    ) {
+        return;
+    }
+
+    grid.innerHTML =
+        RPG_CREATOR_RACES
+            .map(
+                race =>
+                    '<button class="creator-race-card' +
+                    (
+                        creatorDraft?.race ===
+                        race.name
+                            ? " selected"
+                            : ""
+                    ) +
+                    '" type="button" data-creator-race="' +
+                    race.name +
+                    '">' +
+                    race.name +
+                    "</button>"
+            )
+            .join(
+                ""
+            );
+}
+
+function renderCreatorRaceSummary() {
+    const race =
+        getCreatorRace();
+
+    const summary =
+        document.getElementById(
+            "creator-race-summary"
+        );
+
+    if (
+        !summary
+    ) {
+        return;
+    }
+
+    summary.hidden =
+        !race;
+
+    if (
+        !race
+    ) {
+        return;
+    }
+
+    setCreatorText(
+        "creator-race-name",
+        race.name
+    );
+
+    setCreatorText(
+        "creator-race-bonus",
+        race.bonus
+    );
+
+    setCreatorText(
+        "creator-race-age",
+        race.age
+    );
+
+    setCreatorText(
+        "creator-race-height",
+        race.heights.length
+            ? creatorInchesText(
+                Math.min(
+                    ...race.heights.map(
+                        row => row[0]
+                    )
+                )
+              ) +
+              " – " +
+              creatorInchesText(
+                Math.max(
+                    ...race.heights.map(
+                        row => row[1]
+                    )
+                )
+              )
+            : "No height range is currently defined in Races and Templates One v1."
+    );
+
+    const choiceWrap =
+        document.getElementById(
+            "creator-race-choice-wrap"
+        );
+
+    const choicePanel =
+        document.getElementById(
+            "creator-race-choice-panel"
+        );
+
+    if (
+        choiceWrap &&
+        choicePanel
+    ) {
+        choiceWrap.hidden =
+            !race.choices?.length;
+
+        choicePanel.innerHTML =
+            race.choices?.length
+                ? race.choices
+                    .map(
+                        choice =>
+                            '<button class="creator-race-choice' +
+                            (
+                                creatorDraft.raceChoice ===
+                                choice.label
+                                    ? " selected"
+                                    : ""
+                            ) +
+                            '" type="button" data-creator-race-choice="' +
+                            choice.label +
+                            '">' +
+                            choice.label +
+                            "</button>"
+                    )
+                    .join(
+                        ""
+                    )
+                : "";
+    }
+}
+
+function renderCreatorDetailGuidance() {
+    const race =
+        getCreatorRace();
+
+    setCreatorText(
+        "creator-age-guidance",
+        race
+            ? race.age
+            : "Choose a race first."
+    );
+
+    if (
+        !race
+    ) {
+        setCreatorText(
+            "creator-height-guidance",
+            "Choose a race first."
+        );
+        setCreatorText(
+            "creator-weight-guidance",
+            ""
+        );
+        return;
+    }
+
+    const bounds =
+        creatorHeightBounds();
+
+    setCreatorText(
+        "creator-height-guidance",
+        bounds
+            ? race.name +
+              " height range in Races and Templates One v1: " +
+              creatorInchesText(
+                  bounds.min
+              ) +
+              " – " +
+              creatorInchesText(
+                  bounds.max
+              ) +
+              "."
+            : "No height range is currently defined for " +
+              race.name +
+              " in Races and Templates One v1; the height control remains open."
+    );
+
+    const band =
+        creatorHeightBand();
+
+    setCreatorText(
+        "creator-weight-guidance",
+        band
+            ? "At " +
+              creatorHeightText() +
+              ", the listed average weight pool is " +
+              band[2] +
+              "–" +
+              band[3] +
+              " lbs, with an optional ±" +
+              band[4] +
+              " modifier."
+            : (
+                bounds
+                    ? "Choose a height within the listed race range to see its average weight pool."
+                    : "No race-specific weight pool is currently defined in the source."
+            )
+    );
+
+    setCreatorText(
+        "creator-height-feet",
+        Number(
+            creatorDraft.heightFeet
+        )
+    );
+
+    setCreatorText(
+        "creator-height-inches",
+        Number(
+            creatorDraft.heightInches
+        )
+    );
 }
 
 function renderCreatorDerivedValues() {
-    const deadlift = creatorDeadlift();
+    const deadlift =
+        creatorDeadlift();
+
     const encumbered =
-        deadlift === null
+        deadlift ===
+            null
             ? null
-            : Math.ceil(deadlift / 3);
+            : Math.ceil(
+                deadlift /
+                3
+            );
+
     const pushDrag =
-        deadlift === null
+        deadlift ===
+            null
             ? null
-            : Math.ceil(deadlift * 1.5);
+            : Math.ceil(
+                deadlift *
+                1.5
+            );
 
     setCreatorText(
         "creator-points-remaining",
         creatorPointsRemaining()
     );
 
-    ["bod", "dex", "mnd", "cha"].forEach(stat => {
-        const value = Number(creatorDraft[stat] || CREATOR_BASE_ATTRIBUTE);
+    [
+        "bod",
+        "dex",
+        "mnd",
+        "cha"
+    ].forEach(
+        stat => {
+            const value =
+                creatorAttributeValue(
+                    stat
+                );
 
-        document
-            .querySelectorAll(`[data-creator-stat-value="${stat}"]`)
-            .forEach(element => {
-                element.textContent = value;
-            });
+            const baseline =
+                creatorAttributeBaseline(
+                    stat
+                );
 
-        document
-            .querySelectorAll(`[data-creator-quarter="${stat}"]`)
-            .forEach(element => {
-                element.textContent =
-                    "¼ " +
-                    stat.toUpperCase() +
-                    ": " +
-                    creatorQuarter(value);
-            });
-    });
+            document
+                .querySelectorAll(
+                    '[data-creator-stat-value="' +
+                    stat +
+                    '"]'
+                )
+                .forEach(
+                    element => {
+                        element.textContent =
+                            value;
+                    }
+                );
+
+            document
+                .querySelectorAll(
+                    '[data-creator-quarter="' +
+                    stat +
+                    '"]'
+                )
+                .forEach(
+                    element => {
+                        element.textContent =
+                            "¼ " +
+                            stat.toUpperCase() +
+                            ": " +
+                            creatorQuarter(
+                                value
+                            );
+                    }
+                );
+
+            document
+                .querySelectorAll(
+                    '[data-creator-baseline="' +
+                    stat +
+                    '"]'
+                )
+                .forEach(
+                    element => {
+                        element.textContent =
+                            "Race baseline: " +
+                            baseline;
+                    }
+                );
+        }
+    );
 
     setCreatorText(
         "creator-preview-hp",
-        Number(creatorDraft.bod) + 5
+        creatorStartingHp()
     );
+
     setCreatorText(
         "creator-preview-speed",
-        creatorLandSpeed() + " ft"
+        creatorLandSpeed() +
+        " ft"
     );
+
     setCreatorText(
         "creator-preview-deadlift",
-        deadlift === null
+        deadlift ===
+            null
             ? "Enter weight"
-            : creatorFormatNumber(deadlift) + " lb"
+            : creatorFormatNumber(
+                deadlift
+            ) +
+              " lb"
     );
+
     setCreatorText(
         "creator-preview-encumbered",
-        encumbered === null
+        encumbered ===
+            null
             ? "—"
-            : creatorFormatNumber(encumbered) + " lb"
+            : creatorFormatNumber(
+                encumbered
+            ) +
+              " lb"
     );
+
     setCreatorText(
         "creator-preview-push-drag",
-        pushDrag === null
+        pushDrag ===
+            null
             ? "—"
-            : creatorFormatNumber(pushDrag) + " lb"
+            : creatorFormatNumber(
+                pushDrag
+            ) +
+              " lb"
     );
 
     document
-        .querySelectorAll("[data-creator-adjust]")
-        .forEach(button => {
-            const stat = button.dataset.creatorStat;
-            const adjustment = Number(button.dataset.creatorAdjust);
-            const value = Number(creatorDraft[stat] || CREATOR_BASE_ATTRIBUTE);
+        .querySelectorAll(
+            "[data-creator-adjust]"
+        )
+        .forEach(
+            button => {
+                const stat =
+                    button.dataset.creatorStat;
 
-            button.disabled =
-                adjustment < 0
-                    ? value <= CREATOR_BASE_ATTRIBUTE
-                    : creatorPointsRemaining() <= 0;
-        });
+                const adjustment =
+                    Number(
+                        button.dataset.creatorAdjust
+                    );
+
+                const spent =
+                    Number(
+                        creatorDraft
+                            ?.attributeSpends
+                            ?.[stat] ||
+                        0
+                    );
+
+                button.disabled =
+                    adjustment <
+                        0
+                        ? spent <=
+                          0
+                        : creatorPointsRemaining() <=
+                          0;
+            }
+        );
 }
 
 function renderCreatorReview() {
-    const display = value =>
-        String(value || "").trim() || "—";
+    const display =
+        value =>
+            String(
+                value ??
+                ""
+            )
+            .trim() ||
+            "—";
 
-    setCreatorText("creator-review-name", display(creatorDraft.name));
-    setCreatorText("creator-review-gender", display(creatorDraft.gender));
-    setCreatorText("creator-review-age", display(creatorDraft.age));
-    setCreatorText("creator-review-height", display(creatorDraft.height));
-    setCreatorText("creator-review-weight", display(creatorDraft.weight));
+    setCreatorText(
+        "creator-review-name",
+        display(
+            creatorDraft?.name
+        )
+    );
 
-    ["bod", "dex", "mnd", "cha"].forEach(stat => {
-        setCreatorText(
-            "creator-review-" + stat,
-            Number(creatorDraft[stat])
-        );
-    });
+    setCreatorText(
+        "creator-review-race",
+        display(
+            creatorDraft?.race
+        )
+    );
+
+    setCreatorText(
+        "creator-review-gender",
+        display(
+            creatorDraft?.gender
+        )
+    );
+
+    setCreatorText(
+        "creator-review-age",
+        display(
+            creatorDraft?.age
+        )
+    );
+
+    setCreatorText(
+        "creator-review-height",
+        creatorHeightText()
+    );
+
+    setCreatorText(
+        "creator-review-weight",
+        creatorWeightText() ||
+        "—"
+    );
+
+    setCreatorText(
+        "creator-review-hair",
+        display(
+            creatorDraft?.hair
+        )
+    );
+
+    setCreatorText(
+        "creator-review-eyes",
+        display(
+            creatorDraft?.eyes
+        )
+    );
+
+    [
+        "bod",
+        "dex",
+        "mnd",
+        "cha"
+    ].forEach(
+        stat => {
+            setCreatorText(
+                "creator-review-" +
+                stat,
+                creatorAttributeValue(
+                    stat
+                )
+            );
+        }
+    );
 
     setCreatorText(
         "creator-review-hp",
-        Number(creatorDraft.bod) + 5
+        creatorStartingHp()
     );
+
     setCreatorText(
         "creator-review-speed",
-        creatorLandSpeed() + " ft"
+        creatorLandSpeed() +
+        " ft"
     );
 }
 
-function creatorStepIsValid(step = creatorStep) {
-    if (!creatorDraft) return false;
+function creatorRaceIsComplete() {
+    const race =
+        getCreatorRace();
 
-    if (step === 0) {
-        return Boolean(String(creatorDraft.name || "").trim());
+    if (
+        !race
+    ) {
+        return false;
     }
 
-    if (step === 1) {
-        return creatorPointsRemaining() === 0;
+    if (
+        race.choices?.length
+    ) {
+        return Boolean(
+            getCreatorRaceChoice()
+        );
+    }
+
+    return true;
+}
+
+function creatorStepIsValid(
+    step =
+        creatorStep
+) {
+    if (
+        !creatorDraft
+    ) {
+        return false;
+    }
+
+    if (
+        step ===
+        0
+    ) {
+        return Boolean(
+            String(
+                creatorDraft.name ||
+                ""
+            ).trim()
+        );
+    }
+
+    if (
+        step ===
+        1
+    ) {
+        return creatorRaceIsComplete();
+    }
+
+    if (
+        step ===
+        3
+    ) {
+        return creatorPointsRemaining() ===
+            0;
     }
 
     return true;
@@ -17064,18 +18211,60 @@ function creatorStepIsValid(step = creatorStep) {
 
 function renderCreatorValidation() {
     const validation =
-        document.getElementById("creator-validation");
+        document.getElementById(
+            "creator-validation"
+        );
 
-    if (!validation) return;
+    if (
+        !validation
+    ) {
+        return;
+    }
 
-    if (creatorStep === 0 && !creatorStepIsValid(0)) {
+    if (
+        creatorStep ===
+            0 &&
+        !creatorStepIsValid(
+            0
+        )
+    ) {
         validation.textContent =
             "Enter a character name to continue.";
         return;
     }
 
-    if (creatorStep === 1 && !creatorStepIsValid(1)) {
-        const remaining = creatorPointsRemaining();
+    if (
+        creatorStep ===
+            1 &&
+        !getCreatorRace()
+    ) {
+        validation.textContent =
+            "Choose a race to continue.";
+        return;
+    }
+
+    if (
+        creatorStep ===
+            1 &&
+        !creatorStepIsValid(
+            1
+        )
+    ) {
+        validation.textContent =
+            "Choose the racial attribute adjustment to continue.";
+        return;
+    }
+
+    if (
+        creatorStep ===
+            3 &&
+        !creatorStepIsValid(
+            3
+        )
+    ) {
+        const remaining =
+            creatorPointsRemaining();
+
         validation.textContent =
             "Spend all 6 Attribute Points to continue. " +
             remaining +
@@ -17083,74 +18272,125 @@ function renderCreatorValidation() {
         return;
     }
 
-    validation.textContent = "";
+    validation.textContent =
+        "";
 }
 
 function renderCharacterCreator() {
-    document
-        .querySelectorAll("[data-creator-step]")
-        .forEach(step => {
-            step.classList.toggle(
-                "active",
-                Number(step.dataset.creatorStep) === creatorStep
-            );
-        });
+    renderCreatorRaceGrid();
+    renderCreatorRaceSummary();
+    renderCreatorDetailGuidance();
+    renderCreatorDerivedValues();
+    renderCreatorReview();
 
     document
-        .querySelectorAll("[data-creator-progress]")
-        .forEach(progress => {
-            const index = Number(progress.dataset.creatorProgress);
+        .querySelectorAll(
+            "[data-creator-step]"
+        )
+        .forEach(
+            step => {
+                step.classList.toggle(
+                    "active",
+                    Number(
+                        step.dataset.creatorStep
+                    ) ===
+                    creatorStep
+                );
+            }
+        );
 
-            progress.classList.toggle(
-                "active",
-                index === creatorStep
-            );
-            progress.classList.toggle(
-                "complete",
-                index < creatorStep
-            );
-        });
+    document
+        .querySelectorAll(
+            "[data-creator-progress]"
+        )
+        .forEach(
+            progress => {
+                const index =
+                    Number(
+                        progress.dataset.creatorProgress
+                    );
+
+                progress.classList.toggle(
+                    "active",
+                    index ===
+                    creatorStep
+                );
+
+                progress.classList.toggle(
+                    "complete",
+                    index <
+                    creatorStep
+                );
+            }
+        );
 
     const previousButton =
-        document.getElementById("creator-previous");
-    const nextButton =
-        document.getElementById("creator-next");
-    const createButton =
-        document.getElementById("creator-create");
+        document.getElementById(
+            "creator-previous"
+        );
 
-    if (previousButton) {
-        previousButton.hidden = creatorStep === 0;
+    const nextButton =
+        document.getElementById(
+            "creator-next"
+        );
+
+    const createButton =
+        document.getElementById(
+            "creator-create"
+        );
+
+    if (
+        previousButton
+    ) {
+        previousButton.hidden =
+            creatorStep ===
+            0;
     }
 
-    if (nextButton) {
+    if (
+        nextButton
+    ) {
         nextButton.hidden =
-            creatorStep === CREATOR_STEP_COUNT - 1;
+            creatorStep ===
+            CREATOR_STEP_COUNT -
+            1;
+
         nextButton.disabled =
             !creatorStepIsValid();
     }
 
-    if (createButton) {
+    if (
+        createButton
+    ) {
         createButton.hidden =
-            creatorStep !== CREATOR_STEP_COUNT - 1;
+            creatorStep !==
+            CREATOR_STEP_COUNT -
+            1;
     }
 
-    renderCreatorDerivedValues();
-    renderCreatorReview();
     renderCreatorValidation();
 }
 
 function startGuidedCharacter() {
     creatorDraft =
         makeFreshCreatorDraft();
-    creatorStep = 0;
+
+    creatorStep =
+        0;
 
     document
-        .querySelectorAll("[data-creator-field]")
-        .forEach(input => {
-            input.value =
-                creatorDraft[input.dataset.creatorField] ||
-                "";
-        });
+        .querySelectorAll(
+            "[data-creator-field]"
+        )
+        .forEach(
+            input => {
+                input.value =
+                    creatorDraft[
+                        input.dataset.creatorField
+                    ] ||
+                    "";
+            }
+        );
 
     showAppScreen(
         "character-creator-screen"
@@ -17159,7 +18399,9 @@ function startGuidedCharacter() {
     renderCharacterCreator();
 
     document
-        .querySelector('[data-creator-field="name"]')
+        .querySelector(
+            '[data-creator-field="name"]'
+        )
         ?.focus();
 }
 
@@ -17167,34 +18409,55 @@ function setInputValueAndNotify(
     input,
     value
 ) {
-    if (!input) return;
+    if (
+        !input
+    ) {
+        return;
+    }
 
     input.value =
-        value === null || value === undefined
+        value ===
+            null ||
+        value ===
+            undefined
             ? ""
-            : String(value);
+            : String(
+                value
+            );
 
     input.dispatchEvent(
         new Event(
             "input",
             {
-                bubbles: true
+                bubbles:
+                    true
             }
         )
     );
 }
 
 async function createGuidedCharacter() {
-    syncCreatorBasicsFromInputs();
+    syncCreatorFieldsFromInputs();
+
+    const invalidStep =
+        [
+            0,
+            1,
+            3
+        ]
+        .find(
+            step =>
+                !creatorStepIsValid(
+                    step
+                )
+        );
 
     if (
-        !creatorStepIsValid(0) ||
-        !creatorStepIsValid(1)
+        invalidStep !==
+        undefined
     ) {
         creatorStep =
-            !creatorStepIsValid(0)
-                ? 0
-                : 1;
+            invalidStep;
 
         renderCharacterCreator();
         return;
@@ -17205,8 +18468,12 @@ async function createGuidedCharacter() {
             "creator-create"
         );
 
-    if (createButton) {
-        createButton.disabled = true;
+    if (
+        createButton
+    ) {
+        createButton.disabled =
+            true;
+
         createButton.textContent =
             "Creating…";
     }
@@ -17223,14 +18490,17 @@ async function createGuidedCharacter() {
             headerInputs[0],
             creatorDraft.name
         );
+
         setInputValueAndNotify(
             headerInputs[1],
-            ""
+            creatorDraft.race
         );
+
         setInputValueAndNotify(
             headerInputs[2],
             1
         );
+
         setInputValueAndNotify(
             headerInputs[3],
             0
@@ -17245,21 +18515,25 @@ async function createGuidedCharacter() {
             backgroundPrimary[0],
             creatorDraft.name
         );
+
         setInputValueAndNotify(
             backgroundPrimary[1],
             creatorDraft.gender
         );
+
         setInputValueAndNotify(
             backgroundPrimary[2],
             creatorDraft.age
         );
+
         setInputValueAndNotify(
             backgroundPrimary[3],
-            creatorDraft.height
+            creatorHeightText()
         );
+
         setInputValueAndNotify(
             backgroundPrimary[4],
-            creatorDraft.weight
+            creatorWeightText()
         );
 
         const backgroundSecondary =
@@ -17271,14 +18545,16 @@ async function createGuidedCharacter() {
             backgroundSecondary?.querySelector(
                 'input[placeholder="Race"]'
             ),
-            ""
+            creatorDraft.race
         );
+
         setInputValueAndNotify(
             backgroundSecondary?.querySelector(
                 'textarea[placeholder="Hair"]'
             ),
             creatorDraft.hair
         );
+
         setInputValueAndNotify(
             backgroundSecondary?.querySelector(
                 'textarea[placeholder="Eyes"]'
@@ -17286,13 +18562,24 @@ async function createGuidedCharacter() {
             creatorDraft.eyes
         );
 
-        ["bod", "dex", "mnd", "cha"]
-            .forEach(stat => {
+        [
+            "bod",
+            "dex",
+            "mnd",
+            "cha"
+        ]
+        .forEach(
+            stat => {
                 setInputValueAndNotify(
-                    document.getElementById(stat),
-                    creatorDraft[stat]
+                    document.getElementById(
+                        stat
+                    ),
+                    creatorAttributeValue(
+                        stat
+                    )
                 );
-            });
+            }
+        );
 
         const hpInputs =
             document.querySelectorAll(
@@ -17300,27 +18587,51 @@ async function createGuidedCharacter() {
             );
 
         const startingHp =
-            Number(creatorDraft.bod) +
-            5;
+            creatorStartingHp();
 
         setInputValueAndNotify(
             hpInputs[0],
             startingHp
         );
+
         setInputValueAndNotify(
             hpInputs[1],
             startingHp
         );
 
+        const race =
+            getCreatorRace();
+
+        if (
+            race?.naturalDr
+        ) {
+            const drInputs =
+                document.querySelectorAll(
+                    "#tab1 .dr-bubbles input"
+                );
+
+            setInputValueAndNotify(
+                drInputs[1],
+                race.naturalDr
+            );
+        }
+
         const deadlift =
             creatorDeadlift();
 
-        if (deadlift !== null) {
+        if (
+            deadlift !==
+            null
+        ) {
             setInputValueAndNotify(
                 document.getElementById(
                     "deadlift"
                 ),
-                Math.round(deadlift * 100) / 100
+                Math.round(
+                    deadlift *
+                    100
+                ) /
+                100
             );
         }
 
@@ -17341,7 +18652,9 @@ async function createGuidedCharacter() {
             )
             ?.click();
     }
-    catch (error) {
+    catch (
+        error
+    ) {
         console.error(
             "Could not create guided character:",
             error
@@ -17352,8 +18665,12 @@ async function createGuidedCharacter() {
         );
     }
     finally {
-        if (createButton) {
-            createButton.disabled = false;
+        if (
+            createButton
+        ) {
+            createButton.disabled =
+                false;
+
             createButton.textContent =
                 "Create Character";
         }
@@ -17361,63 +18678,203 @@ async function createGuidedCharacter() {
 }
 
 document
-    .querySelectorAll("[data-creator-field]")
-    .forEach(input => {
-        input.addEventListener(
-            "input",
-            () => {
-                if (!creatorDraft) return;
+    .querySelectorAll(
+        "[data-creator-field]"
+    )
+    .forEach(
+        input => {
+            input.addEventListener(
+                "input",
+                () => {
+                    if (
+                        !creatorDraft
+                    ) {
+                        return;
+                    }
 
-                creatorDraft[input.dataset.creatorField] =
-                    input.value;
+                    creatorDraft[
+                        input.dataset.creatorField
+                    ] =
+                        input.value;
 
-                renderCharacterCreator();
-            }
-        );
-    });
+                    renderCharacterCreator();
+                }
+            );
+        }
+    );
 
 document
-    .querySelectorAll("[data-creator-adjust]")
-    .forEach(button => {
-        button.addEventListener(
-            "click",
-            () => {
-                if (!creatorDraft) return;
+    .getElementById(
+        "creator-race-grid"
+    )
+    .addEventListener(
+        "click",
+        event => {
+            const button =
+                event.target.closest(
+                    "[data-creator-race]"
+                );
 
-                const stat =
-                    button.dataset.creatorStat;
-                const adjustment =
-                    Number(
-                        button.dataset.creatorAdjust
-                    );
-                const current =
-                    Number(
-                        creatorDraft[stat] ||
-                        CREATOR_BASE_ATTRIBUTE
-                    );
-
-                if (
-                    adjustment < 0 &&
-                    current <= CREATOR_BASE_ATTRIBUTE
-                ) {
-                    return;
-                }
-
-                if (
-                    adjustment > 0 &&
-                    creatorPointsRemaining() <= 0
-                ) {
-                    return;
-                }
-
-                creatorDraft[stat] =
-                    current +
-                    adjustment;
-
-                renderCharacterCreator();
+            if (
+                !button ||
+                !creatorDraft
+            ) {
+                return;
             }
-        );
-    });
+
+            const changed =
+                creatorDraft.race !==
+                button.dataset.creatorRace;
+
+            creatorDraft.race =
+                button.dataset.creatorRace;
+
+            if (
+                changed
+            ) {
+                creatorDraft.raceChoice =
+                    "";
+
+                creatorDraft.attributeSpends = {
+                    bod: 0,
+                    dex: 0,
+                    mnd: 0,
+                    cha: 0
+                };
+
+                initializeCreatorHeightForRace();
+
+                creatorDraft.weight =
+                    "";
+            }
+
+            renderCharacterCreator();
+        }
+    );
+
+document
+    .getElementById(
+        "creator-race-choice-panel"
+    )
+    .addEventListener(
+        "click",
+        event => {
+            const button =
+                event.target.closest(
+                    "[data-creator-race-choice]"
+                );
+
+            if (
+                !button ||
+                !creatorDraft
+            ) {
+                return;
+            }
+
+            creatorDraft.raceChoice =
+                button.dataset.creatorRaceChoice;
+
+            creatorDraft.attributeSpends = {
+                bod: 0,
+                dex: 0,
+                mnd: 0,
+                cha: 0
+            };
+
+            renderCharacterCreator();
+        }
+    );
+
+document
+    .querySelectorAll(
+        "[data-creator-height-adjust]"
+    )
+    .forEach(
+        button => {
+            button.addEventListener(
+                "click",
+                () => {
+                    if (
+                        !creatorDraft
+                    ) {
+                        return;
+                    }
+
+                    setCreatorHeightFromTotal(
+                        creatorHeightTotal() +
+                        Number(
+                            button.dataset.creatorHeightAdjust
+                        )
+                    );
+
+                    renderCharacterCreator();
+                }
+            );
+        }
+    );
+
+document
+    .querySelectorAll(
+        "[data-creator-adjust]"
+    )
+    .forEach(
+        button => {
+            button.addEventListener(
+                "click",
+                () => {
+                    if (
+                        !creatorDraft
+                    ) {
+                        return;
+                    }
+
+                    const stat =
+                        button.dataset.creatorStat;
+
+                    const adjustment =
+                        Number(
+                            button.dataset.creatorAdjust
+                        );
+
+                    const spent =
+                        Number(
+                            creatorDraft
+                                .attributeSpends[
+                                    stat
+                                ] ||
+                            0
+                        );
+
+                    if (
+                        adjustment <
+                            0 &&
+                        spent <=
+                            0
+                    ) {
+                        return;
+                    }
+
+                    if (
+                        adjustment >
+                            0 &&
+                        creatorPointsRemaining() <=
+                            0
+                    ) {
+                        return;
+                    }
+
+                    creatorDraft
+                        .attributeSpends[
+                            stat
+                        ] =
+                            spent +
+                            adjustment;
+
+                    renderCharacterCreator();
+                }
+            );
+        }
+    );
 
 document
     .getElementById(
@@ -17439,10 +18896,13 @@ document
     .addEventListener(
         "click",
         () => {
+            syncCreatorFieldsFromInputs();
+
             creatorStep =
                 Math.max(
                     0,
-                    creatorStep - 1
+                    creatorStep -
+                    1
                 );
 
             renderCharacterCreator();
@@ -17456,17 +18916,21 @@ document
     .addEventListener(
         "click",
         () => {
-            syncCreatorBasicsFromInputs();
+            syncCreatorFieldsFromInputs();
 
-            if (!creatorStepIsValid()) {
+            if (
+                !creatorStepIsValid()
+            ) {
                 renderCharacterCreator();
                 return;
             }
 
             creatorStep =
                 Math.min(
-                    CREATOR_STEP_COUNT - 1,
-                    creatorStep + 1
+                    CREATOR_STEP_COUNT -
+                    1,
+                    creatorStep +
+                    1
                 );
 
             renderCharacterCreator();
