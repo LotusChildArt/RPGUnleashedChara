@@ -55,7 +55,6 @@ const CONDITION_OVERLAY_ASSETS = {
     "unconscious": "/assets/conditions/unconscious.png",
     "taunted": "/assets/conditions/taunted.png",
     "taunt": "/assets/conditions/taunt.png",
-    "shocked": "/assets/conditions/shocked.png",
     "stunned": "/assets/conditions/stunned.png"
 };
 
