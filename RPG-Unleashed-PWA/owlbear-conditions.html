@@ -414,59 +414,63 @@ const DEFAULT_CONDITION_DEFINITIONS = [
         id: "fear",
         name: "Fear",
         maxStacks: 5,
-        description: "You receive a -1 to attack the source of your fear or any creature within 5 feet of the source of your fear. Failing an attempt to attack the source opens you up for an attack of opportunity. Max 5. At max fear, you flee in a direction opposite the source of your fear. Remove all stacks once you have dealt damage to the source of Fear. If a second source would cause you Fear, prioritize the newest source."
+        description: "Receive a -1 penalty per stack to attacks against the source of your Fear or any creature within 5 feet of it. Failing an attempt to attack the source opens you to an Attack of Opportunity. Fear has a maximum of 5 stacks. At 5 stacks, flee in a direction opposite the source. Remove all Fear stacks once you deal damage to the source. If a second source causes Fear, prioritize the newest source."
     },
     {
         id: "wounded",
         name: "Acid",
-        description: "No rules text has been set for this condition yet."
+        detailType: "acidTarget",
+        description: "Acid damages afflicted gear and accumulates by 1 stack each round until removed. Each Acid stack gives the affected item -1 Effectiveness. Removing Acid is a Move Action and can be done with a rag or Minor Magecraft. Removing Acid stops further accumulation but does not restore Effectiveness already lost. A rag used to remove Acid becomes unusable. If Acid reduces a weapon or armor to no damage, Defense, or DR, it is Broken."
     },
     {
         id: "arrowed",
         name: "Pierced",
-        description: "Receive a -1 penalty on all physical actions per stack. Receive 1 damage per stack for any physical action taken. Remove 1 stack with a DC 20 Heal check; failing the check still removes the stack but deals 1d4 damage and bleed stacks equal to damage taken."
+        description: "Receive a -1 penalty on all physical actions per stack. Receive 1 damage per stack for any physical action taken. Remove 1 stack with a DC 15 Heal (MND) check; failing the check still removes the stack but deals 1d4 damage and Bleed stacks equal to damage taken."
     },
     {
         id: "bleeding",
         name: "Bleed",
         detailType: "bleedPerTurn",
-        description: "Enter bleed stacks per turn. You receive a number of Bleed Stacks at the beginning of each turn equal to the maximum die roll of the weapon that inflicted the condition. For weapons with multiple dice, only count the dice that rolled maximum. For magic, follow the rules the magic provides. Receive a -2 to all checks per 10 bleed stacks. At 40 stacks, make BOD saves each round with a DC of 10 + 1/4 Bleed stacks rounded down or fall unconscious. Stop the accumulation of bleed stacks with a DC 20 Heal check and fabric; a health potion also stops the accumulation. Bleed stacks are removed before your HP can be healed at a rate of 2 stacks of bleed for every 1 point of HP that would have been regained."
+        description: "Enter Bleed stacks per turn. At the beginning of each turn, gain Bleed stacks equal to the combined maximum values of all damage dice that caused the Bleed. Receive -2 to all checks per 10 Bleed stacks. At 40 or more stacks, make a BOD Save each round with a DC of 10 + 1/4 Bleed stacks rounded down or fall Unconscious. A DC 15 Heal (MND) check using fabric stops further accumulation; a health potion also stops it. Healing removes 2 Bleed stacks for every 1 HP that would have been restored before HP is regained."
     },
     {
         id: "broken-bone",
         name: "Bone Break",
         detailType: "boneBreak",
-        description: "Select Rib, Arm, Leg, Skull, or Neck. Skull: -4 to all checks, 30% chance to lose turn (roll at the start of the turn). Arm: cannot hold things using broken arm, -2 to Atk/Def, -10 on climbing checks. Leg: cannot run, 1/2 speed, -2 to Atk/Def, -10 on climbing; if both legs are broken, speed is reduced to 5 ft and -6 to Atk/Def. Rib: -2 to Atk/Def, -2 to running checks."
+        description: "Select Rib, Arm, Leg, Skull, or Neck. Skull: -4 to all checks, 30% chance to lose turn at the start of the turn. Arm: cannot hold things using the broken arm, -2 to Atk/Def, -10 on climbing checks. Leg: cannot run, 1/2 Speed, -2 to Atk/Def, -10 on climbing checks; if both legs are broken, Speed is 5 ft and Atk/Def is -6. Rib: -2 to Atk/Def and -2 to running checks."
     },
     {
         id: "burning",
         name: "Burning",
-        description: "No rules text has been set for this condition yet."
+        description: "Burning stacks are the number of rounds you remain on fire. At the beginning of each round, take Fire damage based on your current stacks, then reduce Burning by 1: 1-4 stacks = 1d4, 5-9 = 2d4, 10+ = 4d4. Extinguish the flames with a DC 20 DEX Save or suffocate them with a large cloth material like a cloak, trousers, bed sheet, etc.; doing so destroys the cloth."
     },
     {
         id: "charmed",
         name: "Charmed",
-        description: "No rules text has been set for this condition yet."
+        binary: true,
+        description: "Magic has ensnared your senses. Through the duration of the spell, your actions are influenced by someone else. Charmed does not stack."
     },
     {
         id: "poisoned",
         name: "Dead",
-        description: "No rules text has been set for this condition yet."
+        binary: true,
+        description: "You are dead. You were unable to stabilize after reaching -(BOD score) or have taken so much damage that you die outright. Without magic or advanced technology, dead is how you will stay. Dead does not stack."
     },
     {
         id: "drunk",
         name: "Drunk",
-        description: "Receive a -2 penalty per 10 stacks on all skill checks and DEX/MND saves. When you reach 20 stacks, you receive a +2 bonus to BOD and CHA based checks. When you reach 40 stacks, begin making BOD saves every minute outside of combat or 1d4 rounds in combat to prevent yourself from falling unconscious/blacking out. DC to remain conscious is 10 + 1/4 your Drunk Stacks rounded down. Make a BOD save in the morning with a DC equal to 1/2 your Drunk stacks to prevent a hangover."
+        description: "Alcoholic drinks give Drunk stacks based on the drink consumed. Receive -2 to Skill checks and DEX/MND Saves per 10 stacks. At 20+ stacks, receive +2 to BOD- and CHA-based checks; 20-39 stacks is the sweet spot before blackout checks begin. At 40+ stacks, make BOD Saves every minute outside combat or every 1d4 rounds in combat against DC 10 + 1/4 Drunk stacks rounded down or fall Unconscious. Drunk decreases by 5 per hour or 10 per hour while sleeping. The next morning, make a BOD Save against 1/2 your bedtime Drunk stacks or suffer -2 to all rolls for 12 hours."
     },
     {
         id: "confused",
         name: "Unconscious",
-        description: "No rules text has been set for this condition yet."
+        binary: true,
+        description: "Your HP has dropped below 0, your NL equals or exceeds your current HP, or a spell has rendered you Unconscious. You cannot perceive or act in the world around you. Remain Unconscious until NL is less than current HP, HP reaches 1 or higher, or the effect causing the condition ends. Unconscious does not stack."
     },
     {
         id: "frozen",
         name: "Frozen",
-        description: "No rules text has been set for this condition yet."
+        description: "Frozen stacks are the number of rounds you remain affected by accumulated ice and cold. At the beginning of each round, take Cold damage based on your current stacks, then reduce Frozen by 1: 1-4 stacks = 1d4, 5-9 = 2d4, 10+ = 4d4. While within 5 feet of an intense heat source such as a fire, forge, or stove, take no Frozen damage and reduce Frozen by 2 stacks per round instead of 1."
     },
     {
         id: "unconscious",
@@ -477,23 +481,19 @@ const DEFAULT_CONDITION_DEFINITIONS = [
     {
         id: "taunted",
         name: "Rage",
-        description: "Berserker Rage is active. See the Berserker Rage feat for its effects."
-    },
-    {
-        id: "shocked",
-        name: "Shocked",
-        description: "No rules text has been set for this condition yet."
+        description: "Berserker Rage is active. Gain 1/4 BOD DR +1 per Berserker Rage rank. You may remain conscious below 0 HP and receive -4 to MND Saves. Rage stacks may be spent on abilities provided by the Berserker Rage feat, and unused Rage stacks dissipate according to that feat."
     },
     {
         id: "stunned",
-        name: "Stunned",
-        description: "No rules text has been set for this condition yet."
+        name: "Slowed",
+        binary: true,
+        description: "Move at 1/2 Speed. During your turn, you may take either a Move Action or a Standard Action, but not both. Slowed does not stack."
     },
     {
         id: "taunt",
-        name: "Taunt",
+        name: "Taunted",
         maxStacks: 5,
-        description: "You receive +1 to attack the source of Taunt and a -1 to attack anyone else per stack of Taunt. Max 5. At max Taunt, you charge or focus all attacks on the source of Taunt, regardless of enemy threat. Remove all stacks of Taunt once you have dealt damage to the source of Taunt. If a second source would Taunt you, prioritize the newest source."
+        description: "Receive +1 to attacks against the source of Taunted and -1 to attacks against anyone else per stack. Max 5. At 5 stacks, charge or focus all attacks on the source regardless of other threats. Remove all Taunted stacks once you deal damage to the source. If a second source Taunts you, prioritize the newest source."
     }
 ];
 
