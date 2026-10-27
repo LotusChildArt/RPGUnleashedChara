@@ -3810,6 +3810,318 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
     background: #eee;
 }
 
+
+/* =========================================
+   GUIDED CHARACTER CREATOR
+   ========================================= */
+
+.character-creator-shell {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.character-creator-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.character-creator-heading h1 {
+    margin: 0;
+}
+
+.character-creator-exit,
+.character-creator-nav button,
+.creator-adjust-button {
+    border: 2px solid black;
+    background: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.character-creator-exit {
+    min-height: 42px;
+    border-radius: 21px;
+    padding: 7px 16px;
+}
+
+.character-creator-progress {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.creator-progress-step {
+    min-height: 42px;
+    border: 2px solid #aaa;
+    border-radius: 21px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    color: #666;
+    background: #f3f3f3;
+}
+
+.creator-progress-step.active {
+    border-color: black;
+    color: #111;
+    background: white;
+}
+
+.creator-progress-step.complete {
+    border-color: #555;
+    color: #333;
+    background: #e9e9e9;
+}
+
+.character-creator-card {
+    border: 2px solid black;
+    border-radius: 24px;
+    padding: 20px;
+    background: white;
+}
+
+.creator-step {
+    display: none;
+}
+
+.creator-step.active {
+    display: block;
+}
+
+.creator-step h2 {
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.creator-step-note {
+    margin: 0 0 18px;
+    color: #555;
+    line-height: 1.45;
+}
+
+.creator-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.creator-field {
+    display: grid;
+    gap: 5px;
+}
+
+.creator-field.full {
+    grid-column: 1 / -1;
+}
+
+.creator-field label,
+.creator-field > span:first-child {
+    font-size: 12px;
+    font-weight: bold;
+    color: #444;
+}
+
+.creator-field input {
+    width: 100%;
+    min-height: 42px;
+    border: 2px solid black;
+    border-radius: 21px;
+    background: white;
+    padding: 7px 12px;
+}
+
+.creator-fixed-value {
+    min-height: 42px;
+    border: 2px solid #888;
+    border-radius: 21px;
+    background: #f4f4f4;
+    padding: 9px 12px;
+    font-weight: bold;
+}
+
+.creator-points-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 2px solid black;
+    border-radius: 20px;
+    padding: 10px 14px;
+    margin: 14px 0;
+    font-weight: bold;
+}
+
+.creator-points-banner strong {
+    font-size: 20px;
+}
+
+.creator-attribute-list {
+    display: grid;
+    gap: 8px;
+}
+
+.creator-attribute-row {
+    display: grid;
+    grid-template-columns: 70px 42px 70px 42px minmax(0, 1fr);
+    gap: 7px;
+    align-items: center;
+    border: 1.5px solid #999;
+    border-radius: 18px;
+    padding: 8px 10px;
+}
+
+.creator-attribute-name {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.creator-adjust-button {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.creator-adjust-button:disabled {
+    cursor: default;
+    opacity: .35;
+}
+
+.creator-stat-value {
+    min-height: 38px;
+    border: 2px solid black;
+    border-radius: 19px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.creator-quarter-preview {
+    color: #555;
+    font-size: 13px;
+}
+
+.creator-derived-grid,
+.creator-review-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.creator-derived,
+.creator-review-item {
+    border: 1.5px solid #999;
+    border-radius: 16px;
+    padding: 10px 12px;
+}
+
+.creator-derived span,
+.creator-review-item span {
+    display: block;
+    color: #666;
+    font-size: 11px;
+    margin-bottom: 3px;
+}
+
+.creator-derived strong,
+.creator-review-item strong {
+    font-size: 16px;
+}
+
+.creator-review-section {
+    margin-top: 18px;
+}
+
+.creator-review-section h3 {
+    margin: 0 0 8px;
+}
+
+.creator-review-warning {
+    margin-top: 16px;
+    border: 1.5px solid #999;
+    border-radius: 16px;
+    padding: 10px 12px;
+    color: #555;
+    line-height: 1.4;
+}
+
+.creator-validation {
+    min-height: 20px;
+    margin-top: 12px;
+    color: #555;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.character-creator-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.character-creator-nav .creator-nav-right {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.character-creator-nav button {
+    min-height: 42px;
+    border-radius: 21px;
+    padding: 7px 16px;
+}
+
+.character-creator-nav button:hover:not(:disabled),
+.character-creator-exit:hover,
+.creator-adjust-button:hover:not(:disabled) {
+    background: #eee;
+}
+
+.character-creator-nav button:disabled {
+    opacity: .45;
+    cursor: default;
+}
+
+@media (max-width: 650px) {
+    .character-creator-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .character-creator-progress {
+        grid-template-columns: 1fr;
+    }
+
+    .creator-grid,
+    .creator-derived-grid,
+    .creator-review-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .creator-attribute-row {
+        grid-template-columns: 60px 38px 58px 38px minmax(0, 1fr);
+        padding: 7px;
+    }
+
+    .character-creator-nav {
+        flex-wrap: wrap;
+    }
+}
+
 </style>
 
 </head>
@@ -3909,6 +4221,14 @@ if (
 
             <button
                 class="main-menu-button"
+                id="blank-character"
+                type="button"
+            >
+                + Blank Character Sheet
+            </button>
+
+            <button
+                class="main-menu-button"
                 id="import-character"
                 type="button"
             >
@@ -3946,6 +4266,196 @@ if (
 
     </div>
 
+</div>
+
+
+
+<!-- =========================================
+     GUIDED CHARACTER CREATOR
+     ========================================= -->
+
+<div
+    id="character-creator-screen"
+    class="app-screen"
+>
+    <div class="character-creator-shell">
+
+        <div class="character-creator-heading">
+            <div>
+                <h1>New Character</h1>
+                <div class="creator-step-note">
+                    Guided RPG Unleashed character creation.
+                </div>
+            </div>
+
+            <button
+                class="character-creator-exit"
+                id="creator-exit"
+                type="button"
+            >
+                Main Menu
+            </button>
+        </div>
+
+        <div class="character-creator-progress">
+            <div class="creator-progress-step active" data-creator-progress="0">1. Basics</div>
+            <div class="creator-progress-step" data-creator-progress="1">2. Attributes</div>
+            <div class="creator-progress-step" data-creator-progress="2">3. Review</div>
+        </div>
+
+        <div class="character-creator-card">
+
+            <section class="creator-step active" data-creator-step="0">
+                <h2>Character Basics</h2>
+                <p class="creator-step-note">
+                    This first creator pass builds a Level 1 character. Race, Path, feats, traits, languages, and equipment will be added to later guided steps; after creation, the normal sheet remains fully editable.
+                </p>
+
+                <div class="creator-grid">
+                    <div class="creator-field full">
+                        <span>Name</span>
+                        <input type="text" data-creator-field="name" placeholder="Character Name">
+                    </div>
+
+                    <div class="creator-field">
+                        <span>Gender</span>
+                        <input type="text" data-creator-field="gender" placeholder="Gender">
+                    </div>
+
+                    <div class="creator-field">
+                        <span>Age</span>
+                        <input type="number" min="0" data-creator-field="age" placeholder="Age">
+                    </div>
+
+                    <div class="creator-field">
+                        <span>Height</span>
+                        <input type="text" data-creator-field="height" placeholder="Height">
+                    </div>
+
+                    <div class="creator-field">
+                        <span>Weight</span>
+                        <input type="text" data-creator-field="weight" placeholder="Weight">
+                    </div>
+
+                    <div class="creator-field">
+                        <span>Hair</span>
+                        <input type="text" data-creator-field="hair" placeholder="Hair">
+                    </div>
+
+                    <div class="creator-field">
+                        <span>Eyes</span>
+                        <input type="text" data-creator-field="eyes" placeholder="Eyes">
+                    </div>
+
+                    <div class="creator-field">
+                        <span>Starting Level</span>
+                        <div class="creator-fixed-value">Level 1</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="creator-step" data-creator-step="1">
+                <h2>Attributes</h2>
+                <p class="creator-step-note">
+                    RPG Unleashed b4.1 starts BOD, DEX, MND, and CHA at 6. Spend all 6 starting Attribute Points before continuing.
+                </p>
+
+                <div class="creator-points-banner">
+                    <span>Attribute Points Remaining</span>
+                    <strong id="creator-points-remaining">6</strong>
+                </div>
+
+                <div class="creator-attribute-list">
+                    <div class="creator-attribute-row" data-creator-stat-row="bod">
+                        <div class="creator-attribute-name">BOD</div>
+                        <button class="creator-adjust-button" type="button" data-creator-stat="bod" data-creator-adjust="-1">−</button>
+                        <div class="creator-stat-value" data-creator-stat-value="bod">6</div>
+                        <button class="creator-adjust-button" type="button" data-creator-stat="bod" data-creator-adjust="1">+</button>
+                        <div class="creator-quarter-preview" data-creator-quarter="bod">¼ BOD: 2</div>
+                    </div>
+
+                    <div class="creator-attribute-row" data-creator-stat-row="dex">
+                        <div class="creator-attribute-name">DEX</div>
+                        <button class="creator-adjust-button" type="button" data-creator-stat="dex" data-creator-adjust="-1">−</button>
+                        <div class="creator-stat-value" data-creator-stat-value="dex">6</div>
+                        <button class="creator-adjust-button" type="button" data-creator-stat="dex" data-creator-adjust="1">+</button>
+                        <div class="creator-quarter-preview" data-creator-quarter="dex">¼ DEX: 2</div>
+                    </div>
+
+                    <div class="creator-attribute-row" data-creator-stat-row="mnd">
+                        <div class="creator-attribute-name">MND</div>
+                        <button class="creator-adjust-button" type="button" data-creator-stat="mnd" data-creator-adjust="-1">−</button>
+                        <div class="creator-stat-value" data-creator-stat-value="mnd">6</div>
+                        <button class="creator-adjust-button" type="button" data-creator-stat="mnd" data-creator-adjust="1">+</button>
+                        <div class="creator-quarter-preview" data-creator-quarter="mnd">¼ MND: 2</div>
+                    </div>
+
+                    <div class="creator-attribute-row" data-creator-stat-row="cha">
+                        <div class="creator-attribute-name">CHA</div>
+                        <button class="creator-adjust-button" type="button" data-creator-stat="cha" data-creator-adjust="-1">−</button>
+                        <div class="creator-stat-value" data-creator-stat-value="cha">6</div>
+                        <button class="creator-adjust-button" type="button" data-creator-stat="cha" data-creator-adjust="1">+</button>
+                        <div class="creator-quarter-preview" data-creator-quarter="cha">¼ CHA: 2</div>
+                    </div>
+                </div>
+
+                <div class="creator-derived-grid">
+                    <div class="creator-derived"><span>Starting HP</span><strong id="creator-preview-hp">11</strong></div>
+                    <div class="creator-derived"><span>Land Speed</span><strong id="creator-preview-speed">20 ft</strong></div>
+                    <div class="creator-derived"><span>Deadlift</span><strong id="creator-preview-deadlift">Enter weight</strong></div>
+                    <div class="creator-derived"><span>Encumbered</span><strong id="creator-preview-encumbered">—</strong></div>
+                    <div class="creator-derived"><span>Push / Drag</span><strong id="creator-preview-push-drag">—</strong></div>
+                </div>
+            </section>
+
+            <section class="creator-step" data-creator-step="2">
+                <h2>Review Character</h2>
+                <p class="creator-step-note">
+                    Review the foundation of the character before creating the normal sheet.
+                </p>
+
+                <div class="creator-review-section">
+                    <h3>Basics</h3>
+                    <div class="creator-review-grid">
+                        <div class="creator-review-item"><span>Name</span><strong id="creator-review-name">—</strong></div>
+                        <div class="creator-review-item"><span>Gender</span><strong id="creator-review-gender">—</strong></div>
+                        <div class="creator-review-item"><span>Age</span><strong id="creator-review-age">—</strong></div>
+                        <div class="creator-review-item"><span>Height</span><strong id="creator-review-height">—</strong></div>
+                        <div class="creator-review-item"><span>Weight</span><strong id="creator-review-weight">—</strong></div>
+                        <div class="creator-review-item"><span>Level</span><strong>1</strong></div>
+                    </div>
+                </div>
+
+                <div class="creator-review-section">
+                    <h3>Attributes</h3>
+                    <div class="creator-review-grid">
+                        <div class="creator-review-item"><span>BOD</span><strong id="creator-review-bod">6</strong></div>
+                        <div class="creator-review-item"><span>DEX</span><strong id="creator-review-dex">6</strong></div>
+                        <div class="creator-review-item"><span>MND</span><strong id="creator-review-mnd">6</strong></div>
+                        <div class="creator-review-item"><span>CHA</span><strong id="creator-review-cha">6</strong></div>
+                        <div class="creator-review-item"><span>Starting HP</span><strong id="creator-review-hp">11</strong></div>
+                        <div class="creator-review-item"><span>Land Speed</span><strong id="creator-review-speed">20 ft</strong></div>
+                    </div>
+                </div>
+
+                <div class="creator-review-warning">
+                    After creation, the normal character sheet opens with these values already filled in. Race, Path, feats, traits, languages, equipment, and any campaign-specific exceptions can currently be completed there while those guided steps are being built.
+                </div>
+            </section>
+
+            <div class="creator-validation" id="creator-validation"></div>
+
+            <div class="character-creator-nav">
+                <button id="creator-previous" type="button">Previous</button>
+
+                <div class="creator-nav-right">
+                    <button id="creator-next" type="button">Next</button>
+                    <button id="creator-create" type="button" hidden>Create Character</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 
 
@@ -16332,6 +16842,634 @@ queueOwlbearTokenHudUpdate();
 }
 
 
+
+/* =========================================
+   GUIDED CHARACTER CREATOR
+   ========================================= */
+
+const CREATOR_BASE_ATTRIBUTE = 6;
+const CREATOR_ATTRIBUTE_POINTS = 6;
+const CREATOR_STEP_COUNT = 3;
+
+let creatorStep = 0;
+let creatorDraft = null;
+
+function makeFreshCreatorDraft() {
+    return {
+        name: "",
+        gender: "",
+        age: "",
+        height: "",
+        weight: "",
+        hair: "",
+        eyes: "",
+        level: 1,
+        bod: CREATOR_BASE_ATTRIBUTE,
+        dex: CREATOR_BASE_ATTRIBUTE,
+        mnd: CREATOR_BASE_ATTRIBUTE,
+        cha: CREATOR_BASE_ATTRIBUTE
+    };
+}
+
+function creatorQuarter(value) {
+    return Math.ceil(Number(value || 0) / 4);
+}
+
+function creatorLandSpeed() {
+    const rawSpeed = Number(creatorDraft?.dex || CREATOR_BASE_ATTRIBUTE) * 3;
+    return Math.round(rawSpeed / 5) * 5;
+}
+
+function creatorWeightNumber() {
+    const weight = parseFloat(String(creatorDraft?.weight || "").trim());
+    return Number.isFinite(weight) && weight > 0 ? weight : null;
+}
+
+function creatorDeadlift() {
+    const weight = creatorWeightNumber();
+    if (weight === null) return null;
+
+    return (
+        Number(creatorDraft?.bod || CREATOR_BASE_ATTRIBUTE) *
+        0.1 *
+        weight
+    );
+}
+
+function creatorFormatNumber(value) {
+    if (value === null || !Number.isFinite(Number(value))) return "—";
+
+    const rounded = Math.round(Number(value) * 100) / 100;
+    return String(rounded);
+}
+
+function creatorPointsSpent() {
+    if (!creatorDraft) return 0;
+
+    return ["bod", "dex", "mnd", "cha"]
+        .reduce(
+            (total, stat) =>
+                total +
+                Math.max(
+                    0,
+                    Number(creatorDraft[stat] || CREATOR_BASE_ATTRIBUTE) -
+                    CREATOR_BASE_ATTRIBUTE
+                ),
+            0
+        );
+}
+
+function creatorPointsRemaining() {
+    return Math.max(
+        0,
+        CREATOR_ATTRIBUTE_POINTS -
+        creatorPointsSpent()
+    );
+}
+
+function setCreatorText(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+}
+
+function syncCreatorBasicsFromInputs() {
+    document
+        .querySelectorAll("[data-creator-field]")
+        .forEach(input => {
+            creatorDraft[input.dataset.creatorField] = input.value;
+        });
+}
+
+function renderCreatorDerivedValues() {
+    const deadlift = creatorDeadlift();
+    const encumbered =
+        deadlift === null
+            ? null
+            : Math.ceil(deadlift / 3);
+    const pushDrag =
+        deadlift === null
+            ? null
+            : Math.ceil(deadlift * 1.5);
+
+    setCreatorText(
+        "creator-points-remaining",
+        creatorPointsRemaining()
+    );
+
+    ["bod", "dex", "mnd", "cha"].forEach(stat => {
+        const value = Number(creatorDraft[stat] || CREATOR_BASE_ATTRIBUTE);
+
+        document
+            .querySelectorAll(`[data-creator-stat-value="${stat}"]`)
+            .forEach(element => {
+                element.textContent = value;
+            });
+
+        document
+            .querySelectorAll(`[data-creator-quarter="${stat}"]`)
+            .forEach(element => {
+                element.textContent =
+                    "¼ " +
+                    stat.toUpperCase() +
+                    ": " +
+                    creatorQuarter(value);
+            });
+    });
+
+    setCreatorText(
+        "creator-preview-hp",
+        Number(creatorDraft.bod) + 5
+    );
+    setCreatorText(
+        "creator-preview-speed",
+        creatorLandSpeed() + " ft"
+    );
+    setCreatorText(
+        "creator-preview-deadlift",
+        deadlift === null
+            ? "Enter weight"
+            : creatorFormatNumber(deadlift) + " lb"
+    );
+    setCreatorText(
+        "creator-preview-encumbered",
+        encumbered === null
+            ? "—"
+            : creatorFormatNumber(encumbered) + " lb"
+    );
+    setCreatorText(
+        "creator-preview-push-drag",
+        pushDrag === null
+            ? "—"
+            : creatorFormatNumber(pushDrag) + " lb"
+    );
+
+    document
+        .querySelectorAll("[data-creator-adjust]")
+        .forEach(button => {
+            const stat = button.dataset.creatorStat;
+            const adjustment = Number(button.dataset.creatorAdjust);
+            const value = Number(creatorDraft[stat] || CREATOR_BASE_ATTRIBUTE);
+
+            button.disabled =
+                adjustment < 0
+                    ? value <= CREATOR_BASE_ATTRIBUTE
+                    : creatorPointsRemaining() <= 0;
+        });
+}
+
+function renderCreatorReview() {
+    const display = value =>
+        String(value || "").trim() || "—";
+
+    setCreatorText("creator-review-name", display(creatorDraft.name));
+    setCreatorText("creator-review-gender", display(creatorDraft.gender));
+    setCreatorText("creator-review-age", display(creatorDraft.age));
+    setCreatorText("creator-review-height", display(creatorDraft.height));
+    setCreatorText("creator-review-weight", display(creatorDraft.weight));
+
+    ["bod", "dex", "mnd", "cha"].forEach(stat => {
+        setCreatorText(
+            "creator-review-" + stat,
+            Number(creatorDraft[stat])
+        );
+    });
+
+    setCreatorText(
+        "creator-review-hp",
+        Number(creatorDraft.bod) + 5
+    );
+    setCreatorText(
+        "creator-review-speed",
+        creatorLandSpeed() + " ft"
+    );
+}
+
+function creatorStepIsValid(step = creatorStep) {
+    if (!creatorDraft) return false;
+
+    if (step === 0) {
+        return Boolean(String(creatorDraft.name || "").trim());
+    }
+
+    if (step === 1) {
+        return creatorPointsRemaining() === 0;
+    }
+
+    return true;
+}
+
+function renderCreatorValidation() {
+    const validation =
+        document.getElementById("creator-validation");
+
+    if (!validation) return;
+
+    if (creatorStep === 0 && !creatorStepIsValid(0)) {
+        validation.textContent =
+            "Enter a character name to continue.";
+        return;
+    }
+
+    if (creatorStep === 1 && !creatorStepIsValid(1)) {
+        const remaining = creatorPointsRemaining();
+        validation.textContent =
+            "Spend all 6 Attribute Points to continue. " +
+            remaining +
+            " remaining.";
+        return;
+    }
+
+    validation.textContent = "";
+}
+
+function renderCharacterCreator() {
+    document
+        .querySelectorAll("[data-creator-step]")
+        .forEach(step => {
+            step.classList.toggle(
+                "active",
+                Number(step.dataset.creatorStep) === creatorStep
+            );
+        });
+
+    document
+        .querySelectorAll("[data-creator-progress]")
+        .forEach(progress => {
+            const index = Number(progress.dataset.creatorProgress);
+
+            progress.classList.toggle(
+                "active",
+                index === creatorStep
+            );
+            progress.classList.toggle(
+                "complete",
+                index < creatorStep
+            );
+        });
+
+    const previousButton =
+        document.getElementById("creator-previous");
+    const nextButton =
+        document.getElementById("creator-next");
+    const createButton =
+        document.getElementById("creator-create");
+
+    if (previousButton) {
+        previousButton.hidden = creatorStep === 0;
+    }
+
+    if (nextButton) {
+        nextButton.hidden =
+            creatorStep === CREATOR_STEP_COUNT - 1;
+        nextButton.disabled =
+            !creatorStepIsValid();
+    }
+
+    if (createButton) {
+        createButton.hidden =
+            creatorStep !== CREATOR_STEP_COUNT - 1;
+    }
+
+    renderCreatorDerivedValues();
+    renderCreatorReview();
+    renderCreatorValidation();
+}
+
+function startGuidedCharacter() {
+    creatorDraft =
+        makeFreshCreatorDraft();
+    creatorStep = 0;
+
+    document
+        .querySelectorAll("[data-creator-field]")
+        .forEach(input => {
+            input.value =
+                creatorDraft[input.dataset.creatorField] ||
+                "";
+        });
+
+    showAppScreen(
+        "character-creator-screen"
+    );
+
+    renderCharacterCreator();
+
+    document
+        .querySelector('[data-creator-field="name"]')
+        ?.focus();
+}
+
+function setInputValueAndNotify(
+    input,
+    value
+) {
+    if (!input) return;
+
+    input.value =
+        value === null || value === undefined
+            ? ""
+            : String(value);
+
+    input.dispatchEvent(
+        new Event(
+            "input",
+            {
+                bubbles: true
+            }
+        )
+    );
+}
+
+async function createGuidedCharacter() {
+    syncCreatorBasicsFromInputs();
+
+    if (
+        !creatorStepIsValid(0) ||
+        !creatorStepIsValid(1)
+    ) {
+        creatorStep =
+            !creatorStepIsValid(0)
+                ? 0
+                : 1;
+
+        renderCharacterCreator();
+        return;
+    }
+
+    const createButton =
+        document.getElementById(
+            "creator-create"
+        );
+
+    if (createButton) {
+        createButton.disabled = true;
+        createButton.textContent =
+            "Creating…";
+    }
+
+    try {
+        startNewCharacter();
+
+        const headerInputs =
+            document.querySelectorAll(
+                "#tab1 .character-header input"
+            );
+
+        setInputValueAndNotify(
+            headerInputs[0],
+            creatorDraft.name
+        );
+        setInputValueAndNotify(
+            headerInputs[1],
+            ""
+        );
+        setInputValueAndNotify(
+            headerInputs[2],
+            1
+        );
+        setInputValueAndNotify(
+            headerInputs[3],
+            0
+        );
+
+        const backgroundPrimary =
+            document.querySelectorAll(
+                "#tab4 .background-line.primary input"
+            );
+
+        setInputValueAndNotify(
+            backgroundPrimary[0],
+            creatorDraft.name
+        );
+        setInputValueAndNotify(
+            backgroundPrimary[1],
+            creatorDraft.gender
+        );
+        setInputValueAndNotify(
+            backgroundPrimary[2],
+            creatorDraft.age
+        );
+        setInputValueAndNotify(
+            backgroundPrimary[3],
+            creatorDraft.height
+        );
+        setInputValueAndNotify(
+            backgroundPrimary[4],
+            creatorDraft.weight
+        );
+
+        const backgroundSecondary =
+            document.querySelector(
+                "#tab4 .background-line.secondary"
+            );
+
+        setInputValueAndNotify(
+            backgroundSecondary?.querySelector(
+                'input[placeholder="Race"]'
+            ),
+            ""
+        );
+        setInputValueAndNotify(
+            backgroundSecondary?.querySelector(
+                'textarea[placeholder="Hair"]'
+            ),
+            creatorDraft.hair
+        );
+        setInputValueAndNotify(
+            backgroundSecondary?.querySelector(
+                'textarea[placeholder="Eyes"]'
+            ),
+            creatorDraft.eyes
+        );
+
+        ["bod", "dex", "mnd", "cha"]
+            .forEach(stat => {
+                setInputValueAndNotify(
+                    document.getElementById(stat),
+                    creatorDraft[stat]
+                );
+            });
+
+        const hpInputs =
+            document.querySelectorAll(
+                "#tab1 .current-max-field .current-max-values input"
+            );
+
+        const startingHp =
+            Number(creatorDraft.bod) +
+            5;
+
+        setInputValueAndNotify(
+            hpInputs[0],
+            startingHp
+        );
+        setInputValueAndNotify(
+            hpInputs[1],
+            startingHp
+        );
+
+        const deadlift =
+            creatorDeadlift();
+
+        if (deadlift !== null) {
+            setInputValueAndNotify(
+                document.getElementById(
+                    "deadlift"
+                ),
+                Math.round(deadlift * 100) / 100
+            );
+        }
+
+        await saveCharacterSheet();
+
+        document
+            .querySelector(
+                '.tab-button[data-tab="tab1"]'
+            )
+            ?.click();
+    }
+    catch (error) {
+        console.error(
+            "Could not create guided character:",
+            error
+        );
+
+        window.alert(
+            "The character sheet was opened, but the guided character could not be saved automatically. Your entered values may still be present on the sheet."
+        );
+    }
+    finally {
+        if (createButton) {
+            createButton.disabled = false;
+            createButton.textContent =
+                "Create Character";
+        }
+    }
+}
+
+document
+    .querySelectorAll("[data-creator-field]")
+    .forEach(input => {
+        input.addEventListener(
+            "input",
+            () => {
+                if (!creatorDraft) return;
+
+                creatorDraft[input.dataset.creatorField] =
+                    input.value;
+
+                renderCharacterCreator();
+            }
+        );
+    });
+
+document
+    .querySelectorAll("[data-creator-adjust]")
+    .forEach(button => {
+        button.addEventListener(
+            "click",
+            () => {
+                if (!creatorDraft) return;
+
+                const stat =
+                    button.dataset.creatorStat;
+                const adjustment =
+                    Number(
+                        button.dataset.creatorAdjust
+                    );
+                const current =
+                    Number(
+                        creatorDraft[stat] ||
+                        CREATOR_BASE_ATTRIBUTE
+                    );
+
+                if (
+                    adjustment < 0 &&
+                    current <= CREATOR_BASE_ATTRIBUTE
+                ) {
+                    return;
+                }
+
+                if (
+                    adjustment > 0 &&
+                    creatorPointsRemaining() <= 0
+                ) {
+                    return;
+                }
+
+                creatorDraft[stat] =
+                    current +
+                    adjustment;
+
+                renderCharacterCreator();
+            }
+        );
+    });
+
+document
+    .getElementById(
+        "creator-exit"
+    )
+    .addEventListener(
+        "click",
+        () => {
+            showAppScreen(
+                "main-menu-screen"
+            );
+        }
+    );
+
+document
+    .getElementById(
+        "creator-previous"
+    )
+    .addEventListener(
+        "click",
+        () => {
+            creatorStep =
+                Math.max(
+                    0,
+                    creatorStep - 1
+                );
+
+            renderCharacterCreator();
+        }
+    );
+
+document
+    .getElementById(
+        "creator-next"
+    )
+    .addEventListener(
+        "click",
+        () => {
+            syncCreatorBasicsFromInputs();
+
+            if (!creatorStepIsValid()) {
+                renderCharacterCreator();
+                return;
+            }
+
+            creatorStep =
+                Math.min(
+                    CREATOR_STEP_COUNT - 1,
+                    creatorStep + 1
+                );
+
+            renderCharacterCreator();
+        }
+    );
+
+document
+    .getElementById(
+        "creator-create"
+    )
+    .addEventListener(
+        "click",
+        createGuidedCharacter
+    );
+
+
 /* =========================================
    HANDBOOK NAVIGATION
    ========================================= */
@@ -16471,6 +17609,16 @@ document
 document
     .getElementById(
         "new-character"
+    )
+    .addEventListener(
+        "click",
+        startGuidedCharacter
+    );
+
+
+document
+    .getElementById(
+        "blank-character"
     )
     .addEventListener(
         "click",
