@@ -4716,10 +4716,10 @@ if (
 
         <div class="character-creator-progress">
             <div class="creator-progress-step active" data-creator-progress="0">1. Basics</div>
-            <div class="creator-progress-step" data-creator-progress="1">2. Race</div>
-            <div class="creator-progress-step" data-creator-progress="2">3. Details</div>
-            <div class="creator-progress-step" data-creator-progress="3">4. Path</div>
-            <div class="creator-progress-step" data-creator-progress="4">5. Attributes</div>
+            <div class="creator-progress-step" data-creator-progress="1">2. Attributes</div>
+            <div class="creator-progress-step" data-creator-progress="2">3. Race</div>
+            <div class="creator-progress-step" data-creator-progress="3">4. Details</div>
+            <div class="creator-progress-step" data-creator-progress="4">5. Path</div>
             <div class="creator-progress-step" data-creator-progress="5">6. Review</div>
         </div>
 
@@ -4750,6 +4750,64 @@ if (
             </section>
 
             <section class="creator-step" data-creator-step="1">
+                <h2>Attributes</h2>
+                <p class="creator-step-note">
+                    RPG Unleashed b4.1 begins from BOD 6, DEX 6, MND 6, and CHA 6. Spend all 6 starting Attribute Points here first. Race and Path adjustments apply afterward and do not consume these points.
+                </p>
+
+                <div class="creator-points-banner">
+                    <span>Attribute Points Remaining</span>
+                    <strong id="creator-points-remaining">6</strong>
+                </div>
+
+                <div class="creator-attribute-list">
+                    <div class="creator-attribute-row" data-creator-stat-row="bod">
+                        <div class="creator-attribute-name">BOD</div>
+                        <button class="creator-adjust-button" type="button" data-creator-stat="bod" data-creator-adjust="-1">−</button>
+                        <div class="creator-stat-value" data-creator-stat-value="bod">6</div>
+                        <button class="creator-adjust-button" type="button" data-creator-stat="bod" data-creator-adjust="1">+</button>
+                        <div class="creator-quarter-preview">
+                            <span data-creator-quarter="bod">¼ BOD: 2</span>
+                            <span class="creator-racial-baseline" data-creator-baseline="bod"></span>
+                        </div>
+                    </div>
+
+                    <div class="creator-attribute-row" data-creator-stat-row="dex">
+                        <div class="creator-attribute-name">DEX</div>
+                        <button class="creator-adjust-button" type="button" data-creator-stat="dex" data-creator-adjust="-1">−</button>
+                        <div class="creator-stat-value" data-creator-stat-value="dex">6</div>
+                        <button class="creator-adjust-button" type="button" data-creator-stat="dex" data-creator-adjust="1">+</button>
+                        <div class="creator-quarter-preview">
+                            <span data-creator-quarter="dex">¼ DEX: 2</span>
+                            <span class="creator-racial-baseline" data-creator-baseline="dex"></span>
+                        </div>
+                    </div>
+
+                    <div class="creator-attribute-row" data-creator-stat-row="mnd">
+                        <div class="creator-attribute-name">MND</div>
+                        <button class="creator-adjust-button" type="button" data-creator-stat="mnd" data-creator-adjust="-1">−</button>
+                        <div class="creator-stat-value" data-creator-stat-value="mnd">6</div>
+                        <button class="creator-adjust-button" type="button" data-creator-stat="mnd" data-creator-adjust="1">+</button>
+                        <div class="creator-quarter-preview">
+                            <span data-creator-quarter="mnd">¼ MND: 2</span>
+                            <span class="creator-racial-baseline" data-creator-baseline="mnd"></span>
+                        </div>
+                    </div>
+
+                    <div class="creator-attribute-row" data-creator-stat-row="cha">
+                        <div class="creator-attribute-name">CHA</div>
+                        <button class="creator-adjust-button" type="button" data-creator-stat="cha" data-creator-adjust="-1">−</button>
+                        <div class="creator-stat-value" data-creator-stat-value="cha">6</div>
+                        <button class="creator-adjust-button" type="button" data-creator-stat="cha" data-creator-adjust="1">+</button>
+                        <div class="creator-quarter-preview">
+                            <span data-creator-quarter="cha">¼ CHA: 2</span>
+                            <span class="creator-racial-baseline" data-creator-baseline="cha"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="creator-step" data-creator-step="2">
                 <h2>Race</h2>
                 <p class="creator-step-note">
                     Choose a base race from Races and Templates One v1. Racial variants and mixed-race creation will be added separately.
@@ -4759,10 +4817,10 @@ if (
 
             </section>
 
-            <section class="creator-step" data-creator-step="2">
+            <section class="creator-step" data-creator-step="3">
                 <h2>Character Details</h2>
                 <p class="creator-step-note">
-                    These details come after Race because the race selected can affect age, body size, appearance, and other physical characteristics.
+                    These details come after Attributes and Race because both can affect your final BOD, body size, appearance, and normal weight adjustment.
                 </p>
 
                 <div class="creator-grid">
@@ -4829,7 +4887,7 @@ if (
                 </div>
             </section>
 
-            <section class="creator-step" data-creator-step="3">
+            <section class="creator-step" data-creator-step="4">
                 <h2>Path</h2>
                 <p class="creator-step-note">Build your Path from Origin, starting gear, Perk, Drawback, Role, Role Bonuses, and Drive. Choices borrowed from another Origin or made custom should be approved by your GM.</p>
                 <div class="creator-path-progress">
@@ -4987,72 +5045,6 @@ if (
                     <div class="creator-role-bonus-card" data-creator-role-bonus-card="1"><h4>Role Bonus 2</h4><div class="creator-path-choice-grid"><label class="creator-path-control"><span>Bonus Type</span><select id="creator-role-bonus-type-1" data-creator-role-bonus-index="1" data-creator-role-bonus-field="type"><option value="">Choose bonus</option><option value="skill">+2 to a Skill</option><option value="knowledge">+2 to one Knowledge category</option><option value="gearFeat">+1 Gear Feat</option><option value="craftFeat">+1 Craft Feat</option><option value="language">+1 Additional Language</option></select></label><label class="creator-path-control"><span>Selection</span><select id="creator-role-bonus-detail-1" data-creator-role-bonus-index="1" data-creator-role-bonus-field="detail"></select><input id="creator-role-bonus-other-1" type="text" data-creator-role-bonus-index="1" data-creator-role-bonus-field="other" placeholder="Enter selection" hidden></label></div></div>
                 </div>
                 <div class="creator-path-page" data-creator-path-step="6"><h3>Drive</h3><p class="creator-step-note">Your Drive is the character's why: a goal, ambition, duty, obsession, ideal, or other motivation that pushes them forward.</p><label class="creator-path-control"><span>Drive</span><textarea data-creator-field="drive" placeholder="Example: Reclaim my lost title, protect my family, discover forbidden knowledge..."></textarea></label></div>
-            </section>
-
-            <section class="creator-step" data-creator-step="4">
-                <h2>Attributes</h2>
-                <p class="creator-step-note">
-                    RPG Unleashed b4.1 begins from BOD 6, DEX 6, MND 6, and CHA 6. Race and any direct Path adjustment affect that baseline, then you spend all 6 starting Attribute Points.
-                </p>
-
-                <div class="creator-points-banner">
-                    <span>Attribute Points Remaining</span>
-                    <strong id="creator-points-remaining">6</strong>
-                </div>
-
-                <div class="creator-attribute-list">
-                    <div class="creator-attribute-row" data-creator-stat-row="bod">
-                        <div class="creator-attribute-name">BOD</div>
-                        <button class="creator-adjust-button" type="button" data-creator-stat="bod" data-creator-adjust="-1">−</button>
-                        <div class="creator-stat-value" data-creator-stat-value="bod">6</div>
-                        <button class="creator-adjust-button" type="button" data-creator-stat="bod" data-creator-adjust="1">+</button>
-                        <div class="creator-quarter-preview">
-                            <span data-creator-quarter="bod">¼ BOD: 2</span>
-                            <span class="creator-racial-baseline" data-creator-baseline="bod"></span>
-                        </div>
-                    </div>
-
-                    <div class="creator-attribute-row" data-creator-stat-row="dex">
-                        <div class="creator-attribute-name">DEX</div>
-                        <button class="creator-adjust-button" type="button" data-creator-stat="dex" data-creator-adjust="-1">−</button>
-                        <div class="creator-stat-value" data-creator-stat-value="dex">6</div>
-                        <button class="creator-adjust-button" type="button" data-creator-stat="dex" data-creator-adjust="1">+</button>
-                        <div class="creator-quarter-preview">
-                            <span data-creator-quarter="dex">¼ DEX: 2</span>
-                            <span class="creator-racial-baseline" data-creator-baseline="dex"></span>
-                        </div>
-                    </div>
-
-                    <div class="creator-attribute-row" data-creator-stat-row="mnd">
-                        <div class="creator-attribute-name">MND</div>
-                        <button class="creator-adjust-button" type="button" data-creator-stat="mnd" data-creator-adjust="-1">−</button>
-                        <div class="creator-stat-value" data-creator-stat-value="mnd">6</div>
-                        <button class="creator-adjust-button" type="button" data-creator-stat="mnd" data-creator-adjust="1">+</button>
-                        <div class="creator-quarter-preview">
-                            <span data-creator-quarter="mnd">¼ MND: 2</span>
-                            <span class="creator-racial-baseline" data-creator-baseline="mnd"></span>
-                        </div>
-                    </div>
-
-                    <div class="creator-attribute-row" data-creator-stat-row="cha">
-                        <div class="creator-attribute-name">CHA</div>
-                        <button class="creator-adjust-button" type="button" data-creator-stat="cha" data-creator-adjust="-1">−</button>
-                        <div class="creator-stat-value" data-creator-stat-value="cha">6</div>
-                        <button class="creator-adjust-button" type="button" data-creator-stat="cha" data-creator-adjust="1">+</button>
-                        <div class="creator-quarter-preview">
-                            <span data-creator-quarter="cha">¼ CHA: 2</span>
-                            <span class="creator-racial-baseline" data-creator-baseline="cha"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="creator-derived-grid">
-                    <div class="creator-derived"><span>Starting HP</span><strong id="creator-preview-hp">11</strong></div>
-                    <div class="creator-derived"><span>Land Speed</span><strong id="creator-preview-speed">20 ft</strong></div>
-                    <div class="creator-derived"><span>Deadlift</span><strong id="creator-preview-deadlift">Enter weight</strong></div>
-                    <div class="creator-derived"><span>Encumbered</span><strong id="creator-preview-encumbered">—</strong></div>
-                    <div class="creator-derived"><span>Push / Drag</span><strong id="creator-preview-push-drag">—</strong></div>
-                </div>
             </section>
 
             <section class="creator-step" data-creator-step="5">
@@ -20280,6 +20272,20 @@ function creatorRaceModifiers() {
     return result;
 }
 
+function creatorAllocatedAttributeValue(
+    stat
+) {
+    return (
+        CREATOR_BASE_ATTRIBUTE +
+        Number(
+            creatorDraft?.attributeSpends?.[
+                stat
+            ] ||
+            0
+        )
+    );
+}
+
 function creatorAttributeBaseline(stat) {
     return (
         CREATOR_BASE_ATTRIBUTE +
@@ -20486,6 +20492,17 @@ function creatorAverageWeightForHeight() {
             )
         ) /
         2
+    );
+}
+
+function creatorWeightAdjustmentLimit() {
+    return (
+        creatorQuarter(
+            creatorAttributeValue(
+                "bod"
+            )
+        ) *
+        10
     );
 }
 
@@ -21336,15 +21353,39 @@ function renderCreatorDetailGuidance() {
     setCreatorText(
         "creator-weight-guidance",
         band
-            ? "At " +
-              creatorHeightText() +
-              ", the listed average weight pool is " +
-              band[2] +
-              "–" +
-              band[3] +
-              " lbs. Default average: " +
-              creatorAverageWeightForHeight() +
-              " lbs."
+            ? (
+                "At " +
+                creatorHeightText() +
+                ", the listed average weight pool is " +
+                band[2] +
+                "–" +
+                band[3] +
+                " lbs. Default average: " +
+                creatorAverageWeightForHeight() +
+                " lbs. Current BOD " +
+                creatorAttributeValue(
+                    "bod"
+                ) +
+                " gives ¼ BOD " +
+                creatorQuarter(
+                    creatorAttributeValue(
+                        "bod"
+                    )
+                ) +
+                ", allowing up to ±" +
+                creatorWeightAdjustmentLimit() +
+                " lbs from the average (" +
+                (
+                    creatorAverageWeightForHeight() -
+                    creatorWeightAdjustmentLimit()
+                ) +
+                "–" +
+                (
+                    creatorAverageWeightForHeight() +
+                    creatorWeightAdjustmentLimit()
+                ) +
+                " lbs). The field remains editable for unusual builds."
+              )
             : (
                 bounds
                     ? "Choose a height within the listed race range to see its average weight pool."
@@ -21368,27 +21409,6 @@ function renderCreatorDetailGuidance() {
 }
 
 function renderCreatorDerivedValues() {
-    const deadlift =
-        creatorDeadlift();
-
-    const encumbered =
-        deadlift ===
-            null
-            ? null
-            : Math.ceil(
-                deadlift /
-                3
-            );
-
-    const pushDrag =
-        deadlift ===
-            null
-            ? null
-            : Math.ceil(
-                deadlift *
-                1.5
-            );
-
     setCreatorText(
         "creator-points-remaining",
         creatorPointsRemaining()
@@ -21402,13 +21422,16 @@ function renderCreatorDerivedValues() {
     ].forEach(
         stat => {
             const value =
-                creatorAttributeValue(
+                creatorAllocatedAttributeValue(
                     stat
                 );
 
-            const baseline =
-                creatorAttributeBaseline(
-                    stat
+            const spent =
+                Number(
+                    creatorDraft
+                        ?.attributeSpends
+                        ?.[stat] ||
+                    0
                 );
 
             document
@@ -21451,55 +21474,16 @@ function renderCreatorDerivedValues() {
                 .forEach(
                     element => {
                         element.textContent =
-                            "Race / Path baseline: " +
-                            baseline;
+                            "Starting 6 • " +
+                            spent +
+                            (
+                                spent === 1
+                                    ? " point spent"
+                                    : " points spent"
+                            );
                     }
                 );
         }
-    );
-
-    setCreatorText(
-        "creator-preview-hp",
-        creatorStartingHp()
-    );
-
-    setCreatorText(
-        "creator-preview-speed",
-        creatorLandSpeed() +
-        " ft"
-    );
-
-    setCreatorText(
-        "creator-preview-deadlift",
-        deadlift ===
-            null
-            ? "Enter weight"
-            : creatorFormatNumber(
-                deadlift
-            ) +
-              " lb"
-    );
-
-    setCreatorText(
-        "creator-preview-encumbered",
-        encumbered ===
-            null
-            ? "—"
-            : creatorFormatNumber(
-                encumbered
-            ) +
-              " lb"
-    );
-
-    setCreatorText(
-        "creator-preview-push-drag",
-        pushDrag ===
-            null
-            ? "—"
-            : creatorFormatNumber(
-                pushDrag
-            ) +
-              " lb"
     );
 
     document
@@ -21794,22 +21778,22 @@ function creatorStepIsValid(
         step ===
         1
     ) {
-        return creatorRaceIsComplete();
+        return creatorPointsRemaining() ===
+            0;
     }
 
     if (
         step ===
-        3
+        2
     ) {
-        return creatorPathIsComplete();
+        return creatorRaceIsComplete();
     }
 
     if (
         step ===
         4
     ) {
-        return creatorPointsRemaining() ===
-            0;
+        return creatorPathIsComplete();
     }
 
     return true;
@@ -21842,6 +21826,23 @@ function renderCreatorValidation() {
     if (
         creatorStep ===
             1 &&
+        !creatorStepIsValid(
+            1
+        )
+    ) {
+        const remaining =
+            creatorPointsRemaining();
+
+        validation.textContent =
+            "Spend all 6 Attribute Points to continue. " +
+            remaining +
+            " remaining.";
+        return;
+    }
+
+    if (
+        creatorStep ===
+            2 &&
         !getCreatorRace()
     ) {
         validation.textContent =
@@ -21851,9 +21852,9 @@ function renderCreatorValidation() {
 
     if (
         creatorStep ===
-            1 &&
+            2 &&
         !creatorStepIsValid(
-            1
+            2
         )
     ) {
         validation.textContent =
@@ -21861,12 +21862,28 @@ function renderCreatorValidation() {
         return;
     }
 
-    if (creatorStep===3&&!creatorPathSubstepIsValid()) {
-        const messages=["Choose an Origin to continue.","Choose a starting gear package or enter a custom package to continue.","Choose a Perk or enter a custom Perk to continue.","Choose a Drawback or enter a custom Drawback to continue.","Enter a Role to continue.","Choose two valid Role Bonuses to continue.","Enter a Drive to continue."];
-        validation.textContent=messages[creatorPathStep]||"Complete this Path step to continue.";return;
-    }
-    if (creatorStep===4&&!creatorStepIsValid(4)) {
-        const remaining=creatorPointsRemaining();validation.textContent="Spend all 6 Attribute Points to continue. "+remaining+" remaining.";return;
+    if (
+        creatorStep ===
+            4 &&
+        !creatorPathSubstepIsValid()
+    ) {
+        const messages = [
+            "Choose an Origin to continue.",
+            "Choose a starting gear package or enter a custom package to continue.",
+            "Choose a Perk or enter a custom Perk to continue.",
+            "Choose a Drawback or enter a custom Drawback to continue.",
+            "Enter a Role to continue.",
+            "Choose two valid Role Bonuses to continue.",
+            "Enter a Drive to continue."
+        ];
+
+        validation.textContent =
+            messages[
+                creatorPathStep
+            ] ||
+            "Complete this Path step to continue.";
+
+        return;
     }
 
     validation.textContent =
@@ -21955,7 +21972,7 @@ function renderCharacterCreator() {
             1;
 
         nextButton.disabled =
-            creatorStep === 3
+            creatorStep === 4
                 ? !creatorPathSubstepIsValid()
                 : !creatorStepIsValid();
     }
@@ -22078,7 +22095,7 @@ async function createGuidedCharacter() {
         [
             0,
             1,
-            3,
+            2,
             4
         ]
         .find(
@@ -22427,13 +22444,6 @@ document
                         }
                     );
 
-                    creatorDraft.attributeSpends = {
-                        bod: 0,
-                        dex: 0,
-                        mnd: 0,
-                        cha: 0
-                    };
-
                     creatorOpenGearPackage =
                         "";
 
@@ -22558,13 +22568,6 @@ function setupCreatorPathOptionEvents(
                 ) {
                     creatorDraft.drawbackExtra =
                         "";
-
-                    creatorDraft.attributeSpends = {
-                        bod: 0,
-                        dex: 0,
-                        mnd: 0,
-                        cha: 0
-                    };
                 }
 
                 renderCharacterCreator();
@@ -22732,13 +22735,6 @@ function setupCreatorPathOptionEvents(
 
                     creatorDraft.drawbackExtra =
                         "";
-
-                    creatorDraft.attributeSpends = {
-                        bod: 0,
-                        dex: 0,
-                        mnd: 0,
-                        cha: 0
-                    };
                 }
 
                 renderCharacterCreator();
@@ -22930,7 +22926,7 @@ document
         }
     );
 
-document.querySelectorAll("[data-creator-path-field]").forEach(input=>{input.addEventListener(input.tagName==="TEXTAREA"?"input":"change",()=>{if(!creatorDraft)return;const f=input.dataset.creatorPathField;creatorDraft[f]=input.value;if(f==="gearSource"){creatorDraft.gearChoice="";creatorOpenGearPackage="";}if(f==="perkSource"){creatorDraft.perkChoice="";creatorOpenPerkChoice="";}if(f==="drawbackSource"){creatorDraft.drawbackChoice="";creatorDraft.drawbackExtra="";creatorOpenDrawbackChoice="";creatorDraft.attributeSpends={bod:0,dex:0,mnd:0,cha:0};}renderCharacterCreator();});});
+document.querySelectorAll("[data-creator-path-field]").forEach(input=>{input.addEventListener(input.tagName==="TEXTAREA"?"input":"change",()=>{if(!creatorDraft)return;const f=input.dataset.creatorPathField;creatorDraft[f]=input.value;if(f==="gearSource"){creatorDraft.gearChoice="";creatorOpenGearPackage="";}if(f==="perkSource"){creatorDraft.perkChoice="";creatorOpenPerkChoice="";}if(f==="drawbackSource"){creatorDraft.drawbackChoice="";creatorDraft.drawbackExtra="";creatorOpenDrawbackChoice="";}renderCharacterCreator();});});
 document.querySelectorAll("[data-creator-role-bonus-field]").forEach(input=>{input.addEventListener(input.tagName==="INPUT"?"input":"change",()=>{if(!creatorDraft)return;const i=Number(input.dataset.creatorRoleBonusIndex),f=input.dataset.creatorRoleBonusField,b=creatorDraft.roleBonuses[i];b[f]=input.value;if(f==="type"){b.detail="";b.other="";}if(f==="detail"&&input.value!=="Other")b.other="";renderCharacterCreator();});});
 
 document
@@ -23007,13 +23003,6 @@ document
                 creatorDraft.raceChoice =
                     choiceButton.dataset.creatorRaceChoice;
 
-                creatorDraft.attributeSpends = {
-                    bod: 0,
-                    dex: 0,
-                    mnd: 0,
-                    cha: 0
-                };
-
                 renderCharacterCreator();
                 return;
             }
@@ -23044,13 +23033,6 @@ document
                 ) {
                     creatorDraft.raceChoice =
                         "";
-
-                    creatorDraft.attributeSpends = {
-                        bod: 0,
-                        dex: 0,
-                        mnd: 0,
-                        cha: 0
-                    };
 
                     creatorDraft.hairColor = "";
                     creatorDraft.hairOther = "";
@@ -23207,7 +23189,7 @@ document
         () => {
             syncCreatorFieldsFromInputs();
 
-            if (creatorStep===3&&creatorPathStep>0) {creatorPathStep-=1;} else {creatorStep=Math.max(0,creatorStep-1);}
+            if (creatorStep===4&&creatorPathStep>0) {creatorPathStep-=1;} else {creatorStep=Math.max(0,creatorStep-1);}
 
             renderCharacterCreator();
         }
@@ -23222,7 +23204,7 @@ document
         () => {
             syncCreatorFieldsFromInputs();
 
-            if (creatorStep===3) {
+            if (creatorStep===4) {
                 if(!creatorPathSubstepIsValid()){renderCharacterCreator();return;}
                 if(creatorPathStep<CREATOR_PATH_STEP_COUNT-1){creatorPathStep+=1;}else{creatorStep+=1;}
                 renderCharacterCreator();return;
