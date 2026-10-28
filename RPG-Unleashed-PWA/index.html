@@ -3,7 +3,7 @@
 
 <head>
 
-<link rel="manifest" href="/manifest.json?build=1.56.0">
+<link rel="manifest" href="/manifest.json?build=1.57.0">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="theme-color" content="#ffffff">
@@ -23888,7 +23888,7 @@ showAppScreen(
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker
-            .register("/service-worker.js?build=1.56.0", { scope: "/" })
+            .register("/service-worker.js?build=1.57.0", { scope: "/" })
             .catch(error => {
                 console.error(
                     "Service worker registration failed:",
@@ -24041,7 +24041,7 @@ if ("serviceWorker" in navigator) {
 })();
 </script>
 
-<script src="/levelup.js?build=1.56.0" defer></script>
+<script src="/levelup.js?build=1.57.0" defer></script>
 </body>
 
 </html>
