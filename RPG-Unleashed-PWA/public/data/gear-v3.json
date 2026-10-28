@@ -2062,6 +2062,126 @@
       "defense": "+2 / +2 / -3",
       "description": "",
       "sourceText": "Modification: Masterwork (Orcish)\nCost: x5 | DR: +2 | Dflc: +2 | Dex: -3"
+    },
+    {
+      "name": "Dirt Ale",
+      "category": "Alcohol",
+      "kind": "consumable",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "The pisswater ale you’ll find in most downtrodden, backstreet alley bars and inns. Commonly made by and drank by Orcs.",
+      "sourceText": "Cost: 5 Copper / Mug | Weight: 1 lbs\nCost: 5 Silver / Jug | Weight: 9 lbs | Contains: 8 Mugs\nCost: 6 Gold / Firkin | Weight: 85 lbs | Contains: 80 Mugs\nSave DC: 10 + 1/Mug | Drunk Stacks: 3\nDescription: The pisswater ale you’ll find in most downtrodden, backstreet alley bars and inns. Commonly made by and drank by Orcs."
+    },
+    {
+      "name": "Sweet Ale",
+      "category": "Alcohol",
+      "kind": "consumable",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "The standard ale you’d find in decent inns and in the mugs of most adventurers.",
+      "sourceText": "Cost: 1 Silver / Mug | Weight: 1 lbs\nCost: 1 Gold / Jug | Weight: 9 lbs | Contains: 8 Mugs\nCost: 11 Gold / Firkin | Weight: 85 lbs | Contains: 80 Mugs\nSave DC: 10 + 1/Mug | Drunk Stacks: 4\nDescription: The standard ale you’d find in decent inns and in the mugs of most adventurers."
+    },
+    {
+      "name": "Craft Ale",
+      "category": "Alcohol",
+      "kind": "consumable",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "Excellent ale, crafted by the experienced hands of Master Dwarven artisans.",
+      "sourceText": "Cost: 5 Silver / Mug | Weight: 1 lbs\nCost: 5 Gold / Jug | Weight: 9 lbs | Contains: 8 Mugs\nCost: 54 Gold / Firkin | Weight: 85 lbs | Contains: 80 Mugs\nSave DC: 10 + 2/Mug | Drunk Stacks: 5\nDescription: Excellent ale, crafted by the experienced hands of Master Dwarven artisans."
+    },
+    {
+      "name": "Maritime Mead",
+      "category": "Alcohol",
+      "kind": "consumable",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "A fine mead for adventurers and the average bar patron alike. A sensible drink at a sensible price.",
+      "sourceText": "Cost: 7 Silver / Mug | Weight: 1 lbs\nCost: 7 Gold / Jug | Weight: 9 lbs | Contains: 8 Mugs\nCost: 75 Gold / Firkin | Weight: 85 lbs | Contains: 80 Mugs\nSave DC: 12 + 2/Mug | Drunk Stacks: 4\nDescription: A fine mead for adventurers and the average bar patron alike. A sensible drink at a sensible price."
+    },
+    {
+      "name": "Golden Hand Mead",
+      "category": "Alcohol",
+      "kind": "consumable",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "The signature mead of the Dwarves, the recipe and rituals guarded more than most vaults. This is the mead of adventure and pleasure. If you ask for top-shelf mead at any inn, this will be what you get.",
+      "sourceText": "Cost: 1 Gold / Mug | Weight: 1 lbs\nCost: 9 Gold / Jug | Weight: 9 lbs | Contains: 8 Mugs\nCost: 82 Gold / Firkin | Weight: 85 lbs | Contains: 80 Mugs\nSave DC: 12 + 3/Mug | Drunk Stacks: 5\nDescription: The signature mead of the Dwarves, the recipe and rituals guarded more than most vaults. This is the mead of adventure and pleasure. If you ask for top-shelf mead at any inn, this will be what you get."
+    },
+    {
+      "name": "Stone Whiskey",
+      "category": "Alcohol",
+      "kind": "consumable",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "Whisky crafted by roguish Dwarves, often found in inns of all kinds.",
+      "sourceText": "Cost: 4 Silver / Glass | Weight: .1 lbs\nCost: 8 Gold / Bottle | Weight: 1 lbs | Contains: 16 Glasses\nSave DC: 14 + 2/Glass | Drunk Stacks: 8\nDescription: Whisky crafted by roguish Dwarves, often found in inns of all kinds."
+    },
+    {
+      "name": "Phoenix Whiskey",
+      "category": "Alcohol",
+      "kind": "consumable",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "Fine spiced whisky made by experienced distillers using fine ingredients.",
+      "sourceText": "Cost: 1 Gold / Glass | Weight: .1 lbs\nCost: 19 Gold / Bottle | Weight: 1 lbs | Contains: 16 Glasses\nSave DC: 14 + 4/Glass | Drunk Stacks: 10\nDescription: Fine spiced whisky made by experienced distillers using fine ingredients."
+    },
+    {
+      "name": "Fire Rum",
+      "category": "Alcohol",
+      "kind": "consumable",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "A basic spiced rum that can commonly be found in any inn or bar.",
+      "sourceText": "Cost: 1 Gold / Glass | Weight: .1 lbs\nCost: 18 Gold / Bottle | Weight: 1 lbs | Contains: 16 Glasses\nSave DC: 14 + 3/Glass | Drunk Stacks: 10\nDescription: A basic spiced rum that can commonly be found in any inn or bar."
+    },
+    {
+      "name": "Lotus Rum",
+      "category": "Alcohol",
+      "kind": "consumable",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "A mysterious rum that is distributed by mysterious people. Few inns dare to take this rum knowing nothing of where it’s made or by who, but the inns who sell this rum tend to make a killing doing so.",
+      "sourceText": "Cost: 3 Gold / Glass | Weight: .1 lbs\nCost: 55 Gold / Bottle | Weight: 1 lbs | Contains: 16 Glasses\nSave DC: 14 + 4/Glass | Drunk Stacks: 12\nDescription: A mysterious rum that is distributed by mysterious people. Few inns dare to take this rum knowing nothing of where it’s made or by who, but the inns who sell this rum tend to make a killing doing so."
+    },
+    {
+      "name": "Elf Snot",
+      "category": "Alcohol",
+      "kind": "consumable",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "A mocking “wine” made by some relatively sophisticated orcs. Often seen as rubbish wine but others seem to prefer the smooth, almost sludgy texture of this dark red wine.",
+      "sourceText": "Cost: 1 Gold / Glass | Weight: .1 lbs\nCost: 20 Gold / Bottle | Weight: 1 lbs | Contains: 16 Glasses\nSave DC: 12 + 3/Glass | Drunk Stacks: 10\nDescription: A mocking “wine” made by some relatively sophisticated orcs. Often seen as rubbish wine but others seem to prefer the smooth, almost sludgy texture of this dark red wine."
+    },
+    {
+      "name": "Wilted Wine",
+      "category": "Alcohol",
+      "kind": "consumable",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "A fine fruity wine crafted by elves with grapes given freely by nature, processed with the earth to reflect natural tones and an earthy after-taste. If bought in bottle form, it comes in a beautiful ornate glass bottle that can be collected as Elven art.",
+      "sourceText": "Cost: 2 Gold / Glass | Weight: .1 lbs\nCost: 60 Gold / Bottle | Weight: 1 lbs | Contains: 16 Glasses\nSave DC: 12 + 3/Glass | Drunk Stacks: 6\nDescription: A fine fruity wine crafted by elves with grapes given freely by nature, processed with the earth to reflect natural tones and an earthy after-taste. If bought in bottle form, it comes in a beautiful ornate glass bottle that can be collected as Elven art."
+    },
+    {
+      "name": "Dragon’s Breath Wine",
+      "category": "Alcohol",
+      "kind": "consumable",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "A spiced wine crafted on a mountain-top by a hermit who has not had contact with man in decades, this recipe passed on from hermit to hermit for generations.",
+      "sourceText": "Cost: 4 Gold / Glass | Weight: .1 lbs\nCost: 80 Gold / Bottle | Weight: 1 lbs | Contains: 16 Glasses\nSave DC: 13 + 4/Glass | Drunk Stacks: 8\nDescription: A spiced wine crafted on a mountain-top by a hermit who has not had contact with man in decades, this recipe passed on from hermit to hermit for generations."
     }
   ]
 }
