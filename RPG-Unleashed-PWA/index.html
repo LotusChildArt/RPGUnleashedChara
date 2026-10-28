@@ -20910,20 +20910,12 @@ function syncCreatorFieldsFromInputs() {
         );
 }
 
-function creatorAppearanceData(
-    raceName =
-        creatorDraft?.race
-) {
-    return (
-        RPG_CREATOR_APPEARANCE[
-            raceName
-        ] || {
-            styles: [],
-            hair: [],
-            eyes: [],
-            sclera: []
-        }
-    );
+function creatorAppearanceData(raceName=creatorDraft?.race) {
+ const fallback={styles:[],hair:[],eyes:[],sclera:[]};
+ const primary=RPG_CREATOR_APPEARANCE[raceName]||fallback;
+ if(!creatorIsMixed()||arguments.length>0||!creatorDraft?.heritagePartner)return primary;
+ const secondary=RPG_CREATOR_APPEARANCE[creatorDraft.heritagePartner]||fallback;
+ return Object.fromEntries(["styles","hair","eyes","sclera"].map(k=>[k,[...new Set([...(primary[k]||[]),...(secondary[k]||[])])]]));
 }
 
 function creatorUniqueValues(values) {
@@ -21354,7 +21346,7 @@ function renderCreatorRaceGrid() {
        creatorHalfChoiceGroups().map(g=>'<label>'+creatorEscapeHtml(g.name)+' attribute choice <select data-heritage-choice="'+creatorEscapeHtml(g.key)+'"><option value="">Choose an option</option>'+
          g.items.map(c=>'<option value="'+creatorEscapeHtml(c.label)+'" '+(creatorDraft.heritageChoices?.[g.key]===c.label?'selected':'')+'>'+creatorEscapeHtml(c.label)+'</option>').join('')+
        '</select></label>').join('')+'</section>':'')+
-      '<p class="creator-heritage-footnote">Only races with documented half-race packages can be combined. GM override bypasses breeding-type restrictions, but does not invent missing inheritance packages or permit Manakeen natural reproduction.</p>':'');
+      '<p class="creator-heritage-footnote">Only races with documented half-race packages can be combined. Terrán and Shroomite are spore-birthers, but the current reference has no half-race packages for either. GM override bypasses breeding types, not missing packages or Manakeen natural reproduction.</p>':'');
     heritageBar.onchange=e=>{
       const t=e.target;
       if(t.id==="creator-heritage-partner"){creatorDraft.heritagePartner=t.value;creatorDraft.heritageChoices={};creatorDraft.culturalTraits=[];}
@@ -21375,6 +21367,7 @@ function renderCreatorRaceGrid() {
 
     grid.innerHTML =
         RPG_CREATOR_RACES
+            .filter(r=>!creatorIsMixed()||Boolean(RPG_HALF_HERITAGE[r.name]))
             .map(
                 race => {
                     const isSelected =
