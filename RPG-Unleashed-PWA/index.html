@@ -3,7 +3,7 @@
 
 <head>
 
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="/manifest.json?build=1.55.0">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="theme-color" content="#ffffff">
@@ -256,17 +256,12 @@ input::placeholder {
    ========================================= */
 
 .character-header {
-
-    display: grid;
-
-    grid-template-columns:
-        3fr
-        1fr
-        1fr
-        1fr;
-
-    gap: 4px;
+    display:grid;
+    grid-template-columns:minmax(140px,3fr) minmax(90px,1fr) minmax(65px,.7fr) minmax(90px,1fr) minmax(90px,auto);
+    gap:6px;
+    align-items:center;
 }
+@media(max-width:760px){.character-header{grid-template-columns:repeat(2,minmax(0,1fr));}.character-header input:first-child{grid-column:1 / -1;}}
 
 
 .character-header input {
@@ -5554,6 +5549,7 @@ if (
         type="number"
         placeholder="Level"
     >
+    <button id="rpg-level-up" type="button" style="padding:8px 12px;border:2px solid #111;border-radius:16px;background:#fff;font-weight:bold;cursor:pointer;white-space:nowrap">+ Lvl 1</button>
 
     <input
         type="number"
@@ -11848,6 +11844,8 @@ function initializeCharacterSheet(
     }
 
 
+    window.RPGProgressionState = structuredClone(restoredSheetState?.progression || {completedLevel:0});
+
     characterSheetInitialized =
         true;
 
@@ -16956,7 +16954,8 @@ async function saveRemoteCharacterSheet() {
                 "halloween"
                 ? "halloween"
                 : "standard",
-        tabs: {}
+        tabs: {},
+        progression: structuredClone(window.RPGProgressionState || {completedLevel:0})
     };
 
 
@@ -17122,7 +17121,8 @@ async function saveCharacterSheet() {
                 "halloween"
                 ? "halloween"
                 : "standard",
-        tabs: {}
+        tabs: {},
+        progression: structuredClone(window.RPGProgressionState || {completedLevel:0})
     };
 
 
@@ -23877,7 +23877,7 @@ showAppScreen(
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker
-            .register("/service-worker.js", { scope: "/" })
+            .register("/service-worker.js?build=1.55.0", { scope: "/" })
             .catch(error => {
                 console.error(
                     "Service worker registration failed:",
@@ -23924,6 +23924,7 @@ if ("serviceWorker" in navigator) {
   let feats = [];
 
   function hide() { overlay.style.display = "none"; }
+  window.RPGOpenFeatCatalog = show;
   function createRow(feat) {
     bypass = true;
     try { add.click(); } finally { bypass = false; }
@@ -23942,6 +23943,7 @@ if ("serviceWorker" in navigator) {
     }
     hide();
   }
+  window.RPGAddCatalogFeat = createRow;
   function render() {
     results.replaceChildren();
     const term = search.value.trim().toLowerCase(), cat = category.value;
@@ -24025,6 +24027,7 @@ if ("serviceWorker" in navigator) {
 })();
 </script>
 
+<script src="/levelup.js?build=1.55.0" defer></script>
 </body>
 
 </html>
