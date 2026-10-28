@@ -4242,13 +4242,97 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
 .creator-path-page {display:none}.creator-path-page.active {display:block}
 .creator-origin-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .creator-origin-card {min-width:0}
+
+.creator-gear-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.creator-gear-card {
+    min-width: 0;
+}
+
+.creator-gear-package-contents {
+    margin-top: 8px;
+    border: 2px solid black;
+    border-radius: 16px;
+    padding: 12px;
+    background: #f7f7f7;
+}
+
+.creator-gear-package-contents strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.creator-gear-package-contents p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.creator-gear-customize-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1.5px solid #bbb;
+    color: #555;
+    font-size: 13px;
+}
+
+.creator-gear-customize-toggle,
+.creator-gear-route-button {
+    border: 2px solid black;
+    border-radius: 18px;
+    background: white;
+    min-height: 36px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.creator-gear-customize-toggle:hover,
+.creator-gear-route-button:hover {
+    background: #eee;
+}
+
+.creator-gear-route-button.selected {
+    background: #111;
+    color: white;
+}
+
+.creator-gear-customize-panel {
+    margin-top: 12px;
+    border: 1.5px solid #999;
+    border-radius: 18px;
+    padding: 12px;
+}
+
+.creator-gear-customize-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.creator-gear-borrow-grid {
+    margin-top: 12px;
+}
+
 .creator-path-summary,.creator-path-choice-detail,.creator-gm-warning {margin-top:12px;border:1.5px solid #999;border-radius:16px;padding:10px 12px;line-height:1.4;font-size:12px}
 .creator-path-summary h3 {margin:0 0 6px}.creator-path-choice-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.creator-path-choice-grid .full {grid-column:1/-1}
 .creator-path-control {display:grid;gap:5px}.creator-path-control>span {font-size:12px;font-weight:bold;color:#444}
 .creator-path-control select,.creator-path-control input,.creator-path-control textarea {width:100%;min-height:42px;border:2px solid black;border-radius:21px;background:white;padding:7px 12px}
 .creator-path-control textarea {min-height:90px;border-radius:18px;resize:vertical}.creator-gm-warning {border-color:#555;font-weight:bold;background:#f3f3f3}
 .creator-role-bonus-card {border:1.5px solid #999;border-radius:18px;padding:12px;margin-bottom:10px}.creator-role-bonus-card h4 {margin:0 0 8px}
-@media (max-width:720px){.creator-path-progress{grid-template-columns:1fr}.creator-race-grid,.creator-origin-grid,.creator-path-choice-grid{grid-template-columns:1fr}}
+@media (max-width:720px){.creator-path-progress{grid-template-columns:1fr}.creator-race-grid,.creator-origin-grid,.creator-gear-grid,.creator-path-choice-grid{grid-template-columns:1fr}}
 
 .creator-points-banner {
     display: flex;
@@ -4746,12 +4830,47 @@ if (
                 </div>
                 <div class="creator-path-page" data-creator-path-step="1">
                     <h3>Starting Gear</h3>
-                    <div class="creator-path-choice-grid">
-                        <label class="creator-path-control"><span>Choose From</span><select id="creator-gear-mode" data-creator-path-field="gearMode"><option value="default">My Origin</option><option value="borrow">Another Origin</option><option value="custom">Custom Package</option></select></label>
-                        <label class="creator-path-control" id="creator-gear-source-wrap" hidden><span>Borrow From</span><select id="creator-gear-source" data-creator-path-field="gearSource"></select></label>
-                        <label class="creator-path-control full" id="creator-gear-choice-wrap"><span>Gear Package</span><select id="creator-gear-choice" data-creator-path-field="gearChoice"></select></label>
-                        <label class="creator-path-control full" id="creator-gear-custom-wrap" hidden><span>Custom Starting Gear</span><textarea id="creator-gear-custom" data-creator-path-field="gearCustom" placeholder="Write your custom or GM-approved starting gear package."></textarea></label>
-                    </div><div class="creator-path-choice-detail" id="creator-gear-detail"></div><div class="creator-gm-warning" id="creator-gear-warning" hidden>This is not the default starting gear for your Origin. Inform your GM and make sure they approve it.</div>
+                    <p class="creator-step-note">
+                        Your Origin offers the following starting gear packages. Open a package to see exactly what you receive, then choose the one you want.
+                    </p>
+
+                    <div class="creator-gear-grid" id="creator-gear-package-grid"></div>
+
+                    <div class="creator-gear-customize-row">
+                        <span>Don't like these options?</span>
+                        <button class="creator-gear-customize-toggle" id="creator-gear-customize-toggle" type="button">Customize</button>
+                    </div>
+
+                    <div class="creator-gear-customize-panel" id="creator-gear-customize-panel" hidden>
+                        <div class="creator-gear-customize-actions">
+                            <button class="creator-gear-route-button" type="button" data-creator-gear-route="borrow">
+                                Borrow from another Origin
+                            </button>
+                            <button class="creator-gear-route-button" type="button" data-creator-gear-route="custom">
+                                + Create Unique Gear Package
+                            </button>
+                        </div>
+
+                        <div id="creator-gear-borrow-wrap" hidden>
+                            <label class="creator-path-control">
+                                <span>Borrow From</span>
+                                <select id="creator-gear-source" data-creator-path-field="gearSource"></select>
+                            </label>
+
+                            <div class="creator-gear-grid creator-gear-borrow-grid" id="creator-gear-borrow-grid"></div>
+                        </div>
+
+                        <div id="creator-gear-custom-wrap" hidden>
+                            <label class="creator-path-control">
+                                <span>Unique Starting Gear Package</span>
+                                <textarea id="creator-gear-custom" data-creator-path-field="gearCustom" placeholder="Write your custom or GM-approved starting gear package."></textarea>
+                            </label>
+                        </div>
+
+                        <div class="creator-gm-warning" id="creator-gear-warning" hidden>
+                            This is not the default starting gear for your Origin. Inform your GM and make sure they approve it.
+                        </div>
+                    </div>
                 </div>
                 <div class="creator-path-page" data-creator-path-step="2">
                     <h3>Perk</h3>
@@ -4772,7 +4891,7 @@ if (
                         <label class="creator-path-control full" id="creator-drawback-extra-wrap" hidden><span>Malnourished Development</span><select id="creator-drawback-extra" data-creator-path-field="drawbackExtra"><option value="">Choose the affected Attribute</option><option value="bod">-1 BOD</option><option value="dex">-1 DEX</option></select></label>
                     </div><div class="creator-path-choice-detail" id="creator-drawback-detail"></div><div class="creator-gm-warning" id="creator-drawback-warning" hidden>This Drawback is not one of your Origin's default choices. Inform your GM and make sure they approve it.</div>
                 </div>
-                <div class="creator-path-page" data-creator-path-step="4"><h3>Role</h3><p class="creator-step-note">Your Role is what your character does—the profession, training, or expertise they apply in the present. Name it however best fits the character.</p><label class="creator-path-control"><span>Role</span><input type="text" data-creator-field="role" placeholder="Example: Street Thief, Field Researcher, Battlefield Medic"></label></div>
+                <div class="creator-path-page" data-creator-path-step="4"><h3>Role</h3><p class="creator-step-note">Your Role is what your character does—the profession, training, or expertise they apply in the present. Name it however best fits the character—or just have fun with it. "Just a Little Guy" is a perfectly acceptable Role name.</p><label class="creator-path-control"><span>Role</span><input type="text" data-creator-field="role" placeholder="Example: Street Thief, Battlefield Medic, Just a Little Guy"></label></div>
                 <div class="creator-path-page" data-creator-path-step="5">
                     <h3>Role Bonuses</h3><p class="creator-step-note">Choose exactly two. Skill, Knowledge, and Language may be chosen twice, but the two specific selections must be different.</p>
                     <div class="creator-role-bonus-card" data-creator-role-bonus-card="0"><h4>Role Bonus 1</h4><div class="creator-path-choice-grid"><label class="creator-path-control"><span>Bonus Type</span><select id="creator-role-bonus-type-0" data-creator-role-bonus-index="0" data-creator-role-bonus-field="type"><option value="">Choose bonus</option><option value="skill">+2 to a Skill</option><option value="knowledge">+2 to one Knowledge category</option><option value="gearFeat">+1 Gear Feat</option><option value="craftFeat">+1 Craft Feat</option><option value="language">+1 Additional Language</option></select></label><label class="creator-path-control"><span>Selection</span><select id="creator-role-bonus-detail-0" data-creator-role-bonus-index="0" data-creator-role-bonus-field="detail"></select><input id="creator-role-bonus-other-0" type="text" data-creator-role-bonus-index="0" data-creator-role-bonus-field="other" placeholder="Enter selection" hidden></label></div></div>
@@ -19002,6 +19121,8 @@ let creatorStep = 0;
 let creatorPathStep = 0;
 let creatorOpenRace = "";
 let creatorOpenOrigin = "";
+let creatorOpenGearPackage = "";
+let creatorGearCustomizeOpen = false;
 let creatorDraft = null;
 
 function makeFreshCreatorDraft() {
@@ -19077,6 +19198,297 @@ function creatorPathSubstepIsValid(step=creatorPathStep){
 }
 function creatorPathIsComplete(){for(let i=0;i<CREATOR_PATH_STEP_COUNT;i++)if(!creatorPathSubstepIsValid(i))return false;return true;}
 function renderCreatorPathSelect(select,values,selected,placeholder){if(!select)return;select.innerHTML='<option value="">'+creatorEscapeHtml(placeholder)+'</option>'+values.map(v=>'<option value="'+creatorEscapeHtml(v)+'">'+creatorEscapeHtml(v)+'</option>').join("");select.value=values.includes(selected)?selected:"";}
+function creatorGearCardHtml(
+    origin,
+    gear,
+    mode
+) {
+    if (
+        !origin ||
+        !gear
+    ) {
+        return "";
+    }
+
+    const key =
+        origin.name +
+        "::" +
+        gear.name;
+
+    const isExpanded =
+        creatorOpenGearPackage ===
+        key;
+
+    const isSelected =
+        creatorDraft?.gearMode ===
+            mode &&
+        creatorDraft?.gearSource ===
+            (
+                mode === "borrow"
+                    ? origin.name
+                    : ""
+            ) &&
+        creatorDraft?.gearChoice ===
+            gear.name;
+
+    return (
+        '<div class="creator-expandable-card creator-gear-card' +
+        (
+            isSelected
+                ? " selected"
+                : ""
+        ) +
+        (
+            isExpanded
+                ? " expanded"
+                : ""
+        ) +
+        '">' +
+        '<button class="creator-expandable-card-toggle" type="button" data-creator-gear-toggle="' +
+        creatorEscapeHtml(
+            key
+        ) +
+        '">' +
+        '<span class="creator-expandable-card-title"><span>' +
+        creatorEscapeHtml(
+            gear.name
+        ) +
+        "</span>" +
+        (
+            isSelected
+                ? '<span class="creator-card-selected-badge">Selected</span>'
+                : ""
+        ) +
+        "</span>" +
+        '<span class="creator-expandable-card-subtitle">Open to see exactly what you receive</span>' +
+        "</button>" +
+        (
+            isExpanded
+                ? (
+                    '<div class="creator-expandable-card-body">' +
+                    '<div class="creator-gear-package-contents">' +
+                    "<strong>You receive:</strong>" +
+                    "<p>" +
+                    creatorEscapeHtml(
+                        gear.text ||
+                        gear.name
+                    ) +
+                    "</p>" +
+                    "</div>" +
+                    '<div class="creator-expandable-card-actions">' +
+                    '<button class="creator-card-select-button' +
+                    (
+                        isSelected
+                            ? " selected"
+                            : ""
+                    ) +
+                    '" type="button" data-creator-gear-select="' +
+                    creatorEscapeHtml(
+                        gear.name
+                    ) +
+                    '" data-creator-gear-origin="' +
+                    creatorEscapeHtml(
+                        origin.name
+                    ) +
+                    '" data-creator-gear-mode="' +
+                    mode +
+                    '">' +
+                    (
+                        isSelected
+                            ? "Selected"
+                            : "Choose This Package"
+                    ) +
+                    "</button>" +
+                    "</div>" +
+                    "</div>"
+                  )
+                : ""
+        ) +
+        "</div>"
+    );
+}
+
+function renderCreatorGearChoices() {
+    const origin =
+        getCreatorOrigin();
+
+    const mainGrid =
+        document.getElementById(
+            "creator-gear-package-grid"
+        );
+
+    if (
+        mainGrid
+    ) {
+        mainGrid.innerHTML =
+            origin?.gear?.length
+                ? origin.gear
+                    .map(
+                        gear =>
+                            creatorGearCardHtml(
+                                origin,
+                                gear,
+                                "default"
+                            )
+                    )
+                    .join("")
+                : '<div class="creator-guidance">Choose an Origin first.</div>';
+    }
+
+    const customizePanel =
+        document.getElementById(
+            "creator-gear-customize-panel"
+        );
+
+    if (
+        creatorDraft?.gearMode !==
+            "default"
+    ) {
+        creatorGearCustomizeOpen =
+            true;
+    }
+
+    if (
+        customizePanel
+    ) {
+        customizePanel.hidden =
+            !creatorGearCustomizeOpen;
+    }
+
+    document
+        .querySelectorAll(
+            "[data-creator-gear-route]"
+        )
+        .forEach(
+            button => {
+                button.classList.toggle(
+                    "selected",
+                    creatorDraft?.gearMode ===
+                        button.dataset.creatorGearRoute
+                );
+            }
+        );
+
+    const borrowWrap =
+        document.getElementById(
+            "creator-gear-borrow-wrap"
+        );
+
+    const customWrap =
+        document.getElementById(
+            "creator-gear-custom-wrap"
+        );
+
+    const warning =
+        document.getElementById(
+            "creator-gear-warning"
+        );
+
+    if (
+        borrowWrap
+    ) {
+        borrowWrap.hidden =
+            creatorDraft?.gearMode !==
+            "borrow";
+    }
+
+    if (
+        customWrap
+    ) {
+        customWrap.hidden =
+            creatorDraft?.gearMode !==
+            "custom";
+    }
+
+    if (
+        warning
+    ) {
+        warning.hidden =
+            creatorDraft?.gearMode ===
+                "default" ||
+            !creatorGearCustomizeOpen;
+    }
+
+    const sourceSelect =
+        document.getElementById(
+            "creator-gear-source"
+        );
+
+    if (
+        creatorDraft?.gearMode ===
+            "borrow"
+    ) {
+        const sources =
+            RPG_CREATOR_PATH_ORIGINS
+                .map(
+                    item =>
+                        item.name
+                )
+                .filter(
+                    name =>
+                        name !==
+                        creatorDraft.origin
+                );
+
+        renderCreatorPathSelect(
+            sourceSelect,
+            sources,
+            creatorDraft?.gearSource ||
+                "",
+            "Choose Origin"
+        );
+    }
+
+    const borrowedOrigin =
+        creatorDraft?.gearMode ===
+            "borrow"
+            ? getCreatorOrigin(
+                creatorDraft.gearSource
+              )
+            : null;
+
+    const borrowGrid =
+        document.getElementById(
+            "creator-gear-borrow-grid"
+        );
+
+    if (
+        borrowGrid
+    ) {
+        borrowGrid.innerHTML =
+            borrowedOrigin?.gear?.length
+                ? borrowedOrigin.gear
+                    .map(
+                        gear =>
+                            creatorGearCardHtml(
+                                borrowedOrigin,
+                                gear,
+                                "borrow"
+                            )
+                    )
+                    .join("")
+                : (
+                    creatorDraft?.gearMode ===
+                        "borrow"
+                        ? '<div class="creator-guidance">Choose another Origin to see its starting gear packages.</div>'
+                        : ""
+                  );
+    }
+
+    const customInput =
+        document.getElementById(
+            "creator-gear-custom"
+        );
+
+    if (
+        customInput
+    ) {
+        customInput.value =
+            creatorDraft?.gearCustom ||
+            "";
+    }
+}
+
 function renderCreatorPathChoice(kind){
  const mode=creatorDraft?.[kind+"Mode"]||"default",sw=document.getElementById("creator-"+kind+"-source-wrap"),ss=document.getElementById("creator-"+kind+"-source"),cw=document.getElementById("creator-"+kind+"-choice-wrap"),cs=document.getElementById("creator-"+kind+"-choice"),uw=document.getElementById("creator-"+kind+"-custom-wrap"),ui=document.getElementById("creator-"+kind+"-custom"),warn=document.getElementById("creator-"+kind+"-warning"),detail=document.getElementById("creator-"+kind+"-detail");
  if(sw)sw.hidden=mode!=="borrow";if(cw)cw.hidden=mode==="custom";if(uw)uw.hidden=mode!=="custom";if(warn)warn.hidden=mode==="default";if(ui)ui.value=creatorDraft?.[kind+"Custom"]||"";
@@ -19271,8 +19683,9 @@ function renderCreatorPath() {
                 .join("");
     }
 
+    renderCreatorGearChoices();
+
     [
-        "gear",
         "perk",
         "drawback"
     ].forEach(
@@ -21058,6 +21471,12 @@ function startGuidedCharacter() {
     creatorOpenOrigin =
         "";
 
+    creatorOpenGearPackage =
+        "";
+
+    creatorGearCustomizeOpen =
+        false;
+
     document
         .querySelectorAll(
             "[data-creator-field]"
@@ -21485,6 +21904,12 @@ document
                         mnd: 0,
                         cha: 0
                     };
+
+                    creatorOpenGearPackage =
+                        "";
+
+                    creatorGearCustomizeOpen =
+                        false;
                 }
 
                 renderCharacterCreator();
@@ -21513,7 +21938,183 @@ document
         }
     );
 
-document.querySelectorAll("[data-creator-path-field]").forEach(input=>{input.addEventListener(input.tagName==="TEXTAREA"?"input":"change",()=>{if(!creatorDraft)return;const f=input.dataset.creatorPathField;creatorDraft[f]=input.value;if(f==="gearMode"||f==="gearSource")creatorDraft.gearChoice="";if(f==="perkMode"||f==="perkSource")creatorDraft.perkChoice="";if(f==="drawbackMode"||f==="drawbackSource"){creatorDraft.drawbackChoice="";creatorDraft.drawbackExtra="";}if(f==="drawbackChoice"){creatorDraft.drawbackExtra="";creatorDraft.attributeSpends={bod:0,dex:0,mnd:0,cha:0};}renderCharacterCreator();});});
+document
+    .getElementById(
+        "creator-gear-package-grid"
+    )
+    .addEventListener(
+        "click",
+        event => {
+            if (
+                !creatorDraft
+            ) {
+                return;
+            }
+
+            const selectButton =
+                event.target.closest(
+                    "[data-creator-gear-select]"
+                );
+
+            if (
+                selectButton
+            ) {
+                creatorDraft.gearMode =
+                    selectButton.dataset.creatorGearMode;
+
+                creatorDraft.gearSource =
+                    creatorDraft.gearMode ===
+                        "borrow"
+                        ? selectButton.dataset.creatorGearOrigin
+                        : "";
+
+                creatorDraft.gearChoice =
+                    selectButton.dataset.creatorGearSelect;
+
+                creatorDraft.gearCustom =
+                    "";
+
+                renderCharacterCreator();
+                return;
+            }
+
+            const toggleButton =
+                event.target.closest(
+                    "[data-creator-gear-toggle]"
+                );
+
+            if (
+                toggleButton
+            ) {
+                const key =
+                    toggleButton.dataset.creatorGearToggle;
+
+                creatorOpenGearPackage =
+                    creatorOpenGearPackage ===
+                        key
+                        ? ""
+                        : key;
+
+                renderCharacterCreator();
+            }
+        }
+    );
+
+document
+    .getElementById(
+        "creator-gear-borrow-grid"
+    )
+    .addEventListener(
+        "click",
+        event => {
+            if (
+                !creatorDraft
+            ) {
+                return;
+            }
+
+            const selectButton =
+                event.target.closest(
+                    "[data-creator-gear-select]"
+                );
+
+            if (
+                selectButton
+            ) {
+                creatorDraft.gearMode =
+                    "borrow";
+
+                creatorDraft.gearSource =
+                    selectButton.dataset.creatorGearOrigin;
+
+                creatorDraft.gearChoice =
+                    selectButton.dataset.creatorGearSelect;
+
+                creatorDraft.gearCustom =
+                    "";
+
+                renderCharacterCreator();
+                return;
+            }
+
+            const toggleButton =
+                event.target.closest(
+                    "[data-creator-gear-toggle]"
+                );
+
+            if (
+                toggleButton
+            ) {
+                const key =
+                    toggleButton.dataset.creatorGearToggle;
+
+                creatorOpenGearPackage =
+                    creatorOpenGearPackage ===
+                        key
+                        ? ""
+                        : key;
+
+                renderCharacterCreator();
+            }
+        }
+    );
+
+document
+    .getElementById(
+        "creator-gear-customize-toggle"
+    )
+    .addEventListener(
+        "click",
+        () => {
+            creatorGearCustomizeOpen =
+                !creatorGearCustomizeOpen;
+
+            renderCharacterCreator();
+        }
+    );
+
+document
+    .getElementById(
+        "creator-gear-customize-panel"
+    )
+    .addEventListener(
+        "click",
+        event => {
+            const routeButton =
+                event.target.closest(
+                    "[data-creator-gear-route]"
+                );
+
+            if (
+                !routeButton ||
+                !creatorDraft
+            ) {
+                return;
+            }
+
+            const route =
+                routeButton.dataset.creatorGearRoute;
+
+            creatorDraft.gearMode =
+                route;
+
+            creatorDraft.gearSource =
+                "";
+
+            creatorDraft.gearChoice =
+                "";
+
+            creatorDraft.gearCustom =
+                "";
+
+            creatorOpenGearPackage =
+                "";
+
+            renderCharacterCreator();
+        }
+    );
+
+document.querySelectorAll("[data-creator-path-field]").forEach(input=>{input.addEventListener(input.tagName==="TEXTAREA"?"input":"change",()=>{if(!creatorDraft)return;const f=input.dataset.creatorPathField;creatorDraft[f]=input.value;if(f==="gearSource"){creatorDraft.gearChoice="";creatorOpenGearPackage="";}if(f==="perkMode"||f==="perkSource")creatorDraft.perkChoice="";if(f==="drawbackMode"||f==="drawbackSource"){creatorDraft.drawbackChoice="";creatorDraft.drawbackExtra="";}if(f==="drawbackChoice"){creatorDraft.drawbackExtra="";creatorDraft.attributeSpends={bod:0,dex:0,mnd:0,cha:0};}renderCharacterCreator();});});
 document.querySelectorAll("[data-creator-role-bonus-field]").forEach(input=>{input.addEventListener(input.tagName==="INPUT"?"input":"change",()=>{if(!creatorDraft)return;const i=Number(input.dataset.creatorRoleBonusIndex),f=input.dataset.creatorRoleBonusField,b=creatorDraft.roleBonuses[i];b[f]=input.value;if(f==="type"){b.detail="";b.other="";}if(f==="detail"&&input.value!=="Other")b.other="";renderCharacterCreator();});});
 
 document
