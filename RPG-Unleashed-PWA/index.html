@@ -21318,6 +21318,45 @@ function renderCreatorRaceGrid() {
         return;
     }
 
+    // Mixed heritage uses the same race cards for primary ancestry.
+    let heritageBar=document.getElementById("creator-heritage-bar");
+    if(!heritageBar){heritageBar=document.createElement("section");heritageBar.id="creator-heritage-bar";grid.before(heritageBar);}
+    const mixed=creatorIsMixed(),first=creatorDraft?.race||"";
+    const available=RPG_CREATOR_RACES.filter(r=>
+      r.name!==first&&r.name!=="Manakeen"&&RPG_HALF_HERITAGE[r.name]&&
+      (creatorDraft?.heritageGmOverride||creatorBirthType(r.name)===creatorBirthType(first)));
+    const valid=creatorHeritagePairValid();
+    heritageBar.innerHTML='<div class="creator-heritage-switch"><button type="button" data-heritage-mode="full" class="'+(!mixed?'selected':'')+'">Full-Blooded</button><button type="button" data-heritage-mode="mixed" class="'+(mixed?'selected':'')+'">Mixed Heritage</button></div>'+
+      (mixed?'<p>Choose the first parent using a race card, then select the second parent below. Each parent contributes its documented half-race package.</p>'+
+      '<label class="creator-heritage-label">Second Parent <select id="creator-heritage-partner"><option value="">Choose a compatible race</option>'+
+        available.map(r=>'<option value="'+creatorEscapeHtml(r.name)+'" '+(creatorDraft.heritagePartner===r.name?'selected':'')+'>'+creatorEscapeHtml(r.name)+'</option>').join('')+'</select></label>'+
+      '<label class="creator-heritage-override"><input id="creator-heritage-override" type="checkbox" '+(creatorDraft.heritageGmOverride?'checked':'')+'> GM Override — remove breeding compatibility restrictions</label>'+
+      (first==='Manakeen'?'<p class="creator-heritage-warning">Manakeen cannot reproduce naturally.</p>':'')+
+      (!valid&&first&&creatorDraft.heritagePartner?'<p class="creator-heritage-warning">This combination has no supported pair of half-race packages or is biologically incompatible.</p>':'')+
+      (valid?'<section class="creator-heritage-result"><h3>Combined Heritage: '+creatorEscapeHtml(first)+' / '+creatorEscapeHtml(creatorDraft.heritagePartner)+'</h3>'+
+       [first,creatorDraft.heritagePartner].map(n=>'<p><strong>'+creatorEscapeHtml(n)+':</strong> '+creatorEscapeHtml(RPG_HALF_HERITAGE[n].bonus)+'</p>').join('')+
+       creatorHalfChoiceGroups().map(g=>'<label>'+creatorEscapeHtml(g.name)+' attribute choice <select data-heritage-choice="'+creatorEscapeHtml(g.key)+'"><option value="">Choose an option</option>'+
+         g.items.map(c=>'<option value="'+creatorEscapeHtml(c.label)+'" '+(creatorDraft.heritageChoices?.[g.key]===c.label?'selected':'')+'>'+creatorEscapeHtml(c.label)+'</option>').join('')+
+       '</select></label>').join('')+'</section>':'')+
+      '<p class="creator-heritage-footnote">Only races with documented half-race packages can be combined. GM override bypasses breeding-type restrictions, but does not invent missing inheritance packages or permit Manakeen natural reproduction.</p>':'');
+    heritageBar.onchange=e=>{
+      const t=e.target;
+      if(t.id==="creator-heritage-partner"){creatorDraft.heritagePartner=t.value;creatorDraft.heritageChoices={};creatorDraft.culturalTraits=[];}
+      else if(t.id==="creator-heritage-override"){creatorDraft.heritageGmOverride=t.checked;creatorDraft.heritagePartner="";creatorDraft.heritageChoices={};creatorDraft.culturalTraits=[];}
+      else if(t.dataset.heritageChoice){creatorDraft.heritageChoices??={};creatorDraft.heritageChoices[t.dataset.heritageChoice]=t.value;}
+      renderCharacterCreator();
+    };
+    heritageBar.onclick=e=>{
+      const button=e.target.closest("[data-heritage-mode]");
+      if(!button)return;
+      creatorDraft.heritageMode=button.dataset.heritageMode;
+      creatorDraft.heritagePartner="";
+      creatorDraft.heritageChoices={};
+      creatorDraft.culturalTraits=[];
+      creatorDraft.raceChoice="";
+      renderCharacterCreator();
+    };
+
     grid.innerHTML =
         RPG_CREATOR_RACES
             .map(
@@ -22106,14 +22145,15 @@ function renderCreatorTraits() {
  if(!grid)return;
  let el=document.getElementById("creator-cultural-traits");
  if(!el){el=document.createElement("div");el.id="creator-cultural-traits";grid.after(el);}
- const names=RPG_CULTURAL_TRAITS[creatorDraft?.race]||[];
+ const mixed=creatorIsMixed(),parents=mixed&&creatorHeritagePairValid()?[creatorDraft.race,creatorDraft.heritagePartner]:[creatorDraft?.race];
+ const names=parents.flatMap(n=>RPG_CULTURAL_TRAITS[n]||[]);
  if(!names.length){el.replaceChildren();return;}
  const chosen=Array.isArray(creatorDraft.culturalTraits)?creatorDraft.culturalTraits:[];
  el.replaceChildren();
- const h=document.createElement("h3");h.textContent="Cultural Traits — choose 2";
- const p=document.createElement("p");p.textContent="Choose two distinct cultural traits from your race.";el.append(h,p);
+ const h=document.createElement("h3");h.textContent=mixed?"Cultural Traits — choose 1 from each parent":"Cultural Traits — choose 2";
+ const p=document.createElement("p");p.textContent=mixed?"Choose one documented cultural trait from each parental heritage.":"Choose two distinct cultural traits from your race.";el.append(h,p);
  const wrap=document.createElement("div");wrap.className="creator-traits-grid";
- for(const name of names){const label=document.createElement("label");label.className="creator-trait-option";const box=document.createElement("input");box.type="checkbox";box.checked=chosen.includes(name);box.disabled=!box.checked&&chosen.length>=2;box.addEventListener("change",()=>{let a=Array.isArray(creatorDraft.culturalTraits)?creatorDraft.culturalTraits:[];creatorDraft.culturalTraits=box.checked?[...a,name].slice(0,2):a.filter(x=>x!==name);renderCharacterCreator()});const info=document.createElement("span");const title=document.createElement("strong");title.textContent=name;info.append(title);const description=RPG_TRAIT_DETAILS[creatorDraft.race]?.[name];if(description){const detail=document.createElement("small");detail.textContent=description;info.append(detail)}label.append(box,info);wrap.appendChild(label)}el.appendChild(wrap);
+ for(const name of names){const label=document.createElement("label");label.className="creator-trait-option";const box=document.createElement("input");box.type="checkbox";box.checked=chosen.includes(name);const owner=parents.find(n=>(RPG_CULTURAL_TRAITS[n]||[]).includes(name));box.disabled=!box.checked&&(chosen.length>=2||(mixed&&chosen.some(t=>(RPG_CULTURAL_TRAITS[owner]||[]).includes(t))));box.addEventListener("change",()=>{let a=Array.isArray(creatorDraft.culturalTraits)?creatorDraft.culturalTraits:[];creatorDraft.culturalTraits=box.checked?[...a,name].slice(0,2):a.filter(x=>x!==name);renderCharacterCreator()});const info=document.createElement("span");const title=document.createElement("strong");title.textContent=name;info.append(title);const description=RPG_TRAIT_DETAILS[owner]?.[name];if(description){const detail=document.createElement("small");detail.textContent=description;info.append(detail)}label.append(box,info);wrap.appendChild(label)}el.appendChild(wrap);
 }
 
 function renderCharacterCreator() {
@@ -22380,7 +22420,7 @@ async function createGuidedCharacter() {
 
         setInputValueAndNotify(
             headerInputs[1],
-            creatorDraft.race
+            creatorIsMixed()?creatorDraft.race+" / "+creatorDraft.heritagePartner:creatorDraft.race
         );
 
         setInputValueAndNotify(
@@ -22432,7 +22472,7 @@ async function createGuidedCharacter() {
             backgroundSecondary?.querySelector(
                 'input[placeholder="Race"]'
             ),
-            creatorDraft.race
+            creatorIsMixed()?creatorDraft.race+" / "+creatorDraft.heritagePartner:creatorDraft.race
         );
 
         setInputValueAndNotify(
@@ -22479,8 +22519,9 @@ async function createGuidedCharacter() {
           addCreatorBackgroundValue("traits-list","add-trait",trait);
         }
         // The race's listed non-attribute features are aspects, not traits.
-        const raceAspects=(getCreatorRace()?.bonus||"")
-          .split(";").map(part=>part.trim())
+        const raceAspects=creatorIsMixed()?(getCreatorRace()?.mixedAspects||[]):(getCreatorRace()?.bonus||"")
+          .concat?[]:[]; // unused
+        const effectiveAspects=creatorIsMixed()?raceAspects:raceAspects.split(";").map(part=>part.trim())
           .filter(part=>part&&!/^[+−-]?\\d+\\s*(?:BOD|DEX|MND|CHA|HP|Trait)\\b/i.test(part)
             && !/^(?:or |\\+\\d+ to |\\+\\d+ Trait)/i.test(part));
         for(const aspect of raceAspects){
@@ -23279,6 +23320,9 @@ document
 
                 creatorDraft.race =
                     raceName;
+                if(creatorIsMixed()&&creatorDraft.heritagePartner===raceName)creatorDraft.heritagePartner="";
+                if(creatorIsMixed()&&creatorDraft.heritagePartner&&!creatorDraft.heritageGmOverride&&creatorBirthType(raceName)!==creatorBirthType(creatorDraft.heritagePartner))creatorDraft.heritagePartner="";
+                if(creatorIsMixed()&&changed)creatorDraft.heritageChoices={};
 
                 creatorOpenRace =
                     raceName;
