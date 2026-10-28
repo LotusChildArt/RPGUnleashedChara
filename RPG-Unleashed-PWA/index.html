@@ -3956,16 +3956,120 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
     gap: 8px;
 }
 
-.creator-race-card {
-    min-height: 48px;
+.creator-expandable-card {
+    min-width: 0;
+    border: 2px solid black;
     border-radius: 18px;
-    padding: 8px 12px;
-    text-align: left;
+    background: white;
+    overflow: hidden;
 }
 
-.creator-race-card.selected {
+.creator-expandable-card.expanded {
+    grid-column: 1 / -1;
+}
+
+.creator-expandable-card-toggle {
+    width: 100%;
+    min-height: 48px;
+    border: 0;
+    background: white;
+    padding: 9px 12px;
+    text-align: left;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.creator-expandable-card-toggle:hover {
+    background: #eee;
+}
+
+.creator-expandable-card.selected > .creator-expandable-card-toggle {
     background: #111;
     color: white;
+}
+
+.creator-expandable-card-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.creator-expandable-card-subtitle {
+    display: block;
+    margin-top: 3px;
+    color: #666;
+    font-size: 11px;
+    font-weight: normal;
+    line-height: 1.35;
+}
+
+.creator-expandable-card.selected > .creator-expandable-card-toggle .creator-expandable-card-subtitle {
+    color: #ddd;
+}
+
+.creator-card-selected-badge {
+    flex: 0 0 auto;
+    border: 1px solid currentColor;
+    border-radius: 12px;
+    padding: 2px 7px;
+    font-size: 10px;
+}
+
+.creator-expandable-card-body {
+    border-top: 1.5px solid #999;
+    padding: 14px;
+    background: white;
+    color: #111;
+}
+
+.creator-expandable-card-body p {
+    margin: 6px 0;
+    line-height: 1.45;
+}
+
+.creator-expandable-card-meta {
+    display: grid;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.creator-expandable-card-list {
+    margin: 5px 0 0;
+    padding-left: 20px;
+    line-height: 1.4;
+}
+
+.creator-expandable-card-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.creator-card-select-button {
+    min-height: 38px;
+    border: 2px solid black;
+    border-radius: 19px;
+    background: white;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.creator-card-select-button:hover {
+    background: #eee;
+}
+
+.creator-card-select-button.selected {
+    background: #111;
+    color: white;
+}
+
+
+.creator-race-card {
+    min-width: 0;
 }
 
 .creator-race-summary {
@@ -4137,15 +4241,14 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
 .creator-path-progress-step.complete {border-color:#555;color:#333;background:#e9e9e9}
 .creator-path-page {display:none}.creator-path-page.active {display:block}
 .creator-origin-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.creator-origin-card {border:2px solid black;border-radius:18px;background:white;padding:10px 12px;cursor:pointer;text-align:left}
-.creator-origin-card.selected {background:#111;color:white}.creator-origin-card strong {display:block;margin-bottom:4px}.creator-origin-card span {display:block;font-size:11px;line-height:1.35}
+.creator-origin-card {min-width:0}
 .creator-path-summary,.creator-path-choice-detail,.creator-gm-warning {margin-top:12px;border:1.5px solid #999;border-radius:16px;padding:10px 12px;line-height:1.4;font-size:12px}
 .creator-path-summary h3 {margin:0 0 6px}.creator-path-choice-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.creator-path-choice-grid .full {grid-column:1/-1}
 .creator-path-control {display:grid;gap:5px}.creator-path-control>span {font-size:12px;font-weight:bold;color:#444}
 .creator-path-control select,.creator-path-control input,.creator-path-control textarea {width:100%;min-height:42px;border:2px solid black;border-radius:21px;background:white;padding:7px 12px}
 .creator-path-control textarea {min-height:90px;border-radius:18px;resize:vertical}.creator-gm-warning {border-color:#555;font-weight:bold;background:#f3f3f3}
 .creator-role-bonus-card {border:1.5px solid #999;border-radius:18px;padding:12px;margin-bottom:10px}.creator-role-bonus-card h4 {margin:0 0 8px}
-@media (max-width:720px){.creator-path-progress{grid-template-columns:1fr}.creator-origin-grid,.creator-path-choice-grid{grid-template-columns:1fr}}
+@media (max-width:720px){.creator-path-progress{grid-template-columns:1fr}.creator-race-grid,.creator-origin-grid,.creator-path-choice-grid{grid-template-columns:1fr}}
 
 .creator-points-banner {
     display: flex;
@@ -4559,24 +4662,6 @@ if (
 
                 <div class="creator-race-grid" id="creator-race-grid"></div>
 
-                <div class="creator-race-summary" id="creator-race-summary" hidden>
-                    <h3 id="creator-race-name">Race</h3>
-                    <p id="creator-race-bonus"></p>
-                    <p><strong>Age Phases:</strong> <span id="creator-race-age"></span></p>
-                    <p><strong>Height:</strong> <span id="creator-race-height"></span></p>
-
-                    <div class="creator-race-appearance">
-                        <div><strong>Hair colors:</strong> <span id="creator-race-hair-colors"></span></div>
-                        <div><strong>Eye colors:</strong> <span id="creator-race-eye-colors"></span></div>
-                        <div><strong>Sclera:</strong> <span id="creator-race-sclera-colors"></span></div>
-                        <div><strong>Race styles:</strong> <span id="creator-race-styles"></span></div>
-                    </div>
-
-                    <div id="creator-race-choice-wrap" hidden>
-                        <p><strong>Choose racial attribute adjustment:</strong></p>
-                        <div class="creator-race-choice-panel" id="creator-race-choice-panel"></div>
-                    </div>
-                </div>
             </section>
 
             <section class="creator-step" data-creator-step="2">
@@ -4658,7 +4743,6 @@ if (
                 <div class="creator-path-page active" data-creator-path-step="0">
                     <h3>Origin</h3><p class="creator-step-note">Your Origin determines where you came from and your normal starting wealth. The detailed Origin entry is authoritative.</p>
                     <div class="creator-origin-grid" id="creator-origin-grid"></div>
-                    <div class="creator-path-summary" id="creator-origin-summary" hidden><h3 id="creator-origin-name">Origin</h3><div><strong>Starting Wealth:</strong> <span id="creator-origin-wealth"></span></div><p id="creator-origin-description"></p></div>
                 </div>
                 <div class="creator-path-page" data-creator-path-step="1">
                     <h3>Starting Gear</h3>
@@ -18916,6 +19000,8 @@ drawbacks:{
 }};
 let creatorStep = 0;
 let creatorPathStep = 0;
+let creatorOpenRace = "";
+let creatorOpenOrigin = "";
 let creatorDraft = null;
 
 function makeFreshCreatorDraft() {
@@ -19003,12 +19089,228 @@ function renderCreatorRoleBonuses(){
  const textOnly=b.type==="gearFeat"||b.type==="craftFeat",opts=textOnly?[]:creatorRoleBonusOptions(b.type);if(ds){ds.hidden=textOnly||!b.type;renderCreatorPathSelect(ds,opts,b.detail||"",b.type?"Choose selection":"Choose bonus type first");}
  const needs=textOnly||(b.type==="language"&&b.detail==="Other");if(oi){oi.hidden=!needs;oi.value=b.other||"";oi.placeholder=b.type==="gearFeat"?"Gear Feat name":b.type==="craftFeat"?"Craft Feat name":"Custom language";}}
 }
-function renderCreatorPath(){
- document.querySelectorAll("[data-creator-path-step]").forEach(p=>p.classList.toggle("active",Number(p.dataset.creatorPathStep)===creatorPathStep));
- document.querySelectorAll("[data-creator-path-progress]").forEach(p=>{const i=Number(p.dataset.creatorPathProgress);p.classList.toggle("active",i===creatorPathStep);p.classList.toggle("complete",i<creatorPathStep);});
- const g=document.getElementById("creator-origin-grid");if(g)g.innerHTML=RPG_CREATOR_PATH_ORIGINS.map(o=>'<button class="creator-origin-card'+(creatorDraft?.origin===o.name?" selected":"")+'" type="button" data-creator-origin="'+creatorEscapeHtml(o.name)+'"><strong>'+creatorEscapeHtml(o.name)+'</strong><span>'+creatorEscapeHtml(o.wealth)+" • "+creatorEscapeHtml(o.description)+"</span></button>").join("");
- const o=getCreatorOrigin(),s=document.getElementById("creator-origin-summary");if(s)s.hidden=!o;if(o){setCreatorText("creator-origin-name",o.name);setCreatorText("creator-origin-wealth",o.wealth);setCreatorText("creator-origin-description",o.description);}
- ["gear","perk","drawback"].forEach(renderCreatorPathChoice);const d=creatorResolvedPathChoice("drawback"),ew=document.getElementById("creator-drawback-extra-wrap"),es=document.getElementById("creator-drawback-extra");if(ew)ew.hidden=d?.name!=="Malnourished Development";if(es)es.value=creatorDraft?.drawbackExtra||"";renderCreatorRoleBonuses();
+function renderCreatorPath() {
+    document
+        .querySelectorAll(
+            "[data-creator-path-step]"
+        )
+        .forEach(
+            page =>
+                page.classList.toggle(
+                    "active",
+                    Number(
+                        page.dataset.creatorPathStep
+                    ) ===
+                    creatorPathStep
+                )
+        );
+
+    document
+        .querySelectorAll(
+            "[data-creator-path-progress]"
+        )
+        .forEach(
+            progress => {
+                const index =
+                    Number(
+                        progress.dataset.creatorPathProgress
+                    );
+
+                progress.classList.toggle(
+                    "active",
+                    index ===
+                    creatorPathStep
+                );
+
+                progress.classList.toggle(
+                    "complete",
+                    index <
+                    creatorPathStep
+                );
+            }
+        );
+
+    const grid =
+        document.getElementById(
+            "creator-origin-grid"
+        );
+
+    if (
+        grid
+    ) {
+        grid.innerHTML =
+            RPG_CREATOR_PATH_ORIGINS
+                .map(
+                    origin => {
+                        const isSelected =
+                            creatorDraft?.origin ===
+                            origin.name;
+
+                        const isExpanded =
+                            creatorOpenOrigin ===
+                            origin.name;
+
+                        const listHtml =
+                            (
+                                label,
+                                values
+                            ) =>
+                                '<div><strong>' +
+                                label +
+                                ":</strong><ul class=\"creator-expandable-card-list\">" +
+                                values
+                                    .map(
+                                        value =>
+                                            "<li>" +
+                                            creatorEscapeHtml(
+                                                value.name
+                                            ) +
+                                            "</li>"
+                                    )
+                                    .join("") +
+                                "</ul></div>";
+
+                        const expandedBody =
+                            isExpanded
+                                ? (
+                                    '<div class="creator-expandable-card-body">' +
+                                    "<p>" +
+                                    creatorEscapeHtml(
+                                        origin.description
+                                    ) +
+                                    "</p>" +
+                                    '<div class="creator-expandable-card-meta">' +
+                                    '<div><strong>Starting Wealth:</strong> ' +
+                                    creatorEscapeHtml(
+                                        origin.wealth
+                                    ) +
+                                    "</div>" +
+                                    listHtml(
+                                        "Starting Gear",
+                                        origin.gear || []
+                                    ) +
+                                    listHtml(
+                                        "Perks",
+                                        origin.perks || []
+                                    ) +
+                                    listHtml(
+                                        "Drawbacks",
+                                        origin.drawbacks || []
+                                    ) +
+                                    "</div>" +
+                                    '<div class="creator-expandable-card-actions">' +
+                                    '<button class="creator-card-select-button' +
+                                    (
+                                        isSelected
+                                            ? " selected"
+                                            : ""
+                                    ) +
+                                    '" type="button" data-creator-origin-select="' +
+                                    creatorEscapeHtml(
+                                        origin.name
+                                    ) +
+                                    '">' +
+                                    (
+                                        isSelected
+                                            ? "Selected"
+                                            : "Select " +
+                                              creatorEscapeHtml(
+                                                  origin.name
+                                              )
+                                    ) +
+                                    "</button>" +
+                                    "</div>" +
+                                    "</div>"
+                                  )
+                                : "";
+
+                        return (
+                            '<div class="creator-expandable-card creator-origin-card' +
+                            (
+                                isSelected
+                                    ? " selected"
+                                    : ""
+                            ) +
+                            (
+                                isExpanded
+                                    ? " expanded"
+                                    : ""
+                            ) +
+                            '" data-creator-origin-card="' +
+                            creatorEscapeHtml(
+                                origin.name
+                            ) +
+                            '">' +
+                            '<button class="creator-expandable-card-toggle" type="button" data-creator-origin-toggle="' +
+                            creatorEscapeHtml(
+                                origin.name
+                            ) +
+                            '">' +
+                            '<span class="creator-expandable-card-title"><span>' +
+                            creatorEscapeHtml(
+                                origin.name
+                            ) +
+                            "</span>" +
+                            (
+                                isSelected
+                                    ? '<span class="creator-card-selected-badge">Selected</span>'
+                                    : ""
+                            ) +
+                            "</span>" +
+                            '<span class="creator-expandable-card-subtitle">' +
+                            creatorEscapeHtml(
+                                origin.wealth
+                            ) +
+                            "</span>" +
+                            "</button>" +
+                            expandedBody +
+                            "</div>"
+                        );
+                    }
+                )
+                .join("");
+    }
+
+    [
+        "gear",
+        "perk",
+        "drawback"
+    ].forEach(
+        renderCreatorPathChoice
+    );
+
+    const drawback =
+        creatorResolvedPathChoice(
+            "drawback"
+        );
+
+    const extraWrap =
+        document.getElementById(
+            "creator-drawback-extra-wrap"
+        );
+
+    const extraSelect =
+        document.getElementById(
+            "creator-drawback-extra"
+        );
+
+    if (
+        extraWrap
+    ) {
+        extraWrap.hidden =
+            drawback?.name !==
+            "Malnourished Development";
+    }
+
+    if (
+        extraSelect
+    ) {
+        extraSelect.value =
+            creatorDraft?.drawbackExtra ||
+            "";
+    }
+
+    renderCreatorRoleBonuses();
 }
 function getCreatorRace() {
     return RPG_CREATOR_RACES.find(
@@ -19443,10 +19745,13 @@ function syncCreatorFieldsFromInputs() {
         );
 }
 
-function creatorAppearanceData() {
+function creatorAppearanceData(
+    raceName =
+        creatorDraft?.race
+) {
     return (
         RPG_CREATOR_APPEARANCE[
-            creatorDraft?.race
+            raceName
         ] || {
             styles: [],
             hair: [],
@@ -19826,6 +20131,34 @@ function renderCreatorAppearanceControls() {
     );
 }
 
+function creatorRaceHeightRangeText(
+    race
+) {
+    if (
+        !race?.heights?.length
+    ) {
+        return "No height range is currently defined in Races and Templates One v1.";
+    }
+
+    return (
+        creatorInchesText(
+            Math.min(
+                ...race.heights.map(
+                    row => row[0]
+                )
+            )
+        ) +
+        " – " +
+        creatorInchesText(
+            Math.max(
+                ...race.heights.map(
+                    row => row[1]
+                )
+            )
+        )
+    );
+}
+
 function renderCreatorRaceGrid() {
     const grid =
         document.getElementById(
@@ -19841,156 +20174,184 @@ function renderCreatorRaceGrid() {
     grid.innerHTML =
         RPG_CREATOR_RACES
             .map(
-                race =>
-                    '<button class="creator-race-card' +
-                    (
+                race => {
+                    const isSelected =
                         creatorDraft?.race ===
-                        race.name
-                            ? " selected"
-                            : ""
-                    ) +
-                    '" type="button" data-creator-race="' +
-                    race.name +
-                    '">' +
-                    race.name +
-                    "</button>"
+                        race.name;
+
+                    const isExpanded =
+                        creatorOpenRace ===
+                        race.name;
+
+                    const appearance =
+                        creatorAppearanceData(
+                            race.name
+                        );
+
+                    const choiceButtons =
+                        race.choices?.length
+                            ? (
+                                '<div class="creator-race-choice-panel">' +
+                                race.choices
+                                    .map(
+                                        choice =>
+                                            '<button class="creator-race-choice' +
+                                            (
+                                                isSelected &&
+                                                creatorDraft?.raceChoice ===
+                                                    choice.label
+                                                    ? " selected"
+                                                    : ""
+                                            ) +
+                                            '" type="button" data-creator-race-choice="' +
+                                            creatorEscapeHtml(
+                                                choice.label
+                                            ) +
+                                            '">' +
+                                            creatorEscapeHtml(
+                                                choice.label
+                                            ) +
+                                            "</button>"
+                                    )
+                                    .join("") +
+                                "</div>"
+                              )
+                            : "";
+
+                    const expandedBody =
+                        isExpanded
+                            ? (
+                                '<div class="creator-expandable-card-body">' +
+                                '<p><strong>Bonuses:</strong> ' +
+                                creatorEscapeHtml(
+                                    race.bonus
+                                ) +
+                                "</p>" +
+                                '<p><strong>Age Phases:</strong> ' +
+                                creatorEscapeHtml(
+                                    race.age
+                                ) +
+                                "</p>" +
+                                '<p><strong>Height:</strong> ' +
+                                creatorEscapeHtml(
+                                    creatorRaceHeightRangeText(
+                                        race
+                                    )
+                                ) +
+                                "</p>" +
+                                '<div class="creator-race-appearance">' +
+                                '<div><strong>Hair colors:</strong> ' +
+                                creatorEscapeHtml(
+                                    appearance.hair?.length
+                                        ? appearance.hair.join(", ")
+                                        : "No race-specific choices listed."
+                                ) +
+                                "</div>" +
+                                '<div><strong>Eye colors:</strong> ' +
+                                creatorEscapeHtml(
+                                    appearance.eyes?.length
+                                        ? appearance.eyes.join(", ")
+                                        : "No race-specific choices listed."
+                                ) +
+                                "</div>" +
+                                '<div><strong>Sclera:</strong> ' +
+                                creatorEscapeHtml(
+                                    appearance.sclera?.length
+                                        ? appearance.sclera.join(", ")
+                                        : "No race-specific sclera colors listed."
+                                ) +
+                                "</div>" +
+                                '<div><strong>Race styles:</strong> ' +
+                                creatorEscapeHtml(
+                                    appearance.styles?.length
+                                        ? appearance.styles.join(", ")
+                                        : "No race-specific styles listed."
+                                ) +
+                                "</div></div>" +
+                                (
+                                    isSelected &&
+                                    race.choices?.length
+                                        ? (
+                                            '<p><strong>Choose racial attribute adjustment:</strong></p>' +
+                                            choiceButtons
+                                          )
+                                        : ""
+                                ) +
+                                '<div class="creator-expandable-card-actions">' +
+                                '<button class="creator-card-select-button' +
+                                (
+                                    isSelected
+                                        ? " selected"
+                                        : ""
+                                ) +
+                                '" type="button" data-creator-race-select="' +
+                                creatorEscapeHtml(
+                                    race.name
+                                ) +
+                                '">' +
+                                (
+                                    isSelected
+                                        ? "Selected"
+                                        : "Select " +
+                                          creatorEscapeHtml(
+                                              race.name
+                                          )
+                                ) +
+                                "</button>" +
+                                "</div>" +
+                                "</div>"
+                              )
+                            : "";
+
+                    return (
+                        '<div class="creator-expandable-card creator-race-card' +
+                        (
+                            isSelected
+                                ? " selected"
+                                : ""
+                        ) +
+                        (
+                            isExpanded
+                                ? " expanded"
+                                : ""
+                        ) +
+                        '" data-creator-race-card="' +
+                        creatorEscapeHtml(
+                            race.name
+                        ) +
+                        '">' +
+                        '<button class="creator-expandable-card-toggle" type="button" data-creator-race-toggle="' +
+                        creatorEscapeHtml(
+                            race.name
+                        ) +
+                        '">' +
+                        '<span class="creator-expandable-card-title"><span>' +
+                        creatorEscapeHtml(
+                            race.name
+                        ) +
+                        "</span>" +
+                        (
+                            isSelected
+                                ? '<span class="creator-card-selected-badge">Selected</span>'
+                                : ""
+                        ) +
+                        "</span>" +
+                        '<span class="creator-expandable-card-subtitle">' +
+                        creatorEscapeHtml(
+                            race.bonus
+                        ) +
+                        "</span>" +
+                        "</button>" +
+                        expandedBody +
+                        "</div>"
+                    );
+                }
             )
-            .join(
-                ""
-            );
+            .join("");
 }
 
 function renderCreatorRaceSummary() {
-    const race =
-        getCreatorRace();
-
-    const summary =
-        document.getElementById(
-            "creator-race-summary"
-        );
-
-    if (
-        !summary
-    ) {
-        return;
-    }
-
-    summary.hidden =
-        !race;
-
-    if (
-        !race
-    ) {
-        return;
-    }
-
-    setCreatorText(
-        "creator-race-name",
-        race.name
-    );
-
-    setCreatorText(
-        "creator-race-bonus",
-        race.bonus
-    );
-
-    setCreatorText(
-        "creator-race-age",
-        race.age
-    );
-
-    setCreatorText(
-        "creator-race-height",
-        race.heights.length
-            ? creatorInchesText(
-                Math.min(
-                    ...race.heights.map(
-                        row => row[0]
-                    )
-                )
-              ) +
-              " – " +
-              creatorInchesText(
-                Math.max(
-                    ...race.heights.map(
-                        row => row[1]
-                    )
-                )
-              )
-            : "No height range is currently defined in Races and Templates One v1."
-    );
-
-    const appearance =
-        creatorAppearanceData();
-
-    setCreatorText(
-        "creator-race-hair-colors",
-        appearance.hair?.length
-            ? appearance.hair.join(", ")
-            : "No race-specific choices listed."
-    );
-
-    setCreatorText(
-        "creator-race-eye-colors",
-        appearance.eyes?.length
-            ? appearance.eyes.join(", ")
-            : "No race-specific choices listed."
-    );
-
-    setCreatorText(
-        "creator-race-sclera-colors",
-        appearance.sclera?.length
-            ? appearance.sclera.join(", ")
-            : "No race-specific sclera colors listed."
-    );
-
-    setCreatorText(
-        "creator-race-styles",
-        appearance.styles?.length
-            ? appearance.styles.join(", ")
-            : "No race-specific styles listed."
-    );
-
-    const choiceWrap =
-        document.getElementById(
-            "creator-race-choice-wrap"
-        );
-
-    const choicePanel =
-        document.getElementById(
-            "creator-race-choice-panel"
-        );
-
-    if (
-        choiceWrap &&
-        choicePanel
-    ) {
-        choiceWrap.hidden =
-            !race.choices?.length;
-
-        choicePanel.innerHTML =
-            race.choices?.length
-                ? race.choices
-                    .map(
-                        choice =>
-                            '<button class="creator-race-choice' +
-                            (
-                                creatorDraft.raceChoice ===
-                                choice.label
-                                    ? " selected"
-                                    : ""
-                            ) +
-                            '" type="button" data-creator-race-choice="' +
-                            choice.label +
-                            '">' +
-                            choice.label +
-                            "</button>"
-                    )
-                    .join(
-                        ""
-                    )
-                : "";
-    }
+    // Race information now expands inside the selected card.
 }
 
 function renderCreatorDetailGuidance() {
@@ -20691,6 +21052,12 @@ function startGuidedCharacter() {
     creatorPathStep =
         0;
 
+    creatorOpenRace =
+        "";
+
+    creatorOpenOrigin =
+        "";
+
     document
         .querySelectorAll(
             "[data-creator-field]"
@@ -21056,7 +21423,96 @@ document
         }
     );
 
-document.getElementById("creator-origin-grid").addEventListener("click",event=>{const b=event.target.closest("[data-creator-origin]");if(!b||!creatorDraft)return;creatorDraft.origin=b.dataset.creatorOrigin;Object.assign(creatorDraft,{gearMode:"default",gearSource:"",gearChoice:"",gearCustom:"",perkMode:"default",perkSource:"",perkChoice:"",perkCustom:"",drawbackMode:"default",drawbackSource:"",drawbackChoice:"",drawbackCustom:"",drawbackExtra:""});creatorDraft.attributeSpends={bod:0,dex:0,mnd:0,cha:0};renderCharacterCreator();});
+document
+    .getElementById(
+        "creator-origin-grid"
+    )
+    .addEventListener(
+        "click",
+        event => {
+            if (
+                !creatorDraft
+            ) {
+                return;
+            }
+
+            const selectButton =
+                event.target.closest(
+                    "[data-creator-origin-select]"
+                );
+
+            if (
+                selectButton
+            ) {
+                const originName =
+                    selectButton.dataset.creatorOriginSelect;
+
+                const changed =
+                    creatorDraft.origin !==
+                    originName;
+
+                creatorDraft.origin =
+                    originName;
+
+                creatorOpenOrigin =
+                    originName;
+
+                if (
+                    changed
+                ) {
+                    Object.assign(
+                        creatorDraft,
+                        {
+                            gearMode: "default",
+                            gearSource: "",
+                            gearChoice: "",
+                            gearCustom: "",
+                            perkMode: "default",
+                            perkSource: "",
+                            perkChoice: "",
+                            perkCustom: "",
+                            drawbackMode: "default",
+                            drawbackSource: "",
+                            drawbackChoice: "",
+                            drawbackCustom: "",
+                            drawbackExtra: ""
+                        }
+                    );
+
+                    creatorDraft.attributeSpends = {
+                        bod: 0,
+                        dex: 0,
+                        mnd: 0,
+                        cha: 0
+                    };
+                }
+
+                renderCharacterCreator();
+                return;
+            }
+
+            const toggleButton =
+                event.target.closest(
+                    "[data-creator-origin-toggle]"
+                );
+
+            if (
+                toggleButton
+            ) {
+                const originName =
+                    toggleButton.dataset.creatorOriginToggle;
+
+                creatorOpenOrigin =
+                    creatorOpenOrigin ===
+                        originName
+                        ? ""
+                        : originName;
+
+                renderCharacterCreator();
+            }
+        }
+    );
+
 document.querySelectorAll("[data-creator-path-field]").forEach(input=>{input.addEventListener(input.tagName==="TEXTAREA"?"input":"change",()=>{if(!creatorDraft)return;const f=input.dataset.creatorPathField;creatorDraft[f]=input.value;if(f==="gearMode"||f==="gearSource")creatorDraft.gearChoice="";if(f==="perkMode"||f==="perkSource")creatorDraft.perkChoice="";if(f==="drawbackMode"||f==="drawbackSource"){creatorDraft.drawbackChoice="";creatorDraft.drawbackExtra="";}if(f==="drawbackChoice"){creatorDraft.drawbackExtra="";creatorDraft.attributeSpends={bod:0,dex:0,mnd:0,cha:0};}renderCharacterCreator();});});
 document.querySelectorAll("[data-creator-role-bonus-field]").forEach(input=>{input.addEventListener(input.tagName==="INPUT"?"input":"change",()=>{if(!creatorDraft)return;const i=Number(input.dataset.creatorRoleBonusIndex),f=input.dataset.creatorRoleBonusField,b=creatorDraft.roleBonuses[i];b[f]=input.value;if(f==="type"){b.detail="";b.other="";}if(f==="detail"&&input.value!=="Other")b.other="";renderCharacterCreator();});});
 
@@ -21117,30 +21573,22 @@ document
     .addEventListener(
         "click",
         event => {
-            const button =
-                event.target.closest(
-                    "[data-creator-race]"
-                );
-
             if (
-                !button ||
                 !creatorDraft
             ) {
                 return;
             }
 
-            const changed =
-                creatorDraft.race !==
-                button.dataset.creatorRace;
-
-            creatorDraft.race =
-                button.dataset.creatorRace;
+            const choiceButton =
+                event.target.closest(
+                    "[data-creator-race-choice]"
+                );
 
             if (
-                changed
+                choiceButton
             ) {
                 creatorDraft.raceChoice =
-                    "";
+                    choiceButton.dataset.creatorRaceChoice;
 
                 creatorDraft.attributeSpends = {
                     bod: 0,
@@ -21149,56 +21597,81 @@ document
                     cha: 0
                 };
 
-                creatorDraft.hairColor = "";
-                creatorDraft.hairOther = "";
-                creatorDraft.hairStyles = [];
-                creatorDraft.hairStyleOther = "";
-                creatorDraft.eyeColor = "";
-                creatorDraft.eyeOther = "";
-                creatorDraft.scleraColor = "";
-                creatorDraft.scleraOther = "";
-
-                creatorDraft.weight =
-                    "";
-
-                initializeCreatorHeightForRace();
-                setCreatorWeightToHeightAverage();
-            }
-
-            renderCharacterCreator();
-        }
-    );
-
-document
-    .getElementById(
-        "creator-race-choice-panel"
-    )
-    .addEventListener(
-        "click",
-        event => {
-            const button =
-                event.target.closest(
-                    "[data-creator-race-choice]"
-                );
-
-            if (
-                !button ||
-                !creatorDraft
-            ) {
+                renderCharacterCreator();
                 return;
             }
 
-            creatorDraft.raceChoice =
-                button.dataset.creatorRaceChoice;
+            const selectButton =
+                event.target.closest(
+                    "[data-creator-race-select]"
+                );
 
-            creatorDraft.attributeSpends = {
-                bod: 0,
-                dex: 0,
-                mnd: 0,
-                cha: 0
-            };
+            if (
+                selectButton
+            ) {
+                const raceName =
+                    selectButton.dataset.creatorRaceSelect;
 
-            renderCharacterCreator();
+                const changed =
+                    creatorDraft.race !==
+                    raceName;
+
+                creatorDraft.race =
+                    raceName;
+
+                creatorOpenRace =
+                    raceName;
+
+                if (
+                    changed
+                ) {
+                    creatorDraft.raceChoice =
+                        "";
+
+                    creatorDraft.attributeSpends = {
+                        bod: 0,
+                        dex: 0,
+                        mnd: 0,
+                        cha: 0
+                    };
+
+                    creatorDraft.hairColor = "";
+                    creatorDraft.hairOther = "";
+                    creatorDraft.hairStyles = [];
+                    creatorDraft.hairStyleOther = "";
+                    creatorDraft.eyeColor = "";
+                    creatorDraft.eyeOther = "";
+                    creatorDraft.scleraColor = "";
+                    creatorDraft.scleraOther = "";
+                    creatorDraft.weight = "";
+
+                    initializeCreatorHeightForRace();
+                    setCreatorWeightToHeightAverage();
+                }
+
+                renderCharacterCreator();
+                return;
+            }
+
+            const toggleButton =
+                event.target.closest(
+                    "[data-creator-race-toggle]"
+                );
+
+            if (
+                toggleButton
+            ) {
+                const raceName =
+                    toggleButton.dataset.creatorRaceToggle;
+
+                creatorOpenRace =
+                    creatorOpenRace ===
+                        raceName
+                        ? ""
+                        : raceName;
+
+                renderCharacterCreator();
+            }
         }
     );
 
