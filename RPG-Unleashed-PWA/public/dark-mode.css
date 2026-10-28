@@ -190,15 +190,3 @@ html.rpg-dark .path-field-label,
 html.rpg-dark .weapon-sub-label,
 html.rpg-dark .rpg-reference-entry small {color:var(--rpg-muted)!important;}
 html.rpg-dark input::placeholder,html.rpg-dark textarea::placeholder {color:#c7d0dc!important;opacity:1;}
-html.rpg-dark .quarter-value input[readonly],
-html.rpg-dark .temp-quarter-value input[readonly] {
- background:transparent!important;color:var(--rpg-fg)!important;opacity:1!important;
-}
-/* Number-input spinners appeared as white artifacts inside narrow quarter-score bubbles. */
-.quarter-value input::-webkit-inner-spin-button,
-.quarter-value input::-webkit-outer-spin-button,
-.temp-quarter-value input::-webkit-inner-spin-button,
-.temp-quarter-value input::-webkit-outer-spin-button {-webkit-appearance:none!important;margin:0!important;display:none!important;}
-.quarter-value input[type="number"],.temp-quarter-value input[type="number"] {
- appearance:textfield!important;-moz-appearance:textfield!important;
-}
