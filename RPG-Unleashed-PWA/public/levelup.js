@@ -86,8 +86,7 @@ async function complete(){
    const e=document.querySelector("#tab1 .health-row .current-max-values input:last-of-type");if(e){e.value=String(Number(e.value||0)+5);e.dispatchEvent(new Event("input",{bubbles:true}));}
   }
   if(op.kind==="mana"){
-   const group=[...document.querySelectorAll("#tab5 .current-max-values")].find(x=>x.textContent.includes("/"))||document.querySelector("#tab5 .current-max-values");
-   const e=group?.querySelector("input:last-of-type");if(e){e.value=String(Number(e.value||0)+5);e.dispatchEvent(new Event("input",{bubbles:true}));}
+   const e=document.querySelector("#tab5 .mana-current-max .mana-max");if(e){e.value=String(Number(e.value||0)+5);e.dispatchEvent(new Event("input",{bubbles:true}));}
   }
   if(op.kind==="invest"||op.kind==="rank"){
    const row=featRows().find(r=>r.querySelector(".feat-input").value.trim()===op.name);
