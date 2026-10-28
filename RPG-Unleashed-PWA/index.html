@@ -19352,6 +19352,10 @@ function makeFreshCreatorDraft() {
         playerName: "",
         race: "",
         raceChoice: "",
+        heritageMode: "full",
+        heritagePartner: "",
+        heritageGmOverride: false,
+        heritageChoices: {},
         culturalTraits: [],
         gender: "",
         age: "",
@@ -20401,7 +20405,50 @@ function renderCreatorPath() {
 
     renderCreatorRoleBonuses();
 }
+const RPG_HALF_HERITAGE={
+ Human:{fixed:{},hpBonus:0,bonus:"+1 Feat at starting level",options:[],aspects:[]},
+ Elf:{fixed:{dex:1},hpBonus:0,bonus:"+1 DEX, +1 MND or CHA; Lowlight Vision",options:[[{label:"+1 MND",mods:{mnd:1}},{label:"+1 CHA",mods:{cha:1}}]],aspects:["Lowlight Vision"]},
+ Dwarf:{fixed:{mnd:1},hpBonus:0,bonus:"+1 BOD or +1 HP, +1 MND; Dark Vision",options:[[{label:"+1 BOD",mods:{bod:1}},{label:"+1 HP",hp:1}]],aspects:["Dark Vision"]},
+ Orc:{fixed:{dex:1,cha:-1},hpBonus:0,bonus:"+1 BOD or +1 HP, +1 DEX, -1 CHA; Lowlight Vision",options:[[{label:"+1 BOD",mods:{bod:1}},{label:"+1 HP",hp:1}]],aspects:["Lowlight Vision"]},
+ Halfling:{fixed:{bod:-1,cha:2},hpBonus:0,bonus:"-1 BOD, +2 CHA; Lowlight Vision; +1 Trait",options:[],aspects:["Lowlight Vision"]},
+ Gnome:{fixed:{bod:-1,mnd:2},hpBonus:0,bonus:"-1 BOD, +2 MND; Dark Vision",options:[],aspects:["Dark Vision"]},
+ Traiggoblin:{fixed:{bod:-1,dex:1},hpBonus:0,bonus:"-1 BOD, +1 DEX, +1 MND or CHA; Dark Vision",options:[[{label:"+1 MND",mods:{mnd:1}},{label:"+1 CHA",mods:{cha:1}}]],aspects:["Dark Vision"]},
+ Furfolk:{fixed:{},hpBonus:0,bonus:"+1 Attribute of choice; Natural Weapons",options:[[{label:"+1 BOD",mods:{bod:1}},{label:"+1 DEX",mods:{dex:1}},{label:"+1 MND",mods:{mnd:1}},{label:"+1 CHA",mods:{cha:1}}]],aspects:["Natural Weapons"]},
+ Zizses:{fixed:{dex:1},hpBonus:0,bonus:"+1 BOD or +1 HP, +1 DEX; Scale Armor",options:[[{label:"+1 BOD",mods:{bod:1}},{label:"+1 HP",hp:1}]],aspects:["Scale Armor (+2 natural DR; fire and ice resistance)"],naturalDr:2},
+ "Av’riahl":{fixed:{bod:-1},hpBonus:0,bonus:"-1 BOD, +1 CHA or DEX; Winged Flight",options:[[{label:"+1 CHA",mods:{cha:1}},{label:"+1 DEX",mods:{dex:1}}]],aspects:["Winged Flight (half sustained flight time)"]},
+ Arrahsect:{fixed:{},hpBonus:0,bonus:"+1 Natural DR; Compound Vision",options:[],aspects:["Compound Vision (+2 Detect; cannot be flanked from either side)"],naturalDr:1}
+};
+const RPG_BIRTH_TYPES={"Zizses":"egg","Av’riahl":"egg","Arrahsect":"egg","Terrán":"spore","Shroomite":"spore","Manakeen":"none"};
+function creatorBirthType(name){return RPG_BIRTH_TYPES[name]||"live";}
+function creatorIsMixed(){return creatorDraft?.heritageMode==="mixed";}
+function creatorHeritagePairValid(){
+ if(!creatorIsMixed())return true;
+ const a=creatorDraft.race,b=creatorDraft.heritagePartner;
+ return Boolean(a&&b&&a!==b&&RPG_HALF_HERITAGE[a]&&RPG_HALF_HERITAGE[b]&&
+   (creatorDraft.heritageGmOverride||creatorBirthType(a)===creatorBirthType(b))&&
+   creatorBirthType(a)!=="none"&&creatorBirthType(b)!=="none");
+}
+function creatorHalfChoiceGroups(){
+ if(!creatorHeritagePairValid())return [];
+ return [creatorDraft.race,creatorDraft.heritagePartner].flatMap(n=>
+  (RPG_HALF_HERITAGE[n]?.options||[]).map((group,i)=>({name:n,key:n+":"+i,items:group})));
+}
+function creatorMixedRace(){
+ if(!creatorHeritagePairValid())return null;
+ const names=[creatorDraft.race,creatorDraft.heritagePartner];
+ const parents=names.map(n=>RPG_HALF_HERITAGE[n]);
+ const mods={bod:0,dex:0,mnd:0,cha:0};let hp=0,dr=0;
+ for(const p of parents){for(const k of Object.keys(mods))mods[k]+=p.fixed[k]||0;hp+=p.hpBonus||0;dr+=p.naturalDr||0;}
+ for(const group of creatorHalfChoiceGroups()){
+  const choice=group.items.find(i=>i.label===creatorDraft.heritageChoices?.[group.key]);
+  if(choice){for(const k of Object.keys(mods))mods[k]+=choice.mods?.[k]||0;hp+=choice.hp||0;}
+ }
+ const first=RPG_CREATOR_RACES.find(r=>r.name===names[0]);
+ return {...first,name:names.join(" / "),fixed:mods,choices:[],hpBonus:hp,naturalDr:dr,
+  bonus:parents.map((p,i)=>names[i]+": "+p.bonus).join("; "),mixedAspects:[...new Set(parents.flatMap(p=>p.aspects||[]))]};
+}
 function getCreatorRace() {
+    if(creatorIsMixed())return creatorMixedRace();
     return RPG_CREATOR_RACES.find(
         race =>
             race.name ===
@@ -20421,22 +20468,10 @@ function getCreatorRaceChoice() {
 }
 
 function creatorRaceModifiers() {
-    const race = getCreatorRace();
-    const choice = getCreatorRaceChoice();
-    const result = {
-        bod: 0,
-        dex: 0,
-        mnd: 0,
-        cha: 0
-    };
-
-    for (const stat of Object.keys(result)) {
-        result[stat] =
-            Number(race?.fixed?.[stat] || 0) +
-            Number(choice?.mods?.[stat] || 0);
-    }
-
-    return result;
+ const race=getCreatorRace(),choice=creatorIsMixed()?null:getCreatorRaceChoice();
+ const result={bod:0,dex:0,mnd:0,cha:0};
+ for(const stat of Object.keys(result))result[stat]=Number(race?.fixed?.[stat]||0)+Number(choice?.mods?.[stat]||0);
+ return result;
 }
 
 function creatorAllocatedAttributeValue(
@@ -21910,6 +21945,12 @@ function creatorRaceIsComplete() {
         return false;
     }
 
+    if(creatorIsMixed()){
+       if(!creatorHeritagePairValid())return false;
+       if(creatorHalfChoiceGroups().some(g=>!g.items.some(c=>c.label===creatorDraft.heritageChoices?.[g.key])))return false;
+       const a=creatorDraft.culturalTraits||[];
+       return [creatorDraft.race,creatorDraft.heritagePartner].every(n=>a.filter(t=>(RPG_CULTURAL_TRAITS[n]||[]).includes(t)).length===1);
+    }
     if (race.choices?.length && !getCreatorRaceChoice()) return false;
     const chosen=creatorDraft?.culturalTraits||[];
     const available=RPG_CULTURAL_TRAITS[race.name]||[];
