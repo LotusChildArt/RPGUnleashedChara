@@ -1911,7 +1911,7 @@ input::placeholder {
 .path-detail-row {
     display: grid;
     grid-template-columns:
-        repeat(3, minmax(0, 1fr));
+        repeat(4, minmax(0, 1fr));
     gap: 8px;
     margin-bottom: 8px;
 }
@@ -3852,7 +3852,7 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
 
 .character-creator-progress {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 6px;
     margin-bottom: 16px;
 }
@@ -4130,6 +4130,22 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
     font-weight: bold;
     color: #555;
 }
+
+.creator-path-progress {display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin:10px 0 18px}
+.creator-path-progress-step {min-height:34px;border:1.5px solid #aaa;border-radius:17px;padding:5px 7px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;font-weight:bold;color:#666;background:#f4f4f4}
+.creator-path-progress-step.active {border-color:black;color:#111;background:white}
+.creator-path-progress-step.complete {border-color:#555;color:#333;background:#e9e9e9}
+.creator-path-page {display:none}.creator-path-page.active {display:block}
+.creator-origin-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.creator-origin-card {border:2px solid black;border-radius:18px;background:white;padding:10px 12px;cursor:pointer;text-align:left}
+.creator-origin-card.selected {background:#111;color:white}.creator-origin-card strong {display:block;margin-bottom:4px}.creator-origin-card span {display:block;font-size:11px;line-height:1.35}
+.creator-path-summary,.creator-path-choice-detail,.creator-gm-warning {margin-top:12px;border:1.5px solid #999;border-radius:16px;padding:10px 12px;line-height:1.4;font-size:12px}
+.creator-path-summary h3 {margin:0 0 6px}.creator-path-choice-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.creator-path-choice-grid .full {grid-column:1/-1}
+.creator-path-control {display:grid;gap:5px}.creator-path-control>span {font-size:12px;font-weight:bold;color:#444}
+.creator-path-control select,.creator-path-control input,.creator-path-control textarea {width:100%;min-height:42px;border:2px solid black;border-radius:21px;background:white;padding:7px 12px}
+.creator-path-control textarea {min-height:90px;border-radius:18px;resize:vertical}.creator-gm-warning {border-color:#555;font-weight:bold;background:#f3f3f3}
+.creator-role-bonus-card {border:1.5px solid #999;border-radius:18px;padding:12px;margin-bottom:10px}.creator-role-bonus-card h4 {margin:0 0 8px}
+@media (max-width:720px){.creator-path-progress{grid-template-columns:1fr}.creator-origin-grid,.creator-path-choice-grid{grid-template-columns:1fr}}
 
 .creator-points-banner {
     display: flex;
@@ -4504,8 +4520,9 @@ if (
             <div class="creator-progress-step active" data-creator-progress="0">1. Basics</div>
             <div class="creator-progress-step" data-creator-progress="1">2. Race</div>
             <div class="creator-progress-step" data-creator-progress="2">3. Details</div>
-            <div class="creator-progress-step" data-creator-progress="3">4. Attributes</div>
-            <div class="creator-progress-step" data-creator-progress="4">5. Review</div>
+            <div class="creator-progress-step" data-creator-progress="3">4. Path</div>
+            <div class="creator-progress-step" data-creator-progress="4">5. Attributes</div>
+            <div class="creator-progress-step" data-creator-progress="5">6. Review</div>
         </div>
 
         <div class="character-creator-card">
@@ -4633,9 +4650,57 @@ if (
             </section>
 
             <section class="creator-step" data-creator-step="3">
+                <h2>Path</h2>
+                <p class="creator-step-note">Build your Path from Origin, starting gear, Perk, Drawback, Role, Role Bonuses, and Drive. Choices borrowed from another Origin or made custom should be approved by your GM.</p>
+                <div class="creator-path-progress">
+                    <div class="creator-path-progress-step active" data-creator-path-progress="0">Origin</div><div class="creator-path-progress-step" data-creator-path-progress="1">Gear</div><div class="creator-path-progress-step" data-creator-path-progress="2">Perk</div><div class="creator-path-progress-step" data-creator-path-progress="3">Drawback</div><div class="creator-path-progress-step" data-creator-path-progress="4">Role</div><div class="creator-path-progress-step" data-creator-path-progress="5">Bonuses</div><div class="creator-path-progress-step" data-creator-path-progress="6">Drive</div>
+                </div>
+                <div class="creator-path-page active" data-creator-path-step="0">
+                    <h3>Origin</h3><p class="creator-step-note">Your Origin determines where you came from and your normal starting wealth. The detailed Origin entry is authoritative.</p>
+                    <div class="creator-origin-grid" id="creator-origin-grid"></div>
+                    <div class="creator-path-summary" id="creator-origin-summary" hidden><h3 id="creator-origin-name">Origin</h3><div><strong>Starting Wealth:</strong> <span id="creator-origin-wealth"></span></div><p id="creator-origin-description"></p></div>
+                </div>
+                <div class="creator-path-page" data-creator-path-step="1">
+                    <h3>Starting Gear</h3>
+                    <div class="creator-path-choice-grid">
+                        <label class="creator-path-control"><span>Choose From</span><select id="creator-gear-mode" data-creator-path-field="gearMode"><option value="default">My Origin</option><option value="borrow">Another Origin</option><option value="custom">Custom Package</option></select></label>
+                        <label class="creator-path-control" id="creator-gear-source-wrap" hidden><span>Borrow From</span><select id="creator-gear-source" data-creator-path-field="gearSource"></select></label>
+                        <label class="creator-path-control full" id="creator-gear-choice-wrap"><span>Gear Package</span><select id="creator-gear-choice" data-creator-path-field="gearChoice"></select></label>
+                        <label class="creator-path-control full" id="creator-gear-custom-wrap" hidden><span>Custom Starting Gear</span><textarea id="creator-gear-custom" data-creator-path-field="gearCustom" placeholder="Write your custom or GM-approved starting gear package."></textarea></label>
+                    </div><div class="creator-path-choice-detail" id="creator-gear-detail"></div><div class="creator-gm-warning" id="creator-gear-warning" hidden>This is not the default starting gear for your Origin. Inform your GM and make sure they approve it.</div>
+                </div>
+                <div class="creator-path-page" data-creator-path-step="2">
+                    <h3>Perk</h3>
+                    <div class="creator-path-choice-grid">
+                        <label class="creator-path-control"><span>Choose From</span><select id="creator-perk-mode" data-creator-path-field="perkMode"><option value="default">My Origin</option><option value="borrow">Another Origin</option><option value="custom">Custom Perk</option></select></label>
+                        <label class="creator-path-control" id="creator-perk-source-wrap" hidden><span>Borrow From</span><select id="creator-perk-source" data-creator-path-field="perkSource"></select></label>
+                        <label class="creator-path-control full" id="creator-perk-choice-wrap"><span>Perk</span><select id="creator-perk-choice" data-creator-path-field="perkChoice"></select></label>
+                        <label class="creator-path-control full" id="creator-perk-custom-wrap" hidden><span>Custom Perk</span><textarea id="creator-perk-custom" data-creator-path-field="perkCustom" placeholder="Write your custom or GM-approved Perk."></textarea></label>
+                    </div><div class="creator-path-choice-detail" id="creator-perk-detail"></div><div class="creator-gm-warning" id="creator-perk-warning" hidden>This Perk is not one of your Origin's default choices. Inform your GM and make sure they approve it.</div>
+                </div>
+                <div class="creator-path-page" data-creator-path-step="3">
+                    <h3>Drawback</h3>
+                    <div class="creator-path-choice-grid">
+                        <label class="creator-path-control"><span>Choose From</span><select id="creator-drawback-mode" data-creator-path-field="drawbackMode"><option value="default">My Origin</option><option value="borrow">Another Origin</option><option value="custom">Custom Drawback</option></select></label>
+                        <label class="creator-path-control" id="creator-drawback-source-wrap" hidden><span>Borrow From</span><select id="creator-drawback-source" data-creator-path-field="drawbackSource"></select></label>
+                        <label class="creator-path-control full" id="creator-drawback-choice-wrap"><span>Drawback</span><select id="creator-drawback-choice" data-creator-path-field="drawbackChoice"></select></label>
+                        <label class="creator-path-control full" id="creator-drawback-custom-wrap" hidden><span>Custom Drawback</span><textarea id="creator-drawback-custom" data-creator-path-field="drawbackCustom" placeholder="Write your custom or GM-approved Drawback."></textarea></label>
+                        <label class="creator-path-control full" id="creator-drawback-extra-wrap" hidden><span>Malnourished Development</span><select id="creator-drawback-extra" data-creator-path-field="drawbackExtra"><option value="">Choose the affected Attribute</option><option value="bod">-1 BOD</option><option value="dex">-1 DEX</option></select></label>
+                    </div><div class="creator-path-choice-detail" id="creator-drawback-detail"></div><div class="creator-gm-warning" id="creator-drawback-warning" hidden>This Drawback is not one of your Origin's default choices. Inform your GM and make sure they approve it.</div>
+                </div>
+                <div class="creator-path-page" data-creator-path-step="4"><h3>Role</h3><p class="creator-step-note">Your Role is what your character does—the profession, training, or expertise they apply in the present. Name it however best fits the character.</p><label class="creator-path-control"><span>Role</span><input type="text" data-creator-field="role" placeholder="Example: Street Thief, Field Researcher, Battlefield Medic"></label></div>
+                <div class="creator-path-page" data-creator-path-step="5">
+                    <h3>Role Bonuses</h3><p class="creator-step-note">Choose exactly two. Skill, Knowledge, and Language may be chosen twice, but the two specific selections must be different.</p>
+                    <div class="creator-role-bonus-card" data-creator-role-bonus-card="0"><h4>Role Bonus 1</h4><div class="creator-path-choice-grid"><label class="creator-path-control"><span>Bonus Type</span><select id="creator-role-bonus-type-0" data-creator-role-bonus-index="0" data-creator-role-bonus-field="type"><option value="">Choose bonus</option><option value="skill">+2 to a Skill</option><option value="knowledge">+2 to one Knowledge category</option><option value="gearFeat">+1 Gear Feat</option><option value="craftFeat">+1 Craft Feat</option><option value="language">+1 Additional Language</option></select></label><label class="creator-path-control"><span>Selection</span><select id="creator-role-bonus-detail-0" data-creator-role-bonus-index="0" data-creator-role-bonus-field="detail"></select><input id="creator-role-bonus-other-0" type="text" data-creator-role-bonus-index="0" data-creator-role-bonus-field="other" placeholder="Enter selection" hidden></label></div></div>
+                    <div class="creator-role-bonus-card" data-creator-role-bonus-card="1"><h4>Role Bonus 2</h4><div class="creator-path-choice-grid"><label class="creator-path-control"><span>Bonus Type</span><select id="creator-role-bonus-type-1" data-creator-role-bonus-index="1" data-creator-role-bonus-field="type"><option value="">Choose bonus</option><option value="skill">+2 to a Skill</option><option value="knowledge">+2 to one Knowledge category</option><option value="gearFeat">+1 Gear Feat</option><option value="craftFeat">+1 Craft Feat</option><option value="language">+1 Additional Language</option></select></label><label class="creator-path-control"><span>Selection</span><select id="creator-role-bonus-detail-1" data-creator-role-bonus-index="1" data-creator-role-bonus-field="detail"></select><input id="creator-role-bonus-other-1" type="text" data-creator-role-bonus-index="1" data-creator-role-bonus-field="other" placeholder="Enter selection" hidden></label></div></div>
+                </div>
+                <div class="creator-path-page" data-creator-path-step="6"><h3>Drive</h3><p class="creator-step-note">Your Drive is the character's why: a goal, ambition, duty, obsession, ideal, or other motivation that pushes them forward.</p><label class="creator-path-control"><span>Drive</span><textarea data-creator-field="drive" placeholder="Example: Reclaim my lost title, protect my family, discover forbidden knowledge..."></textarea></label></div>
+            </section>
+
+            <section class="creator-step" data-creator-step="4">
                 <h2>Attributes</h2>
                 <p class="creator-step-note">
-                    RPG Unleashed b4.1 begins from BOD 6, DEX 6, MND 6, and CHA 6. Your race adjusts that baseline, then you spend all 6 starting Attribute Points.
+                    RPG Unleashed b4.1 begins from BOD 6, DEX 6, MND 6, and CHA 6. Race and any direct Path adjustment affect that baseline, then you spend all 6 starting Attribute Points.
                 </p>
 
                 <div class="creator-points-banner">
@@ -4698,7 +4763,7 @@ if (
                 </div>
             </section>
 
-            <section class="creator-step" data-creator-step="4">
+            <section class="creator-step" data-creator-step="5">
                 <h2>Review Character</h2>
                 <p class="creator-step-note">
                     Review the current foundation before creating the normal character sheet.
@@ -4722,6 +4787,10 @@ if (
                     </div>
                 </div>
 
+                <div class="creator-review-section"><h3>Path</h3><div class="creator-review-grid">
+                        <div class="creator-review-item"><span>Origin</span><strong id="creator-review-origin">—</strong></div><div class="creator-review-item"><span>Starting Wealth</span><strong id="creator-review-origin-wealth">—</strong></div><div class="creator-review-item"><span>Starting Gear</span><strong id="creator-review-gear">—</strong></div><div class="creator-review-item"><span>Perk</span><strong id="creator-review-perk">—</strong></div><div class="creator-review-item"><span>Drawback</span><strong id="creator-review-drawback">—</strong></div><div class="creator-review-item"><span>Role</span><strong id="creator-review-role">—</strong></div><div class="creator-review-item"><span>Role Bonus 1</span><strong id="creator-review-role-bonus-1">—</strong></div><div class="creator-review-item"><span>Role Bonus 2</span><strong id="creator-review-role-bonus-2">—</strong></div><div class="creator-review-item"><span>Drive</span><strong id="creator-review-drive">—</strong></div>
+                    </div></div>
+
                 <div class="creator-review-section">
                     <h3>Attributes</h3>
                     <div class="creator-review-grid">
@@ -4735,7 +4804,7 @@ if (
                 </div>
 
                 <div class="creator-review-warning">
-                    Base racial attribute, HP, and natural DR adjustments are applied here. Cultural Traits, racial variants, mixed-race rules, Path, feats, languages, and equipment will be added to later guided steps.
+                    Base racial adjustments and the selected Path are applied here. Cultural Traits, racial variants, mixed-race rules, the dedicated feat step, and the full equipment step will be added later.
                 </div>
             </section>
 
@@ -6522,6 +6591,21 @@ if (
                         class="path-expand"
                         rows="1"
                         placeholder="Origin"
+                    ></textarea>
+
+                </div>
+
+
+                <div class="path-field">
+
+                    <span class="path-field-label">
+                        Role
+                    </span>
+
+                    <textarea
+                        class="path-expand"
+                        rows="1"
+                        placeholder="Role"
                     ></textarea>
 
                 </div>
@@ -17149,7 +17233,8 @@ queueOwlbearTokenHudUpdate();
 
 const CREATOR_BASE_ATTRIBUTE = 6;
 const CREATOR_ATTRIBUTE_POINTS = 6;
-const CREATOR_STEP_COUNT = 5;
+const CREATOR_STEP_COUNT = 6;
+const CREATOR_PATH_STEP_COUNT = 7;
 
 const RPG_CREATOR_RACES = [
     {
@@ -17503,7 +17588,1334 @@ const RPG_CREATOR_APPEARANCE = {
     }
 };
 
+const RPG_CREATOR_PATH_ORIGINS = [
+    {
+        "name": "Destitute",
+        "description": "You grew up with nothing—whether abandoned, orphaned, or just unlucky. Every day was a fight for survival, and you had to rely on wits, endurance, or sheer luck to get by.",
+        "wealth": "1d6 Gold",
+        "gear": [
+            {
+                "name": "Ragged Beggar",
+                "text": "Poor clothing, a wooden bowl, and a walking stick (treat as club in combat)."
+            },
+            {
+                "name": "Street Urchin",
+                "text": "Poor clothing, a dagger, and a small pouch of stolen trinkets (worth 1d4 gold if sold)."
+            },
+            {
+                "name": "Wilderness Scavenger",
+                "text": "Poor cloak and clothing, a spear, and a small bundle of gathered herbs (for alchemical use, worth 1d4 gold or less)."
+            },
+            {
+                "name": "Desperate Drifter",
+                "text": "Poor clothing, a blanket, a chipped tin cup, and a random salvaged item (determined by the GM, could be a broken compass, an old map, or another small, possibly useful item)."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Survivor’s Grit",
+                "text": "+2 to Saves"
+            },
+            {
+                "name": "Street Smarts",
+                "text": "+2 to Stealth and Deceive when avoiding pursuers by blending into crowds."
+            },
+            {
+                "name": "Scavenger’s Eye",
+                "text": "+2 to Gather checks, +10% yield"
+            },
+            {
+                "name": "Desperation",
+                "text": "Gain either Improvised Weapon Proficiency or Improved Unarmed"
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Social Stigma",
+                "text": "You and the party have a -2 to social checks with the upper class if you are present."
+            },
+            {
+                "name": "Illiterate",
+                "text": "Can’t read or write."
+            },
+            {
+                "name": "Wanted for Vagrancy",
+                "text": "Authorities are more likely to suspect or harass you and you suffer a -2 penalty on Persuade checks against them."
+            },
+            {
+                "name": "Malnourished Development",
+                "text": "-1 to BOD or DEX."
+            }
+        ]
+    },
+    {
+        "name": "Servitude",
+        "description": "You spent a significant portion of your life in servitude—whether as an indentured servant, a domestic worker, a prisoner forced into labor, or something far worse. Your life was defined by duty and the expectations of others, leaving you either hardened, obedient, or quietly rebellious.",
+        "wealth": "2d6 Gold",
+        "gear": [
+            {
+                "name": "House Servant’s Attire",
+                "text": "Common clothing, a silver-plated serving tray (worth 1d4 gold), a ragged but warm cloak."
+            },
+            {
+                "name": "Indentured Worker’s Tools",
+                "text": "Common clothes, a hammer, sickle, shovel or axe, a small ledger with debts or owed wages."
+            },
+            {
+                "name": "Prisoner’s Remnants",
+                "text": "Poor clothes, concealed lockpick, a crude shank (treat as a dagger in combat), and a scarred wrist with remnants of old restraints."
+            },
+            {
+                "name": "Entertainer’s Rags",
+                "text": "Common but flashy clothes, a simple instrument (flute, drum, or lute), and a set of basic cosmetics."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Invisible Among the Elite",
+                "text": "+2 to Stealth and Deceive when pretending to be a servant or going unnoticed in noble spaces."
+            },
+            {
+                "name": "Obedient No More",
+                "text": "Once per session, when resisting authority, intimidation, or coercion, reroll a failed roll."
+            },
+            {
+                "name": "Trained Hands",
+                "text": "+2 to one Craft or Fine Craft skill, representing a skill mastered in service."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Indentured Past",
+                "text": "You are still technically owned by someone or owe a significant debt. Once per session, the GM may introduce someone attempting to collect."
+            },
+            {
+                "name": "Subservient Habits",
+                "text": "When dealing with authority figures, make a MND save (DC 15) to avoid falling into deferential behavior, even when it would harm you."
+            },
+            {
+                "name": "Branded Property",
+                "text": "You bear a visible mark of your servitude (brand, tattoo, or scar). Hiding it requires effort, and those who recognize it may treat you as less than equal."
+            },
+            {
+                "name": "Instilled Fear",
+                "text": "When confronted by an individual with absolute power over you (noble, slaver, former master), make a MND save (DC 15) to avoid hesitation or compliance."
+            }
+        ]
+    },
+    {
+        "name": "Runaway",
+        "description": "You abandoned your past, fleeing from home, duty, or a life that no longer suited you. Maybe you were escaping an abusive family, a forced marriage, or a dangerous crime syndicate. Either way, you’re always looking over your shoulder.",
+        "wealth": "2d6 Gold",
+        "gear": [
+            {
+                "name": "Light Survivalist",
+                "text": "Common cloak, common clothes, a dagger, and a weeks’ worth of dried rations."
+            },
+            {
+                "name": "Urban Escapee",
+                "text": "Common cloak, common clothes, and a lockpick set."
+            },
+            {
+                "name": "Desperate Defender",
+                "text": "Common clothes, shortsword, hand axe or mace, heavy coat armor, and 30 ft of rope."
+            },
+            {
+                "name": "Wandering Forger",
+                "text": "Common clothes, a disguise kit, forgery kit."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Lucky Outlook",
+                "text": "Reroll any die roll once per day, signifying your luck in escaping your past."
+            },
+            {
+                "name": "Urban Ghost",
+                "text": "+2 to Stealth and Parkour when fleeing in urban environments."
+            },
+            {
+                "name": "Misdirection",
+                "text": "+2 to Deceive when giving false information about their identity or past."
+            },
+            {
+                "name": "Survivor’s Instinct",
+                "text": "+2 to Detect checks to sense danger, spot people following them and catch liars."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Hunted Past",
+                "text": "Someone or something is actively looking for you. The GM may introduce events where you are pursued."
+            },
+            {
+                "name": "Trust Issues",
+                "text": "GM may periodically have you roll Detect checks when allies tell you the truth at a -2 (DC 15). Failing this check will make you suspect your allies are not being truthful with you."
+            },
+            {
+                "name": "Unstable Identity",
+                "text": "You’ve been someone else for so long, you’re not quite sure who you are, prompting a -2 on social checks involving personal history, self-expression, or forming sincere connections."
+            },
+            {
+                "name": "Paranoia",
+                "text": "You struggle to sleep in unfamiliar places, causing you to gain only half benefits for rest for 4 hours unless you pass a MND save (DC 15) before resting."
+            }
+        ]
+    },
+    {
+        "name": "Commonfolk",
+        "description": "You come from humble but stable beginnings—perhaps the child of farmers, village craftsmen, or small-town merchants. Your life was ordinary, but you learned practical skills that serve you well.",
+        "wealth": "2d6 Gold",
+        "gear": [
+            {
+                "name": "Farmhand’s Kit",
+                "text": "Common clothes, a handaxe or sickle, a bundle of rope (30 ft), and a small sack of dried grain."
+            },
+            {
+                "name": "Craftsman’s Tools",
+                "text": "Common clothes, hammer, a tool kit (appropriate for a trade), and a leather apron."
+            },
+            {
+                "name": "Merchant’s Pack",
+                "text": "Common clothes, a ledger book, a set of simple jewelry (worth 1d4 gold), and a small pouch of trade goods (salt, spices, or dried herbs worth 1d4 gold)."
+            },
+            {
+                "name": "Traveler’s Bundle",
+                "text": "Common clothes, a walking staff (treat as club in combat), a small waterskin, and a week’s worth of basic rations."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Harty Lifestyle",
+                "text": "+5 to HP"
+            },
+            {
+                "name": "Honest Face",
+                "text": "+2 to Persuade when dealing with other commonfolk or small-town merchants."
+            },
+            {
+                "name": "Jack of All Trades",
+                "text": "+1 to two different skills of your choice or +2 to one skill."
+            },
+            {
+                "name": "Rural Knowledge",
+                "text": "+2 to Knowledge (Local) and Knowledge (Nature)."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Modest Upbringing",
+                "text": "-2 to social checks when interacting with nobles or aristocrats."
+            },
+            {
+                "name": "Naïve Trust",
+                "text": "-2 to Detect when trying to determine if someone is lying to you."
+            },
+            {
+                "name": "Bound by Duty",
+                "text": "You have lingering responsibilities to home or family, and the GM may introduce events requiring your return."
+            },
+            {
+                "name": "Set in Your Ways",
+                "text": "-2 to Persuade when debating foreign customs, new technology, or abstract concepts. You also have a default adversity towards such things."
+            }
+        ]
+    },
+    {
+        "name": "Disgraced",
+        "description": "Once, you had status—whether as a noble, soldier, scholar, or priest. But that life is gone now. Betrayal, scandal, or failure stripped you of everything, and now you must rebuild or reinvent yourself.",
+        "wealth": "2d6 Gold",
+        "gear": [
+            {
+                "name": "Fallen Noble’s Remnants",
+                "text": "Common clothes, a signet ring or pendant from your former life (worth 1d6 gold), a dagger, and a now poor but once-fine cloak."
+            },
+            {
+                "name": "Exiled Warrior’s Kit",
+                "text": "Common clothes, a longsword, waraxe or warhammer, armored coat armor, and a ruined crest brooch (worth 1d4 gold)."
+            },
+            {
+                "name": "Outcast’s Tools",
+                "text": "Common clothes, a hooded cloak, locksmith’s kit, and a small vial of poison."
+            },
+            {
+                "name": "Wandering Scholar’s Bag",
+                "text": "Common clothes, a journal filled with notes from your past life, a quill and ink set, and a rare, well-worn book on a subject of your choosing (worth 1d6 gold)"
+            }
+        ],
+        "perks": [
+            {
+                "name": "Old Connections",
+                "text": "You have connections with 1 or 2 people of influence or power in any given city from your old life. GM may allow them to lend you assistance if you’ve earned enough of their pity."
+            },
+            {
+                "name": "Nothing Left to Lose",
+                "text": "+2 to MND saves when facing danger or enemies head-on."
+            },
+            {
+                "name": "Living Ghost",
+                "text": "Gain +2 to Stealth when avoiding direct confrontation with law enforcement, bounty hunters, or past enemies."
+            },
+            {
+                "name": "Survivor’s Resolve",
+                "text": "+2 to Detect when spotting deception or ulterior motives."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Hunted or Watched",
+                "text": "Someone from your past is still looking for you. The GM may introduce encounters where you are pursued, blackmailed, or forced into conflicts."
+            },
+            {
+                "name": "Reckless bitterness",
+                "text": "When dealing with those who have what you lost, make MND saves at a -2 (against a DC 15). Upon failure, you make an action to call attention to yourself, either violently or foolishly."
+            },
+            {
+                "name": "Ruin’s Shadow",
+                "text": "The weight of your past lingers over you. Once per session, the GM may introduce a random setback linked to your former disgrace—perhaps an old debt resurfacing, an influential enemy spreading rumors, or someone refusing you service."
+            },
+            {
+                "name": "Fractured Reputation",
+                "text": "People never seem to remember the same version of your story. When meeting a new NPC, roll a d6:1-2: They know of your past misdeeds and are wary of you, 3-4: They know of your reputation, but pity you, either pitying that you’ve fallen so low or that what happened happened to you, 5-6: They don’t know who you are."
+            }
+        ]
+    },
+    {
+        "name": "Hermit/Wanderer",
+        "description": "You lived apart from society, whether by choice or circumstance. Maybe you studied in solitude, sought enlightenment, or simply had nowhere to go. Civilization is unfamiliar to you, but the wilds are home.",
+        "wealth": "3d6 Gold",
+        "gear": [
+            {
+                "name": "Forager’s Pack",
+                "text": "Common clothes, a hunting knife, a small pouch of dried herbs (worth 1d4 gold), and a waterskin."
+            },
+            {
+                "name": "Wilderness Hunter",
+                "text": "Common clothes, a shortbow (with 10 arrows) or a spear, and a handmade fur cloak."
+            },
+            {
+                "name": "Wandering Scholar",
+                "text": "Common clothes, a weathered book on philosophy or religion, a writing kit, and a simple pendant (worth 1d4 gold)."
+            },
+            {
+                "name": "Meditative Traveler",
+                "text": "Common robes, a walking staff (treat as quarterstaff in combat), a satchel of incense, and a bound journal filled with personal reflections."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Survivalist",
+                "text": "+2 to Gather and +10% yield when foraging for food, herbs, or natural resources."
+            },
+            {
+                "name": "Silent Steps",
+                "text": "+2 to Stealth when moving through natural terrain."
+            },
+            {
+                "name": "Rough-it Lifestyle",
+                "text": "+2 to BOD saves."
+            },
+            {
+                "name": "Meditative Healing",
+                "text": "Can meditate instead of sleep each night and receive the same benefits as one would from sleeping."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Socially Inept",
+                "text": "-2 to social checks"
+            },
+            {
+                "name": "Overstimulated",
+                "text": "-2 to all MND-based checks for one hour after entering a crowded or noisy area."
+            },
+            {
+                "name": "Reclusive Nature",
+                "text": "Must make a MND save (DC 15) to ask for help or accept aid from strangers."
+            },
+            {
+                "name": "Out of Step with Society",
+                "text": "When in cities or settlements, roll a d6 at the start of a social interaction: 1-3: You accidentally offend or confuse the person, 4-5: They see you as odd but harmless, 6: They find your outsider perspective ‘quaint’, making you feel out of place."
+            }
+        ]
+    },
+    {
+        "name": "Refugee",
+        "description": "You were forced to flee your homeland due to war, disaster, or persecution. Whether you barely escaped with your life or had time to gather resources, you now live as an outsider, struggling to find stability.",
+        "wealth": "3d6 Gold",
+        "gear": [
+            {
+                "name": "Survivalist’s Pack",
+                "text": "Common clothes, simple cloak, hunting knife, rations, waterskin."
+            },
+            {
+                "name": "Exile’s Keepsakes",
+                "text": "Poor clothes, heirloom (1d6 gold), personal document, dagger."
+            },
+            {
+                "name": "Smuggled Goods",
+                "text": "Poor clothes, hidden currency (2d6 gold), compartment cloak, lockpick set."
+            },
+            {
+                "name": "Wandering Scholar’s Bundle",
+                "text": "Common robes, tattered book, quill and ink, religious token."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Survivor’s Endurance",
+                "text": "+2 to BOD saves."
+            },
+            {
+                "name": "Hardened Traveler",
+                "text": "+2 to Navigate and Parkour when traversing unknown terrain."
+            },
+            {
+                "name": "Scarred But Strong",
+                "text": "Once per session, ignore bleeding or broken bone penalties for 1d4 rounds."
+            },
+            {
+                "name": "Adaptive Survivor",
+                "text": "You have learned to endure in unfamiliar environments. Once per session, when rolling a failed Navigate, Knowledge (Local), or Detect check in a new region, you may reroll with a +2 bonus."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Haunted by the Past",
+                "text": "Once per session, encounter a memory trigger. MND save (DC 15) to push through."
+            },
+            {
+                "name": "Fear of Authority",
+                "text": "Make a MND save (DC 15) to act normal around law enforcement or military officials."
+            },
+            {
+                "name": "What You Left Behind",
+                "text": "You escaped your homeland, but your family did not. You frequently send money back to them to support them until you can find a means by which to have them returned to you."
+            },
+            {
+                "name": "Fugitives from Home",
+                "text": "Once per session, the GM may introduce bounty hunters, political enemies, or authorities from your homeland looking for you."
+            }
+        ]
+    },
+    {
+        "name": "Experimental Subject",
+        "description": "You were the product of an experiment—whether scientific, magical, or alchemical. Whether you volunteered, were coerced, or never had a choice, the process changed you, leaving permanent effects on your body or mind.",
+        "wealth": "3d6 Gold",
+        "gear": [
+            {
+                "name": "Test Subject’s Scraps",
+                "text": "Simple lab garments, a journal of notes, and a single vial of strange fluid (GM discretion)."
+            },
+            {
+                "name": "Augmented Survivor’s Kit",
+                "text": "Common clothes, a concealed dagger, heavy coat armor, and a vial of stimulant (restores 1d6 HP once)."
+            },
+            {
+                "name": "Researcher’s Notes",
+                "text": "Common clothes, a collection of experiment logs, a writing kit, and a set of surgical tools."
+            },
+            {
+                "name": "Escapee’s Pack",
+                "text": "Common clothes, a disguise kit, a lockpick set, and a hooded cloak."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Regenerative Factor",
+                "text": "Your body attempts to repair damage automatically. Once per session, when reduced to below 0 HP, instead reduce to 0 HP, you remain conscious and regain 1d6 HP instead of falling unconscious."
+            },
+            {
+                "name": "Knowledge Imprint",
+                "text": "+2 to two Knowledge skills."
+            },
+            {
+                "name": "Neural Overclock",
+                "text": "Your brain operates at an accelerated rate under stress (such as in the face of being captured or when you’re under 25% HP). Once per day, after rolling a check, you may roll a d6 and add the result to your total."
+            },
+            {
+                "name": "Bioelectric Discharge",
+                "text": "You store small electrical charges in your body. Once per combat, when struck in melee, you may discharge electricity, forcing the attacker to make a BOD save (DC 20) or take 1d6 electrical damage. Maximum damage or critical failure on the attacker’s BOD save causes them to be stunned for 1 round."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Unstable Body",
+                "text": "Once per day, roll 1d6, 1-2: Your body may lock up today for 1d4 rounds, but GM determines when, 3-6: You operate as normal."
+            },
+            {
+                "name": "Experimental Side Effects",
+                "text": "Roll a d6 at day start: 1: -1 to all BOD saves for the day, 2: -1 to all DEX saves for the day, 3: -1 to all MND saves for the day, 4-6: nothing happens."
+            },
+            {
+                "name": "Hunted by the Creators",
+                "text": "Once per session, past experimenters may attempt to capture or eliminate you."
+            },
+            {
+                "name": "Programming Nightmares",
+                "text": "Once per session, the GM may trigger a hallucination or flashback in high-stress situations, potentially causing momentary hesitation or paranoia."
+            }
+        ]
+    },
+    {
+        "name": "Tradesperson",
+        "description": "You were trained in a craft, learning the value of hard work and dedication. Whether a blacksmith, carpenter, tailor, or brewer, your trade shaped your skills and connections.",
+        "wealth": "3d6 Gold",
+        "gear": [
+            {
+                "name": "Smith’s Tools",
+                "text": "Common clothes, a small hammer, a set of blacksmithing tools, and a belt pouch of coal dust."
+            },
+            {
+                "name": "Tailor’s Kit",
+                "text": "Common clothes, a sewing kit, a roll of fine thread, and a bundle of fabric."
+            },
+            {
+                "name": "Merchant’s Pack",
+                "text": "Common clothes, a ledger book, a set of scales, and a pouch of assorted trade goods (worth 1d6 gold)."
+            },
+            {
+                "name": "Brewer’s Supplies",
+                "text": "Common clothes, a wooden tankard, a small barrel of home-brewed ale, and a bundle of dried hops."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Skilled Hands",
+                "text": "+2 to one Craft or Fine Craft skill of your choice."
+            },
+            {
+                "name": "Merchant’s Eye",
+                "text": "+2 to Evaluate checks when determining the value of goods, materials, or crafted items."
+            },
+            {
+                "name": "Workshop Discipline",
+                "text": "+2 to Craft checks when working more than 4 hours or making a salvage check."
+            },
+            {
+                "name": "Trade Connections",
+                "text": "In cities, you know people who will buy and sell to you, allowing you to make 10% more in profit and get 20% off on discounts."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "The Smell of Labor",
+                "text": "Your hands, clothing, and body always carry the scent of your trade—coal, leather, ink, metal, wood, ale, or dyes. This makes it impossible to fully disguise yourself without specialized efforts. Any deception or stealth checks made where these scents stand out take a -2."
+            },
+            {
+                "name": "Debtor’s Chains",
+                "text": "You owe someone—a supplier, a guild, or a wealthy patron—a significant debt (GM decides the creditor). Once per session, the GM may introduce a situation where you are called upon to repay in coin, service, or favors."
+            },
+            {
+                "name": "Perfectionist’s Burden",
+                "text": "Whenever you roll a natural 1 on a Craft, Fine Craft, or Evaluate check, you become frustrated and must re-roll the check. If you succeed you have a -1 to all checks for the next hour as you obsess over your mistake. If you fail again, you have a -1 to all checks for the rest of the day as you obsess over your mistake."
+            },
+            {
+                "name": "Work Comes First",
+                "text": "You are compelled to prioritize your craft over personal well-being. When given the choice between finishing a project or resting, eating, or socializing, you must make a MND save (DC 15) to choose the latter."
+            }
+        ]
+    },
+    {
+        "name": "Guardian",
+        "description": "A sacred item, an important person, a place of reverence, it doesn’t matter what it is, you were trained to guard it with your life. Whether you came to end up here of your own choice or you were selected for it from childhood, this is what you know best.",
+        "wealth": "3d6 Gold",
+        "gear": [
+            {
+                "name": "Ritualist’s Regalia",
+                "text": "Common robes, a ceremonial dagger, a vial of sacred oil, and an amulet of your faith (worth 1d4 gold)."
+            },
+            {
+                "name": "Ascetic’s Bundle",
+                "text": "Plain common clothes, a wooden staff (treat as quarterstaff in combat), a prayer book, and a week’s worth of dried rations."
+            },
+            {
+                "name": "Heretic’s Tools",
+                "text": "Common clothes, a tattered hooded cloak, a hidden dagger, and a forged holy symbol to disguise your past (DC 20 to see past)."
+            },
+            {
+                "name": "Doctrine Keeper’s Pack",
+                "text": "Common robes, a collection of scrolls with obscure religious texts, a quill and ink, and a silver-plated book clasp."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Fanatical Focus",
+                "text": "+2 to MND saves."
+            },
+            {
+                "name": "Esoteric Knowledge",
+                "text": "+2 to Knowledge (Religion or The Planes) and +1 to Research."
+            },
+            {
+                "name": "Divine Favor",
+                "text": "Once per day, after failing a roll, you may pray or call upon your faith for guidance. Roll 1d4 and add the result to your failed check."
+            },
+            {
+                "name": "Zealous Conviction",
+                "text": "Once per day, when rolling a Persuade check to spread belief or manipulate through doctrine, roll twice and take the better result."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Hunted by the Faithful",
+                "text": "Your former cult considers you a traitor, heretic, or lost soul that must be redeemed… or silenced. Once per session, the GM may introduce agents of your former cult, such as bounty hunters, inquisitors, spies, or zealous believers, who seek to bring you back or eliminate you. You may have left the cult, but the cult hasn’t left you."
+            },
+            {
+                "name": "Marked by the Faith",
+                "text": "A tattoo, brand, or ritual scar marks you as a former (or current) cultist. Hiding it requires effort, and those who recognize it may react with fear, disgust, or reverence."
+            },
+            {
+                "name": "Sacrificial Instinct",
+                "text": "The cult taught you that self-sacrifice was noble and expected. When an ally is in danger, you must make a MND save (DC 15) to avoid instinctively putting yourself at risk for their sake, even if it would be unwise. The need to offer yourself up never quite left you."
+            },
+            {
+                "name": "The One True Path",
+                "text": "When encountering another religion, make a MND save (DC 15) to resist the urge to challenge, convert, or debate a believer."
+            }
+        ]
+    },
+    {
+        "name": "Cultist",
+        "description": "You were raised in or indoctrinated into a cult, religious sect, or fanatical order. Whether you still follow those teachings or have rejected them, they shaped your worldview.",
+        "wealth": "3d6 Gold",
+        "gear": [
+            {
+                "name": "Ritualist’s Regalia",
+                "text": "Common robes, a ceremonial dagger, a vial of sacred oil, and an amulet of your faith (worth 1d4 gold)."
+            },
+            {
+                "name": "Ascetic’s Bundle",
+                "text": "Plain common clothes, a wooden staff (treat as quarterstaff in combat), a prayer book, and a week’s worth of dried rations."
+            },
+            {
+                "name": "Heretic’s Tools",
+                "text": "Common clothes, a tattered hooded cloak, a hidden dagger, and a forged holy symbol to disguise your past (DC 20 to see past)."
+            },
+            {
+                "name": "Doctrine Keeper’s Pack",
+                "text": "Common robes, a collection of scrolls with obscure religious texts, a quill and ink, and a silver-plated book clasp."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Fanatical Focus",
+                "text": "+2 to MND saves."
+            },
+            {
+                "name": "Esoteric Knowledge",
+                "text": "+2 to Knowledge (Religion or The Planes) and +1 to Research."
+            },
+            {
+                "name": "Divine Favor",
+                "text": "Once per day, after failing a roll, you may pray or call upon your faith for guidance. Roll 1d4 and add the result to your failed check."
+            },
+            {
+                "name": "Zealous Conviction",
+                "text": "Once per day, when rolling a Persuade check to spread belief or manipulate through doctrine, roll twice and take the better result."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Hunted by the Faithful",
+                "text": "Your former cult considers you a traitor, heretic, or lost soul that must be redeemed… or silenced. Once per session, the GM may introduce agents of your former cult, such as bounty hunters, inquisitors, spies, or zealous believers, who seek to bring you back or eliminate you. You may have left the cult, but the cult hasn’t left you."
+            },
+            {
+                "name": "Marked by the Faith",
+                "text": "A tattoo, brand, or ritual scar marks you as a former (or current) cultist. Hiding it requires effort, and those who recognize it may react with fear, disgust, or reverence."
+            },
+            {
+                "name": "Sacrificial Instinct",
+                "text": "The cult taught you that self-sacrifice was noble and expected. When an ally is in danger, you must make a MND save (DC 15) to avoid instinctively putting yourself at risk for their sake, even if it would be unwise. The need to offer yourself up never quite left you."
+            },
+            {
+                "name": "The One True Path",
+                "text": "When encountering another religion, make a MND save (DC 15) to resist the urge to challenge, convert, or debate a believer."
+            }
+        ]
+    },
+    {
+        "name": "Criminal",
+        "description": "You lived on the fringes of the law, working petty scams, picking pockets, or running messages for the underworld. Whether you were a street thief, enforcer, or smuggler, crime was a way of life—though perhaps not a very lucrative one.",
+        "wealth": "3d6 Gold",
+        "gear": [
+            {
+                "name": "Pickpocket’s Kit",
+                "text": "Common clothes, a locksmith’s kit, a concealed dagger, and a pouch of stolen coins (1d6 gold)."
+            },
+            {
+                "name": "Enforcer’s Loadout",
+                "text": "Common clothes, a club or brass knuckles, armored coat armor, and an intimidating dagger."
+            },
+            {
+                "name": "Smuggler’s Pack",
+                "text": "Common clothes, a belt with hidden pockets (DC 20 to find), a small vial of mild poison or small vial of sleeping agent, and a forgery kit."
+            },
+            {
+                "name": "Fence’s Satchel",
+                "text": "Common clothes, a magnifying lens, a simple disguise kit, and a bag of assorted trinkets (worth 1d6 gold)."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Criminal Contacts",
+                "text": "In any given city, you have one reliable contact in the criminal underworld who may offer favors, safe houses, or illicit goods at the GM’s discretion."
+            },
+            {
+                "name": "Quick Hands",
+                "text": "+2 to Finesse when picking pockets, planting objects, or concealing small weapons."
+            },
+            {
+                "name": "Slippery Escape",
+                "text": "Once per day, when grappled, restrained, or locked up, you may reroll a failed escape attempt."
+            },
+            {
+                "name": "Dirty Fighter",
+                "text": "Once per fight, when making a successful unarmed or melee attack, you can force the target to make a BOD save (DC 15) or become stunned until the start of your next turn."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Known to the Law",
+                "text": "Your face is familiar to law enforcement. Roll a d6 in any civilized area to determine if someone recognizes you. 1: you are wanted in this area, whether for a crime or for questioning, 2-3: Authorities know you and will be watching you, 4-6: No one knows who you are here."
+            },
+            {
+                "name": "Heat Score",
+                "text": "Guards and officials suspect you first whenever a crime occurs nearby, even if you weren’t involved."
+            },
+            {
+                "name": "Old Debts",
+                "text": "You owe a gang, crime syndicate, or powerful criminal. The GM may introduce scenarios where they call in favors."
+            },
+            {
+                "name": "Sticky Fingers",
+                "text": "You struggle to resist stealing, even when it’s dangerous. When you see a valuable or unattended item, you must make a MND save (DC 15) to resist attempting to take it."
+            }
+        ]
+    },
+    {
+        "name": "Mercenary",
+        "description": "You fought for coin, not country. Whether as a caravan guard, hired blade, or soldier-for-hire, battle was your trade. Your loyalty belonged to the highest bidder… at least, until the money ran out.",
+        "wealth": "4d6 Gold",
+        "gear": [
+            {
+                "name": "Veteran’s Arsenal",
+                "text": "Common clothes, a longsword, waraxe or warhammer, armored coat armor, and a whetstone."
+            },
+            {
+                "name": "Hired Blade’s Kit",
+                "text": "Common clothes, a short sword or two daggers, heavy coat armor, and a small contract ledger."
+            },
+            {
+                "name": "Caravan Guard’s Loadout",
+                "text": "Common clothes, a spear or crossbow (with 10 bolts), armored coat armor, and a travel pack."
+            },
+            {
+                "name": "Bounty Hunter’s Tools",
+                "text": "Common clothes, a pair of manacles, a club or short sword, and a set of bounty writs."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Contracted Killer",
+                "text": "When fighting an enemy you were hired or personally motivated to eliminate, you gain +2 to hit them and +1 to damage."
+            },
+            {
+                "name": "Strong-Armed Negotiator",
+                "text": "+2 to Intimidate when negotiating contracts, collecting debts, or dealing with weaker foes."
+            },
+            {
+                "name": "Adrenaline Rush",
+                "text": "The first time you fall below half HP in combat, you immediately gain a temporary +2 to BOD and +5 feet to movement for the next two rounds."
+            },
+            {
+                "name": "Veteran’s Awareness",
+                "text": "Once per session, you may ask the GM one yes-or-no question about a potential combat scenario, such as whether an enemy is hiding reinforcements, if a location has an obvious ambush point, or if a foe is significantly stronger than they appear."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Haunted by War",
+                "text": "Once per session, the GM may introduce a hallucination, flashback, or intrusive thought of a past battle, causing you to hesitate, lose a minor action, or misinterpret a situation."
+            },
+            {
+                "name": "Job Comes First",
+                "text": "If someone offers you a contract, payment, or job opportunity, you must make a MND save (DC 15) to resist prioritizing it over personal matters."
+            },
+            {
+                "name": "Soldier’s Baggage",
+                "text": "You’ve made enemies. Once per session, an old rival, former commander, or betrayed employer may resurface, bringing conflict or consequences."
+            },
+            {
+                "name": "Ruthless Survivalist",
+                "text": "You struggle with acts of mercy. When given a choice between sparing an enemy and eliminating them, you must make a MND save (DC 15) to avoid defaulting to the most pragmatic or brutal option."
+            }
+        ]
+    },
+    {
+        "name": "Clergy",
+        "description": "You served as a priest, monk, or devotee to a temple or religious order. Whether you still follow the faith or have strayed, your time in the clergy shaped your worldview and discipline.",
+        "wealth": "4d6 Gold",
+        "gear": [
+            {
+                "name": "Monk’s Tools",
+                "text": "Simple robes, a wooden staff (treat as quarterstaff in combat), a set of prayer beads, and a meditation book."
+            },
+            {
+                "name": "Priest’s Pack",
+                "text": "Common clothes, a holy symbol, a ceremonial dagger, and a small flask of consecrated oil."
+            },
+            {
+                "name": "Itinerant Cleric’s Bag",
+                "text": "Common clothes, a walking stick (treat as club in combat), a small book of scripture, and a bundle of incense."
+            },
+            {
+                "name": "Confessor’s Kit",
+                "text": "Common clothes, a small silver reliquary (worth 1d4 gold), a quill and ink set, and a pouch of blessed herbs."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Divine Insight",
+                "text": "Once per session, after failing a Detect, Knowledge (Religion), or Knowledge (The Planes) check, you may enter a brief meditative trance or whisper a prayer to your deity. Roll 1d4 and add the result to your failed check."
+            },
+            {
+                "name": "Hands of the Faithful",
+                "text": "You may perform a 1-minute prayer or ritual to touch a wounded creature, allowing them to reroll a failed Heal check, BOD save or recover an additional 1d6 HP when receiving medical treatment from potion or spell. This ability can be used a number of times per day equal to ½ your MND score."
+            },
+            {
+                "name": "Devoted Scholar",
+                "text": "+2 to Knowledge (Religion) and Research."
+            },
+            {
+                "name": "Trained Orator",
+                "text": "+2 to social checks when speaking publicly."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Tied to the Faith",
+                "text": "Once per session, the GM may introduce a situation where your current or former order calls in a favor."
+            },
+            {
+                "name": "Judgmental Demeanor",
+                "text": "Make a MND save (DC 15) to remain silent when witnessing or discussing sinful or dishonorable acts."
+            },
+            {
+                "name": "Burden of the Sacred Oath",
+                "text": "Your past vows still weigh on you. Before you can steal, lie, or kill, you must make a MND save (DC 15) to suppress the moral conflict. If you fail, you hesitate and lose your turn for the round if in combat."
+            },
+            {
+                "name": "Martyr’s Complex",
+                "text": "You feel compelled to take responsibility for others, even to your own detriment. If an ally is in danger, you must make a MND save (DC 15) to resist prioritizing their safety over your own survival or objectives."
+            }
+        ]
+    },
+    {
+        "name": "Military",
+        "description": "You served in an army, navy, or formal militia, either as a soldier, officer, or specialist. Whether still enlisted, retired, or discharged, your time in the military instilled discipline, tactical knowledge, and combat experience.",
+        "wealth": "4d6",
+        "gear": [
+            {
+                "name": "Standard-Issue Kit",
+                "text": "Common clothes, longsword, waraxe, or warhammer, armored coat armor, and a repair kit for weapons and armor."
+            },
+            {
+                "name": "Infantry Loadout",
+                "text": "Common clothes, spear or crossbow (with 10 bolts), heavy coat armor, and a bedroll."
+            },
+            {
+                "name": "Officer’s Pack",
+                "text": "Common clothes, a rapier or bastard sword, armored coat armor, and a military insignia (worth 1d6 gold)."
+            },
+            {
+                "name": "Scout’s Tools",
+                "text": "Common clothes, a hunting knife, heavy coat armor, and a compact spyglass."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Combat Reflexes",
+                "text": "Once per fight, if an enemy misses you with a melee attack, make a free counterattack using an attack of opportunity. A successful strike will end the enemy’s turn."
+            },
+            {
+                "name": "Rank and Reputation",
+                "text": "Be seen favorably, have minor authority, or minor discounts (10%) in areas where military service is respected."
+            },
+            {
+                "name": "Formation Fighter",
+                "text": "When fighting adjacent to an ally, you gain +1 to attack rolls against enemies engaged with you and your ally."
+            },
+            {
+                "name": "Unshaken",
+                "text": "The first time you fail a BOD or MND save in a session, you may reroll it immediately."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Chain of Command Mentality",
+                "text": "Make a MND save (DC 15) to resist obeying the orders of a strong leader or authoritative figure that is neutral or friendly with player. Upon failure, if you refuse the command, freeze up for 1d4 rounds."
+            },
+            {
+                "name": "Lingering Injuries",
+                "text": "Roll a d6 at the start of each day: 1: -1 to BOD-based checks, 2: move 5 feet slower, 3: take an additional 1d4 damage the first time you’re hit in each combat, 4-6: nothing happens."
+            },
+            {
+                "name": "War Crimes or Enemies",
+                "text": "Once per session, the GM may introduce an old rival, enemy soldier, or town seeking revenge."
+            },
+            {
+                "name": "Habitual Drills",
+                "text": "If you go more than 3 days without following a strict schedule, make a MND save (DC 15) or take -1 to all checks for a day."
+            }
+        ]
+    },
+    {
+        "name": "Scholar",
+        "description": "You dedicated your life to knowledge, whether as a student, researcher, or academic. Your pursuit of understanding may have taken you through libraries, universities, or even into the field, where you sought firsthand discoveries.",
+        "wealth": "5d6 Gold",
+        "gear": [
+            {
+                "name": "Academic’s Essentials",
+                "text": "Common clothes, a well-worn journal, a writing kit, and a set of reading glasses."
+            },
+            {
+                "name": "Field Researcher’s Pack",
+                "text": "Common clothes, a small magnifying glass, a sample-collection kit, and a travel cloak."
+            },
+            {
+                "name": "Archivist’s Tools",
+                "text": "Common clothes, a rare book (worth 1d6 gold), a quill and ink set, and a candle lantern."
+            },
+            {
+                "name": "Arcane Theorist’s Kit",
+                "text": "Common clothes, 3 basic single-use scrolls, a small scroll case, and a vial of preserved ink."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Encyclopedic Recall",
+                "text": "Once per day, roll twice on a Knowledge check and take the better result."
+            },
+            {
+                "name": "Accelerated Research",
+                "text": "Complete research tasks in half the usual time and +2 to Research checks."
+            },
+            {
+                "name": "Well-Connected",
+                "text": "Once per session, call upon a scholarly contact for assistance or information."
+            },
+            {
+                "name": "Experimental Mind",
+                "text": "Once per session, gain an intuitive hint when faced with a puzzle, riddle, or intellectual challenge."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Fragile Ego",
+                "text": "You don’t handle being proven wrong or dismissed well. If someone directly challenges your knowledge or mocks your expertise, you must make a MND save (DC 15) or get caught up in arguing your point."
+            },
+            {
+                "name": "Absent-Minded",
+                "text": "Once per session, the GM may declare that you’ve forgotten something important."
+            },
+            {
+                "name": "Overexplainer",
+                "text": "You struggle to keep explanations brief, often losing people’s attention. Whenever making a Persuade or Deceive check, roll a d6. On a 1-3, you overcomplicate your answer, giving yourself a -2 penalty."
+            },
+            {
+                "name": "Distracted Mind",
+                "text": "Your brain is always analyzing information, making it harder to focus in combat. -1 to defense rolls against ambushes and sudden attacks as well as a -2 to all initiative checks."
+            }
+        ]
+    },
+    {
+        "name": "Entertainer",
+        "description": "You made a living through performance, whether as an actor, musician, dancer, or street performer. Whether you played for royalty or common folk, your talents won you admiration—and perhaps trouble.",
+        "wealth": "5d6 Gold",
+        "gear": [
+            {
+                "name": "Stage Performer’s Kit",
+                "text": "Common clothes, fine garments (worth 1d6 gold), a small makeup kit, and a stage prop."
+            },
+            {
+                "name": "Street Busker’s Gear",
+                "text": "Common clothes, a well-used instrument, a pouch for tips, and a scarf or cape."
+            },
+            {
+                "name": "Traveling Bard’s Pack",
+                "text": "Common clothes, a musical instrument or a book of poems, a flask of alcohol, and a journal of songs or stories."
+            },
+            {
+                "name": "Acrobat’s Essentials",
+                "text": "Common clothes, heavy coat armor, juggling knives (treat as throwing daggers in combat), and a climbing rope (30 ft)."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Mesmerizing Performance",
+                "text": "Once per session, attempt to entrance an NPC with a performance (DC 20 Performance). Keep the NPC entranced as long as you perform."
+            },
+            {
+                "name": "Master of Disguise",
+                "text": "+2 to Deceive when using disguises or impersonations."
+            },
+            {
+                "name": "Silver-Tongued Liar",
+                "text": "You can talk your way out of almost anything. Once per session, when caught lying or failing a Deceive check, you may immediately reroll with a +2 bonus."
+            },
+            {
+                "name": "Traveled Knowledge",
+                "text": "As a performer with your ear to the ground, you have unique and random knowledge on all things. Once per day, when rolling a knowledge check, roll 1d6 and add that to your total."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Gambling Habit",
+                "text": "You can’t resist a high-stakes game. Whenever you have more than 10 gold, you must make a MND save (DC 15) to avoid gambling at the first opportunity."
+            },
+            {
+                "name": "Never Break Character",
+                "text": "You struggle to drop an act once you’ve committed to it. When disguising yourself or playing a role, make a MND save (DC 15) to willingly break the illusion, even if it’s no longer necessary."
+            },
+            {
+                "name": "Romantic Entanglements",
+                "text": "Whether by charm or recklessness, you have a tendency to leave behind lovers, flings, or heartbreak. Once per session, the GM may introduce an old flame who complicates your plans."
+            },
+            {
+                "name": "Unshakable Ego",
+                "text": "You have trouble accepting failure. Whenever you roll a natural 1 on a social check, make a MND save (DC 15) to resist throwing a tantrum."
+            }
+        ]
+    },
+    {
+        "name": "Pit Fighter",
+        "description": "You were a warrior of the arena, fighting for sport, survival, or spectacle. Whether you fought as an enslaved combatant, a paid performer, or a champion of the people, the bloodstained sand shaped you into a force to be reckoned with.",
+        "wealth": "5d6 Gold",
+        "gear": [
+            {
+                "name": "Arena Veteran’s Kit",
+                "text": "Common clothes, battle-worn weapon longsword, waraxe, or warhammer, heavy coat armor, and a gladiator’s emblem (worth 1d6 gold)."
+            },
+            {
+                "name": "Pit Fighter’s Loadout",
+                "text": "Common clothes, brass knuckles or 2 daggers, heavy coat armor, and a belt of 5 throwing knives (treat as throwing daggers)."
+            },
+            {
+                "name": "Performer’s Attire",
+                "text": "Fine, flamboyant clothing, decorative weapon (rapier, scimitar, or whip), a mask or face paint, and a ceremonial trophy (worth 1d6 gold)."
+            },
+            {
+                "name": "Escaped Champion’s Stash",
+                "text": "Ragged clothes, stolen longsword, spear, or mace, heavy coat armor, and a disguise kit."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Bloodthirsty Flourish",
+                "text": "When defeating an enemy, make a free intimidation check against the defeated enemy’s allies within 10 feet. Success in this intimidation will give affected targets 1 fear stack."
+            },
+            {
+                "name": "Relentless Pursuer",
+                "text": "You excel at hunting down fleeing enemies. +5 feet to movement when chasing a target, and +2 to Detect when tracking fresh footprints or recent movement."
+            },
+            {
+                "name": "Adrenaline Rush",
+                "text": "The first time you fall below half HP in combat, you immediately gain a temporary +2 to BOD and +5 feet to movement for the next two rounds."
+            },
+            {
+                "name": "Duelist’s Instinct",
+                "text": "You excel at one-on-one combat. When fighting a single opponent in melee combat, gain +2 to defense rolls."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Kill or Be Killed",
+                "text": "Make a MND save (DC 15) to resist finishing off a downed opponent."
+            },
+            {
+                "name": "Enslaved Past",
+                "text": "Once per session, GM may introduce an NPC that may claim they still own or control you or that they work for someone who does."
+            },
+            {
+                "name": "Arena Trauma",
+                "text": "The horrors of battle haunt you. After combat, make a MND save (DC 15); on a failure, your character undergoes flashbacks and hallucinations about his past, making it harder for you to continue on your path."
+            },
+            {
+                "name": "Scarred & Recognizable",
+                "text": "Your face and body bear obvious gladiatorial scars. Disguises are 50% less effective, and hostile NPCs may recognize you in unfamiliar cities."
+            }
+        ]
+    },
+    {
+        "name": "Minor Noble",
+        "description": "You were born into a noble family, but not one of great power. You may have been a respected landholder, a courtier, or simply someone with the privilege of a family name. While your status opens doors, it also brings expectations—and enemies.",
+        "wealth": "6d6 Gold",
+        "gear": [
+            {
+                "name": "Courtly Attire",
+                "text": "Fine noble clothing, a family crest, fine jewelry (worth 2d6 gold), and a letter of introduction for Authorities in cities."
+            },
+            {
+                "name": "Duelist’s Equipment",
+                "text": "Fine noble clothing, a rapier or saber, heavy coat armor, and an ornate scabbard."
+            },
+            {
+                "name": "Diplomat’s Travel Pack",
+                "text": "Fine noble clothing, a signet ring (worth 1d6 gold), a book on etiquette, and a set of wax and seals."
+            },
+            {
+                "name": "Hunter’s Outfit",
+                "text": "Fine but rugged noble clothing, a longbow (with 10 arrows) or a hunting spear, and a trained hunting hawk or dog (basic commands only)."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Family Resources",
+                "text": "Once per session, gain financial or social assistance from a noble ally."
+            },
+            {
+                "name": "Well-Schooled",
+                "text": "Your education covered a broad range of subjects. +2 to two different Knowledge skills of your choice."
+            },
+            {
+                "name": "Noble Resolve",
+                "text": "You were raised to maintain composure in high-pressure situations. Once per day, you may ignore the result of a failed save against fear, charm, or intimidation."
+            },
+            {
+                "name": "Weight of your Name",
+                "text": "Once per day, you may issue a command to local guards, officials, or bureaucrats as if you held authority. You may command them to do something they would typically do, but giving an absurd command will break your illusion of control."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Noble Arrogance",
+                "text": "In social interactions with commoners, make a MND save (DC 15) to avoid condescending speech or ignoring advice."
+            },
+            {
+                "name": "Nobility Comes First",
+                "text": "Once per session, the GM may introduce a family duty that interferes with your plans."
+            },
+            {
+                "name": "Reputation to Uphold",
+                "text": "If found in legal troubles, your actions reflect on your family’s name which can result in you being recalled to your home to answer for your actions."
+            },
+            {
+                "name": "Scandalous Past",
+                "text": "You have a shameful history—whether personal or familial. Once per session, the GM may introduce an event where your past mistakes (or your family’s) cause complications."
+            }
+        ]
+    },
+    {
+        "name": "Criminal Syndicate",
+        "description": "You weren’t just a common criminal—you were part of an organized syndicate, cartel, or underworld operation. Whether a smuggler, enforcer, informant, or strategist, your connections run deep, but so do your obligations.",
+        "wealth": "6d6 Gold",
+        "gear": [
+            {
+                "name": "Enforcer’s Kit",
+                "text": "Common clothes, mace or shortsword, heavy coat armor, brass knuckles."
+            },
+            {
+                "name": "Smuggler’s Stash",
+                "text": "Common clothes, hidden compartment cloak, contraband (GM-determined), forgery kit."
+            },
+            {
+                "name": "Syndicate Agent’s Tools",
+                "text": "Common clothes, disguise kit, lockpick set, coded ledger."
+            },
+            {
+                "name": "Hitman’s Loadout",
+                "text": "Common clothes, shortbow (with 10 arrows) or 2 throwing daggers, heavy coat armor, vial of poison."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Underworld Connections",
+                "text": "Once per session, call upon a criminal contact for minor favors, backup, goods, or information."
+            },
+            {
+                "name": "Street Economist",
+                "text": "10% discount on illegal goods and 10% increased profit when fencing stolen items."
+            },
+            {
+                "name": "Black Market Specialist",
+                "text": "You can quickly identify and negotiate illegal transactions. Once per session, when attempting to locate rare contraband or criminal contacts, roll with a +2 bonus."
+            },
+            {
+                "name": "Throat Cutter",
+                "text": "You know how to make an attack lethal when it matters most. When attacking an enemy that is restrained, prone, or unaware of your presence, add +2 to your damage roll."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Syndicate Ties",
+                "text": "Once per session, the GM may introduce a mission or demand from the syndicate that conflicts with your plans."
+            },
+            {
+                "name": "Heat on Your Back",
+                "text": "Once per session, law enforcement may recognize you and attempt to arrest or interrogate you."
+            },
+            {
+                "name": "Paranoia",
+                "text": "Make a DC 15 MND save when receiving help or sharing information freely. On failure, you act cautiously or refuse."
+            },
+            {
+                "name": "Double-Crossed",
+                "text": "You betrayed or angered someone in the syndicate. Once per session, the GM may introduce an NPC who has a grudge against you, however killing them will create problems in the syndicate."
+            }
+        ]
+    },
+    {
+        "name": "Highborn Aristocrat",
+        "description": "You were born into wealth and influence, a member of an elite noble house. Whether you embraced the life of privilege or resented its constraints, your upbringing shaped your view of the world—and how the world sees you.",
+        "wealth": "8d6 Gold",
+        "gear": [
+            {
+                "name": "Regal Attire",
+                "text": "Exquisite noble clothing, jeweled signet ring (worth 2d6 gold), fine jewelry (worth 3d6 gold), invitation to a noble gathering."
+            },
+            {
+                "name": "Dueling Finery",
+                "text": "Fine noble clothing, mastercrafted rapier or saber (+1 attack), heavy coat armor, fencing medal or dueling crest (worth 3d6 gold)."
+            },
+            {
+                "name": "Courtly Scholar’s Pack",
+                "text": "Fine noble clothing, rare books (worth 2d6 gold), quill and ink set, noble family seal and stamp."
+            },
+            {
+                "name": "Estate Hunter’s Kit",
+                "text": "Fine but rugged noble clothing, longbow (with 10 arrows) or a mastercrafted hunting spear (+1 attack), trained hawk or dog."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Highborn Privilege",
+                "text": "Once per session, demand an audience with a high-ranking official, noble, or authority figure who will speak to you as an equal."
+            },
+            {
+                "name": "Untouchable Status",
+                "text": "Once per session, you (but not necessarily your party) may be excused for a crime you’ve committed, within reason (GM’s discretion)."
+            },
+            {
+                "name": "Weight of your Name",
+                "text": "Once per day, you may issue a command to local guards, officials, or bureaucrats as if you held authority. You may command them to do something they would typically do, but giving an absurd command will break your illusion of control."
+            },
+            {
+                "name": "Unspoken Threat",
+                "text": "Your physique may not be intimidating, but your name certainly is. When making an Intimidation or Persuasion check, invoking your noble lineage grants a +2 bonus. However, this does not work against enemies of your family or those who do not respect noble authority."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Entitled Mindset",
+                "text": "Make a MND save (DC 15) when denied something you believe you deserve. On failure, react with frustration, condescension, or reckless action."
+            },
+            {
+                "name": "Political Rivalries",
+                "text": "Once per session, the GM may introduce a noble rival working to undermine or embarrass you."
+            },
+            {
+                "name": "Family Obligations",
+                "text": "Once per session, the GM may introduce an event requiring your presence at a noble affair, interfering with your plans."
+            },
+            {
+                "name": "Scandal Magnet",
+                "text": "Once per session, the GM may introduce a rumor, accusation, or public embarrassment tied to your past."
+            }
+        ]
+    },
+    {
+        "name": "Wealthy Merchant",
+        "description": "You were born into—or built—a life of wealth through trade, investment, or business dealings. Whether an ambitious entrepreneur or a privileged heir, money has always been your strongest tool.",
+        "wealth": "10d6 Gold",
+        "gear": [
+            {
+                "name": "Merchant’s Ledger",
+                "text": "Exquisite merchant’s attire, ledger, scales, signet ring (3d6 gold), trade permit."
+            },
+            {
+                "name": "Caravan Owner’s Pack",
+                "text": "Fine travel clothing, quarterstaff, heavy coat armor, horse or pack animal, chest with trade goods (5d6 gold)"
+            },
+            {
+                "name": "Speculator’s Kit",
+                "text": "Fine tailored clothing, hidden compartment cloak, rare trade contracts (4d6 gold), magnifying lens."
+            },
+            {
+                "name": "Black Market Dealer’s Tools",
+                "text": "Fine but subtly plain clothing, disguise kit, forged business license, uncut gems (3d6 gold), concealed dagger."
+            }
+        ],
+        "perks": [
+            {
+                "name": "Merchant’s Network",
+                "text": "Once per session, call on a business contact for trade deals, loans, or financial insights. Your network specializes in high-value goods and noble transactions."
+            },
+            {
+                "name": "Black Market Ties",
+                "text": "Once per session, locate illegal goods or services with a +2 bonus to Persuade or Deceive."
+            },
+            {
+                "name": "Evaluation",
+                "text": "Appraising items is one step easier, and you gain 10% more profit when selling appraised valuables (excluding common goods you regularly trade)."
+            },
+            {
+                "name": "Too Big to Fail",
+                "text": "Once per session, when negotiating or generally persuading, you may leverage your vast wealth to dominate the discussion. Gain a +2 bonus to social checks for every 100 gold you possess (max +10)."
+            }
+        ],
+        "drawbacks": [
+            {
+                "name": "Wealth Attracts Enemies",
+                "text": "Once per session, the GM may introduce a thief, scammer, or extortionist targeting you."
+            },
+            {
+                "name": "Business Before Friendship",
+                "text": "Make a DC 15 MND save to resist prioritizing financial gain over personal relationships."
+            },
+            {
+                "name": "Death and Taxes",
+                "text": "Once per session, the GM may introduce a financial or legal challenge, such as a tax audit, blackmail, contract dispute, or past deal gone wrong."
+            },
+            {
+                "name": "Dependent Business Interests",
+                "text": "Once per session, the GM may reduce your available gold by 1d6 × 10 due to trade failures, theft, or poor investments."
+            }
+        ]
+    }
+];
+const RPG_CREATOR_LANGUAGES = ["Common","Elvish","Dwarvish","Orcish / Erg’nah","Undercommon","Ahrewic","Heiszek","Ak’iki","Sectah","Sign (Common Sign Language)","Faespeak","Draconic","Arkaeic","Shadow Speak","Celditongue","Térr","Daem"];
+const RPG_CREATOR_PATH_SKILL_EFFECTS = {
+perks:{
+"Street Smarts":[["Stealth",2,"When avoiding pursuers by blending into crowds."],["Deceive",2,"When avoiding pursuers by blending into crowds."]],
+"Scavenger’s Eye":[["Gather",2,"+10% yield."]],
+"Urban Ghost":[["Stealth",2,"When fleeing in urban environments."],["Parkour",2,"When fleeing in urban environments."]],
+"Misdirection":[["Deceive",2,"When giving false information about identity or past."]],
+"Survivor’s Instinct":[["Detect",2,"When sensing danger, spotting followers, or catching liars."]],
+"Honest Face":[["Persuade",2,"When dealing with other commonfolk or small-town merchants."]],
+"Rural Knowledge":[["Knowledge Local",2,""],["Knowledge Nature",2,""]],
+"Living Ghost":[["Stealth",2,"When avoiding direct confrontation with law enforcement, bounty hunters, or past enemies."]],
+"Survivor’s Resolve":[["Detect",2,"When spotting deception or ulterior motives."]],
+"Survivalist":[["Gather",2,"+10% yield when foraging for food, herbs, or natural resources."]],
+"Silent Steps":[["Stealth",2,"When moving through natural terrain."]],
+"Hardened Traveler":[["Navigate",2,"When traversing unknown terrain."],["Parkour",2,"When traversing unknown terrain."]],
+"Merchant’s Eye":[["Evaluate",2,"When determining the value of goods, materials, or crafted items."]],
+"Quick Hands":[["Finesse",2,"When picking pockets, planting objects, or concealing small weapons."]],
+"Strong-Armed Negotiator":[["Intimidate",2,"When negotiating contracts, collecting debts, or dealing with weaker foes."]],
+"Devoted Scholar":[["Knowledge Religion",2,""],["Research",2,""]],
+"Accelerated Research":[["Research",2,"Research tasks also take half the usual time."]],
+"Master of Disguise":[["Deceive",2,"When using disguises or impersonations."]],
+"Relentless Pursuer":[["Detect",2,"When tracking fresh footprints or recent movement; also +5 ft movement when chasing a target."]]
+},
+drawbacks:{
+"Wanted for Vagrancy":[["Persuade",-2,"Against authorities."]],
+"Trust Issues":[["Detect",-2,"When the GM calls for a check because an ally is telling the truth."]],
+"Naïve Trust":[["Detect",-2,"When trying to determine if someone is lying."]],
+"Set in Your Ways":[["Persuade",-2,"When debating foreign customs, new technology, or abstract concepts."]],
+"Overexplainer":[["Persuade",-2,"On a 1–3 after the Drawback's d6 roll."],["Deceive",-2,"On a 1–3 after the Drawback's d6 roll."]]
+}};
 let creatorStep = 0;
+let creatorPathStep = 0;
 let creatorDraft = null;
 
 function makeFreshCreatorDraft() {
@@ -17525,6 +18937,23 @@ function makeFreshCreatorDraft() {
         eyeOther: "",
         scleraColor: "",
         scleraOther: "",
+        origin: "",
+        gearMode: "default",
+        gearSource: "",
+        gearChoice: "",
+        gearCustom: "",
+        perkMode: "default",
+        perkSource: "",
+        perkChoice: "",
+        perkCustom: "",
+        drawbackMode: "default",
+        drawbackSource: "",
+        drawbackChoice: "",
+        drawbackCustom: "",
+        drawbackExtra: "",
+        role: "",
+        roleBonuses: [{type:"",detail:"",other:""},{type:"",detail:"",other:""}],
+        drive: "",
         level: 1,
         attributeSpends: {
             bod: 0,
@@ -17535,6 +18964,52 @@ function makeFreshCreatorDraft() {
     };
 }
 
+function creatorEscapeHtml(value){return String(value??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function getCreatorOrigin(name=creatorDraft?.origin){return RPG_CREATOR_PATH_ORIGINS.find(o=>o.name===name)||null;}
+function creatorPathChoiceProperty(kind){return kind==="gear"?"gear":kind==="perk"?"perks":"drawbacks";}
+function creatorResolvedPathChoice(kind){
+ if(!creatorDraft)return null;const mode=creatorDraft[kind+"Mode"]||"default";
+ if(mode==="custom"){const t=String(creatorDraft[kind+"Custom"]||"").trim();if(!t)return null;return{name:kind==="gear"?"Custom Starting Gear":kind==="perk"?"Custom Perk":"Custom Drawback",text:t,source:"Custom",custom:true,borrowed:false};}
+ const source=mode==="borrow"?creatorDraft[kind+"Source"]:creatorDraft.origin,origin=getCreatorOrigin(source);if(!origin)return null;
+ const choice=origin[creatorPathChoiceProperty(kind)]?.find(x=>x.name===creatorDraft[kind+"Choice"]);return choice?{...choice,source:origin.name,custom:false,borrowed:mode==="borrow"}:null;
+}
+function creatorPathChoiceText(kind){const c=creatorResolvedPathChoice(kind);if(!c)return"";return c.name+(c.borrowed?" ["+c.source+"]":"")+(c.text?" — "+c.text:"");}
+function creatorOriginHpModifier(){return creatorResolvedPathChoice("perk")?.name==="Harty Lifestyle"?5:0;}
+function creatorPathAttributeModifier(stat){const d=creatorResolvedPathChoice("drawback");return d?.name==="Malnourished Development"&&creatorDraft?.drawbackExtra===stat?-1:0;}
+function creatorRoleBonusOptions(type){
+ if(type==="language")return[...RPG_CREATOR_LANGUAGES,"Other"];
+ const vals=Array.from(document.querySelectorAll("#skill-bonus-section .skill-select option")).map(o=>o.value).filter(v=>v&&v!=="__custom__");
+ return type==="knowledge"?vals.filter(v=>v.startsWith("Knowledge ")):type==="skill"?vals.filter(v=>!v.startsWith("Knowledge ")): [];
+}
+function creatorRoleBonusResolved(i){const b=creatorDraft?.roleBonuses?.[i];if(!b?.type)return null;if(b.type==="gearFeat"||b.type==="craftFeat"){const v=String(b.other||"").trim();return v?{type:b.type,value:v}:null;}if(b.type==="language"&&b.detail==="Other"){const v=String(b.other||"").trim();return v?{type:b.type,value:v}:null;}const v=String(b.detail||"").trim();return v?{type:b.type,value:v}:null;}
+function creatorRoleBonusLabel(i){const b=creatorRoleBonusResolved(i);if(!b)return"";if(b.type==="skill"||b.type==="knowledge")return"+2 "+b.value;if(b.type==="language")return"+1 Language: "+b.value;if(b.type==="gearFeat")return"+1 Gear Feat: "+b.value;if(b.type==="craftFeat")return"+1 Craft Feat: "+b.value;return b.value;}
+function creatorRoleBonusesAreValid(){const a=creatorRoleBonusResolved(0),b=creatorRoleBonusResolved(1);if(!a||!b)return false;const r=new Set(["skill","knowledge","language"]);if(a.type===b.type&&!r.has(a.type))return false;if(a.type===b.type&&a.value===b.value)return false;return true;}
+function creatorPathSubstepIsValid(step=creatorPathStep){
+ if(!creatorDraft)return false;if(step===0)return!!getCreatorOrigin();if(step===1)return!!creatorResolvedPathChoice("gear");if(step===2)return!!creatorResolvedPathChoice("perk");
+ if(step===3){const d=creatorResolvedPathChoice("drawback");if(!d)return false;return d.name==="Malnourished Development"?["bod","dex"].includes(creatorDraft.drawbackExtra):true;}
+ if(step===4)return!!String(creatorDraft.role||"").trim();if(step===5)return creatorRoleBonusesAreValid();if(step===6)return!!String(creatorDraft.drive||"").trim();return true;
+}
+function creatorPathIsComplete(){for(let i=0;i<CREATOR_PATH_STEP_COUNT;i++)if(!creatorPathSubstepIsValid(i))return false;return true;}
+function renderCreatorPathSelect(select,values,selected,placeholder){if(!select)return;select.innerHTML='<option value="">'+creatorEscapeHtml(placeholder)+'</option>'+values.map(v=>'<option value="'+creatorEscapeHtml(v)+'">'+creatorEscapeHtml(v)+'</option>').join("");select.value=values.includes(selected)?selected:"";}
+function renderCreatorPathChoice(kind){
+ const mode=creatorDraft?.[kind+"Mode"]||"default",sw=document.getElementById("creator-"+kind+"-source-wrap"),ss=document.getElementById("creator-"+kind+"-source"),cw=document.getElementById("creator-"+kind+"-choice-wrap"),cs=document.getElementById("creator-"+kind+"-choice"),uw=document.getElementById("creator-"+kind+"-custom-wrap"),ui=document.getElementById("creator-"+kind+"-custom"),warn=document.getElementById("creator-"+kind+"-warning"),detail=document.getElementById("creator-"+kind+"-detail");
+ if(sw)sw.hidden=mode!=="borrow";if(cw)cw.hidden=mode==="custom";if(uw)uw.hidden=mode!=="custom";if(warn)warn.hidden=mode==="default";if(ui)ui.value=creatorDraft?.[kind+"Custom"]||"";
+ if(mode==="borrow"){const src=RPG_CREATOR_PATH_ORIGINS.map(o=>o.name).filter(n=>n!==creatorDraft.origin);renderCreatorPathSelect(ss,src,creatorDraft?.[kind+"Source"]||"","Choose Origin");}
+ if(mode!=="custom"){const sn=mode==="borrow"?creatorDraft?.[kind+"Source"]:creatorDraft?.origin,o=getCreatorOrigin(sn),opts=o?.[creatorPathChoiceProperty(kind)]||[];renderCreatorPathSelect(cs,opts.map(x=>x.name),creatorDraft?.[kind+"Choice"]||"","Choose "+(kind==="gear"?"gear package":kind));}
+ const c=creatorResolvedPathChoice(kind);if(detail)detail.textContent=c?(c.text||c.name):(mode==="custom"?"Describe your custom choice above.":"Choose an option to see its details.");
+}
+function renderCreatorRoleBonuses(){
+ for(let i=0;i<2;i++){const b=creatorDraft?.roleBonuses?.[i]||{type:"",detail:"",other:""},ts=document.getElementById("creator-role-bonus-type-"+i),ds=document.getElementById("creator-role-bonus-detail-"+i),oi=document.getElementById("creator-role-bonus-other-"+i);if(ts)ts.value=b.type||"";
+ const textOnly=b.type==="gearFeat"||b.type==="craftFeat",opts=textOnly?[]:creatorRoleBonusOptions(b.type);if(ds){ds.hidden=textOnly||!b.type;renderCreatorPathSelect(ds,opts,b.detail||"",b.type?"Choose selection":"Choose bonus type first");}
+ const needs=textOnly||(b.type==="language"&&b.detail==="Other");if(oi){oi.hidden=!needs;oi.value=b.other||"";oi.placeholder=b.type==="gearFeat"?"Gear Feat name":b.type==="craftFeat"?"Craft Feat name":"Custom language";}}
+}
+function renderCreatorPath(){
+ document.querySelectorAll("[data-creator-path-step]").forEach(p=>p.classList.toggle("active",Number(p.dataset.creatorPathStep)===creatorPathStep));
+ document.querySelectorAll("[data-creator-path-progress]").forEach(p=>{const i=Number(p.dataset.creatorPathProgress);p.classList.toggle("active",i===creatorPathStep);p.classList.toggle("complete",i<creatorPathStep);});
+ const g=document.getElementById("creator-origin-grid");if(g)g.innerHTML=RPG_CREATOR_PATH_ORIGINS.map(o=>'<button class="creator-origin-card'+(creatorDraft?.origin===o.name?" selected":"")+'" type="button" data-creator-origin="'+creatorEscapeHtml(o.name)+'"><strong>'+creatorEscapeHtml(o.name)+'</strong><span>'+creatorEscapeHtml(o.wealth)+" • "+creatorEscapeHtml(o.description)+"</span></button>").join("");
+ const o=getCreatorOrigin(),s=document.getElementById("creator-origin-summary");if(s)s.hidden=!o;if(o){setCreatorText("creator-origin-name",o.name);setCreatorText("creator-origin-wealth",o.wealth);setCreatorText("creator-origin-description",o.description);}
+ ["gear","perk","drawback"].forEach(renderCreatorPathChoice);const d=creatorResolvedPathChoice("drawback"),ew=document.getElementById("creator-drawback-extra-wrap"),es=document.getElementById("creator-drawback-extra");if(ew)ew.hidden=d?.name!=="Malnourished Development";if(es)es.value=creatorDraft?.drawbackExtra||"";renderCreatorRoleBonuses();
+}
 function getCreatorRace() {
     return RPG_CREATOR_RACES.find(
         race =>
@@ -17576,10 +19051,8 @@ function creatorRaceModifiers() {
 function creatorAttributeBaseline(stat) {
     return (
         CREATOR_BASE_ATTRIBUTE +
-        Number(
-            creatorRaceModifiers()[stat] ||
-            0
-        )
+        Number(creatorRaceModifiers()[stat] || 0) +
+        Number(creatorPathAttributeModifier(stat) || 0)
     );
 }
 
@@ -17600,7 +19073,8 @@ function creatorStartingHp() {
         Number(
             getCreatorRace()?.hpBonus ||
             0
-        )
+        ) +
+        creatorOriginHpModifier()
     );
 }
 
@@ -18629,6 +20103,17 @@ function renderCreatorDerivedValues() {
         creatorPointsRemaining()
     );
 
+    const origin=getCreatorOrigin();
+    setCreatorText("creator-review-origin",display(origin?.name));
+    setCreatorText("creator-review-origin-wealth",display(origin?.wealth));
+    setCreatorText("creator-review-gear",display(creatorPathChoiceText("gear")));
+    setCreatorText("creator-review-perk",display(creatorPathChoiceText("perk")));
+    setCreatorText("creator-review-drawback",display(creatorPathChoiceText("drawback")+(creatorResolvedPathChoice("drawback")?.name==="Malnourished Development"&&creatorDraft?.drawbackExtra?" ("+creatorDraft.drawbackExtra.toUpperCase()+")":"")));
+    setCreatorText("creator-review-role",display(creatorDraft?.role));
+    setCreatorText("creator-review-role-bonus-1",display(creatorRoleBonusLabel(0)));
+    setCreatorText("creator-review-role-bonus-2",display(creatorRoleBonusLabel(1)));
+    setCreatorText("creator-review-drive",display(creatorDraft?.drive));
+
     [
         "bod",
         "dex",
@@ -18686,7 +20171,7 @@ function renderCreatorDerivedValues() {
                 .forEach(
                     element => {
                         element.textContent =
-                            "Race baseline: " +
+                            "Race / Path baseline: " +
                             baseline;
                     }
                 );
@@ -18949,6 +20434,13 @@ function creatorStepIsValid(
         step ===
         3
     ) {
+        return creatorPathIsComplete();
+    }
+
+    if (
+        step ===
+        4
+    ) {
         return creatorPointsRemaining() ===
             0;
     }
@@ -19002,21 +20494,12 @@ function renderCreatorValidation() {
         return;
     }
 
-    if (
-        creatorStep ===
-            3 &&
-        !creatorStepIsValid(
-            3
-        )
-    ) {
-        const remaining =
-            creatorPointsRemaining();
-
-        validation.textContent =
-            "Spend all 6 Attribute Points to continue. " +
-            remaining +
-            " remaining.";
-        return;
+    if (creatorStep===3&&!creatorPathSubstepIsValid()) {
+        const messages=["Choose an Origin to continue.","Choose a starting gear package or enter a custom package to continue.","Choose a Perk or enter a custom Perk to continue.","Choose a Drawback or enter a custom Drawback to continue.","Enter a Role to continue.","Choose two valid Role Bonuses to continue.","Enter a Drive to continue."];
+        validation.textContent=messages[creatorPathStep]||"Complete this Path step to continue.";return;
+    }
+    if (creatorStep===4&&!creatorStepIsValid(4)) {
+        const remaining=creatorPointsRemaining();validation.textContent="Spend all 6 Attribute Points to continue. "+remaining+" remaining.";return;
     }
 
     validation.textContent =
@@ -19028,6 +20511,7 @@ function renderCharacterCreator() {
     renderCreatorRaceSummary();
     renderCreatorDetailGuidance();
     renderCreatorAppearanceControls();
+    renderCreatorPath();
     renderCreatorDerivedValues();
     renderCreatorReview();
 
@@ -19104,7 +20588,9 @@ function renderCharacterCreator() {
             1;
 
         nextButton.disabled =
-            !creatorStepIsValid();
+            creatorStep === 3
+                ? !creatorPathSubstepIsValid()
+                : !creatorStepIsValid();
     }
 
     if (
@@ -19124,6 +20610,9 @@ function startGuidedCharacter() {
         makeFreshCreatorDraft();
 
     creatorStep =
+        0;
+
+    creatorPathStep =
         0;
 
     document
@@ -19184,6 +20673,13 @@ function setInputValueAndNotify(
     );
 }
 
+function creatorFindBlankRow(selector,blankSelector){return Array.from(document.querySelectorAll(selector)).find(r=>!String(r.querySelector(blankSelector)?.value||"").trim())||null;}
+function creatorAddSkillBonus(skill,bonus,special=""){let r=creatorFindBlankRow("#skill-bonus-section .skill-bonus-row",".skill-select");if(!r){document.getElementById("add-skill-bonus")?.click();r=document.querySelector("#skill-bonus-section .skill-bonus-row:last-child");}if(!r)return;const s=r.querySelector(".skill-select");if(s){s.value=skill;s.dispatchEvent(new Event("change",{bubbles:true}));}setInputValueAndNotify(r.querySelector(".skill-bonus-input"),bonus);setInputValueAndNotify(r.querySelector(".skill-special-input"),special);}
+function creatorAddLanguage(language){let r=creatorFindBlankRow("#languages-list .background-entry-row",'input[placeholder="Language"]');if(!r){document.getElementById("add-language")?.click();r=document.querySelector("#languages-list .background-entry-row:last-child");}setInputValueAndNotify(r?.querySelector('input[placeholder="Language"]'),language);}
+function creatorAddFeat(feat,description){let r=creatorFindBlankRow("#feat-list .feat-row",".feat-input");if(!r){document.getElementById("add-feat")?.click();r=document.querySelector("#feat-list .feat-row:last-child");}setInputValueAndNotify(r?.querySelector(".feat-input"),feat);setInputValueAndNotify(r?.querySelector(".feat-description"),description);}
+function creatorAddInventoryPackage(p){if(!p)return;let r=creatorFindBlankRow("#inventory-list .inventory-row",".inventory-item-input");if(!r){document.getElementById("add-inventory-item")?.click();r=document.querySelector("#inventory-list .inventory-row:last-child");}setInputValueAndNotify(r?.querySelector(".inventory-item-input"),p.name);setInputValueAndNotify(r?.querySelector(".inventory-description"),(p.borrowed?"Borrowed from "+p.source+". ":"")+p.text);}
+function creatorApplyRoleBonus(i){const b=creatorRoleBonusResolved(i);if(!b)return;if(b.type==="skill"||b.type==="knowledge"){creatorAddSkillBonus(b.value,2,"Role Bonus");return;}if(b.type==="language"){creatorAddLanguage(b.value);return;}creatorAddFeat(b.value,b.type==="gearFeat"?"Role Bonus: free Gear Feat":"Role Bonus: free Craft Feat");}
+function creatorApplyOriginSkillEffects(){const p=creatorResolvedPathChoice("perk"),d=creatorResolvedPathChoice("drawback"),effects=[...(RPG_CREATOR_PATH_SKILL_EFFECTS.perks[p?.name]||[]),...(RPG_CREATOR_PATH_SKILL_EFFECTS.drawbacks[d?.name]||[])];effects.forEach(e=>creatorAddSkillBonus(e[0],e[1],e[2]));}
 async function createGuidedCharacter() {
     syncCreatorFieldsFromInputs();
 
@@ -19191,7 +20687,8 @@ async function createGuidedCharacter() {
         [
             0,
             1,
-            3
+            3,
+            4
         ]
         .find(
             step =>
@@ -19316,6 +20813,16 @@ async function createGuidedCharacter() {
             ),
             creatorEyesText()
         );
+
+        const pathSection=document.querySelector("#tab4 .path-section");
+        setInputValueAndNotify(pathSection?.querySelector('textarea[placeholder="Origin"]'),creatorDraft.origin);
+        setInputValueAndNotify(pathSection?.querySelector('textarea[placeholder="Role"]'),creatorDraft.role);
+        setInputValueAndNotify(pathSection?.querySelector('textarea[placeholder="Perk"]'),creatorPathChoiceText("perk"));
+        setInputValueAndNotify(pathSection?.querySelector('textarea[placeholder="Drawback"]'),creatorPathChoiceText("drawback")+(creatorResolvedPathChoice("drawback")?.name==="Malnourished Development"&&creatorDraft.drawbackExtra?" ("+creatorDraft.drawbackExtra.toUpperCase()+")":""));
+        setInputValueAndNotify(pathSection?.querySelector('textarea[placeholder="Drive"]'),creatorDraft.drive);
+        setInputValueAndNotify(document.querySelector("#tab3 .inventory-currency-row input"),getCreatorOrigin()?.wealth||"");
+        creatorAddInventoryPackage(creatorResolvedPathChoice("gear"));
+        creatorApplyOriginSkillEffects();creatorApplyRoleBonus(0);creatorApplyRoleBonus(1);
 
         [
             "bod",
@@ -19472,6 +20979,10 @@ document
             );
         }
     );
+
+document.getElementById("creator-origin-grid").addEventListener("click",event=>{const b=event.target.closest("[data-creator-origin]");if(!b||!creatorDraft)return;creatorDraft.origin=b.dataset.creatorOrigin;Object.assign(creatorDraft,{gearMode:"default",gearSource:"",gearChoice:"",gearCustom:"",perkMode:"default",perkSource:"",perkChoice:"",perkCustom:"",drawbackMode:"default",drawbackSource:"",drawbackChoice:"",drawbackCustom:"",drawbackExtra:""});creatorDraft.attributeSpends={bod:0,dex:0,mnd:0,cha:0};renderCharacterCreator();});
+document.querySelectorAll("[data-creator-path-field]").forEach(input=>{input.addEventListener(input.tagName==="TEXTAREA"?"input":"change",()=>{if(!creatorDraft)return;const f=input.dataset.creatorPathField;creatorDraft[f]=input.value;if(f==="gearMode"||f==="gearSource")creatorDraft.gearChoice="";if(f==="perkMode"||f==="perkSource")creatorDraft.perkChoice="";if(f==="drawbackMode"||f==="drawbackSource"){creatorDraft.drawbackChoice="";creatorDraft.drawbackExtra="";}if(f==="drawbackChoice"){creatorDraft.drawbackExtra="";creatorDraft.attributeSpends={bod:0,dex:0,mnd:0,cha:0};}renderCharacterCreator();});});
+document.querySelectorAll("[data-creator-role-bonus-field]").forEach(input=>{input.addEventListener(input.tagName==="INPUT"?"input":"change",()=>{if(!creatorDraft)return;const i=Number(input.dataset.creatorRoleBonusIndex),f=input.dataset.creatorRoleBonusField,b=creatorDraft.roleBonuses[i];b[f]=input.value;if(f==="type"){b.detail="";b.other="";}if(f==="detail"&&input.value!=="Other")b.other="";renderCharacterCreator();});});
 
 document
     .getElementById(
@@ -19730,12 +21241,7 @@ document
         () => {
             syncCreatorFieldsFromInputs();
 
-            creatorStep =
-                Math.max(
-                    0,
-                    creatorStep -
-                    1
-                );
+            if (creatorStep===3&&creatorPathStep>0) {creatorPathStep-=1;} else {creatorStep=Math.max(0,creatorStep-1);}
 
             renderCharacterCreator();
         }
@@ -19750,21 +21256,13 @@ document
         () => {
             syncCreatorFieldsFromInputs();
 
-            if (
-                !creatorStepIsValid()
-            ) {
-                renderCharacterCreator();
-                return;
+            if (creatorStep===3) {
+                if(!creatorPathSubstepIsValid()){renderCharacterCreator();return;}
+                if(creatorPathStep<CREATOR_PATH_STEP_COUNT-1){creatorPathStep+=1;}else{creatorStep+=1;}
+                renderCharacterCreator();return;
             }
-
-            creatorStep =
-                Math.min(
-                    CREATOR_STEP_COUNT -
-                    1,
-                    creatorStep +
-                    1
-                );
-
+            if(!creatorStepIsValid()){renderCharacterCreator();return;}
+            creatorStep=Math.min(CREATOR_STEP_COUNT-1,creatorStep+1);
             renderCharacterCreator();
         }
     );
