@@ -1910,10 +1910,14 @@ input::placeholder {
 
 .path-detail-row {
     display: grid;
-    grid-template-columns:
-        repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
     margin-bottom: 8px;
+}
+
+/* Origin and Role share a row; Perk and Drawback each get full width. */
+.path-detail-row > .path-field:nth-child(n+3) {
+    grid-column: 1 / -1;
 }
 
 .path-field,
@@ -23882,6 +23886,143 @@ if ("serviceWorker" in navigator) {
             });
     });
 }
+</script>
+
+<!-- Feat catalog picker (manual editing remains available) -->
+<script>
+(() => {
+  const add = document.getElementById("add-feat");
+  const list = document.getElementById("feat-list");
+  if (!add || !list) return;
+  let catalogPromise;
+  let bypass = false;
+
+  const overlay = document.createElement("div");
+  overlay.id = "feat-catalog-overlay";
+  overlay.setAttribute("role", "dialog");
+  overlay.setAttribute("aria-modal", "true");
+  overlay.setAttribute("aria-label", "Choose a feat");
+  overlay.style.cssText = "display:none;position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.65);padding:5vh 12px;overflow:auto;";
+  overlay.innerHTML = `
+    <section style="background:white;color:black;max-width:780px;margin:0 auto;padding:18px;border-radius:14px;box-shadow:0 12px 48px #0005">
+      <div style="display:flex;gap:12px;align-items:center;justify-content:space-between">
+        <h2 style="margin:0">Choose a Feat</h2>
+        <button id="feat-catalog-close" type="button" aria-label="Close feat picker">✕</button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin:14px 0">
+        <input id="feat-catalog-search" type="search" placeholder="Search feats" aria-label="Search feats" style="flex:2;min-width:180px;padding:9px">
+        <select id="feat-catalog-category" aria-label="Feat category" style="flex:1;min-width:130px;padding:9px"><option value="">All categories</option></select>
+      </div>
+      <p id="feat-catalog-message" aria-live="polite">Loading feats…</p>
+      <div id="feat-catalog-results" style="display:grid;gap:8px;max-height:55vh;overflow:auto"></div>
+      <button id="feat-catalog-manual" type="button" style="margin-top:14px;padding:10px">+ Custom / Manual Feat</button>
+    </section>`;
+  document.body.appendChild(overlay);
+  const $ = selector => overlay.querySelector(selector);
+  const results = $("#feat-catalog-results"), message = $("#feat-catalog-message");
+  const search = $("#feat-catalog-search"), category = $("#feat-catalog-category");
+  let feats = [];
+
+  function hide() { overlay.style.display = "none"; }
+  function createRow(feat) {
+    bypass = true;
+    try { add.click(); } finally { bypass = false; }
+    const row = list.lastElementChild;
+    if (!row || !row.classList.contains("feat-row")) return;
+    if (feat) {
+      row.querySelector(".feat-input").value = feat.name;
+      const levels = row.querySelectorAll(".feat-level-bubble input");
+      if (levels[0]) levels[0].value = "0";
+      if (levels[1] && feat.levelPointThreshold != null) levels[1].value = String(feat.levelPointThreshold);
+      row.querySelector(".feat-rank-input").value = "0";
+      const desc = row.querySelector(".feat-description");
+      desc.value = [feat.description, feat.rankBenefit ? "+Rank: " + feat.rankBenefit : ""].filter(Boolean).join("\n");
+      desc.dispatchEvent(new Event("input", { bubbles: true }));
+      row.dataset.featCatalogId = feat.id;
+    }
+    hide();
+  }
+  function render() {
+    results.replaceChildren();
+    const term = search.value.trim().toLowerCase(), cat = category.value;
+    const filtered = feats.filter(f => (!cat || f.category === cat) &&
+      (!term || (f.name + " " + f.description + " " + (f.requirement || "")).toLowerCase().includes(term)));
+    message.textContent = filtered.length + " feat" + (filtered.length === 1 ? "" : "s") + " available to browse. Verify prerequisites before selecting.";
+    for (const feat of filtered) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.style.cssText = "background:#fafafa;color:#111;border:1px solid #aaa;border-radius:8px;text-align:left;padding:12px;cursor:pointer";
+      const header = document.createElement("strong"); header.textContent = feat.name + " — " + feat.category;
+      const detail = document.createElement("div"); detail.style.cssText = "font-size:13px;margin-top:5px";
+      detail.textContent = (feat.requirement ? "Requires: " + feat.requirement + " · " : "") + "Threshold: " + feat.levelPointThreshold;
+      b.append(header, detail);
+      b.addEventListener("click", () => createRow(feat));
+      results.appendChild(b);
+    }
+  }
+  async function show() {
+    overlay.style.display = "block";
+    search.value = "";
+    message.textContent = "Loading feats…";
+    if (!catalogPromise) catalogPromise = fetch("/data/feats-one-v1.json", { cache: "no-cache" })
+      .then(res => { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); });
+    try {
+      const data = await catalogPromise;
+      feats = data.feats || [];
+      category.replaceChildren(new Option("All categories", ""));
+      for (const cat of [...new Set(feats.map(f => f.category))]) category.add(new Option(cat, cat));
+      render();
+      search.focus();
+    } catch (err) {
+      catalogPromise = null;
+      message.textContent = "Couldn't load feat catalog. You can still add a manual feat.";
+      console.error("Feat catalog loading failed", err);
+    }
+  }
+  add.addEventListener("click", event => {
+    if (bypass) return;
+    event.preventDefault(); event.stopImmediatePropagation(); show();
+  }, true);
+  $("#feat-catalog-close").addEventListener("click", hide);
+  $("#feat-catalog-manual").addEventListener("click", () => createRow(null));
+  search.addEventListener("input", render);
+  category.addEventListener("change", render);
+  overlay.addEventListener("click", e => { if (e.target === overlay) hide(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && overlay.style.display !== "none") hide(); });
+})();
+</script>
+
+<!-- Resize populated character fields, including when switching to the Path tab. -->
+<script>
+(() => {
+  const selector = 'textarea.path-expand, textarea.background-detail-expand, textarea.feat-description, textarea.skill-special-input, textarea.inventory-description, textarea.accessory-description, textarea.character-description, textarea.note-body, textarea.halloween-expand';
+  function fit(el) {
+    if (!el || !el.matches(selector) || el.getClientRects().length === 0) return;
+    el.style.height = 'auto';
+    el.style.height = Math.max(el.scrollHeight, parseFloat(getComputedStyle(el).minHeight) || 0) + 'px';
+  }
+  function fitAll() {
+    document.querySelectorAll(selector).forEach(fit);
+  }
+  function schedule() {
+    requestAnimationFrame(() => requestAnimationFrame(fitAll));
+  }
+  document.addEventListener('input', e => { if (e.target.matches?.(selector)) fit(e.target); }, true);
+  document.addEventListener('change', e => { if (e.target.matches?.(selector)) fit(e.target); }, true);
+  document.addEventListener('focusin', e => { if (e.target.matches?.(selector)) fit(e.target); }, true);
+  document.addEventListener('click', e => {
+    if (e.target.closest?.('.tab-button, .creator-step, .creator-next, .creator-back, .character-library-card, #feat-catalog-overlay')) schedule();
+  }, true);
+  const observer = new MutationObserver(changes => {
+    if (changes.some(c => c.type === 'childList' || (c.type === 'attributes' && c.attributeName === 'class'))) schedule();
+  });
+  // Watch visibility changes without watching style heights to avoid resize loops.
+  observer.observe(document.getElementById('character-app') || document.body, {subtree:true,childList:true,attributes:true,attributeFilter:['class']});
+  window.addEventListener('load', schedule);
+  window.addEventListener('resize', schedule);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) schedule(); });
+  schedule();
+})();
 </script>
 
 </body>
