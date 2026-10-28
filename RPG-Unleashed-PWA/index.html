@@ -3,7 +3,7 @@
 
 <head>
 
-<link rel="manifest" href="/manifest.json?build=1.55.0">
+<link rel="manifest" href="/manifest.json?build=1.56.0">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="theme-color" content="#ffffff">
@@ -9063,6 +9063,17 @@ function restoreCharacterTabs(
         }
     );
 
+
+    // Restored legacy tab HTML can predate the progression button.
+    const levelHeader = document.querySelector("#tab1 .character-header");
+    if (levelHeader && !levelHeader.querySelector("#rpg-level-up")) {
+        const btn = document.createElement("button");
+        btn.id = "rpg-level-up";
+        btn.type = "button";
+        btn.textContent = "+ Lvl " + (Number(window.RPGProgressionState?.completedLevel || currentCharacterRecord?.state?.progression?.completedLevel || 0) + 1);
+        btn.style.cssText = "padding:8px 12px;border:2px solid #111;border-radius:16px;background:#fff;font-weight:bold;cursor:pointer;white-space:nowrap";
+        levelHeader.appendChild(btn);
+    }
 
     ensureHalloweenSheetMarkup();
     normalizeSpecialBackgroundLabels(
@@ -23877,7 +23888,7 @@ showAppScreen(
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker
-            .register("/service-worker.js?build=1.55.0", { scope: "/" })
+            .register("/service-worker.js?build=1.56.0", { scope: "/" })
             .catch(error => {
                 console.error(
                     "Service worker registration failed:",
@@ -23891,9 +23902,9 @@ if ("serviceWorker" in navigator) {
 <!-- Feat catalog picker (manual editing remains available) -->
 <script>
 (() => {
-  const add = document.getElementById("add-feat");
-  const list = document.getElementById("feat-list");
-  if (!add || !list) return;
+  const add = () => document.getElementById("add-feat");
+  const list = () => document.getElementById("feat-list");
+  if (!add() || !list()) return;
   let catalogPromise;
   let bypass = false;
 
@@ -23927,8 +23938,8 @@ if ("serviceWorker" in navigator) {
   window.RPGOpenFeatCatalog = show;
   function createRow(feat) {
     bypass = true;
-    try { add.click(); } finally { bypass = false; }
-    const row = list.lastElementChild;
+    try { add()?.click(); } finally { bypass = false; }
+    const row = list()?.lastElementChild;
     if (!row || !row.classList.contains("feat-row")) return;
     if (feat) {
       row.querySelector(".feat-input").value = feat.name;
@@ -23981,9 +23992,12 @@ if ("serviceWorker" in navigator) {
       console.error("Feat catalog loading failed", err);
     }
   }
-  add.addEventListener("click", event => {
-    if (bypass) return;
-    event.preventDefault(); event.stopImmediatePropagation(); show();
+  // Delegate clicks: opening a saved character replaces the original tab DOM.
+  document.addEventListener("click", event => {
+    if (!event.target.closest?.("#add-feat") || bypass) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    show();
   }, true);
   $("#feat-catalog-close").addEventListener("click", hide);
   $("#feat-catalog-manual").addEventListener("click", () => createRow(null));
@@ -24027,7 +24041,7 @@ if ("serviceWorker" in navigator) {
 })();
 </script>
 
-<script src="/levelup.js?build=1.55.0" defer></script>
+<script src="/levelup.js?build=1.56.0" defer></script>
 </body>
 
 </html>
