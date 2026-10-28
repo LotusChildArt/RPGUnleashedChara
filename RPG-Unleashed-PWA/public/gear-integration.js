@@ -18,13 +18,21 @@ function addInventory(name,record,extra=""){
 }
 function addArmor(record,name){
  const b=$("#add-armor");if(!b)return addInventory(name,record);
- bypass=true;try{b.click()}finally{bypass=false}
- const row=[...document.querySelectorAll("#tab1 .armor-entry .armor-row")].at(-1);
+ // Prefer the existing empty armor row; only create a row when necessary.
+ let row=[...document.querySelectorAll("#tab1 .armor-row")]
+   .find(r=>!r.querySelector("input")?.value.trim());
+ if(!row){
+   bypass=true;try{b.click()}finally{bypass=false}
+   row=[...document.querySelectorAll("#tab1 .armor-row")].at(-1);
+ }
  if(!row)return addInventory(name,record);
  const a=[...row.querySelectorAll("input")];input(a[0],name);
- const stats=record.defense.match(/[+-]?\d+/g)||[];
+ const defense=String(record?.defense||"").split("Cost:")[0];
+ const stats=defense.match(/[+-]?\d+/g)||[];
  stats.slice(0,3).forEach((n,i)=>input(a[i+1],n));
- input(a[4],record.sourceText);
+ // Preserve the source's explicit Special entry in the actual Special field.
+ const special=String(record?.sourceText||"").match(/Special:\s*([^\n]+)/)?.[1]||"";
+ input(a[4],special&&special!=="N/A"?special:"");
 }
 function addOutfit(record,name,starting=false){
  const row=$("#tab1 .outfit-row");
@@ -129,7 +137,23 @@ window.RPGPopulateStartingGear=async pkg=>{
  for(const item of matches){const n=normalize(item.name);if(!remaining.includes(n)&&!aliases.some(([pattern,name])=>name===item.name&&pattern.test(raw)))continue;selected.push(item);remaining=remaining.replace(n," ")}
  for(const item of selected)place(item,item.name,"starting");
  if(!selected.length){addInventory(pkg.name,null,(pkg.borrowed?"Borrowed from "+pkg.source+". ":"")+raw);return}
- // Preserve every detail of the selected package without turning the package into duplicate equipment.
- const notes=$("#notes-list");if(notes){$("#add-note")?.click();const card=notes.lastElementChild;if(card){input($(".note-title",card),"Starting Gear — "+pkg.name);input($(".note-body",card),(pkg.borrowed?"Borrowed from "+pkg.source+".\n":"")+raw+"\n\nRecognized: "+selected.map(x=>x.name).join(", ")+". Check other contents for manual entry.")}}
+ // Populate unmatched package contents into inventory rather than burying them in Notes.
+ // Split only at normal list delimiters; leave source text as the description.
+ let remainder=raw;
+ for(const item of selected){
+   const n=item.name.replace(/[.*+?^${}()|[\]\\]/g,"\\ // Preserve every detail of the selected package without turning the package into duplicate equipment.
+ const notes=$("#notes-list");if(notes){$("#add-note")?.click();const card=notes.lastElementChild;if(card){input($(".note-title",card),"Starting Gear — "+pkg.name);input($(".note-body",card),(pkg.borrowed?"Borrowed from "+pkg.source+".\n":"")+raw+"\n\nRecognized: "+selected.map(x=>x.name).join(", ")+". Check other contents for manual entry.")}}");
+   remainder=remainder.replace(new RegExp(n,"gi"),"");
+ }
+ const parts=remainder.split(/,|;|\s+and\s+/i).map(x=>x.trim())
+   .filter(x=>x&&!/^(?:a|an|the|with|and|or)$/i.test(x));
+ const normalizedSelected=new Set(selected.map(x=>normalize(x.name)));
+ for(const part of parts){
+   const clean=part.replace(/^(?:and\s+|with\s+|a\s+|an\s+|the\s+)/i,"").trim();
+   if(!clean||clean.length<3||normalizedSelected.has(normalize(clean)))continue;
+   // Avoid re-adding prose about a recognized item as a second physical item.
+   if(selected.some(x=>normalize(clean).includes(normalize(x.name))))continue;
+   addInventory(clean,null,(pkg.borrowed?"Borrowed from "+pkg.source+". ":"")+"From "+pkg.name+": "+part);
+ }
 };
 })();
