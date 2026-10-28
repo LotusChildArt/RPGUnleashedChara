@@ -35,9 +35,69 @@ function addOperation(op){
  if(op.cost>remaining())return showMessage("Not enough level points.");
  working.operations.push(op);render();
 }
+
+const proficiencyNames=["Light Melee Proficiency","Medium Melee Proficiency","Heavy Melee Proficiency","Ranged Weapon Proficiency"];
+const browser=document.createElement("div");
+browser.id="rpg-level-feat-browser";
+browser.setAttribute("role","dialog");
+browser.setAttribute("aria-modal","true");
+browser.setAttribute("aria-label","Select a feat");
+browser.style.cssText="display:none;position:fixed;inset:0;z-index:100010;background:rgba(0,0,0,.75);padding:5vh 12px;overflow:auto;";
+document.body.appendChild(browser);
+let previousFocus=null;
+function closeBrowser(){
+ browser.style.display="none";
+ browser.replaceChildren();
+ if(previousFocus?.isConnected)previousFocus.focus();
+ previousFocus=null;
+}
+function browseFeats(slot,cost,addFeat){
+ if(!catalog?.length){showMessage("Feat database has not loaded.");return;}
+ previousFocus=document.activeElement;
+ const onlyProficiency=slot==="proficiency";
+ const entries=catalog.filter(f=>(onlyProficiency?proficiencyNames.includes(f.name):true)&&!owns(f.name));
+ browser.replaceChildren();
+ const content=document.createElement("section");
+ content.style.cssText="background:#fff;color:#111;max-width:760px;margin:auto;padding:18px;border-radius:14px;";
+ const heading=document.createElement("h2");
+ heading.textContent=onlyProficiency?"Choose starting proficiency":slot==="free"?"Choose a free feat":"Choose a feat to purchase";
+ const close=document.createElement("button");
+ close.type="button";close.textContent="Close";close.style.cssText="float:right;padding:8px 14px";close.onclick=closeBrowser;
+ const search=document.createElement("input");
+ search.type="search";search.placeholder="Search feats";search.setAttribute("aria-label","Search feats");search.style.cssText="width:100%;padding:10px;margin:10px 0;";
+ const filter=document.createElement("select");
+ filter.setAttribute("aria-label","Feat category");filter.style.cssText="width:100%;padding:9px;margin-bottom:10px;";
+ for(const category of ["All categories",...new Set(entries.map(x=>x.category))]){
+  const o=document.createElement("option");o.value=category==="All categories"?"":category;o.textContent=category;filter.appendChild(o);
+ }
+ if(onlyProficiency)filter.style.display="none";
+ const results=document.createElement("div");results.style.cssText="display:grid;gap:9px;max-height:55vh;overflow:auto";
+ const hint=document.createElement("p");hint.style.cssText="font-size:13px;color:#555";
+ hint.textContent="Feat requirements are displayed for review but are not automatically enforced yet.";
+ function refresh(){
+  results.replaceChildren();
+  const q=search.value.toLowerCase().trim(),cat=filter.value;
+  for(const feat of entries.filter(f=>(!cat||f.category===cat)&&(!q||(f.name+" "+f.description+" "+(f.requirement||"")).toLowerCase().includes(q)))){
+   const card=document.createElement("button");
+   card.type="button";card.style.cssText="text-align:left;background:#fafafa;border:1px solid #aaa;border-radius:9px;padding:12px;cursor:pointer;color:#111";
+   const title=document.createElement("strong");title.textContent=feat.name+" · "+feat.category;
+   const req=document.createElement("p");req.style.cssText="font-size:13px;margin:5px 0";req.textContent=(feat.requirement?"Requires: "+feat.requirement+" · ":"")+"Level point threshold: "+feat.levelPointThreshold;
+   const desc=document.createElement("p");desc.style.cssText="font-size:13px;margin:5px 0;white-space:pre-wrap";desc.textContent=feat.description;
+   card.append(title,req,desc);card.onclick=()=>{closeBrowser();addFeat(feat.name,cost,slot);};
+   results.appendChild(card);
+  }
+  if(!results.childElementCount)results.textContent="No matching feats available.";
+ }
+ search.addEventListener("input",refresh);filter.addEventListener("change",refresh);
+ content.append(close,heading,search,filter,results,hint);browser.appendChild(content);
+ browser.style.display="block";refresh();search.focus();
+}
+browser.addEventListener("click",e=>{if(e.target===browser)closeBrowser();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&browser.style.display!=="none")closeBrowser();});
+
 function render(){
- const level=working.level,free=freeRemaining(),points=remaining(),hasProf=level!==1||working.operations.some(o=>o.slot==="proficiency")||owns("Light Melee Proficiency");
- const allowAttr=level===1||level%3===0;
+ const level=working.level,free=freeRemaining(),points=remaining(),hasProf=level!==1||working.operations.some(o=>o.slot==="proficiency")||["Light Melee Proficiency","Medium Melee Proficiency","Heavy Melee Proficiency","Ranged Weapon Proficiency"].some(owns);
+ const allowAttr=level>1&&level%3===0;
  const names=[...chosenNames()].filter(Boolean);
  panel.innerHTML='<div style="background:#fff;color:#111;max-width:800px;margin:0 auto;border-radius:16px;padding:20px;line-height:1.45">'+
  '<h2 style="margin:0 0 8px">Level '+level+' — Character Progression</h2>'+
@@ -46,9 +106,9 @@ function render(){
  '<p style="font-size:13px">Base points: '+working.base+'. Adjust for racial/build/GM changes before choosing rewards.</p>'+
  '<label>Level point adjustment <input id="rpg-level-adjust" type="number" value="'+working.adjustment+'" style="width:80px;padding:6px" '+(working.operations.length?"disabled":"")+'></label>'+
  (catalog?'<div style="border-top:1px solid #ddd;margin-top:12px;padding-top:10px">'+
- (level===1&&!hasProf?'<h3>Starting weapon proficiency</h3>'+optionSelect("rpg-level-prof",["Light Melee Proficiency","Medium Melee Proficiency","Heavy Melee Proficiency","Ranged Weapon Proficiency"],"Choose starting proficiency")+'<button id="rpg-level-use-prof" type="button">Select proficiency</button>':"")+
- (free>0?'<h3>Free feat</h3>'+optionSelect("rpg-level-free",featSelectItems(),"Select a free feat")+'<button id="rpg-level-use-free" type="button">Add free feat</button>':"")+
- (points>=3?'<h3>Buy a feat (3 points)</h3>'+optionSelect("rpg-level-buy",featSelectItems(),"Select feat to purchase")+'<button id="rpg-level-use-buy" type="button">Buy feat</button>':"")+
+ (level===1&&!hasProf?'<h3>Starting weapon proficiency</h3><button id="rpg-level-use-prof" type="button">Browse proficiencies</button>':"")+
+ (free>0?'<h3>Free feat</h3><button id="rpg-level-use-free" type="button">Browse feats ('+free+' remaining)</button>':"")+
+ (points>=3?'<h3>Buy a feat (3 points)</h3><button id="rpg-level-use-buy" type="button">Browse feats to purchase</button>':"")+
  (points>0?'<h3>Spend level points</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="rpg-level-hp" type="button">+5 Max HP (1)</button><button id="rpg-level-mana" type="button">+5 Max Mana (1)</button></div>'+
  (allowAttr?'<p>Attribute increases available at this level:</p>'+optionSelect("rpg-level-attr",["BOD","DEX","MND","CHA"],"Choose attribute")+'<button id="rpg-level-use-attr" type="button">+1 Attribute (1)</button>':"")+
  (names.length?'<p>Invest in an owned feat (1 point):</p>'+optionSelect("rpg-level-invest",names,"Choose feat")+'<button id="rpg-level-use-invest" type="button">Invest 1 point</button>'+
@@ -66,9 +126,9 @@ function render(){
  const bind=(id,fn)=>{const e=$(id);if(e)e.onclick=fn;};
  const select=id=>$(id)?.value;
  const addFeat=(name,cost,slot)=>{if(!name)return showMessage("Choose a feat first.");if(owns(name))return showMessage("That feat is already on your sheet or planned for this level.");addOperation({kind:"feat",name,cost,slot,label:name+(cost?" — purchased (3 points)":" — free")});};
- bind("rpg-level-use-prof",()=>addFeat(select("rpg-level-prof"),0,"proficiency"));
- bind("rpg-level-use-free",()=>addFeat(select("rpg-level-free"),0,"free"));
- bind("rpg-level-use-buy",()=>addFeat(select("rpg-level-buy"),3,"purchase"));
+ bind("rpg-level-use-prof",()=>browseFeats("proficiency",0,addFeat));
+ bind("rpg-level-use-free",()=>browseFeats("free",0,addFeat));
+ bind("rpg-level-use-buy",()=>browseFeats("purchase",3,addFeat));
  bind("rpg-level-hp",()=>addOperation({kind:"hp",cost:1,label:"+5 maximum HP"}));
  bind("rpg-level-mana",()=>addOperation({kind:"mana",cost:1,label:"+5 maximum Mana"}));
  bind("rpg-level-use-attr",()=>{const name=select("rpg-level-attr");if(!name)return showMessage("Choose an attribute.");if(working.operations.some(o=>o.kind==="attr"&&o.name===name))return showMessage("An attribute can increase at most once during this level.");addOperation({kind:"attr",name,cost:1,label:"+1 "+name});});
@@ -77,7 +137,7 @@ function render(){
 }
 async function complete(){
  if(remaining()!==0||freeRemaining()!==0)return;
- if(working.level===1&&!working.operations.some(o=>o.slot==="proficiency")&&!owns("Light Melee Proficiency"))return;
+ if(working.level===1&&!working.operations.some(o=>o.slot==="proficiency")&&!["Light Melee Proficiency","Medium Melee Proficiency","Heavy Melee Proficiency","Ranged Weapon Proficiency"].some(owns))return;
  const operations=working.operations.slice();
  for(const op of operations){
   if(op.kind==="feat"){const f=sourceFeat(op.name);if(f&&window.RPGAddCatalogFeat)window.RPGAddCatalogFeat(f);}
