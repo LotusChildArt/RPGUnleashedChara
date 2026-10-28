@@ -28,13 +28,13 @@ function addArmor(record,name){
 }
 function addOutfit(record,name,starting=false){
  const row=$("#tab1 .outfit-row");
- if(!row)return addInventory(name,record,starting?"Starting clothes":"");
+ if(!row)return addInventory(name,record,starting?"starting clothes":"");
  const fields=row.querySelectorAll("input");
  const existing=fields[0]?.value.trim()||"";
  if(starting){
   // Starting clothes and additional garments belong together in Outfit.
   input(fields[0],existing?existing+", "+name:name);
-  input(fields[1],"Starting clothes");
+  input(fields[1],"starting clothes");
   return;
  }
  if(!existing){input(fields[0],name);input(fields[1],record?.sourceText||"");return}
@@ -108,7 +108,7 @@ window.RPGPopulateStartingGear=async pkg=>{
  // "walking stick"; map these only when the source has an unambiguous equivalent.
  const aliases=[
   [/\b(?:poor|plain|common|fine|simple|ratty|ragged|noble|flashy|rugged|travel)(?:\s+(?:but|and|rugged|flashy|noble|travel|fine|common))*\s+(?:clothes|clothing)\b/i,"Set of Clothing"],
-  [/\b(?:poor|ragged|plain) cloak\b/i,"Cape"],
+  [/\b(?:poor|ragged|plain) cloak\b/i,"Cloak"],
   [/\bwalking stick\b/i,"Club"],
   [/\b(?:short ?sword|shortsword)\b/i,"Sword, Short"],
   [/\blongsword\b/i,"Sword, Long"],
