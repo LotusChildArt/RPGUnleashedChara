@@ -21472,6 +21472,7 @@ function renderCreatorRaceGrid() {
                                 "</div></div>" +
                                 (
                                     isSelected &&
+                                    !creatorIsMixed() &&
                                     race.choices?.length
                                         ? (
                                             '<p><strong>Choose racial attribute adjustment:</strong></p>' +
@@ -21872,7 +21873,7 @@ function renderCreatorReview() {
 
     const raceReview=document.getElementById("creator-review-race");
     if(raceReview&&creatorDraft?.culturalTraits?.length===2){
-        raceReview.textContent=display(creatorDraft.race)+" — Traits: "+creatorDraft.culturalTraits.join(", ");
+        raceReview.textContent=display(creatorIsMixed()?creatorDraft.race+" / "+creatorDraft.heritagePartner:creatorDraft.race)+" — Traits: "+creatorDraft.culturalTraits.join(", ");
     }
     const origin =
         getCreatorOrigin();
@@ -22541,6 +22542,20 @@ async function createGuidedCharacter() {
             && !/^(?:or |\+\d+ to |\+\d+ Trait)/i.test(part));
         for(const aspect of raceAspects){
           addCreatorBackgroundValue("aspects-list","add-aspect",aspect);
+        }
+
+        if(creatorIsMixed()){
+          const parts=[creatorDraft.race,creatorDraft.heritagePartner];
+          const combined=parts.map(name=>name+": "+RPG_HALF_HERITAGE[name].bonus).join("\n");
+          const chosen=creatorHalfChoiceGroups().map(group=>group.name+" attribute choice: "+(creatorDraft.heritageChoices?.[group.key]||"")).join("\n");
+          const note=document.querySelector("#notes-list .note-card");
+          if(note){
+            setInputValueAndNotify(note.querySelector(".note-title"),"Mixed Heritage");
+            setInputValueAndNotify(note.querySelector("textarea"),combined+"\n"+chosen+"\nHeritage traits: "+(creatorDraft.culturalTraits||[]).join(", ")+
+             (parts.includes("Human")?"\nHalf-Human grants an additional starting feat; choose it on the Feats tab.":"")+
+             (parts.includes("Halfling")?"\nHalf-Halfling grants an additional trait.":"")+
+             (parts.includes("Traiggoblin")?"\nTraiggoblin has a special allowance for a second cultural trait without a flaw.":""));
+          }
         }
 
         [
