@@ -18,7 +18,8 @@ function addInventory(name,record,extra=""){
 }
 function addArmor(record,name){
  const b=$("#add-armor");if(!b)return addInventory(name,record);
- b.click();const row=document.querySelector("#tab1 .armor-entry:last-of-type .armor-row");
+ bypass=true;try{b.click()}finally{bypass=false}
+ const row=[...document.querySelectorAll("#tab1 .armor-entry .armor-row")].at(-1);
  if(!row)return addInventory(name,record);
  const a=[...row.querySelectorAll("input")];input(a[0],name);
  const stats=record.defense.match(/[+-]?\d+/g)||[];
@@ -40,7 +41,7 @@ function equipWeapon(record,name){
  // Use the sheet's established add-weapon handler, preserving its built-in layout.
  const section=$("#tab1");
  const existing=[...section.querySelectorAll(".weapon-card")].find(r=>!r.querySelector("input")?.value.trim());
- if(!existing)$("#add-weapon")?.click();
+ if(!existing){bypass=true;try{$("#add-weapon")?.click()}finally{bypass=false}}
  const row=existing||[...section.querySelectorAll(".weapon-card")].at(-1);
  if(!row)return addInventory(name,record);
  const fields=row.querySelectorAll("input");
@@ -48,8 +49,9 @@ function equipWeapon(record,name){
  input(fields[0],name);
  // Exact source details stay visible and editable; never guess unknown combat fields.
  const desc=row.querySelector("textarea");
- if(desc)input(desc,record.sourceText);if(fields[1])input(fields[1],record.damage);if(fields[2])input(fields[2],record.sourceText.match(/Special:\s*([^\n]+)/)?.[1]||"");
- else {if(fields[1])input(fields[1],record.damage);if(fields[2])input(fields[2],record.sourceText.match(/Special:\s*([^\n]+)/)?.[1]||record.sourceText);}
+ if(desc)input(desc,record?.sourceText||"");
+ if(fields[1])input(fields[1],record?.damage||"");
+ if(fields[2])input(fields[2],record?.sourceText?.match(/Special:\s*([^\n]+)/)?.[1]||"");
 }
 function place(record,name,mode){
  if(mode==="inventory")return addInventory(name,record);
@@ -59,17 +61,31 @@ function place(record,name,mode){
  addInventory(name,record);
 }
 const overlay=document.createElement("div");overlay.id="gear-catalog-overlay";overlay.style.cssText="display:none;position:fixed;inset:0;z-index:100020;background:#000b;padding:4vh 12px;overflow:auto";overlay.setAttribute("role","dialog");overlay.setAttribute("aria-modal","true");overlay.setAttribute("aria-label","Gear catalog");document.body.appendChild(overlay);
-function openCatalog(){
+function openCatalog(mode="inventory"){
+ const scope=mode==="weapon"?"weapon":mode==="armor"?"armor":"inventory";
  overlay.style.display="block";
- overlay.innerHTML='<section class="gear-catalog-panel" style="max-width:780px;margin:auto;border-radius:14px;padding:18px;background:#fff;color:#111"><button type="button" id="gear-close" style="float:right">Close</button><h2>Gear v3 Catalog</h2><input type="search" id="gear-search" aria-label="Search gear" placeholder="Search gear" style="padding:10px;width:100%"><select id="gear-category" aria-label="Filter category" style="padding:9px;width:100%;margin:8px 0"></select><p id="gear-info">Loading gear…</p><div id="gear-results" style="max-height:60vh;overflow:auto;display:grid;gap:8px"></div><button type="button" id="gear-manual">+ Custom / Manual Item</button></section>';
+ overlay.innerHTML='<section class="gear-catalog-panel" style="max-width:780px;margin:auto;border-radius:14px;padding:18px;background:#fff;color:#111"><button type="button" id="gear-close" style="float:right">Close</button><h2 id="gear-dialog-title">Gear v3 Catalog</h2><input type="search" id="gear-search" aria-label="Search gear" placeholder="Search gear" style="padding:10px;width:100%"><select id="gear-category" aria-label="Filter category" style="padding:9px;width:100%;margin:8px 0"></select><p id="gear-info">Loading gear…</p><div id="gear-results" style="max-height:60vh;overflow:auto;display:grid;gap:8px"></div><button type="button" id="gear-manual">+ Custom / Manual Item</button></section>';
+ $("#gear-dialog-title",overlay).textContent=scope==="weapon"?"Choose a Weapon":scope==="armor"?"Choose Armor":"Gear v3 Catalog";
  $("#gear-close",overlay).onclick=close;
- $("#gear-manual",overlay).onclick=()=>{close();addInventory("","")};
- load().then(()=>{if(overlay.style.display==="none")return;let cats=["All gear",...new Set(records.map(r=>r.category))];const c=$("#gear-category",overlay);cats.forEach((n,i)=>{const o=document.createElement("option");o.value=i?n:"";o.textContent=n;c.appendChild(o)});const search=$("#gear-search",overlay),results=$("#gear-results",overlay);function render(){results.replaceChildren();const q=normalize(search.value),c=$("#gear-category",overlay).value;const matches=records.filter(r=>(!c||r.category===c)&&(!q||normalize(r.name+" "+r.description+" "+r.category).includes(q)));$("#gear-info",overlay).textContent=matches.length+" entries. Choose where to place the item after selection.";for(const record of matches){const b=document.createElement("button");b.type="button";b.className="gear-entry";b.style.cssText="text-align:left;border:1px solid #aaa;padding:12px;border-radius:9px;background:#f6f6f6;color:#111";b.innerHTML="<strong></strong><p></p><small></small>";$("strong",b).textContent=record.name+" — "+record.category;$("p",b).textContent=record.description;$("small",b).textContent=record.sourceText.replace(/\n/g," · ").slice(0,380);b.onclick=()=>{const name=record.name;close();addInventory(name,record)};results.append(b)}}search.oninput=render;c.onchange=render;render();search.focus()}).catch(e=>{$("#gear-info",overlay).textContent=String(e)});
+ $("#gear-manual",overlay).onclick=()=>{
+  close();
+  if(scope==="weapon"){bypass=true;try{$("#add-weapon")?.click()}finally{bypass=false}}
+  else if(scope==="armor"){bypass=true;try{$("#add-armor")?.click()}finally{bypass=false}}
+  else{bypass=true;try{$("#add-inventory-item")?.click()}finally{bypass=false}}
+ };
+ load().then(()=>{if(overlay.style.display==="none")return;const scoped=scope==="inventory"?records:records.filter(r=>r.kind===scope);
+ let cats=[scope==="weapon"?"All weapons":scope==="armor"?"All armor":"All gear",...new Set(scoped.map(r=>r.category))];const c=$("#gear-category",overlay);cats.forEach((n,i)=>{const o=document.createElement("option");o.value=i?n:"";o.textContent=n;c.appendChild(o)});const search=$("#gear-search",overlay),results=$("#gear-results",overlay);function render(){results.replaceChildren();const q=normalize(search.value),c=$("#gear-category",overlay).value;const matches=scoped.filter(r=>(!c||r.category===c)&&(!q||normalize(r.name+" "+r.description+" "+r.category).includes(q)));$("#gear-info",overlay).textContent=matches.length+" entries. Selecting an item fills the "+(scope==="weapon"?"weapon":scope==="armor"?"armor":"inventory")+" fields.";for(const record of matches){const b=document.createElement("button");b.type="button";b.className="gear-entry";b.style.cssText="text-align:left;border:1px solid #aaa;padding:12px;border-radius:9px;background:#f6f6f6;color:#111";b.innerHTML="<strong></strong><p></p><small></small>";$("strong",b).textContent=record.name+" — "+record.category;$("p",b).textContent=record.description;$("small",b).textContent=record.sourceText.replace(/\n/g," · ").slice(0,380);b.onclick=()=>{const name=record.name;close();if(scope==="weapon")equipWeapon(record,name);else if(scope==="armor")addArmor(record,name);else addInventory(name,record)};results.append(b)}}search.oninput=render;c.onchange=render;render();search.focus()}).catch(e=>{$("#gear-info",overlay).textContent=String(e)});
 }
 function close(){overlay.style.display="none";overlay.replaceChildren()}
 overlay.addEventListener("click",e=>{if(e.target===overlay)close()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&overlay.style.display!=="none")close()});
-document.addEventListener("click",e=>{if(!e.target.closest?.("#add-inventory-item")||bypass)return;e.preventDefault();e.stopImmediatePropagation();openCatalog()},true);
+document.addEventListener("click",e=>{
+ if(bypass)return;
+ const trigger=e.target.closest?.("#add-inventory-item, #add-weapon, #add-armor");
+ if(!trigger)return;
+ e.preventDefault();e.stopImmediatePropagation();
+ openCatalog(trigger.id==="add-weapon"?"weapon":trigger.id==="add-armor"?"armor":"inventory");
+},true);
 window.RPGAddGearToSheet=(name,mode="equipped")=>{const item=matchItem(name);place(item,name,mode)};
 window.RPGPopulateStartingGear=async pkg=>{
  if(!pkg)return;
