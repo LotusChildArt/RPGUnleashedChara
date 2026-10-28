@@ -4250,6 +4250,17 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
     margin-top: 10px;
 }
 
+.creator-path-option-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.creator-path-option-card {
+    min-width: 0;
+}
+
 .creator-gear-card {
     min-width: 0;
 }
@@ -4332,7 +4343,7 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
 .creator-path-control select,.creator-path-control input,.creator-path-control textarea {width:100%;min-height:42px;border:2px solid black;border-radius:21px;background:white;padding:7px 12px}
 .creator-path-control textarea {min-height:90px;border-radius:18px;resize:vertical}.creator-gm-warning {border-color:#555;font-weight:bold;background:#f3f3f3}
 .creator-role-bonus-card {border:1.5px solid #999;border-radius:18px;padding:12px;margin-bottom:10px}.creator-role-bonus-card h4 {margin:0 0 8px}
-@media (max-width:720px){.creator-path-progress{grid-template-columns:1fr}.creator-race-grid,.creator-origin-grid,.creator-gear-grid,.creator-path-choice-grid{grid-template-columns:1fr}}
+@media (max-width:720px){.creator-path-progress{grid-template-columns:1fr}.creator-race-grid,.creator-origin-grid,.creator-gear-grid,.creator-path-option-grid,.creator-path-choice-grid{grid-template-columns:1fr}}
 
 .creator-points-banner {
     display: flex;
@@ -4874,22 +4885,100 @@ if (
                 </div>
                 <div class="creator-path-page" data-creator-path-step="2">
                     <h3>Perk</h3>
-                    <div class="creator-path-choice-grid">
-                        <label class="creator-path-control"><span>Choose From</span><select id="creator-perk-mode" data-creator-path-field="perkMode"><option value="default">My Origin</option><option value="borrow">Another Origin</option><option value="custom">Custom Perk</option></select></label>
-                        <label class="creator-path-control" id="creator-perk-source-wrap" hidden><span>Borrow From</span><select id="creator-perk-source" data-creator-path-field="perkSource"></select></label>
-                        <label class="creator-path-control full" id="creator-perk-choice-wrap"><span>Perk</span><select id="creator-perk-choice" data-creator-path-field="perkChoice"></select></label>
-                        <label class="creator-path-control full" id="creator-perk-custom-wrap" hidden><span>Custom Perk</span><textarea id="creator-perk-custom" data-creator-path-field="perkCustom" placeholder="Write your custom or GM-approved Perk."></textarea></label>
-                    </div><div class="creator-path-choice-detail" id="creator-perk-detail"></div><div class="creator-gm-warning" id="creator-perk-warning" hidden>This Perk is not one of your Origin's default choices. Inform your GM and make sure they approve it.</div>
+                    <p class="creator-step-note">
+                        Your Origin offers the following Perks. Open one to read what it does, then choose it.
+                    </p>
+
+                    <div class="creator-path-option-grid" id="creator-perk-option-grid"></div>
+
+                    <div class="creator-gear-customize-row">
+                        <span>Don't like these options?</span>
+                        <button class="creator-gear-customize-toggle" id="creator-perk-customize-toggle" type="button">Customize</button>
+                    </div>
+
+                    <div class="creator-gear-customize-panel" id="creator-perk-customize-panel" hidden>
+                        <div class="creator-gear-customize-actions">
+                            <button class="creator-gear-route-button" type="button" data-creator-perk-route="borrow">
+                                Borrow from another Origin
+                            </button>
+                            <button class="creator-gear-route-button" type="button" data-creator-perk-route="custom">
+                                + Create Unique Perk
+                            </button>
+                        </div>
+
+                        <div id="creator-perk-borrow-wrap" hidden>
+                            <label class="creator-path-control">
+                                <span>Borrow From</span>
+                                <select id="creator-perk-source" data-creator-path-field="perkSource"></select>
+                            </label>
+
+                            <div class="creator-path-option-grid" id="creator-perk-borrow-grid"></div>
+                        </div>
+
+                        <div id="creator-perk-custom-wrap" hidden>
+                            <label class="creator-path-control">
+                                <span>Unique Perk</span>
+                                <textarea id="creator-perk-custom" data-creator-path-field="perkCustom" placeholder="Write your custom or GM-approved Perk."></textarea>
+                            </label>
+                        </div>
+
+                        <div class="creator-gm-warning" id="creator-perk-warning" hidden>
+                            This Perk is not one of your Origin's default choices. Inform your GM and make sure they approve it.
+                        </div>
+                    </div>
                 </div>
                 <div class="creator-path-page" data-creator-path-step="3">
                     <h3>Drawback</h3>
-                    <div class="creator-path-choice-grid">
-                        <label class="creator-path-control"><span>Choose From</span><select id="creator-drawback-mode" data-creator-path-field="drawbackMode"><option value="default">My Origin</option><option value="borrow">Another Origin</option><option value="custom">Custom Drawback</option></select></label>
-                        <label class="creator-path-control" id="creator-drawback-source-wrap" hidden><span>Borrow From</span><select id="creator-drawback-source" data-creator-path-field="drawbackSource"></select></label>
-                        <label class="creator-path-control full" id="creator-drawback-choice-wrap"><span>Drawback</span><select id="creator-drawback-choice" data-creator-path-field="drawbackChoice"></select></label>
-                        <label class="creator-path-control full" id="creator-drawback-custom-wrap" hidden><span>Custom Drawback</span><textarea id="creator-drawback-custom" data-creator-path-field="drawbackCustom" placeholder="Write your custom or GM-approved Drawback."></textarea></label>
-                        <label class="creator-path-control full" id="creator-drawback-extra-wrap" hidden><span>Malnourished Development</span><select id="creator-drawback-extra" data-creator-path-field="drawbackExtra"><option value="">Choose the affected Attribute</option><option value="bod">-1 BOD</option><option value="dex">-1 DEX</option></select></label>
-                    </div><div class="creator-path-choice-detail" id="creator-drawback-detail"></div><div class="creator-gm-warning" id="creator-drawback-warning" hidden>This Drawback is not one of your Origin's default choices. Inform your GM and make sure they approve it.</div>
+                    <p class="creator-step-note">
+                        Your Origin offers the following Drawbacks. Open one to read what it means, then choose it.
+                    </p>
+
+                    <div class="creator-path-option-grid" id="creator-drawback-option-grid"></div>
+
+                    <div class="creator-gear-customize-row">
+                        <span>Don't like these options?</span>
+                        <button class="creator-gear-customize-toggle" id="creator-drawback-customize-toggle" type="button">Customize</button>
+                    </div>
+
+                    <div class="creator-gear-customize-panel" id="creator-drawback-customize-panel" hidden>
+                        <div class="creator-gear-customize-actions">
+                            <button class="creator-gear-route-button" type="button" data-creator-drawback-route="borrow">
+                                Borrow from another Origin
+                            </button>
+                            <button class="creator-gear-route-button" type="button" data-creator-drawback-route="custom">
+                                + Create Unique Drawback
+                            </button>
+                        </div>
+
+                        <div id="creator-drawback-borrow-wrap" hidden>
+                            <label class="creator-path-control">
+                                <span>Borrow From</span>
+                                <select id="creator-drawback-source" data-creator-path-field="drawbackSource"></select>
+                            </label>
+
+                            <div class="creator-path-option-grid" id="creator-drawback-borrow-grid"></div>
+                        </div>
+
+                        <div id="creator-drawback-custom-wrap" hidden>
+                            <label class="creator-path-control">
+                                <span>Unique Drawback</span>
+                                <textarea id="creator-drawback-custom" data-creator-path-field="drawbackCustom" placeholder="Write your custom or GM-approved Drawback."></textarea>
+                            </label>
+                        </div>
+
+                        <div class="creator-gm-warning" id="creator-drawback-warning" hidden>
+                            This Drawback is not one of your Origin's default choices. Inform your GM and make sure they approve it.
+                        </div>
+                    </div>
+
+                    <label class="creator-path-control" id="creator-drawback-extra-wrap" hidden>
+                        <span>Malnourished Development</span>
+                        <select id="creator-drawback-extra" data-creator-path-field="drawbackExtra">
+                            <option value="">Choose the affected Attribute</option>
+                            <option value="bod">-1 BOD</option>
+                            <option value="dex">-1 DEX</option>
+                        </select>
+                    </label>
                 </div>
                 <div class="creator-path-page" data-creator-path-step="4"><h3>Role</h3><p class="creator-step-note">Your Role is what your character does—the profession, training, or expertise they apply in the present. Name it however best fits the character—or just have fun with it. "Just a Little Guy" is a perfectly acceptable Role name.</p><label class="creator-path-control"><span>Role</span><input type="text" data-creator-field="role" placeholder="Example: Street Thief, Battlefield Medic, Just a Little Guy"></label></div>
                 <div class="creator-path-page" data-creator-path-step="5">
@@ -19123,6 +19212,10 @@ let creatorOpenRace = "";
 let creatorOpenOrigin = "";
 let creatorOpenGearPackage = "";
 let creatorGearCustomizeOpen = false;
+let creatorOpenPerkChoice = "";
+let creatorPerkCustomizeOpen = false;
+let creatorOpenDrawbackChoice = "";
+let creatorDrawbackCustomizeOpen = false;
 let creatorDraft = null;
 
 function makeFreshCreatorDraft() {
@@ -19496,6 +19589,435 @@ function renderCreatorPathChoice(kind){
  if(mode!=="custom"){const sn=mode==="borrow"?creatorDraft?.[kind+"Source"]:creatorDraft?.origin,o=getCreatorOrigin(sn),opts=o?.[creatorPathChoiceProperty(kind)]||[];renderCreatorPathSelect(cs,opts.map(x=>x.name),creatorDraft?.[kind+"Choice"]||"","Choose "+(kind==="gear"?"gear package":kind));}
  const c=creatorResolvedPathChoice(kind);if(detail)detail.textContent=c?(c.text||c.name):(mode==="custom"?"Describe your custom choice above.":"Choose an option to see its details.");
 }
+function creatorPathOptionCardHtml(
+    kind,
+    origin,
+    option,
+    mode
+) {
+    if (
+        !origin ||
+        !option
+    ) {
+        return "";
+    }
+
+    const key =
+        origin.name +
+        "::" +
+        option.name;
+
+    const openKey =
+        kind === "perk"
+            ? creatorOpenPerkChoice
+            : creatorOpenDrawbackChoice;
+
+    const isExpanded =
+        openKey ===
+        key;
+
+    const isSelected =
+        creatorDraft?.[
+            kind +
+            "Mode"
+        ] ===
+            mode &&
+        creatorDraft?.[
+            kind +
+            "Source"
+        ] ===
+            (
+                mode === "borrow"
+                    ? origin.name
+                    : ""
+            ) &&
+        creatorDraft?.[
+            kind +
+            "Choice"
+        ] ===
+            option.name;
+
+    const heading =
+        kind === "perk"
+            ? "What it does:"
+            : "What it means:";
+
+    return (
+        '<div class="creator-expandable-card creator-path-option-card' +
+        (
+            isSelected
+                ? " selected"
+                : ""
+        ) +
+        (
+            isExpanded
+                ? " expanded"
+                : ""
+        ) +
+        '">' +
+        '<button class="creator-expandable-card-toggle" type="button" data-creator-' +
+        kind +
+        '-toggle="' +
+        creatorEscapeHtml(
+            key
+        ) +
+        '">' +
+        '<span class="creator-expandable-card-title"><span>' +
+        creatorEscapeHtml(
+            option.name
+        ) +
+        "</span>" +
+        (
+            isSelected
+                ? '<span class="creator-card-selected-badge">Selected</span>'
+                : ""
+        ) +
+        "</span>" +
+        '<span class="creator-expandable-card-subtitle">Open to read the full ' +
+        kind +
+        "</span>" +
+        "</button>" +
+        (
+            isExpanded
+                ? (
+                    '<div class="creator-expandable-card-body">' +
+                    '<div class="creator-gear-package-contents">' +
+                    "<strong>" +
+                    heading +
+                    "</strong>" +
+                    "<p>" +
+                    creatorEscapeHtml(
+                        option.text ||
+                        option.name
+                    ) +
+                    "</p>" +
+                    "</div>" +
+                    '<div class="creator-expandable-card-actions">' +
+                    '<button class="creator-card-select-button' +
+                    (
+                        isSelected
+                            ? " selected"
+                            : ""
+                    ) +
+                    '" type="button" data-creator-' +
+                    kind +
+                    '-select="' +
+                    creatorEscapeHtml(
+                        option.name
+                    ) +
+                    '" data-creator-' +
+                    kind +
+                    '-origin="' +
+                    creatorEscapeHtml(
+                        origin.name
+                    ) +
+                    '" data-creator-' +
+                    kind +
+                    '-mode="' +
+                    mode +
+                    '">' +
+                    (
+                        isSelected
+                            ? "Selected"
+                            : "Choose This " +
+                              (
+                                  kind === "perk"
+                                      ? "Perk"
+                                      : "Drawback"
+                              )
+                    ) +
+                    "</button>" +
+                    "</div>" +
+                    "</div>"
+                  )
+                : ""
+        ) +
+        "</div>"
+    );
+}
+
+function renderCreatorPathOptionChoices(
+    kind
+) {
+    const origin =
+        getCreatorOrigin();
+
+    const property =
+        kind === "perk"
+            ? "perks"
+            : "drawbacks";
+
+    const mainGrid =
+        document.getElementById(
+            "creator-" +
+            kind +
+            "-option-grid"
+        );
+
+    if (
+        mainGrid
+    ) {
+        mainGrid.innerHTML =
+            origin?.[property]?.length
+                ? origin[property]
+                    .map(
+                        option =>
+                            creatorPathOptionCardHtml(
+                                kind,
+                                origin,
+                                option,
+                                "default"
+                            )
+                    )
+                    .join("")
+                : '<div class="creator-guidance">Choose an Origin first.</div>';
+    }
+
+    const customizeKey =
+        kind === "perk"
+            ? "creatorPerkCustomizeOpen"
+            : "creatorDrawbackCustomizeOpen";
+
+    if (
+        creatorDraft?.[
+            kind +
+            "Mode"
+        ] !==
+            "default"
+    ) {
+        if (
+            kind === "perk"
+        ) {
+            creatorPerkCustomizeOpen =
+                true;
+        }
+        else {
+            creatorDrawbackCustomizeOpen =
+                true;
+        }
+    }
+
+    const customizeOpen =
+        kind === "perk"
+            ? creatorPerkCustomizeOpen
+            : creatorDrawbackCustomizeOpen;
+
+    const panel =
+        document.getElementById(
+            "creator-" +
+            kind +
+            "-customize-panel"
+        );
+
+    if (
+        panel
+    ) {
+        panel.hidden =
+            !customizeOpen;
+    }
+
+    document
+        .querySelectorAll(
+            "[data-creator-" +
+            kind +
+            "-route]"
+        )
+        .forEach(
+            button => {
+                button.classList.toggle(
+                    "selected",
+                    creatorDraft?.[
+                        kind +
+                        "Mode"
+                    ] ===
+                        button.dataset[
+                            "creator" +
+                            kind[0].toUpperCase() +
+                            kind.slice(1) +
+                            "Route"
+                        ]
+                );
+            }
+        );
+
+    const borrowWrap =
+        document.getElementById(
+            "creator-" +
+            kind +
+            "-borrow-wrap"
+        );
+
+    const customWrap =
+        document.getElementById(
+            "creator-" +
+            kind +
+            "-custom-wrap"
+        );
+
+    const warning =
+        document.getElementById(
+            "creator-" +
+            kind +
+            "-warning"
+        );
+
+    if (
+        borrowWrap
+    ) {
+        borrowWrap.hidden =
+            creatorDraft?.[
+                kind +
+                "Mode"
+            ] !==
+            "borrow";
+    }
+
+    if (
+        customWrap
+    ) {
+        customWrap.hidden =
+            creatorDraft?.[
+                kind +
+                "Mode"
+            ] !==
+            "custom";
+    }
+
+    if (
+        warning
+    ) {
+        warning.hidden =
+            creatorDraft?.[
+                kind +
+                "Mode"
+            ] ===
+                "default" ||
+            !customizeOpen;
+    }
+
+    const sourceSelect =
+        document.getElementById(
+            "creator-" +
+            kind +
+            "-source"
+        );
+
+    if (
+        creatorDraft?.[
+            kind +
+            "Mode"
+        ] ===
+            "borrow"
+    ) {
+        const sources =
+            RPG_CREATOR_PATH_ORIGINS
+                .map(
+                    item =>
+                        item.name
+                )
+                .filter(
+                    name =>
+                        name !==
+                        creatorDraft.origin
+                );
+
+        renderCreatorPathSelect(
+            sourceSelect,
+            sources,
+            creatorDraft?.[
+                kind +
+                "Source"
+            ] ||
+                "",
+            "Choose Origin"
+        );
+    }
+
+    const borrowedOrigin =
+        creatorDraft?.[
+            kind +
+            "Mode"
+        ] ===
+            "borrow"
+            ? getCreatorOrigin(
+                creatorDraft[
+                    kind +
+                    "Source"
+                ]
+              )
+            : null;
+
+    const borrowGrid =
+        document.getElementById(
+            "creator-" +
+            kind +
+            "-borrow-grid"
+        );
+
+    if (
+        borrowGrid
+    ) {
+        borrowGrid.innerHTML =
+            borrowedOrigin?.[
+                property
+            ]?.length
+                ? borrowedOrigin[
+                    property
+                  ]
+                    .map(
+                        option =>
+                            creatorPathOptionCardHtml(
+                                kind,
+                                borrowedOrigin,
+                                option,
+                                "borrow"
+                            )
+                    )
+                    .join("")
+                : (
+                    creatorDraft?.[
+                        kind +
+                        "Mode"
+                    ] ===
+                        "borrow"
+                        ? '<div class="creator-guidance">Choose another Origin to see its ' +
+                          kind +
+                          " options.</div>"
+                        : ""
+                  );
+    }
+
+    const customInput =
+        document.getElementById(
+            "creator-" +
+            kind +
+            "-custom"
+        );
+
+    if (
+        customInput
+    ) {
+        customInput.value =
+            creatorDraft?.[
+                kind +
+                "Custom"
+            ] ||
+            "";
+    }
+}
+
+function renderCreatorPerkChoices() {
+    renderCreatorPathOptionChoices(
+        "perk"
+    );
+}
+
+function renderCreatorDrawbackChoices() {
+    renderCreatorPathOptionChoices(
+        "drawback"
+    );
+}
+
 function renderCreatorRoleBonuses(){
  for(let i=0;i<2;i++){const b=creatorDraft?.roleBonuses?.[i]||{type:"",detail:"",other:""},ts=document.getElementById("creator-role-bonus-type-"+i),ds=document.getElementById("creator-role-bonus-detail-"+i),oi=document.getElementById("creator-role-bonus-other-"+i);if(ts)ts.value=b.type||"";
  const textOnly=b.type==="gearFeat"||b.type==="craftFeat",opts=textOnly?[]:creatorRoleBonusOptions(b.type);if(ds){ds.hidden=textOnly||!b.type;renderCreatorPathSelect(ds,opts,b.detail||"",b.type?"Choose selection":"Choose bonus type first");}
@@ -19684,13 +20206,8 @@ function renderCreatorPath() {
     }
 
     renderCreatorGearChoices();
-
-    [
-        "perk",
-        "drawback"
-    ].forEach(
-        renderCreatorPathChoice
-    );
+    renderCreatorPerkChoices();
+    renderCreatorDrawbackChoices();
 
     const drawback =
         creatorResolvedPathChoice(
@@ -21477,6 +21994,18 @@ function startGuidedCharacter() {
     creatorGearCustomizeOpen =
         false;
 
+    creatorOpenPerkChoice =
+        "";
+
+    creatorPerkCustomizeOpen =
+        false;
+
+    creatorOpenDrawbackChoice =
+        "";
+
+    creatorDrawbackCustomizeOpen =
+        false;
+
     document
         .querySelectorAll(
             "[data-creator-field]"
@@ -21910,6 +22439,18 @@ document
 
                     creatorGearCustomizeOpen =
                         false;
+
+                    creatorOpenPerkChoice =
+                        "";
+
+                    creatorPerkCustomizeOpen =
+                        false;
+
+                    creatorOpenDrawbackChoice =
+                        "";
+
+                    creatorDrawbackCustomizeOpen =
+                        false;
                 }
 
                 renderCharacterCreator();
@@ -21937,6 +22478,281 @@ document
             }
         }
     );
+
+function setupCreatorPathOptionEvents(
+    kind
+) {
+    const handleGridClick =
+        event => {
+            if (
+                !creatorDraft
+            ) {
+                return;
+            }
+
+            const selectButton =
+                event.target.closest(
+                    "[data-creator-" +
+                    kind +
+                    "-select]"
+                );
+
+            if (
+                selectButton
+            ) {
+                const cap =
+                    kind[0].toUpperCase() +
+                    kind.slice(1);
+
+                const selectedName =
+                    selectButton.dataset[
+                        "creator" +
+                        cap +
+                        "Select"
+                    ];
+
+                const selectedMode =
+                    selectButton.dataset[
+                        "creator" +
+                        cap +
+                        "Mode"
+                    ];
+
+                const selectedOrigin =
+                    selectButton.dataset[
+                        "creator" +
+                        cap +
+                        "Origin"
+                    ];
+
+                creatorDraft[
+                    kind +
+                    "Mode"
+                ] =
+                    selectedMode;
+
+                creatorDraft[
+                    kind +
+                    "Source"
+                ] =
+                    selectedMode ===
+                        "borrow"
+                        ? selectedOrigin
+                        : "";
+
+                creatorDraft[
+                    kind +
+                    "Choice"
+                ] =
+                    selectedName;
+
+                creatorDraft[
+                    kind +
+                    "Custom"
+                ] =
+                    "";
+
+                if (
+                    kind ===
+                    "drawback"
+                ) {
+                    creatorDraft.drawbackExtra =
+                        "";
+
+                    creatorDraft.attributeSpends = {
+                        bod: 0,
+                        dex: 0,
+                        mnd: 0,
+                        cha: 0
+                    };
+                }
+
+                renderCharacterCreator();
+                return;
+            }
+
+            const toggleButton =
+                event.target.closest(
+                    "[data-creator-" +
+                    kind +
+                    "-toggle]"
+                );
+
+            if (
+                toggleButton
+            ) {
+                const cap =
+                    kind[0].toUpperCase() +
+                    kind.slice(1);
+
+                const key =
+                    toggleButton.dataset[
+                        "creator" +
+                        cap +
+                        "Toggle"
+                    ];
+
+                if (
+                    kind ===
+                    "perk"
+                ) {
+                    creatorOpenPerkChoice =
+                        creatorOpenPerkChoice ===
+                            key
+                            ? ""
+                            : key;
+                }
+                else {
+                    creatorOpenDrawbackChoice =
+                        creatorOpenDrawbackChoice ===
+                            key
+                            ? ""
+                            : key;
+                }
+
+                renderCharacterCreator();
+            }
+        };
+
+    document
+        .getElementById(
+            "creator-" +
+            kind +
+            "-option-grid"
+        )
+        .addEventListener(
+            "click",
+            handleGridClick
+        );
+
+    document
+        .getElementById(
+            "creator-" +
+            kind +
+            "-borrow-grid"
+        )
+        .addEventListener(
+            "click",
+            handleGridClick
+        );
+
+    document
+        .getElementById(
+            "creator-" +
+            kind +
+            "-customize-toggle"
+        )
+        .addEventListener(
+            "click",
+            () => {
+                if (
+                    kind ===
+                    "perk"
+                ) {
+                    creatorPerkCustomizeOpen =
+                        !creatorPerkCustomizeOpen;
+                }
+                else {
+                    creatorDrawbackCustomizeOpen =
+                        !creatorDrawbackCustomizeOpen;
+                }
+
+                renderCharacterCreator();
+            }
+        );
+
+    document
+        .getElementById(
+            "creator-" +
+            kind +
+            "-customize-panel"
+        )
+        .addEventListener(
+            "click",
+            event => {
+                const routeButton =
+                    event.target.closest(
+                        "[data-creator-" +
+                        kind +
+                        "-route]"
+                    );
+
+                if (
+                    !routeButton ||
+                    !creatorDraft
+                ) {
+                    return;
+                }
+
+                const cap =
+                    kind[0].toUpperCase() +
+                    kind.slice(1);
+
+                const route =
+                    routeButton.dataset[
+                        "creator" +
+                        cap +
+                        "Route"
+                    ];
+
+                creatorDraft[
+                    kind +
+                    "Mode"
+                ] =
+                    route;
+
+                creatorDraft[
+                    kind +
+                    "Source"
+                ] =
+                    "";
+
+                creatorDraft[
+                    kind +
+                    "Choice"
+                ] =
+                    "";
+
+                creatorDraft[
+                    kind +
+                    "Custom"
+                ] =
+                    "";
+
+                if (
+                    kind ===
+                    "perk"
+                ) {
+                    creatorOpenPerkChoice =
+                        "";
+                }
+                else {
+                    creatorOpenDrawbackChoice =
+                        "";
+
+                    creatorDraft.drawbackExtra =
+                        "";
+
+                    creatorDraft.attributeSpends = {
+                        bod: 0,
+                        dex: 0,
+                        mnd: 0,
+                        cha: 0
+                    };
+                }
+
+                renderCharacterCreator();
+            }
+        );
+}
+
+setupCreatorPathOptionEvents(
+    "perk"
+);
+
+setupCreatorPathOptionEvents(
+    "drawback"
+);
 
 document
     .getElementById(
@@ -22114,7 +22930,7 @@ document
         }
     );
 
-document.querySelectorAll("[data-creator-path-field]").forEach(input=>{input.addEventListener(input.tagName==="TEXTAREA"?"input":"change",()=>{if(!creatorDraft)return;const f=input.dataset.creatorPathField;creatorDraft[f]=input.value;if(f==="gearSource"){creatorDraft.gearChoice="";creatorOpenGearPackage="";}if(f==="perkMode"||f==="perkSource")creatorDraft.perkChoice="";if(f==="drawbackMode"||f==="drawbackSource"){creatorDraft.drawbackChoice="";creatorDraft.drawbackExtra="";}if(f==="drawbackChoice"){creatorDraft.drawbackExtra="";creatorDraft.attributeSpends={bod:0,dex:0,mnd:0,cha:0};}renderCharacterCreator();});});
+document.querySelectorAll("[data-creator-path-field]").forEach(input=>{input.addEventListener(input.tagName==="TEXTAREA"?"input":"change",()=>{if(!creatorDraft)return;const f=input.dataset.creatorPathField;creatorDraft[f]=input.value;if(f==="gearSource"){creatorDraft.gearChoice="";creatorOpenGearPackage="";}if(f==="perkSource"){creatorDraft.perkChoice="";creatorOpenPerkChoice="";}if(f==="drawbackSource"){creatorDraft.drawbackChoice="";creatorDraft.drawbackExtra="";creatorOpenDrawbackChoice="";creatorDraft.attributeSpends={bod:0,dex:0,mnd:0,cha:0};}renderCharacterCreator();});});
 document.querySelectorAll("[data-creator-role-bonus-field]").forEach(input=>{input.addEventListener(input.tagName==="INPUT"?"input":"change",()=>{if(!creatorDraft)return;const i=Number(input.dataset.creatorRoleBonusIndex),f=input.dataset.creatorRoleBonusField,b=creatorDraft.roleBonuses[i];b[f]=input.value;if(f==="type"){b.detail="";b.other="";}if(f==="detail"&&input.value!=="Other")b.other="";renderCharacterCreator();});});
 
 document
