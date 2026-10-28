@@ -4552,6 +4552,7 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
 .creator-trait-option{display:flex;align-items:center;gap:8px;border:1px solid #888;padding:10px;border-radius:12px;cursor:pointer;}
 html.rpg-dark .creator-trait-option{background:var(--rpg-surface);color:var(--rpg-fg);border-color:var(--rpg-edge);}
 #tab2 .feat-row .feat-rank-input{display:none!important;}
+@media(min-width:900px){#tab2 .feat-row{grid-template-columns:minmax(200px,1.8fr) 120px minmax(300px,3fr) 34px;}}
 .rpg-reference-panel{max-width:700px;margin:auto;background:#fff;color:#111;border-radius:14px;padding:20px;display:grid;gap:12px}
 .rpg-reference-panel input{padding:10px;}
 .rpg-reference-results{display:grid;gap:10px;max-height:60vh;overflow:auto;}
@@ -19411,7 +19412,7 @@ function creatorGearResolvedText(pack,origin){
  let text=String(pack?.text||"");const key=creatorGearKey(origin,pack?.name);
  const selections=creatorDraft?.gearAlternatives?.[key]||{};
  for(const [i,choice]of creatorGearOptionsFor(pack).entries()){
-  const selected=selections[i]||choice.options[0];
+  const selected=selections[i];
   text=text.replace(choice.phrase,selected);
  }
  return text;
@@ -19420,7 +19421,7 @@ function creatorGearOptionHtml(gear,origin){
  const choices=creatorGearOptionsFor(gear);
  if(!choices.length)return "";
  const key=creatorGearKey(origin.name,gear.name),selections=creatorDraft?.gearAlternatives?.[key]||{};
- return choices.map((c,i)=>'<label class="creator-gear-choice"><strong>Choose your equipment:</strong><select data-creator-gear-option="'+i+'" data-creator-gear-package="'+creatorEscapeHtml(key)+'">'+c.options.map(v=>'<option value="'+creatorEscapeHtml(v)+'"'+((selections[i]||c.options[0])===v?' selected':'')+'>'+creatorEscapeHtml(v)+'</option>').join('')+'</select></label>').join('');
+ return choices.map((c,i)=>'<label class="creator-gear-choice"><strong>Choose your equipment:</strong><select data-creator-gear-option="'+i+'" data-creator-gear-package="'+creatorEscapeHtml(key)+'"><option value="">Select an option</option>'+c.options.map(v=>'<option value="'+creatorEscapeHtml(v)+'"'+(selections[i]===v?' selected':'')+'>'+creatorEscapeHtml(v)+'</option>').join('')+'</select></label>').join('');
 }
 document.addEventListener("change",event=>{
  const select=event.target.closest?.("[data-creator-gear-option]");
@@ -19429,6 +19430,7 @@ document.addEventListener("change",event=>{
  creatorDraft.gearAlternatives ||= {};
  creatorDraft.gearAlternatives[key] ||= {};
  creatorDraft.gearAlternatives[key][Number(select.dataset.creatorGearOption)]=select.value;
+ renderCharacterCreator();
 });
 
 function creatorGearCardHtml(
@@ -19516,7 +19518,7 @@ function creatorGearCardHtml(
                             ? " selected"
                             : ""
                     ) +
-                    '" type="button" data-creator-gear-select="' +
+                    '" type="button"'+(creatorGearOptionsFor(gear).some((c,i)=>!creatorDraft?.gearAlternatives?.[creatorGearKey(origin.name,gear.name)]?.[i])?' disabled title="Select your equipment choices first"':'')+' data-creator-gear-select="' +
                     creatorEscapeHtml(
                         gear.name
                     ) +
