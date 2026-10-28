@@ -4592,6 +4592,22 @@ html.rpg-dark .creator-help-panel{background:var(--rpg-surface);color:var(--rpg-
 html.rpg-dark .creator-help-close{background:var(--rpg-raised);color:var(--rpg-fg);border-color:var(--rpg-edge)}
 @media(max-width:430px){.creator-attribute-name{font-size:14px}.creator-context-help{width:21px;height:21px;font-size:12px}}
 </style>
+<style>
+#creator-heritage-bar{grid-column:1/-1;margin:12px 0;padding:12px;border:1.5px solid #888;border-radius:16px}
+.creator-heritage-switch{display:flex;gap:8px;margin-bottom:12px}
+.creator-heritage-switch button{flex:1;border:1px solid #888;border-radius:14px;padding:10px;cursor:pointer}
+.creator-heritage-switch button.selected{background:#303c4f;color:#fff;font-weight:700}
+.creator-heritage-label,#creator-heritage-bar .creator-heritage-result label{display:grid;gap:5px;margin:9px 0;font-weight:600}
+#creator-heritage-bar select{width:100%;padding:10px;border-radius:9px}
+.creator-heritage-override{display:flex;align-items:center;gap:8px;font-size:12px;margin-top:16px;cursor:pointer}
+.creator-heritage-override input{width:16px;height:16px}
+.creator-heritage-footnote{font-size:11px;opacity:.85}
+.creator-heritage-warning{color:#a43c2c;font-weight:700}
+.creator-heritage-result{margin-top:12px;padding:12px;border:1px solid #888;border-radius:12px}
+html.rpg-dark #creator-heritage-bar{background:var(--rpg-surface);color:var(--rpg-fg);border-color:var(--rpg-edge)}
+html.rpg-dark #creator-heritage-bar select,html.rpg-dark #creator-heritage-bar button{background:var(--rpg-raised);color:var(--rpg-fg);border-color:var(--rpg-edge)}
+html.rpg-dark #creator-heritage-bar button.selected{background:#405b82!important;color:white!important}
+</style>
 </head>
 
 
@@ -22520,10 +22536,9 @@ async function createGuidedCharacter() {
         }
         // The race's listed non-attribute features are aspects, not traits.
         const raceAspects=creatorIsMixed()?(getCreatorRace()?.mixedAspects||[]):(getCreatorRace()?.bonus||"")
-          .concat?[]:[]; // unused
-        const effectiveAspects=creatorIsMixed()?raceAspects:raceAspects.split(";").map(part=>part.trim())
-          .filter(part=>part&&!/^[+−-]?\\d+\\s*(?:BOD|DEX|MND|CHA|HP|Trait)\\b/i.test(part)
-            && !/^(?:or |\\+\\d+ to |\\+\\d+ Trait)/i.test(part));
+          .split(";").map(part=>part.trim())
+          .filter(part=>part&&!/^[+−-]?\d+\s*(?:BOD|DEX|MND|CHA|HP|Trait)\b/i.test(part)
+            && !/^(?:or |\+\d+ to |\+\d+ Trait)/i.test(part));
         for(const aspect of raceAspects){
           addCreatorBackgroundValue("aspects-list","add-aspect",aspect);
         }
