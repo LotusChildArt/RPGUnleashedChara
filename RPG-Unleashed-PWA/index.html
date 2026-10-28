@@ -3,7 +3,7 @@
 
 <head>
 
-<link rel="manifest" href="/manifest.json?build=1.59.0">
+<link rel="manifest" href="/manifest.json?build=1.60.0">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="theme-color" content="#ffffff">
@@ -4540,7 +4540,13 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
 
 </style>
 
-<link rel="stylesheet" href="/dark-mode.css?build=1.59.0">
+<link rel="stylesheet" href="/dark-mode.css?build=1.60.0">
+<style>
+/* All repeatable rows, including the first, have removable controls. */
+#feat-list .feat-row:first-child .remove-feat,#skill-bonus-section .skill-bonus-row:first-child .remove-skill-bonus,#inventory-list .inventory-row:first-child .remove-inventory-item{visibility:visible!important;display:inline-flex!important;opacity:1!important;}
+html.rpg-dark #gear-catalog-overlay .gear-catalog-panel,html.rpg-dark #gear-catalog-overlay .gear-entry{background:var(--rpg-surface)!important;color:var(--rpg-fg)!important;border-color:var(--rpg-edge)!important;}
+html.rpg-dark #gear-catalog-overlay input,html.rpg-dark #gear-catalog-overlay select,html.rpg-dark #gear-catalog-overlay button{background:var(--rpg-raised)!important;color:var(--rpg-fg)!important;border-color:var(--rpg-edge)!important;}
+</style>
 </head>
 
 
@@ -22313,7 +22319,11 @@ async function createGuidedCharacter() {
         setInputValueAndNotify(pathSection?.querySelector('textarea[placeholder="Drawback"]'),creatorPathChoiceText("drawback")+(creatorResolvedPathChoice("drawback")?.name==="Malnourished Development"&&creatorDraft.drawbackExtra?" ("+creatorDraft.drawbackExtra.toUpperCase()+")":""));
         setInputValueAndNotify(pathSection?.querySelector('textarea[placeholder="Drive"]'),creatorDraft.drive);
         setInputValueAndNotify(document.querySelector("#tab3 .inventory-currency-row input"),getCreatorOrigin()?.wealth||"");
-        creatorAddInventoryPackage(creatorResolvedPathChoice("gear"));
+        if (typeof window.RPGPopulateStartingGear === "function") {
+            await window.RPGPopulateStartingGear(creatorResolvedPathChoice("gear"));
+        } else {
+            creatorAddInventoryPackage(creatorResolvedPathChoice("gear"));
+        }
         creatorApplyOriginSkillEffects();creatorApplyRoleBonus(0);creatorApplyRoleBonus(1);
 
         [
@@ -23957,7 +23967,7 @@ showAppScreen(
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker
-            .register("/service-worker.js?build=1.59.0", { scope: "/" })
+            .register("/service-worker.js?build=1.60.0", { scope: "/" })
             .catch(error => {
                 console.error(
                     "Service worker registration failed:",
@@ -24110,8 +24120,9 @@ if ("serviceWorker" in navigator) {
 })();
 </script>
 
-<script src="/levelup.js?build=1.59.0" defer></script>
-<script src="/theme.js?build=1.59.0"></script>
+<script src="/levelup.js?build=1.60.0" defer></script>
+<script src="/theme.js?build=1.60.0"></script>
+<script src="/gear-integration.js?build=1.60.0"></script>
 </body>
 
 </html>
