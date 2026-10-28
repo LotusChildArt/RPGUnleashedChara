@@ -48,8 +48,8 @@ function equipWeapon(record,name){
  input(fields[0],name);
  // Exact source details stay visible and editable; never guess unknown combat fields.
  const desc=row.querySelector("textarea");
- if(desc)input(desc,record.sourceText);
- else if(fields.length>2)input(fields[2],record.damage||record.sourceText);
+ if(desc)input(desc,record.sourceText);if(fields[1])input(fields[1],record.damage);if(fields[2])input(fields[2],record.sourceText.match(/Special:\s*([^\n]+)/)?.[1]||"");
+ else {if(fields[1])input(fields[1],record.damage);if(fields[2])input(fields[2],record.sourceText.match(/Special:\s*([^\n]+)/)?.[1]||record.sourceText);}
 }
 function place(record,name,mode){
  if(mode==="inventory")return addInventory(name,record);
@@ -77,9 +77,20 @@ window.RPGPopulateStartingGear=async pkg=>{
  const raw=String(pkg.text||"");
  // Starting-gear packages use descriptive prose, not stable item IDs. Match only
  // distinct, non-overlapping catalog names; retain the full original text in a note.
- const matches=records.filter(r=>r.name.length>=4&&normalize(raw).includes(normalize(r.name))).sort((a,b)=>b.name.length-a.name.length);
+ const words=" "+normalize(raw)+" ";
+ const matches=records.filter(r=>r.name.length>=4&&words.includes(" "+normalize(r.name)+" ")).sort((a,b)=>b.name.length-a.name.length);
+ // Creator origins use everyday descriptions such as "poor clothing" or
+ // "walking stick"; map these only when the source has an unambiguous equivalent.
+ const aliases=[
+  [/\b(?:poor|plain|common|fine|simple|ratty) clothing\b/i,"Set of Clothing"],
+  [/\b(?:poor|ragged|plain) cloak\b/i,"Cape"],
+  [/\bwalking stick\b/i,"Club"]
+ ];
+ for(const [pattern,name] of aliases){
+  if(pattern.test(raw)){const item=matchItem(name);if(item&&!matches.some(m=>m.name===item.name))matches.push(item);}
+ }
  const selected=[];let remaining=normalize(raw);
- for(const item of matches){const n=normalize(item.name);if(!remaining.includes(n))continue;selected.push(item);remaining=remaining.replace(n," ")}
+ for(const item of matches){const n=normalize(item.name);if(!remaining.includes(n)&&!aliases.some(([pattern,name])=>name===item.name&&pattern.test(raw)))continue;selected.push(item);remaining=remaining.replace(n," ")}
  for(const item of selected)place(item,item.name,"equipped");
  if(!selected.length){addInventory(pkg.name,null,(pkg.borrowed?"Borrowed from "+pkg.source+". ":"")+raw);return}
  // Preserve every detail of the selected package without turning the package into duplicate equipment.
