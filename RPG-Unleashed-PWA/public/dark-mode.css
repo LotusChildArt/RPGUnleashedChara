@@ -1,0 +1,51 @@
+/* Dark theme is presentation-only and does not alter saved character data. */
+html.rpg-dark { color-scheme: dark; --rpg-bg:#14171c; --rpg-surface:#20252d; --rpg-raised:#2b323d; --rpg-fg:#eef1f6; --rpg-muted:#b7c0cb; --rpg-edge:#687483; }
+html.rpg-dark body,
+html.rpg-dark .app-screen,
+html.rpg-dark .sheet,
+html.rpg-dark .tab-page,
+html.rpg-dark .app-shell,
+html.rpg-dark .character-creator-screen { background-color:var(--rpg-bg)!important;color:var(--rpg-fg)!important; }
+html.rpg-dark h1,html.rpg-dark h2,html.rpg-dark h3,html.rpg-dark h4,
+html.rpg-dark strong,html.rpg-dark label,html.rpg-dark p,html.rpg-dark span {color:inherit;}
+html.rpg-dark input,html.rpg-dark textarea,html.rpg-dark select,
+html.rpg-dark button,
+html.rpg-dark .tab-button,html.rpg-dark .handbook-tab-button,
+html.rpg-dark .character-library-card,
+html.rpg-dark .note-card,html.rpg-dark .condition-manager,
+html.rpg-dark .halloween-ex-machinas,html.rpg-dark .halloween-expand-box,
+html.rpg-dark .character-description-box,html.rpg-dark .character-picture-box,
+html.rpg-dark .mana-current-max,html.rpg-dark .feat-level-bubble,
+html.rpg-dark .carry-bubble,html.rpg-dark .accessory-section,
+html.rpg-dark .creator-origin-card,html.rpg-dark .creator-path-option-card,
+html.rpg-dark .creator-path-choice-card {
+ background-color:var(--rpg-surface)!important;color:var(--rpg-fg)!important;border-color:var(--rpg-edge)!important;
+}
+html.rpg-dark button:hover,html.rpg-dark .tab-button.active,
+html.rpg-dark .handbook-tab-button.active,
+html.rpg-dark button:focus-visible {background-color:var(--rpg-raised)!important;color:var(--rpg-fg)!important;}
+html.rpg-dark input::placeholder,html.rpg-dark textarea::placeholder {color:#aeb8c5!important;opacity:1;}
+html.rpg-dark [readonly],html.rpg-dark [disabled] {background-color:#303640!important;color:#cad1da!important;}
+html.rpg-dark .path-field-label,html.rpg-dark .app-option-description,
+html.rpg-dark .creator-step-note,html.rpg-dark .inventory-weight-total,
+html.rpg-dark .character-picture-preview {color:var(--rpg-muted)!important;}
+html.rpg-dark .tab-bar,html.rpg-dark table,html.rpg-dark th,html.rpg-dark td,
+html.rpg-dark .attribute-header,html.rpg-dark .background-entry-row {border-color:var(--rpg-edge)!important;}
+html.rpg-dark .handbook-table th {background-color:var(--rpg-raised)!important;color:var(--rpg-fg)!important;}
+html.rpg-dark #feat-catalog-overlay section,
+html.rpg-dark #rpg-levelup-dialog > div,
+html.rpg-dark #rpg-level-feat-browser section,
+html.rpg-dark .campaign-modal-content {background:var(--rpg-surface)!important;color:var(--rpg-fg)!important;}
+html.rpg-dark #feat-catalog-overlay button,
+html.rpg-dark #rpg-levelup-dialog button,
+html.rpg-dark #rpg-level-feat-browser button,
+html.rpg-dark #feat-catalog-overlay input,
+html.rpg-dark #rpg-levelup-dialog input,
+html.rpg-dark #rpg-level-feat-browser input,
+html.rpg-dark #rpg-levelup-dialog select,
+html.rpg-dark #rpg-level-feat-browser select {background:var(--rpg-raised)!important;color:var(--rpg-fg)!important;border-color:var(--rpg-edge)!important;}
+html.rpg-dark #rpg-levelup-dialog #rpg-level-finish {background:#405b82!important;color:#fff!important;}
+html.rpg-dark #rpg-levelup-dialog #rpg-level-message,
+html.rpg-dark #rpg-level-feat-browser p,
+html.rpg-dark #feat-catalog-overlay #feat-catalog-message {color:#d3dae2!important;}
+html.rpg-dark img,html.rpg-dark canvas,html.rpg-dark svg {filter:none;}
