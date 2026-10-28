@@ -1,0 +1,825 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "title": "Feats One v1",
+    "documentId": "13Ce4hZdSDPA7kvHrN2vxEoZakLnU_S794ZzifdzP9PQ",
+    "url": "https://docs.google.com/document/d/13Ce4hZdSDPA7kvHrN2vxEoZakLnU_S794ZzifdzP9PQ/edit",
+    "revisionId": "AHj4eMRtOHjkgMLEcGcyfdSw_6-cCA1sqyY8MJmbo3x7Y2xby5Ogf8jh1QRJLhn5TSwWgMsP8L-01zHfB2-GtA"
+  },
+  "notes": [
+    "Original rules text preserved in sourceText; mechanical prerequisites are retained as written and are not yet interpreted as executable rules.",
+    "All feats start at Level 0 Rank 0 according to the source."
+  ],
+  "feats": [
+    {
+      "id": "bully",
+      "name": "Bully",
+      "category": "General",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Bully checks increases by 2, inflicts additional stack of taunt.",
+      "description": "Character gains a +2 to Intimidate checks made to taunt a target (BOD or CHA). A successfully affected target takes a stack of Taunted. Taunted characters take a -1 penalty to attack or defend against characters other than the last to taunt them per stack. Taunted stacks go away if you deal damage to the taunter, or at the end of combat.",
+      "sourceText": "Character gains a +2 to Intimidate checks made to taunt a target (BOD or CHA). A successfully affected target takes a stack of Taunted. Taunted characters take a -1 penalty to attack or defend against characters other than the last to taunt them per stack. Taunted stacks go away if you deal damage to the taunter, or at the end of combat.\nLvl Point Threshold: 3\n+Rank: Bonus to Bully checks increases by 2, inflicts additional stack of taunt."
+    },
+    {
+      "id": "friendly-face",
+      "name": "Friendly Face",
+      "category": "General",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Friendly Face checks increases by 2. People and Animals initially treat the person with Friendly Face as one step friendlier than they normally would. A number of times per day, retry failed checks that would drop that disposition. A critical failure prevents a retry.",
+      "description": "Character gains a +2 to Persuade, Knowledge Culture, and Handle Animals.",
+      "sourceText": "Character gains a +2 to Persuade, Knowledge Culture, and Handle Animals.\nLvl Point Threshold: 3\n+Rank: Bonus to Friendly Face checks increases by 2. People and Animals initially treat the person with Friendly Face as one step friendlier than they normally would. A number of times per day, retry failed checks that would drop that disposition. A critical failure prevents a retry."
+    },
+    {
+      "id": "pack-mule",
+      "name": "Pack Mule",
+      "category": "General",
+      "requirement": "BOD 8+",
+      "levelPointThreshold": 3,
+      "rankBenefit": "The amount of weight Character can carry before becoming encumbered increases by 10 lbs. Increase push/drag weight by half of current max.",
+      "description": "Character can carry 15 lbs over encumbered max weight before becoming encumbered.",
+      "sourceText": "Requirement: BOD 8+\nCharacter can carry 15 lbs over encumbered max weight before becoming encumbered.\nLvl Point Threshold: 3\n+Rank: The amount of weight Character can carry before becoming encumbered increases by 10 lbs. Increase push/drag weight by half of current max."
+    },
+    {
+      "id": "silver-tongue",
+      "name": "Silver Tongue",
+      "category": "General",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Silver Tongue checks increases by 2. A number of times per day equal to rank, gain the ability to retry a failed Silver Tongue check. A critical failure prevents a retry.",
+      "description": "Character gains a +2 to Persuade, Intimidate and Deceive skill checks.",
+      "sourceText": "Character gains a +2 to Persuade, Intimidate and Deceive skill checks.\nLvl Point Threshold: 3\n+Rank: Bonus to Silver Tongue checks increases by 2. A number of times per day equal to rank, gain the ability to retry a failed Silver Tongue check. A critical failure prevents a retry."
+    },
+    {
+      "id": "textbook-junkie",
+      "name": "Textbook Junkie",
+      "category": "General",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Textbook Junkie checks increases by 2 or add an additional knowledge check of your choice.",
+      "description": "Choose one:\nGain +2 to 3 knowledge checks of your choice\nGain +3 to 2 knowledge checks of your choice\nGain +6 to 1 knowledge check of your choice",
+      "sourceText": "Choose one:\nGain +2 to 3 knowledge checks of your choice\nGain +3 to 2 knowledge checks of your choice\nGain +6 to 1 knowledge check of your choice\nLvl Point Threshold: 3\n+Rank: Bonus to Textbook Junkie checks increases by 2 or add an additional knowledge check of your choice."
+    },
+    {
+      "id": "textbook-addict",
+      "name": "Textbook Addict",
+      "category": "General",
+      "requirement": "MND 8+, Textbook Junkie Rank Rank 3+",
+      "levelPointThreshold": 5,
+      "rankBenefit": "Bonus to Textbook Addict checks increases by 2 or add an additional knowledge check of your choice.",
+      "description": "Textbook Addict checks do not stack with Textbook Junkie bonuses.\nChoose one:\nGain +1 to 6 knowledge checks of your choice\nGain +2 to 3 knowledge checks of your choice\nGain +3 to 2 knowledge check of your choice",
+      "sourceText": "Requirement: MND 8+, Textbook Junkie Rank Rank 3+\nTextbook Addict checks do not stack with Textbook Junkie bonuses.\nChoose one:\nGain +1 to 6 knowledge checks of your choice\nGain +2 to 3 knowledge checks of your choice\nGain +3 to 2 knowledge check of your choice\nLvl Point Threshold: 5\n+Rank: Bonus to Textbook Addict checks increases by 2 or add an additional knowledge check of your choice."
+    },
+    {
+      "id": "triathlete",
+      "name": "Triathlete",
+      "category": "General",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Triathlete checks increases by 2, land speed increases by 5 ft. A number of times per day equal to rank, gain the ability to retry a failed Triathlete check. A critical failure prevents a retry.",
+      "description": "Choose one:\nGain +2 to Swim, Parkour and Ride checks\nGain +3 to any two of Swim, Parkour and Ride checks\nGain +4 to any one of Swim, Parkour and Ride checks",
+      "sourceText": "Choose one:\nGain +2 to Swim, Parkour and Ride checks\nGain +3 to any two of Swim, Parkour and Ride checks\nGain +4 to any one of Swim, Parkour and Ride checks\nLvl Point Threshold: 3\n+Rank: Bonus to Triathlete checks increases by 2, land speed increases by 5 ft. A number of times per day equal to rank, gain the ability to retry a failed Triathlete check. A critical failure prevents a retry."
+    },
+    {
+      "id": "jack-of-all-trades",
+      "name": "Jack of All Trades",
+      "category": "General",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Jack of All Trades checks increases by 2. A number of times per day equal to rank, gain the ability to retry a failed Jack of All Trades check. A critical failure prevents a retry.",
+      "description": "Choose one:\nGain +2 to 3 skills\nGain +3 to 2 skills\nGain +4 to 1 skill",
+      "sourceText": "Choose one:\nGain +2 to 3 skills\nGain +3 to 2 skills\nGain +4 to 1 skill\nLvl Point Threshold: 3\n+Rank: Bonus to Jack of All Trades checks increases by 2. A number of times per day equal to rank, gain the ability to retry a failed Jack of All Trades check. A critical failure prevents a retry."
+    },
+    {
+      "id": "alchemist",
+      "name": "Alchemist",
+      "category": "Profession",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Gain a +2 to Alchemist checks, increase potency by 1.",
+      "description": "Character gains the ability to craft potions at potency 1. Gain +2 to Knowledge Nature, Craft Alchemy and Gather checks.",
+      "sourceText": "Character gains the ability to craft potions at potency 1. Gain +2 to Knowledge Nature, Craft Alchemy and Gather checks.\nLvl Point Threshold: 3\n+Rank: Gain a +2 to Alchemist checks, increase potency by 1."
+    },
+    {
+      "id": "animal-handler",
+      "name": "Animal Handler",
+      "category": "Profession",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Animal Handler checks increases by 2. A number of times per day equal to rank, gain the ability to retry a failed Animal Handler check. A critical failure prevents a retry.",
+      "description": "Character gains a +2 to Ride, Handle Animal and Knowledge Nature checks.",
+      "sourceText": "Character gains a +2 to Ride, Handle Animal and Knowledge Nature checks.\nLvl Point Threshold: 3\n+Rank: Bonus to Animal Handler checks increases by 2. A number of times per day equal to rank, gain the ability to retry a failed Animal Handler check. A critical failure prevents a retry."
+    },
+    {
+      "id": "beast-master",
+      "name": "Beast Master",
+      "category": "Profession",
+      "requirement": "Animal Handler Rank 2+",
+      "levelPointThreshold": 5,
+      "rankBenefit": "Increase creature bond score by 2.",
+      "description": "If Character would gain Loyalty from a creature, instead they gain 2. The amount of time needed to teach a creature a trick is reduced to half. Their creature bond score is increased by 2. Beast bonding score limit is doubled.",
+      "sourceText": "Requirement: Animal Handler Rank 2+\nIf Character would gain Loyalty from a creature, instead they gain 2. The amount of time needed to teach a creature a trick is reduced to half. Their creature bond score is increased by 2. Beast bonding score limit is doubled.\nLvl Point Threshold: 5\n+Rank: Increase creature bond score by 2."
+    },
+    {
+      "id": "conman",
+      "name": "Conman",
+      "category": "Profession",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Conman checks increases by 2. A number of times per day equal to rank, gain the ability to retry a failed Conman check. A critical failure prevents a retry.",
+      "description": "Character gains a +2 to Deceive, Finesse and Arts (Act), Knowledge Nobility.",
+      "sourceText": "Character gains a +2 to Deceive, Finesse and Arts (Act), Knowledge Nobility.\nLvl Point Threshold: 3\n+Rank: Bonus to Conman checks increases by 2. A number of times per day equal to rank, gain the ability to retry a failed Conman check. A critical failure prevents a retry."
+    },
+    {
+      "id": "craftsman",
+      "name": "Craftsman",
+      "category": "Profession",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to craft check increases by 2 or Select an additional crafting check of your choice.",
+      "description": "Choose one:\nGain +2 to 3 craft checks of your choice\nGain +3 to 2 craft checks of your choice\nGain +6 to 1 craft check of your choice\n\nCraft Checks: Blacksmithing | Leather Working | Engineering | Masonry | Carpentry",
+      "sourceText": "Choose one:\nGain +2 to 3 craft checks of your choice\nGain +3 to 2 craft checks of your choice\nGain +6 to 1 craft check of your choice\nLvl Point Threshold: 3\nCraft Checks: Blacksmithing | Leather Working | Engineering | Masonry | Carpentry\n+Rank: Bonus to craft check increases by 2 or Select an additional crafting check of your choice."
+    },
+    {
+      "id": "culinary-artist",
+      "name": "Culinary Artist",
+      "category": "Profession",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Gain a +2 to Culinary Artist checks, increase potency. Potency increases die from d4 to d6, flat numbers are increased by 2 and condition removal is increased by 1/potency.",
+      "description": "Character gains access to the ability to craft Gourmet Meals at potency 1. Gourmet Meals can grant a variety of effects with minimal need for expensive materials. Gain +2 to Gather and Craft Food checks. Foods can have the following effects;\nRemove Sickness Condition | Ignore Tired Condition effects for 1d4 hours | Heal 2d4+2/rank HP per serving | Remove 1d4 Insanity Condition | +2 to the next check in the next 1d4 hours",
+      "sourceText": "Character gains access to the ability to craft Gourmet Meals at potency 1. Gourmet Meals can grant a variety of effects with minimal need for expensive materials. Gain +2 to Gather and Craft Food checks. Foods can have the following effects;\nRemove Sickness Condition | Ignore Tired Condition effects for 1d4 hours | Heal 2d4+2/rank HP per serving | Remove 1d4 Insanity Condition | +2 to the next check in the next 1d4 hours\nLvl Point Threshold: 3\n+Rank: Gain a +2 to Culinary Artist checks, increase potency. Potency increases die from d4 to d6, flat numbers are increased by 2 and condition removal is increased by 1/potency."
+    },
+    {
+      "id": "dungeoneer",
+      "name": "Dungeoneer",
+      "category": "Profession",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Dungeoneer checks increases by 2. Automatically succeed on locating traps and unlocking locks with a DC 10+(5 per rank). The automatic success still requires the tools for lock-picking (should any be needed).",
+      "description": "Character gains a +2 to Handle Device, Detect and Knowledge Dungeoneering checks.",
+      "sourceText": "Character gains a +2 to Handle Device, Detect and Knowledge Dungeoneering checks.\nLvl Point Threshold: 3\n+Rank: Bonus to Dungeoneer checks increases by 2. Automatically succeed on locating traps and unlocking locks with a DC 10+(5 per rank). The automatic success still requires the tools for lock-picking (should any be needed)."
+    },
+    {
+      "id": "enforcer",
+      "name": "Enforcer",
+      "category": "Profession",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Enforcer checks increases by 2. A number of times per day equal to rank, retry an attempt to defuse a situation, whether through intimidation or otherwise. A critical failure prevents a retry.",
+      "description": "Character gains a +2 to Intimidate, Knowledge Culture and Knowledge Monster or Geography checks.",
+      "sourceText": "Character gains a +2 to Intimidate, Knowledge Culture and Knowledge Monster or Geography checks.\nLvl Point Threshold: 3\n+Rank: Bonus to Enforcer checks increases by 2. A number of times per day equal to rank, retry an attempt to defuse a situation, whether through intimidation or otherwise. A critical failure prevents a retry."
+    },
+    {
+      "id": "escapist",
+      "name": "Escapist",
+      "category": "Profession",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Escapist checks increases by 2. Automatically succeed on escaping from bindings DC 10+(5 per rank). The automatic success still requires the tools for escape (should any be needed).",
+      "description": "Character gains a +2 to Handle Device, Finesse and Parkour checks.",
+      "sourceText": "Character gains a +2 to Handle Device, Finesse and Parkour checks.\nLvl Point Threshold: 3\n+Rank: Bonus to Escapist checks increases by 2. Automatically succeed on escaping from bindings DC 10+(5 per rank). The automatic success still requires the tools for escape (should any be needed)."
+    },
+    {
+      "id": "fine-artisan",
+      "name": "Fine Artisan",
+      "category": "Profession",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to fine craft check increases by 2 or Select an additional fine crafting check of your choice.",
+      "description": "Choose one:\nGain +2 to 3 fine craft checks of your choice\nGain +3 to 2 fine craft checks of your choice\nGain +6 to 1 fine craft check of your choice\n\nFine Craft Checks: Finery | Textiles | Paint | Sculpting | MiniEngineering | Branding | First Aid",
+      "sourceText": "Choose one:\nGain +2 to 3 fine craft checks of your choice\nGain +3 to 2 fine craft checks of your choice\nGain +6 to 1 fine craft check of your choice\nLvl Point Threshold: 3\nFine Craft Checks: Finery | Textiles | Paint | Sculpting | MiniEngineering | Branding | First Aid\n+Rank: Bonus to fine craft check increases by 2 or Select an additional fine crafting check of your choice."
+    },
+    {
+      "id": "healer",
+      "name": "Healer",
+      "category": "Profession",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Healer checks increases by 2. Whenever administering salves or potions, gain an additional 2 HP per rank.",
+      "description": "Character gains a +3 to Healing and Knowledge Nature checks.",
+      "sourceText": "Character gains a +3 to Healing and Knowledge Nature checks.\nLvl Point Threshold: 3\n+Rank: Bonus to Healer checks increases by 2. Whenever administering salves or potions, gain an additional 2 HP per rank."
+    },
+    {
+      "id": "hunter",
+      "name": "Hunter",
+      "category": "Profession",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Hunter checks increases by 2. A number of times per day equal to rank, gain the ability to retry a failed Hunter check. A critical failure prevents a retry.",
+      "description": "Character gains a +2 to Detect, Navigate, Gather and Knowledge Nature checks.",
+      "sourceText": "Character gains a +2 to Detect, Navigate, Gather and Knowledge Nature checks.\nLvl Point Threshold: 3\n+Rank: Bonus to Hunter checks increases by 2. A number of times per day equal to rank, gain the ability to retry a failed Hunter check. A critical failure prevents a retry."
+    },
+    {
+      "id": "investigator",
+      "name": "Investigator",
+      "category": "Profession",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Interrogator checks increases by 2, A number of times per day equal to rank, have a “Deductive Revelation” with a +5 bonus to analyzing a person or situation.",
+      "description": "Character gains a +2 to Communication, Detect and Persuade checks.",
+      "sourceText": "Character gains a +2 to Communication, Detect and Persuade checks.\nLvl Point Threshold: 3\n+Rank: Bonus to Interrogator checks increases by 2, A number of times per day equal to rank, have a “Deductive Revelation” with a +5 bonus to analyzing a person or situation."
+    },
+    {
+      "id": "merchant",
+      "name": "Merchant",
+      "category": "Profession",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Merchant checks increases by 2. A number of times per day equal to rank, make a “Final Offer” with a +5 bonus to a haggle check.",
+      "description": "Character gains a +2 to Evaluate, Knowledge Culture, Persuade and Deceive checks made to haggle.",
+      "sourceText": "Character gains a +2 to Evaluate, Knowledge Culture, Persuade and Deceive checks made to haggle.\nLvl Point Threshold: 3\n+Rank: Bonus to Merchant checks increases by 2. A number of times per day equal to rank, make a “Final Offer” with a +5 bonus to a haggle check."
+    },
+    {
+      "id": "miner",
+      "name": "Miner",
+      "category": "Profession",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Miner checks increases by 2. Gain an additional 25% yield per rank when mining.",
+      "description": "Character gains a +2 to Evaluate, Knowledge Geology and Gather checks.",
+      "sourceText": "Character gains a +2 to Evaluate, Knowledge Geology and Gather checks.\nLvl Point Threshold: 3\n+Rank: Bonus to Miner checks increases by 2. Gain an additional 25% yield per rank when mining."
+    },
+    {
+      "id": "minstrel",
+      "name": "Minstrel",
+      "category": "Profession",
+      "requirement": "CHA 8+",
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Minstrel Checks increases by 2 or gain an additional performance to learn.",
+      "description": "Choose one:\nGain +2 to 3 art checks of your choice\nGain +3 to 2 art checks of your choice\nGain +4 to 1 art check of your choice\n\nArt Checks: Sing | Dance | Write | Act | Drawing | Instrument",
+      "sourceText": "Requirements: CHA 8+\nChoose one:\nGain +2 to 3 art checks of your choice\nGain +3 to 2 art checks of your choice\nGain +4 to 1 art check of your choice\nLvl Point Threshold: 3\nArt Checks: Sing | Dance | Write | Act | Drawing | Instrument\n+Rank: Bonus to Minstrel Checks increases by 2 or gain an additional performance to learn."
+    },
+    {
+      "id": "scavenger",
+      "name": "Scavenger",
+      "category": "Profession",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Scavenger checks increases by 2. Gain an additional 25% yield per rank when scavenging.",
+      "description": "Character gains a +2 to Detect, Navigate, Gather and Evaluate checks.",
+      "sourceText": "Character gains a +2 to Detect, Navigate, Gather and Evaluate checks.\nLvl Point Threshold: 3\n+Rank: Bonus to Scavenger checks increases by 2. Gain an additional 25% yield per rank when scavenging."
+    },
+    {
+      "id": "scholar",
+      "name": "Scholar",
+      "category": "Profession",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Scholar checks increases by 2. A number of times per day equal to rank, gain the ability to retry a failed Scholar check. A critical failure prevents a retry. Ability can be used to assist an ally in reading/learning from a book.",
+      "description": "Character gains a +2 to Research checks and Assist checks made to learn or teach from a book or own knowledge.",
+      "sourceText": "Character gains a +2 to Research checks and Assist checks made to learn or teach from a book or own knowledge.\nLvl Point Threshold: 3\n+Rank: Bonus to Scholar checks increases by 2. A number of times per day equal to rank, gain the ability to retry a failed Scholar check. A critical failure prevents a retry. Ability can be used to assist an ally in reading/learning from a book."
+    },
+    {
+      "id": "spy",
+      "name": "Spy",
+      "category": "Profession",
+      "requirement": "CHA 8",
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Spy checks increases by 2. A number of times per day equal to rank, gain the ability to craft a convincing disguise from minimal supplies, giving an additional +2 to Deceive checks made while disguised.",
+      "description": "Character gains a +2 to Stealth, Deceive, Knowledge Local.",
+      "sourceText": "Requirement: CHA 8\nCharacter gains a +2 to Stealth, Deceive, Knowledge Local.\nLvl Point Threshold: 3\n+Rank: Bonus to Spy checks increases by 2. A number of times per day equal to rank, gain the ability to craft a convincing disguise from minimal supplies, giving an additional +2 to Deceive checks made while disguised."
+    },
+    {
+      "id": "thief",
+      "name": "Thief",
+      "category": "Profession",
+      "requirement": "DEX 8",
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Thief checks increases by 2. A number of times per day equal to rank, gain the ability to retry a failed Thief check. A critical failure prevents a retry.",
+      "description": "Character gains a +2 to Stealth, Handle Device, Finesse and Detect checks.",
+      "sourceText": "Requirement: DEX 8\nCharacter gains a +2 to Stealth, Handle Device, Finesse and Detect checks.\nLvl Point Threshold: 3\n+Rank: Bonus to Thief checks increases by 2. A number of times per day equal to rank, gain the ability to retry a failed Thief check. A critical failure prevents a retry."
+    },
+    {
+      "id": "tinkerer",
+      "name": "Tinkerer",
+      "category": "Profession",
+      "requirement": "MND 8",
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Tinkerer checks increases by 2. Tinkerer can create a blueprint for the purpose of crafting the researched object later, granting a 2+1 per Tinkerer Rank bonus to craft checks made to craft the object.",
+      "description": "Character gains +2 to Evaluate, Handle Device, Research, and Engineering checks. A Tinkerer can study and reverse-engineer mundane items to understand their function. This process takes 1d6 hours per complexity level (rated 1–10 by the GM based on factors like moving parts, age, and quality). For each hour spent, the Tinkerer makes a Research check with a DC of 15 plus the item’s complexity. On a failed check, the Tinkerer must spend an additional 1d6 hours before attempting the check again. Upon success, the Tinkerer understands the item’s function, though not necessarily its full context.",
+      "sourceText": "Requirement: MND 8\nCharacter gains +2 to Evaluate, Handle Device, Research, and Engineering checks. A Tinkerer can study and reverse-engineer mundane items to understand their function. This process takes 1d6 hours per complexity level (rated 1–10 by the GM based on factors like moving parts, age, and quality). For each hour spent, the Tinkerer makes a Research check with a DC of 15 plus the item’s complexity. On a failed check, the Tinkerer must spend an additional 1d6 hours before attempting the check again. Upon success, the Tinkerer understands the item’s function, though not necessarily its full context.\nLvl Point Threshold: 3\n+Rank: Bonus to Tinkerer checks increases by 2. Tinkerer can create a blueprint for the purpose of crafting the researched object later, granting a 2+1 per Tinkerer Rank bonus to craft checks made to craft the object."
+    },
+    {
+      "id": "light-melee-proficiency",
+      "name": "Light Melee Proficiency",
+      "category": "Gear",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to attacking with Light Melee weapons increases by 2. As part of a full round action attack, gain an additional strike per rank with a light melee weapon.",
+      "description": "Character gains proficiency with Light Melee weapons, getting rid of the -5 they’d get otherwise.",
+      "sourceText": "Character gains proficiency with Light Melee weapons, getting rid of the -5 they’d get otherwise. Lvl Point Threshold: 3\n+Rank: Bonus to attacking with Light Melee weapons increases by 2. As part of a full round action attack, gain an additional strike per rank with a light melee weapon."
+    },
+    {
+      "id": "medium-melee-proficiency",
+      "name": "Medium Melee Proficiency",
+      "category": "Gear",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to attacking with Medium Melee weapons increases by 2. Do an additional 2 damage per rank when using a Medium Melee weapon.",
+      "description": "Character gains proficiency with Medium Melee weapons, getting rid of the -5 they’d get otherwise.",
+      "sourceText": "Character gains proficiency with Medium Melee weapons, getting rid of the -5 they’d get otherwise.\nLvl Point Threshold: 3\n+Rank: Bonus to attacking with Medium Melee weapons increases by 2. Do an additional 2 damage per rank when using a Medium Melee weapon."
+    },
+    {
+      "id": "heavy-melee-proficiency",
+      "name": "Heavy Melee Proficiency",
+      "category": "Gear",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to attacking with Heavy Melee weapons increases by 2. Do an additional 4 damage per rank when using a Heavy Melee weapon. As a FRA choose an additional target within 5 feet of Character to roll defense against attack. If the target fails, they take the same damage the initial target took.",
+      "description": "Character gains proficiency with Heavy Melee weapons, getting rid of the -5 they’d get otherwise.",
+      "sourceText": "Character gains proficiency with Heavy Melee weapons, getting rid of the -5 they’d get otherwise.\nLvl Point Threshold: 3\n+Rank: Bonus to attacking with Heavy Melee weapons increases by 2. Do an additional 4 damage per rank when using a Heavy Melee weapon. As a FRA choose an additional target within 5 feet of Character to roll defense against attack. If the target fails, they take the same damage the initial target took."
+    },
+    {
+      "id": "ranged-weapon-proficiency",
+      "name": "Ranged Weapon Proficiency",
+      "category": "Gear",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to attacking with Ranged weapons increases by 2. Do an additional 2 damage per rank when using a Ranged weapon.",
+      "description": "Character gains proficiency with Ranged weapons, getting rid of the -5 they’d get otherwise. This does not function for firearms.",
+      "sourceText": "Character gains proficiency with Ranged weapons, getting rid of the -5 they’d get otherwise. This does not function for firearms.\nLvl Point Threshold: 3\n+Rank: Bonus to attacking with Ranged weapons increases by 2. Do an additional 2 damage per rank when using a Ranged weapon."
+    },
+    {
+      "id": "improvised-weapon-proficiency",
+      "name": "Improvised Weapon Proficiency",
+      "category": "Gear",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to attacking with Improvised weapons increases by 2. Do an additional 2 damage with Improvised weapons per rank up.",
+      "description": "Character gains proficiency with Improvised weapons, getting rid of the -4 they’d get otherwise. These weapons must fall, weight-wise, into the Light Melee category. Improvised light weapons do 1d6 damage. Medium Improvised weapons do 2d4 damage. Heavy Improvised weapons do 2d6 damage.",
+      "sourceText": "Character gains proficiency with Improvised weapons, getting rid of the -4 they’d get otherwise. These weapons must fall, weight-wise, into the Light Melee category. Improvised light weapons do 1d6 damage. Medium Improvised weapons do 2d4 damage. Heavy Improvised weapons do 2d6 damage.\nLvl Point Threshold: 3\n+Rank: Bonus to attacking with Improvised weapons increases by 2. Do an additional 2 damage with Improvised weapons per rank up."
+    },
+    {
+      "id": "medium-armor-proficiency",
+      "name": "Medium Armor Proficiency",
+      "category": "Gear",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to defending while wearing Medium Armor increases by 2. Ignore 1 point of DEX Penalty from wearing Medium Armor.",
+      "description": "Character gains the ability to use Medium Armor without doubling DEX Penalty.",
+      "sourceText": "Character gains the ability to use Medium Armor without doubling DEX Penalty.\nLvl Point Threshold: 3\n+Rank: Bonus to defending while wearing Medium Armor increases by 2. Ignore 1 point of DEX Penalty from wearing Medium Armor."
+    },
+    {
+      "id": "heavy-armor-proficiency",
+      "name": "Heavy Armor Proficiency",
+      "category": "Gear",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to defending while wearing Heavy Armor increases by 2. Ignore 1 point of DEX Penalty from wearing Heavy Armor.",
+      "description": "Character gains the ability to use Heavy Armor without doubling DEX Penalty.",
+      "sourceText": "Character gains the ability to use Heavy Armor without doubling DEX Penalty.\nLvl Point Threshold: 3\n+Rank: Bonus to defending while wearing Heavy Armor increases by 2. Ignore 1 point of DEX Penalty from wearing Heavy Armor."
+    },
+    {
+      "id": "shield-proficiency",
+      "name": "Shield Proficiency",
+      "category": "Gear",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to BOD defense checks made while using Shield increases by 2. Ignore 1 point of DEX Penalty from using a Shield.",
+      "description": "Character gains use of the deflection bonus a shield provides.",
+      "sourceText": "Character gains use of the deflection bonus a shield provides.\nLvl Point Threshold: 3\n+Rank: Bonus to BOD defense checks made while using Shield increases by 2. Ignore 1 point of DEX Penalty from using a Shield."
+    },
+    {
+      "id": "berserker-rage",
+      "name": "Berserker Rage",
+      "category": "Combat",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Character’s temporary HP while in rage increases by ½ their BOD attribute. Character’s Bonus to Melee damage increases by ¼ their BOD attribute. Gain additional 2 rage stacks.",
+      "description": "Character gains the ability to gain the Berserk Condition a number of times per day equal to ¼ BOD+1/Rank, gaining a number of stacks equal to 1/2 their BOD score +2/ Rank which dissipate at a rate of ¼ BOD score per round if not used. Each round, the Berserker can spend as much as 1+1/Rank Berserker stacks to do one of the following:\nGain an extra attack\nGain +2 (+1/Rank) to all attacks this turn\nGain +2 (+1/Rank) to all defense checks this turn\nGain +1d6 to all attacks this turn\nGain an additional 1/4 BOD to a BOD check or save\nThe Berserk Condition grants 1/4 BOD DR+1/Rank. Additionally, while having the Berserk Condition, you may remain conscious after being reduce below 0 HP.\nThe Berserk Condition inflicts -4 to MND saves.\nAfter using Berserker Rage the maximum number of times per day, the Berserker can still use Berserker Rage but they gain a stack of exhaustion. Exhaustion inflicts a -2 on all checks per stack (which does effect their combat), and dissipates at a rate of 1 stack per full rest.",
+      "sourceText": "Character gains the ability to gain the Berserk Condition a number of times per day equal to ¼ BOD+1/Rank, gaining a number of stacks equal to 1/2 their BOD score +2/ Rank which dissipate at a rate of ¼ BOD score per round if not used. Each round, the Berserker can spend as much as 1+1/Rank Berserker stacks to do one of the following:\nGain an extra attack\nGain +2 (+1/Rank) to all attacks this turn\nGain +2 (+1/Rank) to all defense checks this turn\nGain +1d6 to all attacks this turn\nGain an additional 1/4 BOD to a BOD check or save\nThe Berserk Condition grants 1/4 BOD DR+1/Rank. Additionally, while having the Berserk Condition, you may remain conscious after being reduce below 0 HP.\nThe Berserk Condition inflicts -4 to MND saves.\nAfter using Berserker Rage the maximum number of times per day, the Berserker can still use Berserker Rage but they gain a stack of exhaustion. Exhaustion inflicts a -2 on all checks per stack (which does effect their combat), and dissipates at a rate of 1 stack per full rest.\nLvl Point Threshold: 3\n+Rank: Character’s temporary HP while in rage increases by ½ their BOD attribute. Character’s Bonus to Melee damage increases by ¼ their BOD attribute. Gain additional 2 rage stacks."
+    },
+    {
+      "id": "berserker-reckless-attack",
+      "name": "Berserker Reckless Attack",
+      "category": "Combat",
+      "requirement": "Berserker Rage",
+      "levelPointThreshold": 5,
+      "rankBenefit": "Character may do an additional attack at a -5 penalty. Damage increases by ¼ BOD attribute.",
+      "description": "During Berserker Rage, after their attack action, Character gains an additional attack at a -5 penalty. If successful, do an additional ¼ BOD damage. Failing leaves the Character open to an attack of opportunity from all adjacent enemies.",
+      "sourceText": "Requirement: Berserker Rage\nDuring Berserker Rage, after their attack action, Character gains an additional attack at a -5 penalty. If successful, do an additional ¼ BOD damage. Failing leaves the Character open to an attack of opportunity from all adjacent enemies.\nLvl Point Threshold: 5\n+Rank: Character may do an additional attack at a -5 penalty. Damage increases by ¼ BOD attribute."
+    },
+    {
+      "id": "berserker-throw",
+      "name": "Berserker Throw",
+      "category": "Combat",
+      "requirement": "Berserker Rage",
+      "levelPointThreshold": 3,
+      "rankBenefit": "Damage dealt increases by 1d6. Range of thrown person increases by 5 feet.",
+      "description": "During Berserker Rage, as a full round action, make a check to grapple an opponent and fling them. If they hit a wall or other such obstruction, they take a 3d6+¼ BOD damage and fall to the ground prone, if they hit another enemy, split 4d6+¼ BOD between them and they both fall to the ground prone. If they hit neither, they simply hit the ground and take 2d6+¼ BOD. To hit another enemy, Berserker must make an attack roll against the second enemy using the grappled enemy as a weapon. If the attack fails, the grappled enemy is still thrown, any creature in the thrown enemy’s path will have to succeed on a defense check against the initial throw check. An enemy can be thrown a distance equal to the Character’s BOD attribute, rounded up to the nearest 5.",
+      "sourceText": "Requirement: Berserker Rage\nDuring Berserker Rage, as a full round action, make a check to grapple an opponent and fling them. If they hit a wall or other such obstruction, they take a 3d6+¼ BOD damage and fall to the ground prone, if they hit another enemy, split 4d6+¼ BOD between them and they both fall to the ground prone. If they hit neither, they simply hit the ground and take 2d6+¼ BOD. To hit another enemy, Berserker must make an attack roll against the second enemy using the grappled enemy as a weapon. If the attack fails, the grappled enemy is still thrown, any creature in the thrown enemy’s path will have to succeed on a defense check against the initial throw check. An enemy can be thrown a distance equal to the Character’s BOD attribute, rounded up to the nearest 5.\nLvl Point Threshold: 3\n+Rank: Damage dealt increases by 1d6. Range of thrown person increases by 5 feet."
+    },
+    {
+      "id": "blade-breaker",
+      "name": "Blade Breaker",
+      "category": "Combat",
+      "requirement": "Medium/Heavy Melee Proficiency Rank 2+",
+      "levelPointThreshold": 3,
+      "rankBenefit": "Increase critical damage multiplier against weapon by 1.",
+      "description": "On a successful critical attack, direct the damage from the attack to the target’s weapon instead, dealing it direct damage. If the damage would destroy the weapon, weapon is destroyed, if not, the weapon is flung from the enemy’s hand.",
+      "sourceText": "Requirement: Medium/Heavy Melee Proficiency Rank 2+\nOn a successful critical attack, direct the damage from the attack to the target’s weapon instead, dealing it direct damage. If the damage would destroy the weapon, weapon is destroyed, if not, the weapon is flung from the enemy’s hand.\nLvl Point Threshold: 3\n+Rank: Increase critical damage multiplier against weapon by 1."
+    },
+    {
+      "id": "bullseye",
+      "name": "Bullseye",
+      "category": "Combat",
+      "requirement": "Ranged Proficiency",
+      "levelPointThreshold": 3,
+      "rankBenefit": "Character gains a +1 to multiplier for Ranged Sneak Attack.",
+      "description": "Character gains x3 to ranged sneak attack damage rather than x2. Does not apply to ranged weapons Character doesn’t have proficiency with.",
+      "sourceText": "Requirement: Ranged Proficiency\nCharacter gains x3 to ranged sneak attack damage rather than x2. Does not apply to ranged weapons Character doesn’t have proficiency with.\nLvl Point Threshold: 3\n+Rank: Character gains a +1 to multiplier for Ranged Sneak Attack."
+    },
+    {
+      "id": "charge-and-pumble",
+      "name": "Charge and Pumble",
+      "category": "Combat",
+      "requirement": "Bonus Attack, Improved Unarmed Rank 1+",
+      "levelPointThreshold": 3,
+      "rankBenefit": "+2 on the charge check.",
+      "description": "Character with this feat may make a charge attack to tackle an enemy of their size or smaller to the ground. If successful, the character may unleash their FRA attack on them, pummeling them with their bare hands. If unsuccessful, the character is open to an attack of opportunity with the typical charge penalty. This maneuver consumes your bonus attacks.",
+      "sourceText": "Requirement: Bonus Attack, Improved Unarmed Rank 1+\nCharacter with this feat may make a charge attack to tackle an enemy of their size or smaller to the ground. If successful, the character may unleash their FRA attack on them, pummeling them with their bare hands. If unsuccessful, the character is open to an attack of opportunity with the typical charge penalty. This maneuver consumes your bonus attacks.\nLvl Point Threshold: 3\n+Rank: +2 on the charge check."
+    },
+    {
+      "id": "critical-chain",
+      "name": "Critical Chain",
+      "category": "Combat",
+      "requirement": "Martial Arts Rank 1+/Melee Training Focus Rank 1+/Ranged Training Focus Rank 1+",
+      "levelPointThreshold": 5,
+      "rankBenefit": "Character gains an additional Critical Attack.",
+      "description": "After successfully making a critical attack, Character may choose to automatically make a second critical attack. Doing this consumes all bonus attacks.",
+      "sourceText": "Requirement: Martial Arts Rank 1+/Melee Training Focus Rank 1+/Ranged Training Focus Rank 1+\nAfter successfully making a critical attack, Character may choose to automatically make a second critical attack. Doing this consumes all bonus attacks.\nLvl Point Threshold: 5\n+Rank: Character gains an additional Critical Attack."
+    },
+    {
+      "id": "dual-wield-proficiency",
+      "name": "Dual Wield Proficiency",
+      "category": "Combat",
+      "requirement": "Light/Medium Weapon Proficiency",
+      "levelPointThreshold": 3,
+      "rankBenefit": "Gain an additional strike per weapon while using Dual Wield Proficiency full round attack.",
+      "description": "Character gains the ability to use 2 light or medium weapons simultaneously, allowing for 2 attacks as a full round action. Without this feat, attempting this would incur a -5 penalty. The Bonus Attack feat is not required for this feat.",
+      "sourceText": "Requirement: Light/Medium Weapon Proficiency\nCharacter gains the ability to use 2 light or medium weapons simultaneously, allowing for 2 attacks as a full round action. Without this feat, attempting this would incur a -5 penalty. The Bonus Attack feat is not required for this feat.\nLvl Point Threshold: 3\n+Rank: Gain an additional strike per weapon while using Dual Wield Proficiency full round attack."
+    },
+    {
+      "id": "heavy-slam",
+      "name": "Heavy Slam",
+      "category": "Combat",
+      "requirement": "BOD 9+",
+      "levelPointThreshold": 5,
+      "rankBenefit": "Character deals an additional +½ BOD damage on the slam. If this attack would reduce the target to 0 or less HP, it also cuts or smashes the enemy in half, which the character can use as an intimidation attempt with a bonus of their BOD score.",
+      "description": "As a FRA a character may attempt a Heavy Slam on a target that is medium or smaller. This involves striking with a 2H heavy weapon, allowing the character to pick the target up in the air with the weapon and slam them back into the ground in any square directly adjacent to the attacker. This would deal the target the normal weapon damage + the character’s BOD score in slamming damage. The target would be left on the ground, prone. If character misses, they become open to an attack of opportunity.",
+      "sourceText": "Requirement: BOD 9+\nAs a FRA a character may attempt a Heavy Slam on a target that is medium or smaller. This involves striking with a 2H heavy weapon, allowing the character to pick the target up in the air with the weapon and slam them back into the ground in any square directly adjacent to the attacker. This would deal the target the normal weapon damage + the character’s BOD score in slamming damage. The target would be left on the ground, prone. If character misses, they become open to an attack of opportunity.\nLvl Point Threshold: 5\n+Rank: Character deals an additional +½ BOD damage on the slam. If this attack would reduce the target to 0 or less HP, it also cuts or smashes the enemy in half, which the character can use as an intimidation attempt with a bonus of their BOD score."
+    },
+    {
+      "id": "improved-unarmed",
+      "name": "Improved Unarmed",
+      "category": "Combat",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to attacking with Improved Unarmed increases by 2. Gain an additional strike when using Improved Unarmed full round attack.",
+      "description": "Character gains use of both hands when attacking unarmed, allowing for 2 attacks as a full round action. Without this feat, attacker would only have one strike and would provoke an attack of opportunity. With this feat, attacking unarmed does not provoke an attack of opportunity. Character can choose to do normal damage as opposed to non-lethal damage with Improved Unarmed. Unarmed attacks are treated as light blunt weapons for the purposes of Bone Break chance.",
+      "sourceText": "Character gains use of both hands when attacking unarmed, allowing for 2 attacks as a full round action. Without this feat, attacker would only have one strike and would provoke an attack of opportunity. With this feat, attacking unarmed does not provoke an attack of opportunity. Character can choose to do normal damage as opposed to non-lethal damage with Improved Unarmed. Unarmed attacks are treated as light blunt weapons for the purposes of Bone Break chance.\nLvl Point Threshold: 3\n+Rank: Bonus to attacking with Improved Unarmed increases by 2. Gain an additional strike when using Improved Unarmed full round attack."
+    },
+    {
+      "id": "ki-training",
+      "name": "Ki Training",
+      "category": "Combat",
+      "requirement": null,
+      "levelPointThreshold": 5,
+      "rankBenefit": "Ki pool increases by 2, gain additional use of Ki point per round. Gain use of Ki ability from table below which lasts for an hour or until next meditation:",
+      "description": "Character gains a pool of Ki points equal to MND +2/Rank. Ki points can be used to enhance a character’s physical and mental abilities to fantastical levels without the use of magic. Ki is not Mana and cannot be affected by things that would target Mana. Ki can be used at a rate of 1 + 1/Rank per round. You may spend 1 Ki on your turn to increase hit chance by 1 or increase damage output by 1d4. You may spend 1 Ki during enemy turn to increase your defense check by 1 or reduce incoming damage by 1. You may spend 1 Ki on any physical, mental or social check to increase it by 1d4. Ki is recovered each day after a full rest. Regain 1d4+1/Rank Ki after meditation 1/day/Rank",
+      "sourceText": "Character gains a pool of Ki points equal to MND +2/Rank. Ki points can be used to enhance a character’s physical and mental abilities to fantastical levels without the use of magic. Ki is not Mana and cannot be affected by things that would target Mana. Ki can be used at a rate of 1 + 1/Rank per round. You may spend 1 Ki on your turn to increase hit chance by 1 or increase damage output by 1d4. You may spend 1 Ki during enemy turn to increase your defense check by 1 or reduce incoming damage by 1. You may spend 1 Ki on any physical, mental or social check to increase it by 1d4. Ki is recovered each day after a full rest. Regain 1d4+1/Rank Ki after meditation 1/day/Rank\nLvl Point Threshold: 5\n+Rank: Ki pool increases by 2, gain additional use of Ki point per round. Gain use of Ki ability from table below which lasts for an hour or until next meditation:"
+    },
+    {
+      "id": "martial-arts",
+      "name": "Martial Arts",
+      "category": "Combat",
+      "requirement": "Improved Unarmed Rank 2+",
+      "levelPointThreshold": 5,
+      "rankBenefit": "Choose a new style. Choosing a style that the Character already possesses will stack\nthe effects of that style’s bonus.",
+      "description": "Character’s unarmed attacks now do ½ BOD dmg, character may choose a Martial Combat Style from table below:",
+      "sourceText": "Requirement: Improved Unarmed Rank 2+\nCharacter’s unarmed attacks now do ½ BOD dmg, character may choose a Martial Combat Style from table below:\nLvl Point Threshold: 5\n+Rank: Choose a new style. Choosing a style that the Character already possesses will stack\nthe effects of that style’s bonus."
+    },
+    {
+      "id": "melee-training-focus",
+      "name": "Melee Training Focus",
+      "category": "Combat",
+      "requirement": "Light/Medium/Heavy Melee Proficiency Rank 2+",
+      "levelPointThreshold": 5,
+      "rankBenefit": "Choose a new Focus. Choosing a focus that the Character already possesses will stack the effects of that focus’ bonus.",
+      "description": "Character may choose Melee Training Focus from table below:",
+      "sourceText": "Requirement: Light/Medium/Heavy Melee Proficiency Rank 2+\nCharacter may choose Melee Training Focus from table below:\nLvl Point Threshold: 5\n+Rank: Choose a new Focus. Choosing a focus that the Character already possesses will stack the effects of that focus’ bonus."
+    },
+    {
+      "id": "mounted",
+      "name": "Mounted",
+      "category": "Combat",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "1 Target/Rank directly adjacent to the initial charge target must make a defense check against attack or be dealt the same damage. Enemies must make a DC 15+2/Rank BOD save or they are thrown back 10 feet when taking damage.",
+      "description": "Making attacks from a mount imposes no negatives, while not having this feat incurs a penalty of -5 while attempting to attack on a mount. Character may make charge attacks with no penalties and no attack of opportunity, additionally, they may begin their charge from 30 feet away and gain a +2 to damage per 5 feet traveled. Melee attacks to the mounted character will require weapons with reach or ranged weapons, otherwise they impose a -2 penalty. Attacking the mount directly without a reach or ranged weapon triggers an attack of opportunity. When either rider or mount take damage, character must make a Ride check with the DC of 10+Dmg Taken.",
+      "sourceText": "Making attacks from a mount imposes no negatives, while not having this feat incurs a penalty of -5 while attempting to attack on a mount. Character may make charge attacks with no penalties and no attack of opportunity, additionally, they may begin their charge from 30 feet away and gain a +2 to damage per 5 feet traveled. Melee attacks to the mounted character will require weapons with reach or ranged weapons, otherwise they impose a -2 penalty. Attacking the mount directly without a reach or ranged weapon triggers an attack of opportunity. When either rider or mount take damage, character must make a Ride check with the DC of 10+Dmg Taken.\nLvl Point Threshold: 3\n+Rank: 1 Target/Rank directly adjacent to the initial charge target must make a defense check against attack or be dealt the same damage. Enemies must make a DC 15+2/Rank BOD save or they are thrown back 10 feet when taking damage."
+    },
+    {
+      "id": "quickdraw",
+      "name": "Quickdraw",
+      "category": "Combat",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Gain a +2 to Initiative checks and +2 to attack and damage checks made during a surprise round.",
+      "description": "Characters with Quickdraw cannot be caught off guard, allowing them to make an Initiative check during ambushes. Gain a +4 to Initiative checks and a +2 to attack and damage checks made during a surprise round. Critical attack damage multiplier is increased by 1 during a surprise round.",
+      "sourceText": "Characters with Quickdraw cannot be caught off guard, allowing them to make an Initiative check during ambushes. Gain a +4 to Initiative checks and a +2 to attack and damage checks made during a surprise round. Critical attack damage multiplier is increased by 1 during a surprise round.\nLvl Point Threshold: 3\n+Rank: Gain a +2 to Initiative checks and +2 to attack and damage checks made during a surprise round."
+    },
+    {
+      "id": "ranged-training-focus",
+      "name": "Ranged Training Focus",
+      "category": "Combat",
+      "requirement": "Ranged Proficiency Rank 2+",
+      "levelPointThreshold": 5,
+      "rankBenefit": "Choose a new Focus. Choosing a focus that the Character already possesses will stack the effects of that focus’ bonus.",
+      "description": "Character may choose Ranged Training Focus from table below:",
+      "sourceText": "Requirement: Ranged Proficiency Rank 2+\nCharacter may choose Ranged Training Focus from table below:\nLvl Point Threshold: 5\n+Rank: Choose a new Focus. Choosing a focus that the Character already possesses will stack the effects of that focus’ bonus."
+    },
+    {
+      "id": "seize-the-opportunity",
+      "name": "Seize the Opportunity",
+      "category": "Combat",
+      "requirement": "Sneak Attack",
+      "levelPointThreshold": 5,
+      "rankBenefit": "Character gains a +1 to multiplier for Sneak Attack.",
+      "description": "Whenever an enemy within 5 ft of you rolls a nat 1 on their attack roll or defense roll, you may make an attack of opportunity that acts as a Sneak Attack. The enemy is flat-footed during their defense.",
+      "sourceText": "Requirement: Sneak Attack\nWhenever an enemy within 5 ft of you rolls a nat 1 on their attack roll or defense roll, you may make an attack of opportunity that acts as a Sneak Attack. The enemy is flat-footed during their defense.\nLvl Point Threshold: 5\n+Rank: Character gains a +1 to multiplier for Sneak Attack."
+    },
+    {
+      "id": "sneak-attack",
+      "name": "Sneak Attack",
+      "category": "Combat",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Character gains a +1 to multiplier for Sneak Attack.",
+      "description": "Character gains x4 to melee sneak attack damage rather than x2. Sneak Attacks can only be made as Dex attacks. Only the first attack made per round counts as a sneak attack.",
+      "sourceText": "Character gains x4 to melee sneak attack damage rather than x2. Sneak Attacks can only be made as Dex attacks. Only the first attack made per round counts as a sneak attack.\nLvl Point Threshold: 3\n+Rank: Character gains a +1 to multiplier for Sneak Attack."
+    },
+    {
+      "id": "scattershot",
+      "name": "Scattershot",
+      "category": "Combat",
+      "requirement": "Ranged Proficiency Rank 1+",
+      "levelPointThreshold": 3,
+      "rankBenefit": "Increase max separation between arrows by another 5 feet.",
+      "description": "The character may fire two additional arrows as a single attack using a FRA, which will land within 5 feet of the initial arrow’s impact point. This attack suffers a -5 penalty, and all arrows use the same attack roll. Each target rolls an opposed defense check. Using Scattershot consumes bonus attacks.",
+      "sourceText": "Requirement: Ranged Proficiency Rank 1+\nThe character may fire two additional arrows as a single attack using a FRA, which will land within 5 feet of the initial arrow’s impact point. This attack suffers a -5 penalty, and all arrows use the same attack roll. Each target rolls an opposed defense check. Using Scattershot consumes bonus attacks.\nLvl Point Threshold: 3\n+Rank: Increase max separation between arrows by another 5 feet."
+    },
+    {
+      "id": "swiftshot",
+      "name": "Swiftshot",
+      "category": "Combat",
+      "requirement": "Ranged Proficiency Rank 1+",
+      "levelPointThreshold": 3,
+      "rankBenefit": "+2 additional attacks.",
+      "description": "Character may make two additional attacks with a Shortbow, Longbow or Greatbow as part of their FRA at half damage. Using Swiftshot consumes bonus attacks.",
+      "sourceText": "Requirement: Ranged Proficiency Rank 1+\nCharacter may make two additional attacks with a Shortbow, Longbow or Greatbow as part of their FRA at half damage. Using Swiftshot consumes bonus attacks.\nLvl Point Threshold: 3\n+Rank: +2 additional attacks."
+    },
+    {
+      "id": "berserker-spellsoak",
+      "name": "Berserker Spellsoak",
+      "category": "Defense",
+      "requirement": "Berserker Rage",
+      "levelPointThreshold": 3,
+      "rankBenefit": "Damage Character negates is increased by 2, Damage the Character inflicts when using Spellsoak is increased by 2.",
+      "description": "During Berserker Rage, Character can choose to take damage from a spell, negating 3 damage, and add a bonus to the Berserker’s next damage roll equal to half the total damage dealt by the spell, in addition the attack is treated as magical and bypasses armor and has the properties of the spell used. In order for this feat to work, the Berserker must make no effort to protect themselves from the spell.",
+      "sourceText": "Requirement: Berserker Rage\nDuring Berserker Rage, Character can choose to take damage from a spell, negating 3 damage, and add a bonus to the Berserker’s next damage roll equal to half the total damage dealt by the spell, in addition the attack is treated as magical and bypasses armor and has the properties of the spell used. In order for this feat to work, the Berserker must make no effort to protect themselves from the spell.\nLvl Point Threshold: 3\n+Rank: Damage Character negates is increased by 2, Damage the Character inflicts when using Spellsoak is increased by 2."
+    },
+    {
+      "id": "combat-brassed",
+      "name": "Combat Brassed",
+      "category": "Defense",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Defense checks increases by 1. Character can defend against an additional attacker without incurring a -2 penalty.",
+      "description": "Character gains ability to defend against a second attacker without incurring a -2 penalty.",
+      "sourceText": "Character gains ability to defend against a second attacker without incurring a -2 penalty.\nLvl Point Threshold: 3\n+Rank: Bonus to Defense checks increases by 1. Character can defend against an additional attacker without incurring a -2 penalty."
+    },
+    {
+      "id": "combo-breaker",
+      "name": "Combo Breaker!",
+      "category": "Defense",
+      "requirement": null,
+      "levelPointThreshold": 5,
+      "rankBenefit": "Character gains a +1 to multiplier for Combo Breaker.",
+      "description": "On a critical defense, your counterattack deals x2 damage and immediately ends the attacker’s turn.",
+      "sourceText": "On a critical defense, your counterattack deals x2 damage and immediately ends the attacker’s turn.\nLvl Point Threshold: 5\n+Rank: Character gains a +1 to multiplier for Combo Breaker."
+    },
+    {
+      "id": "guardian",
+      "name": "Guardian",
+      "category": "Defense",
+      "requirement": null,
+      "levelPointThreshold": 5,
+      "rankBenefit": "+2 to BOD defense checks made to defend targets within 5 feet of you.",
+      "description": "When an opponent is attacking a target within 5 feet of the character, they may roll a BOD defence check for that target instead with a -2. If successful, they deflect the attack, if unsuccessful they take the damage for the attack. Doing this counts against how many attackers you’ve defended against for the purposes of taking penalties when defending against multiple attackers.",
+      "sourceText": "When an opponent is attacking a target within 5 feet of the character, they may roll a BOD defence check for that target instead with a -2. If successful, they deflect the attack, if unsuccessful they take the damage for the attack. Doing this counts against how many attackers you’ve defended against for the purposes of taking penalties when defending against multiple attackers.\nLvl Point Threshold: 5\n+Rank: +2 to BOD defense checks made to defend targets within 5 feet of you."
+    },
+    {
+      "id": "squirrelly",
+      "name": "Squirrelly",
+      "category": "Defense",
+      "requirement": "DEX 8+",
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to DEX Defense checks made using Squirrelly increases by 2. Character can move an additional 5ft per rank as a free action when successfully DEX Defending against an enemy’s attack check by 5 or more.",
+      "description": "Character gains +2 to DEX defense check made during round after having moved 15 ft or more during Character’s turn in combat.",
+      "sourceText": "Requirement: DEX 8+\nCharacter gains +2 to DEX defense check made during round after having moved 15 ft or more during Character’s turn in combat.\nLvl Point Threshold: 3\n+Rank: Bonus to DEX Defense checks made using Squirrelly increases by 2. Character can move an additional 5ft per rank as a free action when successfully DEX Defending against an enemy’s attack check by 5 or more."
+    },
+    {
+      "id": "unbreakable",
+      "name": "Unbreakable",
+      "category": "Defense",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to BOD Defense checks made using Unbreakable increases by 2. Gain 1 Natural DR per rank while benefiting from this feat’s BOD defense bonus",
+      "description": "Character gains +2 to BOD defense check made during round after not moving more than 5 feet during Character’s turn in combat.",
+      "sourceText": "Character gains +2 to BOD defense check made during round after not moving more than 5 feet during Character’s turn in combat.\nLvl Point Threshold: 3\n+Rank: Bonus to BOD Defense checks made using Unbreakable increases by 2. Gain 1 Natural DR per rank while benefiting from this feat’s BOD defense bonus"
+    },
+    {
+      "id": "resilience",
+      "name": "Resilience",
+      "category": "Defense",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Bonus to Save checks made increases by 3 OR select another saving throw to add resilience bonus to.",
+      "description": "Character selects a saving throw from below and gains a +2 bonus to it:",
+      "sourceText": "Character selects a saving throw from below and gains a +2 bonus to it:\nLvl Point Threshold: 3\n+Rank: Bonus to Save checks made increases by 3 OR select another saving throw to add resilience bonus to."
+    },
+    {
+      "id": "spellsoak",
+      "name": "Spellsoak",
+      "category": "Defense",
+      "requirement": null,
+      "levelPointThreshold": 3,
+      "rankBenefit": "Damage negated and mana gained is increased by 2.",
+      "description": "Requires: Caster Feat\nCharacter negates 3 damage when taking damage from a magical source and gains mana equal to damage negated this way.",
+      "sourceText": "Requires: Caster Feat\nCharacter negates 3 damage when taking damage from a magical source and gains mana equal to damage negated this way.\nLvl Point Threshold: 3\n+Rank: Damage negated and mana gained is increased by 2."
+    },
+    {
+      "id": "arcane-pact-arcane",
+      "name": "Arcane Pact (Arcane)",
+      "category": "Caster",
+      "requirement": null,
+      "levelPointThreshold": 5,
+      "rankBenefit": "Caster gains 1+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free. Upgrade boon.",
+      "description": "Casting Attribute: MND/CHA\nBearers of an Arcane Pact are granted magical power from a patron they have made their pact with. They can cast spells beyond their comprehension and gain boons from their patron so long as they have favor with them. The caster gains a manapool (10+MND) and 2 Caster Points. If taken at first level, they begin with 1 additional Caster Point.\nTrait- The Pact: The caster may invoke their Pact as an interrupt action by expending a Caster Point, typically casting a spell at max effect (maximized damage, healing, and duration). The spell is then added to their list of known spells. Through The Pact, the caster gains favor with their patron, favor can be used to request additional assistance from their patron in times of need.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Constitution | Physical | Animancy | Divine | Conjuring\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental",
+      "sourceText": "Casting Attribute: MND/CHA\nBearers of an Arcane Pact are granted magical power from a patron they have made their pact with. They can cast spells beyond their comprehension and gain boons from their patron so long as they have favor with them. The caster gains a manapool (10+MND) and 2 Caster Points. If taken at first level, they begin with 1 additional Caster Point.\nTrait- The Pact: The caster may invoke their Pact as an interrupt action by expending a Caster Point, typically casting a spell at max effect (maximized damage, healing, and duration). The spell is then added to their list of known spells. Through The Pact, the caster gains favor with their patron, favor can be used to request additional assistance from their patron in times of need.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Constitution | Physical | Animancy | Divine | Conjuring\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental\nLvl Point Threshold: 5\n+Rank: Caster gains 1+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free. Upgrade boon."
+    },
+    {
+      "id": "performance-spellcaster-arcane",
+      "name": "Performance Spellcaster (Arcane)",
+      "category": "Caster",
+      "requirement": null,
+      "levelPointThreshold": 5,
+      "rankBenefit": "Caster gains 1+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free. Gain a new performance.\nPerformances:\nBoosted Bass\nWhile the caster performs, enemies within 10+10 feet per rank must make a DC 15 + Caster Rank BOD save or receive a -2 to their BOD score as long as the performance lasts.\nCaptivate Audience\nWhile the caster performs, all who witness the performance must make a DC 15 + ½ Performance Caster CHA MND save to leave the encounter. They can otherwise interact normally while staying within the encounter. This can be used in combat to make sure enemies don’t run away or it can be used outside of combat in order to provide a distraction.\nEmpower\nWhile the caster performs, add an additional d4 per Caster Rank to spell effects that have numerical variables (such as damage or healing).\nLimelight\nWhile the caster performs, all casters who witness the performance and wish to cast a spell must make a DC 15 + Caster Rank spellcasting check. Those who fail the check fall to the bottom of the initiative chart and have a -2 on all spellcasting checks.\nPerformance of Fragility\nWhile the caster performs, all who witness the performance must make a DC 15 + Caster Rank MND save. Those who fail the check will see the caster as a frail non-threat and will not prioritize them in combat. If the caster deals damage to an enemy, all enemies in the area can make another check against the DC.\nPerformance of Mockery\nWhile the caster performs, all who witness the performance must make a DC 15 + Caster Rank MND save. Those who fail the check will see the caster as an unbearable nuisance and will prioritize them in combat.\nProject\nWhile the caster performs, add 1d4 per Caster Rank to spell targets or increase spell AOE by 5 feet per Caster Rank. Spell range is also increased by 10 feet per Caster Rank.\nShell Shock Shanty\nWhile the caster performs, all allies within 10 + 10 feet per rank gain a +2 to defense checks. Enemies must make a DC 15 + Caster Rank MND save or receive a -2 on defense checks.",
+      "description": "Casting Attribute: CHA\nPerformance Spellcasters channel magic through artistic expression—music, poetry, storytelling, dance, or any performing art. Their performances carry passive magical effects that enhance their casting. The caster gains a manapool (10+MND), two Performances, and 2 Caster Points. If taken at first level, they begin with 1 additional Caster Point.\nTrait- Perform: The caster learns spells through rehearsal, spending at least an hour to expend a Caster Point and learn a spell. Spells are cast through performances, which grant passive magical effects while active. Performances can be switched as a move action, ending the current effect. Performance Spellcasters do not learn spells from books.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Psyche | Constitution | Physical | Conjuring\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental",
+      "sourceText": "Casting Attribute: CHA\nPerformance Spellcasters channel magic through artistic expression—music, poetry, storytelling, dance, or any performing art. Their performances carry passive magical effects that enhance their casting. The caster gains a manapool (10+MND), two Performances, and 2 Caster Points. If taken at first level, they begin with 1 additional Caster Point.\nTrait- Perform: The caster learns spells through rehearsal, spending at least an hour to expend a Caster Point and learn a spell. Spells are cast through performances, which grant passive magical effects while active. Performances can be switched as a move action, ending the current effect. Performance Spellcasters do not learn spells from books.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Psyche | Constitution | Physical | Conjuring\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental\nLvl Point Threshold: 5\n+Rank: Caster gains 1+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free. Gain a new performance.\nPerformances:\nBoosted Bass\nWhile the caster performs, enemies within 10+10 feet per rank must make a DC 15 + Caster Rank BOD save or receive a -2 to their BOD score as long as the performance lasts.\nCaptivate Audience\nWhile the caster performs, all who witness the performance must make a DC 15 + ½ Performance Caster CHA MND save to leave the encounter. They can otherwise interact normally while staying within the encounter. This can be used in combat to make sure enemies don’t run away or it can be used outside of combat in order to provide a distraction.\nEmpower\nWhile the caster performs, add an additional d4 per Caster Rank to spell effects that have numerical variables (such as damage or healing).\nLimelight\nWhile the caster performs, all casters who witness the performance and wish to cast a spell must make a DC 15 + Caster Rank spellcasting check. Those who fail the check fall to the bottom of the initiative chart and have a -2 on all spellcasting checks.\nPerformance of Fragility\nWhile the caster performs, all who witness the performance must make a DC 15 + Caster Rank MND save. Those who fail the check will see the caster as a frail non-threat and will not prioritize them in combat. If the caster deals damage to an enemy, all enemies in the area can make another check against the DC.\nPerformance of Mockery\nWhile the caster performs, all who witness the performance must make a DC 15 + Caster Rank MND save. Those who fail the check will see the caster as an unbearable nuisance and will prioritize them in combat.\nProject\nWhile the caster performs, add 1d4 per Caster Rank to spell targets or increase spell AOE by 5 feet per Caster Rank. Spell range is also increased by 10 feet per Caster Rank.\nShell Shock Shanty\nWhile the caster performs, all allies within 10 + 10 feet per rank gain a +2 to defense checks. Enemies must make a DC 15 + Caster Rank MND save or receive a -2 on defense checks."
+    },
+    {
+      "id": "spell-forger-arcane",
+      "name": "Spell Forger (Arcane)",
+      "category": "Caster",
+      "requirement": null,
+      "levelPointThreshold": 5,
+      "rankBenefit": "Caster gains 1+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free. Gain a new Infusion.\nInfusions:\nArcane Reservoir\nInfuse gems with arcane energy, allowing them to be used as ‘storage batteries’ for Mana. The amount of mana these gems can store is equal to Spell Forger’s MND score × (1 + 1 per Caster Rank). This gem can be used by the Spell Forger or given to an ally to use.\nSelect 1 + 1/Caster Rank:\nManaburst: Release all stored mana at once, dealing damage equal to the stored mana + (1 + 1 per Caster Rank).\nOvercharge: When casting a spell using the reservoir, all numerical values gain +2.\nPower Conduit: When an ally uses mana from the reservoir, they gain +2 to spell checks for that spell.\nMana Shield: Expend 2 mana from the reservoir to negate the next 5 damage as an interrupt.\nBolstered Defenses\nInfuse armor or shield with arcane energy, select 1 + 1/Caster Rank:\nAgile Rune: Gain +2 to Defense\nAdditional Plating: Gain 2 DR\nElemental Coating: Gain resistance to one element\nSleek Design: Increase Critical Defense range by 1\nSpellsoak: Spell Forger recovers 2 Mana if wearer is hit by magic\nBulwark: Cannot be forcibly moved\nArcane Shield: 1/day negate all damage from one source\nSpell Dampening Field: Casters get a -2 on spell checks against wearer\nCompanionoid\nInfuse a device with arcane energy, creating a small, autonomous construct loyal to the Spell Forger. Its HP equals the Spell Forger’s MND x (1 + 1 per Caster Rank), and its Physical stats are equal to ½ Spell Forger’s MND and it deals 1d6 damage. The Companionoid acts independently on the Spell Forger’s initiative, capable of attacking, defending, scouting, or assisting. It is a construct, immune to poison, disease, sleep, and mind-affecting effects. The Spell Forger can see and sense through it.\nSelect 1 + 1/Caster Rank:\nSpider-Legs: Ignore difficult terrain\nWheels: +10 ft/round movement\nPropeller: 20 ft/round flight\nSelect 1 + 1/Caster Rank:\nCombat Module: Gain +2 to Attack\nDefensive Plating: Gain 2 DR\nArcane Core: Explodes on destruction (2d6 damage × Spell Forger Rank, 10 ft radius)\nSpell Link: Spell Forger can cast spells through Companionoid\nStealth Module: +4 to Stealth checks, become invisible 1/day per Spell Forger Rank\nRepair Protocols: Can heal self as a FRA 1d8 + ½ Spell Forger’s MND, twice per day\nSensor Array: Gain Darkvision, Detect Magic, and +4 to Detect checks\nProjectile Launcher: Gain a ranged attack that can be made at 30 feet dealing 1d6 dmg.\nEnlarge Companionoid: Make the Companionoid Medium, doubling its stats, HP and damage output.\nExquisite Weapon\nInfuse a weapon with arcane energy, select 1 + 1/Caster Rank:\nUnerring Swing: Gain +2 to Attack\nMage Marking: Deal an additional 1d6 magic damage\nElemental Rune: Convert weapon’s damage to elemental damage\nDensity Shift: Increase Critical Range and Multiplier by 1\nArcane Rebound: On a miss, deal half damage\nArmor Piercing 4\nLifelock: Gain HP equal to damage dealt on a critical attack\nKeen Strike: Max damage on the first attack of the first round of combat\nMagically Reloading: Ranged weapon magically produces mundane ammunition\nSpell Forged Device\nInfuse the device with the ability to cast 1 + 1/Caster Rank spells using the Spell Forger’s manapool.\nWondrous Craft\nInfuse a device with the ability to cast 1 spell a number of times per day equal to the Spell Forger’s MND score as an interrupt action without using mana. The spell’s mana cost must be under ½ Spell Forger’s MND score × (1 + 1 per Caster Rank).",
+      "description": "Casting Attribute: MND\nSpell Forgers are masters of infusing objects with magical power, channeling arcane energy through crafted items, mechanical devices, and enchanted constructs. Their creations act as both tools and conduits for their magic, blending the precision of craftsmanship with the versatility of spellcasting. The caster gains a manapool (10 + MND) 2 Infusions and 2 Caster Points. If taken at first level, they begin with 1 additional Caster Point.\nTrait- Infusion: The caster learns spells through study, requiring at least an hour to expend a Caster Point to learn a spell. Spell Forgers can craft casting focus tools called an Infusion Device by working on a project for 4 hours. While the caster can still cast spells without these devices, having an Infusion Device reduces the spell’s mana cost by 1 (to a minimum of 1). Spell Forgers can maintain a number of active Infusion Devices equal to 1 + their caster rank. Infusion Devices can be switched out as a move action. These devices do not require complex crafting materials—simple mundane objects can be infused as long as the caster spends the necessary time and Caster Points. Infusion Devices can be granted to non-casters who can use the Infusion Device. Spell Forgers do not learn spells from books but can reverse-engineer magical items they encounter, expending a Caster Point to study an item and learn a related spell if applicable.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Psyche | Constitution | Physical | Conjuring\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental",
+      "sourceText": "Casting Attribute: MND\nSpell Forgers are masters of infusing objects with magical power, channeling arcane energy through crafted items, mechanical devices, and enchanted constructs. Their creations act as both tools and conduits for their magic, blending the precision of craftsmanship with the versatility of spellcasting. The caster gains a manapool (10 + MND) 2 Infusions and 2 Caster Points. If taken at first level, they begin with 1 additional Caster Point.\nTrait- Infusion: The caster learns spells through study, requiring at least an hour to expend a Caster Point to learn a spell. Spell Forgers can craft casting focus tools called an Infusion Device by working on a project for 4 hours. While the caster can still cast spells without these devices, having an Infusion Device reduces the spell’s mana cost by 1 (to a minimum of 1). Spell Forgers can maintain a number of active Infusion Devices equal to 1 + their caster rank. Infusion Devices can be switched out as a move action. These devices do not require complex crafting materials—simple mundane objects can be infused as long as the caster spends the necessary time and Caster Points. Infusion Devices can be granted to non-casters who can use the Infusion Device. Spell Forgers do not learn spells from books but can reverse-engineer magical items they encounter, expending a Caster Point to study an item and learn a related spell if applicable.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Psyche | Constitution | Physical | Conjuring\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental\nLvl Point Threshold: 5\n+Rank: Caster gains 1+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free. Gain a new Infusion.\nInfusions:\nArcane Reservoir\nInfuse gems with arcane energy, allowing them to be used as ‘storage batteries’ for Mana. The amount of mana these gems can store is equal to Spell Forger’s MND score × (1 + 1 per Caster Rank). This gem can be used by the Spell Forger or given to an ally to use.\nSelect 1 + 1/Caster Rank:\nManaburst: Release all stored mana at once, dealing damage equal to the stored mana + (1 + 1 per Caster Rank).\nOvercharge: When casting a spell using the reservoir, all numerical values gain +2.\nPower Conduit: When an ally uses mana from the reservoir, they gain +2 to spell checks for that spell.\nMana Shield: Expend 2 mana from the reservoir to negate the next 5 damage as an interrupt.\nBolstered Defenses\nInfuse armor or shield with arcane energy, select 1 + 1/Caster Rank:\nAgile Rune: Gain +2 to Defense\nAdditional Plating: Gain 2 DR\nElemental Coating: Gain resistance to one element\nSleek Design: Increase Critical Defense range by 1\nSpellsoak: Spell Forger recovers 2 Mana if wearer is hit by magic\nBulwark: Cannot be forcibly moved\nArcane Shield: 1/day negate all damage from one source\nSpell Dampening Field: Casters get a -2 on spell checks against wearer\nCompanionoid\nInfuse a device with arcane energy, creating a small, autonomous construct loyal to the Spell Forger. Its HP equals the Spell Forger’s MND x (1 + 1 per Caster Rank), and its Physical stats are equal to ½ Spell Forger’s MND and it deals 1d6 damage. The Companionoid acts independently on the Spell Forger’s initiative, capable of attacking, defending, scouting, or assisting. It is a construct, immune to poison, disease, sleep, and mind-affecting effects. The Spell Forger can see and sense through it.\nSelect 1 + 1/Caster Rank:\nSpider-Legs: Ignore difficult terrain\nWheels: +10 ft/round movement\nPropeller: 20 ft/round flight\nSelect 1 + 1/Caster Rank:\nCombat Module: Gain +2 to Attack\nDefensive Plating: Gain 2 DR\nArcane Core: Explodes on destruction (2d6 damage × Spell Forger Rank, 10 ft radius)\nSpell Link: Spell Forger can cast spells through Companionoid\nStealth Module: +4 to Stealth checks, become invisible 1/day per Spell Forger Rank\nRepair Protocols: Can heal self as a FRA 1d8 + ½ Spell Forger’s MND, twice per day\nSensor Array: Gain Darkvision, Detect Magic, and +4 to Detect checks\nProjectile Launcher: Gain a ranged attack that can be made at 30 feet dealing 1d6 dmg.\nEnlarge Companionoid: Make the Companionoid Medium, doubling its stats, HP and damage output.\nExquisite Weapon\nInfuse a weapon with arcane energy, select 1 + 1/Caster Rank:\nUnerring Swing: Gain +2 to Attack\nMage Marking: Deal an additional 1d6 magic damage\nElemental Rune: Convert weapon’s damage to elemental damage\nDensity Shift: Increase Critical Range and Multiplier by 1\nArcane Rebound: On a miss, deal half damage\nArmor Piercing 4\nLifelock: Gain HP equal to damage dealt on a critical attack\nKeen Strike: Max damage on the first attack of the first round of combat\nMagically Reloading: Ranged weapon magically produces mundane ammunition\nSpell Forged Device\nInfuse the device with the ability to cast 1 + 1/Caster Rank spells using the Spell Forger’s manapool.\nWondrous Craft\nInfuse a device with the ability to cast 1 spell a number of times per day equal to the Spell Forger’s MND score as an interrupt action without using mana. The spell’s mana cost must be under ½ Spell Forger’s MND score × (1 + 1 per Caster Rank)."
+    },
+    {
+      "id": "spontaneous-spellcaster-arcane",
+      "name": "Spontaneous Spellcaster (Arcane)",
+      "category": "Caster",
+      "requirement": null,
+      "levelPointThreshold": 5,
+      "rankBenefit": "Caster gains 3+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free.",
+      "description": "Casting Attribute: CHA\nSpontaneous Spellcasters excel at casting spells in the heat of the moment, drawing magic instinctively when needed. The caster gains a manapool (10+MND) and 3 Caster Points. If taken at first level, they begin with 1 additional Caster Point.\nTrait- Instinctual Caster: The caster can learn spells instantly by expending a Caster Point as an interrupt action, casting the spell at max effect (maximized damage, healing, and duration). The spell is then added to the caster’s list of known spells. Spontaneous Spellcasters do not learn spells from books.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Psyche | Constitution | Physical | Conjuring | Elemental\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental",
+      "sourceText": "Casting Attribute: CHA\nSpontaneous Spellcasters excel at casting spells in the heat of the moment, drawing magic instinctively when needed. The caster gains a manapool (10+MND) and 3 Caster Points. If taken at first level, they begin with 1 additional Caster Point.\nTrait- Instinctual Caster: The caster can learn spells instantly by expending a Caster Point as an interrupt action, casting the spell at max effect (maximized damage, healing, and duration). The spell is then added to the caster’s list of known spells. Spontaneous Spellcasters do not learn spells from books.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Psyche | Constitution | Physical | Conjuring | Elemental\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental\nLvl Point Threshold: 5\n+Rank: Caster gains 3+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free."
+    },
+    {
+      "id": "spontaneously-adept",
+      "name": "Spontaneously Adept",
+      "category": "Caster",
+      "requirement": "Spontaneous Spellcaster Rank 1+",
+      "levelPointThreshold": 5,
+      "rankBenefit": "Increase the Rank of the spell added to FRA.",
+      "description": "Caster gains the ability to cast spells using their weapons as casting focuses, allowing for them to cast a Rank 0 Spell as an addition to their FRA melee attacks as a free action.",
+      "sourceText": "Requirement: Spontaneous Spellcaster Rank 1+\nCaster gains the ability to cast spells using their weapons as casting focuses, allowing for them to cast a Rank 0 Spell as an addition to their FRA melee attacks as a free action.\nLvl Point Threshold: 5\n+Rank: Increase the Rank of the spell added to FRA."
+    },
+    {
+      "id": "studied-spellcaster-arcane",
+      "name": "Studied Spellcaster (Arcane)",
+      "category": "Caster",
+      "requirement": null,
+      "levelPointThreshold": 5,
+      "rankBenefit": "Caster gains 3+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free.\nMagic Source: Divine\nDivine Casters derive their power from a deity who serves as their patron or from unknown forces of fate. Whether through unwavering devotion, sacred rites, or an unexplainable connection to higher powers, they channel divine energy into spells and abilities that shape the world around them. Unlike arcane casters who manipulate raw magic, divine casters serve as conduits for celestial, infernal, or primordial will, their magic a reflection of the forces that guide them. All divine casters have access to an innate ability called Reveal Character.\nSource Gift: Reveal Character\nDivine casters have the uncanny ability to read people, allowing them to discern character traits regardless of the target’s stats and defenses. With a DC 15+Target Character Level Detect check, Divine casters are given a word that defines a character trait the character has. The target of this ability will have no knowledge that they were targeted by the ability. Regardless of whether the check has succeeded or failed, another check cannot be performed on the same target until 24 hours have passed. This can be used on the same target multiple times and each time the GM may choose to reveal something new or simply go back to an already revealed trait.\nGMs can choose a word from the following word bank or give an equally descriptive word:\nMisleading | Well-Meaning | Vengeful | Loyal | Self-Serving | Zealous | Insightful | Defiant\nDetermined | Fearful | Benevolent | Ruthless | Unpredictable | Secretive | Calculating",
+      "description": "Casting Attribute: MND\nStudied Spellcasters devote themselves to mastering magic through rigorous study, recording their knowledge in spellbooks that serve as both a focus and source of power. The caster gains a manapool (10+MND) and a spellbook with 3 spells. If taken at first level, they begin with 1 Caster Point.\nTrait- Bookbound: The caster learns spells through study, requiring at least an hour to expend a Caster Point and inscribe the spell into their spellbook. Without their book, they can only cast known spells at rank 0. Damaging or removing pages nullifies the spells written. The caster can cast spells from any spellbook they have physical access to and can instantly learn spells from another’s spellbook by expending a Caster Point, retaining any ranks the spell had in the original book.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Psyche | Constitution | Physical | Animancy | Conjuring\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Mystic | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental",
+      "sourceText": "Casting Attribute: MND\nStudied Spellcasters devote themselves to mastering magic through rigorous study, recording their knowledge in spellbooks that serve as both a focus and source of power. The caster gains a manapool (10+MND) and a spellbook with 3 spells. If taken at first level, they begin with 1 Caster Point.\nTrait- Bookbound: The caster learns spells through study, requiring at least an hour to expend a Caster Point and inscribe the spell into their spellbook. Without their book, they can only cast known spells at rank 0. Damaging or removing pages nullifies the spells written. The caster can cast spells from any spellbook they have physical access to and can instantly learn spells from another’s spellbook by expending a Caster Point, retaining any ranks the spell had in the original book.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Psyche | Constitution | Physical | Animancy | Conjuring\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Mystic | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental\nLvl Point Threshold: 5\n+Rank: Caster gains 3+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free.\nMagic Source: Divine\nDivine Casters derive their power from a deity who serves as their patron or from unknown forces of fate. Whether through unwavering devotion, sacred rites, or an unexplainable connection to higher powers, they channel divine energy into spells and abilities that shape the world around them. Unlike arcane casters who manipulate raw magic, divine casters serve as conduits for celestial, infernal, or primordial will, their magic a reflection of the forces that guide them. All divine casters have access to an innate ability called Reveal Character.\nSource Gift: Reveal Character\nDivine casters have the uncanny ability to read people, allowing them to discern character traits regardless of the target’s stats and defenses. With a DC 15+Target Character Level Detect check, Divine casters are given a word that defines a character trait the character has. The target of this ability will have no knowledge that they were targeted by the ability. Regardless of whether the check has succeeded or failed, another check cannot be performed on the same target until 24 hours have passed. This can be used on the same target multiple times and each time the GM may choose to reveal something new or simply go back to an already revealed trait.\nGMs can choose a word from the following word bank or give an equally descriptive word:\nMisleading | Well-Meaning | Vengeful | Loyal | Self-Serving | Zealous | Insightful | Defiant\nDetermined | Fearful | Benevolent | Ruthless | Unpredictable | Secretive | Calculating"
+    },
+    {
+      "id": "celestial-mystic-divine",
+      "name": "Celestial Mystic (Divine)",
+      "category": "Caster",
+      "requirement": null,
+      "levelPointThreshold": 5,
+      "rankBenefit": "Caster gains 3+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free.",
+      "description": "Casting Attribute: CHA\nCelestial Mystics channel divine magic from cosmic entities such as the moon, stars, or otherworldly forces. The caster gains a manapool (10+MND) and a divination book with 3 spells. If taken at first level, they begin with 1 Caster Point.\nTrait- Forces of Fate: The caster learns spells through meditation, spending at least an hour in trance to expend a Caster Point and inscribe the spell into their divination book. Without this book, they can only cast known spells at rank 0. Damaging or removing pages nullifies the spells. They can learn spells from other spellbooks by meditating on them and expending a Caster Point, retaining any existing ranks of the spell. Celestial Mystics can sway fate, flipping any die roll to its opposite side a number of times per day equal to 1 + their caster rank.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Psyche | Constitution | Animancy | Mystic | Conjuring\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Mystic | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental",
+      "sourceText": "Casting Attribute: CHA\nCelestial Mystics channel divine magic from cosmic entities such as the moon, stars, or otherworldly forces. The caster gains a manapool (10+MND) and a divination book with 3 spells. If taken at first level, they begin with 1 Caster Point.\nTrait- Forces of Fate: The caster learns spells through meditation, spending at least an hour in trance to expend a Caster Point and inscribe the spell into their divination book. Without this book, they can only cast known spells at rank 0. Damaging or removing pages nullifies the spells. They can learn spells from other spellbooks by meditating on them and expending a Caster Point, retaining any existing ranks of the spell. Celestial Mystics can sway fate, flipping any die roll to its opposite side a number of times per day equal to 1 + their caster rank.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Psyche | Constitution | Animancy | Mystic | Conjuring\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Mystic | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental\nLvl Point Threshold: 5\n+Rank: Caster gains 3+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free."
+    },
+    {
+      "id": "deity-s-favored-divine",
+      "name": "Deity’s Favored (Divine)",
+      "category": "Caster",
+      "requirement": null,
+      "levelPointThreshold": 5,
+      "rankBenefit": "Caster gains 3+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free.",
+      "description": "Casting Attribute: MND\nDeity’s Favored channel divine magic through the power of a patron deity or sacred figure. The caster gains a manapool (10+MND) and 3 Caster Points. If taken at first level, they begin with 1 additional Caster Point.\nTrait- Divine Intervention: The caster may invoke Divine Intervention as an interrupt action by expending a Caster Point, typically casting a spell at max effect (maximized damage, healing, and duration). The spell is then added to their list of known spells. Alternatively, the deity may grant a different boon at the GM’s discretion, equal in value to a spell or the Caster Point may be refunded after a cooldown period. To use Divine Intervention and cast higher-rank spells, the caster must possess a Divine Focus—a symbolic item tied to their deity. Without this focus, they can only cast known spells at rank 0.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Constitution | Physical | Animancy | Divine | Elemental\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental",
+      "sourceText": "Casting Attribute: MND\nDeity’s Favored channel divine magic through the power of a patron deity or sacred figure. The caster gains a manapool (10+MND) and 3 Caster Points. If taken at first level, they begin with 1 additional Caster Point.\nTrait- Divine Intervention: The caster may invoke Divine Intervention as an interrupt action by expending a Caster Point, typically casting a spell at max effect (maximized damage, healing, and duration). The spell is then added to their list of known spells. Alternatively, the deity may grant a different boon at the GM’s discretion, equal in value to a spell or the Caster Point may be refunded after a cooldown period. To use Divine Intervention and cast higher-rank spells, the caster must possess a Divine Focus—a symbolic item tied to their deity. Without this focus, they can only cast known spells at rank 0.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Constitution | Physical | Animancy | Divine | Elemental\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental\nLvl Point Threshold: 5\n+Rank: Caster gains 3+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free."
+    },
+    {
+      "id": "deity-s-chosen",
+      "name": "Deity’s Chosen",
+      "category": "Caster",
+      "requirement": "Deity’s Favored Rank 2+",
+      "levelPointThreshold": 5,
+      "rankBenefit": "Increase use of deity’s granted ability by 1/day.\nMagic Source: Nature\nNature Casters draw their power from the primal forces of the natural world—ancient forests, rolling oceans, towering mountains, and the life energy woven into every living thing. Their magic is not learned through study or granted by divine favor, but through an intrinsic connection to the rhythms and cycles of nature itself. Whether they revere the spirits of the land, embody the essence of natural phenomena, or are simply vessels through which nature’s will flows, Nature Casters channel raw, untamed energy to shape and manipulate the environment around them. Their spells often reflect the harmony and chaos found in the natural world, blending growth, decay, and elemental power. All Nature Casters have access to an innate ability called Veiled Casting.\nSource Gift: Veiled Casting\nNature Casters weave their magic seamlessly into the fabric of the natural world, making their spells indistinguishable from the environment around them. Spells cast by a Nature Caster cannot be detected by Detect Magic, divination spells, or any other magical means of identifying active or residual magic. The only way to recognize a Nature Caster’s magic is to witness the spell being cast and succeed on a Knowledge Magic check with a DC equal to 15 + the caster’s level. This innate ability makes Nature Casters exceptionally elusive, allowing their influence to ripple through the world like an unseen breeze.",
+      "description": "Caster is granted a deity’s favored weapon. Caster has proficiency with deity’s favored weapon. Caster gains an ability specific to the deity they follow.",
+      "sourceText": "Requirement: Deity’s Favored Rank 2+\nCaster is granted a deity’s favored weapon. Caster has proficiency with deity’s favored weapon. Caster gains an ability specific to the deity they follow.\nLvl Point Threshold: 5\n+Rank: Increase use of deity’s granted ability by 1/day.\nMagic Source: Nature\nNature Casters draw their power from the primal forces of the natural world—ancient forests, rolling oceans, towering mountains, and the life energy woven into every living thing. Their magic is not learned through study or granted by divine favor, but through an intrinsic connection to the rhythms and cycles of nature itself. Whether they revere the spirits of the land, embody the essence of natural phenomena, or are simply vessels through which nature’s will flows, Nature Casters channel raw, untamed energy to shape and manipulate the environment around them. Their spells often reflect the harmony and chaos found in the natural world, blending growth, decay, and elemental power. All Nature Casters have access to an innate ability called Veiled Casting.\nSource Gift: Veiled Casting\nNature Casters weave their magic seamlessly into the fabric of the natural world, making their spells indistinguishable from the environment around them. Spells cast by a Nature Caster cannot be detected by Detect Magic, divination spells, or any other magical means of identifying active or residual magic. The only way to recognize a Nature Caster’s magic is to witness the spell being cast and succeed on a Knowledge Magic check with a DC equal to 15 + the caster’s level. This innate ability makes Nature Casters exceptionally elusive, allowing their influence to ripple through the world like an unseen breeze."
+    },
+    {
+      "id": "elemental-channeler-nature",
+      "name": "Elemental Channeler (Nature)",
+      "category": "Caster",
+      "requirement": null,
+      "levelPointThreshold": 5,
+      "rankBenefit": "Caster gains 1+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free. Gain 2 new Techniques.",
+      "description": "Casting Attribute: MND/CHA\nWater, Earth, Fire, Air. Elemental Channelers draw directly from the world’s primal forces, wielding them as disciplined techniques while still learning spells through nature. The caster gains a manapool (10+MND) 2 Stance Techniques (they do not have to be from the same element) and 2 Caster Points. If taken at first level, they begin with 1 additional Caster Point. To regain mana, the caster must meditate in a natural environment for 4 hours.\nTrait- Elemental Stance: The caster learns spells through meditation, requiring at least 1 hour in nature to expend a Caster Point and add the spell to their known list. As a move action, the caster may take the stance of one element: Water, Earth, Fire or Air. While stanced, the caster gains access to that element’s techniques. In order to use the techniques of another element, the caster must use a move action to change their stance.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Physical | Animancy | Conjuring | Elemental\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Mystic | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental",
+      "sourceText": "Casting Attribute: MND/CHA\nWater, Earth, Fire, Air. Elemental Channelers draw directly from the world’s primal forces, wielding them as disciplined techniques while still learning spells through nature. The caster gains a manapool (10+MND) 2 Stance Techniques (they do not have to be from the same element) and 2 Caster Points. If taken at first level, they begin with 1 additional Caster Point. To regain mana, the caster must meditate in a natural environment for 4 hours.\nTrait- Elemental Stance: The caster learns spells through meditation, requiring at least 1 hour in nature to expend a Caster Point and add the spell to their known list. As a move action, the caster may take the stance of one element: Water, Earth, Fire or Air. While stanced, the caster gains access to that element’s techniques. In order to use the techniques of another element, the caster must use a move action to change their stance.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Physical | Animancy | Conjuring | Elemental\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Mystic | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental\nLvl Point Threshold: 5\n+Rank: Caster gains 1+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free. Gain 2 new Techniques."
+    },
+    {
+      "id": "nature-s-envoy-nature",
+      "name": "Nature’s Envoy (Nature)",
+      "category": "Caster",
+      "requirement": null,
+      "levelPointThreshold": 5,
+      "rankBenefit": "Caster gains 3+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free.",
+      "description": "Casting Attribute: MND\nNature’s Envoy channels the raw power of the natural world, bending it to their will to cast spells. The caster gains a manapool (10+MND) and 3 Caster Points. If taken at first level, they begin with 1 additional Caster Point. To regain mana, the caster must meditate in a natural environment for 4 hours.\nTrait- Druidic Growth: The caster learns spells through meditation, requiring at least 1 hour in nature to expend a Caster Point and add the spell to their known list. As a move action, the caster can cause plant life to grow, creating difficult terrain within a 5-foot radius plus an additional 5 feet per caster rank, selecting specific spaces within this area. Additionally, the caster can rapidly grow a single crop or flower as a full-round action (FRA). This accelerated growth cannot be applied to the same plant again for one week. The caster ignores difficult terrain caused by any plant growth. Nature’s Envoys do not learn spells from books.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Physical | Animancy | Conjuring | Elemental\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Mystic | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental",
+      "sourceText": "Casting Attribute: MND\nNature’s Envoy channels the raw power of the natural world, bending it to their will to cast spells. The caster gains a manapool (10+MND) and 3 Caster Points. If taken at first level, they begin with 1 additional Caster Point. To regain mana, the caster must meditate in a natural environment for 4 hours.\nTrait- Druidic Growth: The caster learns spells through meditation, requiring at least 1 hour in nature to expend a Caster Point and add the spell to their known list. As a move action, the caster can cause plant life to grow, creating difficult terrain within a 5-foot radius plus an additional 5 feet per caster rank, selecting specific spaces within this area. Additionally, the caster can rapidly grow a single crop or flower as a full-round action (FRA). This accelerated growth cannot be applied to the same plant again for one week. The caster ignores difficult terrain caused by any plant growth. Nature’s Envoys do not learn spells from books.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Illusion | Physical | Animancy | Conjuring | Elemental\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Mystic | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental\nLvl Point Threshold: 5\n+Rank: Caster gains 3+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free."
+    },
+    {
+      "id": "shaman-of-beasts-nature",
+      "name": "Shaman of Beasts (Nature)",
+      "category": "Caster",
+      "requirement": null,
+      "levelPointThreshold": 5,
+      "rankBenefit": "Caster gains 3+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free.",
+      "description": "Casting Attribute: CHA\nThe Shaman of Beasts channels the primal essence of nature, calling beasts to their aid and embodying their forms. The caster gains a manapool (10+MND) and 3 Caster Points. If taken at first level, they begin with 1 additional Caster Point. To regain mana, the caster must meditate in a natural environment for 4 hours.\nTrait- Animal Form: The Shaman learns spells through meditation, requiring at least 1 hour in nature to expend a Caster Point and add a spell to their known list. Additionally, the caster can transform into a mundane animal a number of times per day equal to ¼ their Casting Attribute + 2 per Casting Rank. At Rank 0, they can shift into small or smaller animals, medium-sized animals at Rank 1, large animals at Rank 2, and huge animals at Rank 3 and beyond. At Rank 1, they gain the ability to transform into aquatic creatures, and at Rank 2, flying creatures. While in animal form, the Shaman adopts the creature’s physical stats (BOD, DEX, HP) while retaining their own mental stats (MND, CHA). They gain the animal’s natural abilities, such as venom, webs, or keen senses, but cannot take the form of magical or monstrous creatures. If reduced to 0 HP in animal form, the Shaman reverts to their true form and falls unconscious instead of dying. They cannot speak or cast spells while transformed but may remain in animal form indefinitely. Shamans of Beasts do not learn spells from books.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Psyche | Constitution | Animancy | Conjuring | Elemental\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Mystic | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental",
+      "sourceText": "Casting Attribute: CHA\nThe Shaman of Beasts channels the primal essence of nature, calling beasts to their aid and embodying their forms. The caster gains a manapool (10+MND) and 3 Caster Points. If taken at first level, they begin with 1 additional Caster Point. To regain mana, the caster must meditate in a natural environment for 4 hours.\nTrait- Animal Form: The Shaman learns spells through meditation, requiring at least 1 hour in nature to expend a Caster Point and add a spell to their known list. Additionally, the caster can transform into a mundane animal a number of times per day equal to ¼ their Casting Attribute + 2 per Casting Rank. At Rank 0, they can shift into small or smaller animals, medium-sized animals at Rank 1, large animals at Rank 2, and huge animals at Rank 3 and beyond. At Rank 1, they gain the ability to transform into aquatic creatures, and at Rank 2, flying creatures. While in animal form, the Shaman adopts the creature’s physical stats (BOD, DEX, HP) while retaining their own mental stats (MND, CHA). They gain the animal’s natural abilities, such as venom, webs, or keen senses, but cannot take the form of magical or monstrous creatures. If reduced to 0 HP in animal form, the Shaman reverts to their true form and falls unconscious instead of dying. They cannot speak or cast spells while transformed but may remain in animal form indefinitely. Shamans of Beasts do not learn spells from books.\nSpell Lists: When acquiring this feat, select 3 subschools from the Rank 0 list. The caster may only learn spells from the spell lists of those subschools. At rank 2, select 2 more subschools from the updated list. At rank 4 select 2 more subschools from the updated list.\nRank 0: Psyche | Constitution | Animancy | Conjuring | Elemental\nRank 2: Illusion | Psyche | Constitution | Physical | Animancy | Mystic | Conjuring | Elemental\nRank 4: Illusion | Psyche | Constitution | Physical | Animancy | Divine | Mystic | Conjuring | Elemental\nLvl Point Threshold: 5\n+Rank: Caster gains 3+Caster Rank in caster points. Caster may rank up all known spells. Caster gains +5 to their manapool. Caster may cast spells with a manacost equal to or less than their spellcasting rank for free."
+    },
+    {
+      "id": "spellbound-archery",
+      "name": "Spellbound Archery",
+      "category": "Caster",
+      "requirement": "Caster Feat, Ranged Proficiency",
+      "levelPointThreshold": 3,
+      "rankBenefit": "The number of rounds a spell remains in an arrow/bolt increases by 2 rounds. The number of arrows/bolts affected by a spell increases by 1. The Rank of spells channeled into an arrow/bolt increases by 1.",
+      "description": "Character gains the ability to channel Rank 0 spells into arrows or bolts. The Character casts a spell (expending the appropriate mana) and the arrow or bolt takes on the spell’s properties. The spell will remain in the arrow/bolt for 2 rounds. The Character may cast and shoot an arrow as a full round action or cast a spell onto an arrow as a standard. If the spell would take more than 1 round to cast, it cannot be cast using this feat.",
+      "sourceText": "Requirement: Caster Feat, Ranged Proficiency\nCharacter gains the ability to channel Rank 0 spells into arrows or bolts. The Character casts a spell (expending the appropriate mana) and the arrow or bolt takes on the spell’s properties. The spell will remain in the arrow/bolt for 2 rounds. The Character may cast and shoot an arrow as a full round action or cast a spell onto an arrow as a standard. If the spell would take more than 1 round to cast, it cannot be cast using this feat.\nLvl Point Threshold: 3\n+Rank: The number of rounds a spell remains in an arrow/bolt increases by 2 rounds. The number of arrows/bolts affected by a spell increases by 1. The Rank of spells channeled into an arrow/bolt increases by 1."
+    },
+    {
+      "id": "mana-channeling",
+      "name": "Mana Channeling",
+      "category": "Caster",
+      "requirement": "Caster Feat Rank 1+",
+      "levelPointThreshold": 3,
+      "rankBenefit": "Grants additional use of Mana Channeling per turn.",
+      "description": "When attacking, being attacked, or making a skill check, expend 2 mana points to gain a +1 bonus to your attack roll, damage roll, defense roll, DR or skill check until the end of the turn. Mana channeling may be used as an interrupt action once per turn.",
+      "sourceText": "Requirement: Caster Feat Rank 1+\nWhen attacking, being attacked, or making a skill check, expend 2 mana points to gain a +1 bonus to your attack roll, damage roll, defense roll, DR or skill check until the end of the turn. Mana channeling may be used as an interrupt action once per turn.\nLvl point threshold: 3\n+Rank: Grants additional use of Mana Channeling per turn."
+    },
+    {
+      "id": "relentless-caster",
+      "name": "Relentless Caster",
+      "category": "Caster",
+      "requirement": "Caster Feat Rank 1+",
+      "levelPointThreshold": 3,
+      "rankBenefit": "The amount of mana gained this way increases by 2. The Character’s critical range on spells increases by 1.",
+      "description": "When dealing a killing blow or succeeding on a critical attack, gain 2 Mana.",
+      "sourceText": "Requirement: Caster Feat Rank 1+\nWhen dealing a killing blow or succeeding on a critical attack, gain 2 Mana.\nLvl Point Threshold: 3\n+Rank: The amount of mana gained this way increases by 2. The Character’s critical range on spells increases by 1."
+    },
+    {
+      "id": "slash-n-spell",
+      "name": "Slash n Spell",
+      "category": "Caster",
+      "requirement": "Caster Feat Rank 1+, Bonus Attack",
+      "levelPointThreshold": 3,
+      "rankBenefit": "Spell Rank increases by 1. Bonus Character gains should the target for the spell be the same as the target for the melee attack increases by 2.",
+      "description": "Character gains the ability to cast a Rank 1 spell after a melee attack action or FRA. Doing this uses up the Character’s Bonus Attacks. If the target for the spell is the same as the target for the melee attack, the Character gains a +2 bonus on the Casting check.",
+      "sourceText": "Requirement: Caster Feat Rank 1+, Bonus Attack\nCharacter gains the ability to cast a Rank 1 spell after a melee attack action or FRA. Doing this uses up the Character’s Bonus Attacks. If the target for the spell is the same as the target for the melee attack, the Character gains a +2 bonus on the Casting check.\nLvl Point Threshold: 3\n+Rank: Spell Rank increases by 1. Bonus Character gains should the target for the spell be the same as the target for the melee attack increases by 2."
+    }
+  ]
+}
