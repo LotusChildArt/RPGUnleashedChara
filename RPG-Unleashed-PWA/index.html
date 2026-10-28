@@ -1910,10 +1910,14 @@ input::placeholder {
 
 .path-detail-row {
     display: grid;
-    grid-template-columns:
-        repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
     margin-bottom: 8px;
+}
+
+/* Origin and Role share a row; Perk and Drawback each get full width. */
+.path-detail-row > .path-field:nth-child(n+3) {
+    grid-column: 1 / -1;
 }
 
 .path-field,
@@ -23985,6 +23989,39 @@ if ("serviceWorker" in navigator) {
   category.addEventListener("change", render);
   overlay.addEventListener("click", e => { if (e.target === overlay) hide(); });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && overlay.style.display !== "none") hide(); });
+})();
+</script>
+
+<!-- Resize populated character fields, including when switching to the Path tab. -->
+<script>
+(() => {
+  const selector = 'textarea.path-expand, textarea.background-detail-expand, textarea.feat-description, textarea.skill-special-input, textarea.inventory-description, textarea.accessory-description, textarea.character-description, textarea.note-body, textarea.halloween-expand';
+  function fit(el) {
+    if (!el || !el.matches(selector) || el.getClientRects().length === 0) return;
+    el.style.height = 'auto';
+    el.style.height = Math.max(el.scrollHeight, parseFloat(getComputedStyle(el).minHeight) || 0) + 'px';
+  }
+  function fitAll() {
+    document.querySelectorAll(selector).forEach(fit);
+  }
+  function schedule() {
+    requestAnimationFrame(() => requestAnimationFrame(fitAll));
+  }
+  document.addEventListener('input', e => { if (e.target.matches?.(selector)) fit(e.target); }, true);
+  document.addEventListener('change', e => { if (e.target.matches?.(selector)) fit(e.target); }, true);
+  document.addEventListener('focusin', e => { if (e.target.matches?.(selector)) fit(e.target); }, true);
+  document.addEventListener('click', e => {
+    if (e.target.closest?.('.tab-button, .creator-step, .creator-next, .creator-back, .character-library-card, #feat-catalog-overlay')) schedule();
+  }, true);
+  const observer = new MutationObserver(changes => {
+    if (changes.some(c => c.type === 'childList' || (c.type === 'attributes' && c.attributeName === 'class'))) schedule();
+  });
+  // Watch visibility changes without watching style heights to avoid resize loops.
+  observer.observe(document.getElementById('character-app') || document.body, {subtree:true,childList:true,attributes:true,attributeFilter:['class']});
+  window.addEventListener('load', schedule);
+  window.addEventListener('resize', schedule);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) schedule(); });
+  schedule();
 })();
 </script>
 
