@@ -174,3 +174,31 @@ html.rpg-dark .creator-expandable-card-body strong,
 html.rpg-dark .creator-expandable-card-body p {color:var(--rpg-fg)!important;}
 html.rpg-dark .creator-progress-step.complete,
 html.rpg-dark .creator-path-progress-step.complete {background:#304153!important;color:#e2eaf5!important;}
+
+
+/* Higher-contrast secondary text throughout the character sheet and creator. */
+html.rpg-dark {--rpg-muted:#e0e6ef;}
+html.rpg-dark .attribute-header,
+html.rpg-dark .attribute-subheader,
+html.rpg-dark .creator-quarter-preview,
+html.rpg-dark .creator-field small,
+html.rpg-dark .creator-step-note,
+html.rpg-dark .creator-guidance,
+html.rpg-dark .creator-expandable-card-subtitle,
+html.rpg-dark .inventory-weight-total,
+html.rpg-dark .path-field-label,
+html.rpg-dark .weapon-sub-label,
+html.rpg-dark .rpg-reference-entry small {color:var(--rpg-muted)!important;}
+html.rpg-dark input::placeholder,html.rpg-dark textarea::placeholder {color:#c7d0dc!important;opacity:1;}
+html.rpg-dark .quarter-value input[readonly],
+html.rpg-dark .temp-quarter-value input[readonly] {
+ background:transparent!important;color:var(--rpg-fg)!important;opacity:1!important;
+}
+/* Number-input spinners appeared as white artifacts inside narrow quarter-score bubbles. */
+.quarter-value input::-webkit-inner-spin-button,
+.quarter-value input::-webkit-outer-spin-button,
+.temp-quarter-value input::-webkit-inner-spin-button,
+.temp-quarter-value input::-webkit-outer-spin-button {-webkit-appearance:none!important;margin:0!important;display:none!important;}
+.quarter-value input[type="number"],.temp-quarter-value input[type="number"] {
+ appearance:textfield!important;-moz-appearance:textfield!important;
+}
