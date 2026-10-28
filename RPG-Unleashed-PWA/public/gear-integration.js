@@ -141,9 +141,9 @@ window.RPGPopulateStartingGear=async pkg=>{
  // Split only at normal list delimiters; leave source text as the description.
  let remainder=raw;
  for(const item of selected){
-   const n=item.name.replace(/[.*+?^${}()|[\]\\]/g,"\\ // Preserve every detail of the selected package without turning the package into duplicate equipment.
- const notes=$("#notes-list");if(notes){$("#add-note")?.click();const card=notes.lastElementChild;if(card){input($(".note-title",card),"Starting Gear — "+pkg.name);input($(".note-body",card),(pkg.borrowed?"Borrowed from "+pkg.source+".\n":"")+raw+"\n\nRecognized: "+selected.map(x=>x.name).join(", ")+". Check other contents for manual entry.")}}");
-   remainder=remainder.replace(new RegExp(n,"gi"),"");
+   const name=item.name;
+   const pos=remainder.toLowerCase().indexOf(name.toLowerCase());
+   if(pos>=0)remainder=remainder.slice(0,pos)+remainder.slice(pos+name.length);
  }
  const parts=remainder.split(/,|;|\s+and\s+/i).map(x=>x.trim())
    .filter(x=>x&&!/^(?:a|an|the|with|and|or)$/i.test(x));
