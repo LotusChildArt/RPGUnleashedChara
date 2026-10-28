@@ -8,13 +8,23 @@ const normalize=s=>String(s||"").toLowerCase().replace(/[’']/g,"").replace(/[^
 function load(){if(!ready)ready=fetch("/data/gear-v3.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("Gear catalog unavailable: "+r.status);return r.json()}).then(j=>{records=j.items||[];return records});return ready}
 window.RPGGearReady=load();
 const invRow=()=>list()?.querySelector(".inventory-row");
+function inventoryDescription(record,extra=""){
+ const raw=String(record?.sourceText||record?.description||"");
+ // Weight is stored separately; put prices at the end of the description.
+ const price=[];
+ let detail=raw.replace(/\\b(?:Cost|Price):\\s*([^|\\n]+)/gi,(_,cost)=>{price.push(cost.trim());return""});
+ detail=detail.replace(/\\bWeight:\\s*[^|\\n]+/gi,"");
+ detail=detail.split("\\n").map(line=>line.split("|").map(part=>part.trim()).filter(Boolean).join(" | ")).filter(Boolean).join("\\n").trim();
+ const tail=price.length?"Cost: "+price.join(" / "):"";
+ return [detail,extra,tail].filter(Boolean).join("\\n").trim();
+}
 function addInventory(name,record,extra=""){
  let row=[...document.querySelectorAll("#inventory-list .inventory-row")].find(r=>!$(".inventory-item-input",r)?.value.trim());
  if(!row){bypass=true;try{$("#add-inventory-item")?.click()}finally{bypass=false}row=list()?.lastElementChild}
  if(!row)return;
  input($(".inventory-item-input",row),name);
  if(record?.weight!=null)input($(".inventory-weight-input",row),record.weight);
- input($(".inventory-description",row),[record?.sourceText||record?.description||"",extra].filter(Boolean).join("\n"));
+ input($(".inventory-description",row),inventoryDescription(record,extra));
 }
 function addArmor(record,name){
  const b=$("#add-armor");if(!b)return addInventory(name,record);
