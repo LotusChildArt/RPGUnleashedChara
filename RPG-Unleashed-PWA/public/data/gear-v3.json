@@ -555,7 +555,7 @@
     },
     {
       "name": "Feeble Potion of Health",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -565,7 +565,7 @@
     },
     {
       "name": "Lesser Potion of Health",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -575,7 +575,7 @@
     },
     {
       "name": "Potion of Health",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -585,7 +585,7 @@
     },
     {
       "name": "Greater Potion of Health",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -595,7 +595,7 @@
     },
     {
       "name": "Superior Potion of Health",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -605,7 +605,7 @@
     },
     {
       "name": "Potion of Full Restoration",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -615,7 +615,7 @@
     },
     {
       "name": "Lesser Potion of Mana Restoration",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -625,7 +625,7 @@
     },
     {
       "name": "Potion of Mana Restoration",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -635,7 +635,7 @@
     },
     {
       "name": "Superior Potion of Mana Restoration",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -645,7 +645,7 @@
     },
     {
       "name": "Lesser Potion of Waterbreathing",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -655,7 +655,7 @@
     },
     {
       "name": "Potion of Waterbreathing",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -665,7 +665,7 @@
     },
     {
       "name": "Greater Potion of Waterbreathing",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -675,7 +675,7 @@
     },
     {
       "name": "Lesser Potion of Bear’s Strength",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -685,7 +685,7 @@
     },
     {
       "name": "Potion of Bear’s Strength",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -695,7 +695,7 @@
     },
     {
       "name": "Greater Potion of Bear’s Strength",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -705,7 +705,7 @@
     },
     {
       "name": "Lesser Potion of Cat’s Speed",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -715,7 +715,7 @@
     },
     {
       "name": "Potion of Cat’s Speed",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -725,7 +725,7 @@
     },
     {
       "name": "Greater Potion of Cat’s Speed",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -735,7 +735,7 @@
     },
     {
       "name": "Lesser Potion of Owl’s Wisdom",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -745,7 +745,7 @@
     },
     {
       "name": "Potion of Owl’s Wisdom",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -755,7 +755,7 @@
     },
     {
       "name": "Greater Potion of Owl’s Wisdom",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -765,7 +765,7 @@
     },
     {
       "name": "Lesser Potion of Badger’s Magnetism",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -775,7 +775,7 @@
     },
     {
       "name": "Potion of Badger’s Magnetism",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -785,7 +785,7 @@
     },
     {
       "name": "Greater Potion of Badger’s Magnetism",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -795,7 +795,7 @@
     },
     {
       "name": "Potion of Lowlight Vision",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -805,7 +805,7 @@
     },
     {
       "name": "Potion of Darkvision",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -815,7 +815,7 @@
     },
     {
       "name": "Potion of Spirit Vision",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -825,7 +825,7 @@
     },
     {
       "name": "Potion of Mage Vision",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -835,7 +835,7 @@
     },
     {
       "name": "Potion of Truthseeking",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -845,7 +845,7 @@
     },
     {
       "name": "Lesser Potion of the Mule",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -855,7 +855,7 @@
     },
     {
       "name": "Potion of the Mule",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
@@ -865,7 +865,7 @@
     },
     {
       "name": "Greater Potion of the Mule",
-      "category": "Shields",
+      "category": "Potions",
       "kind": "inventory",
       "weight": 0.5,
       "damage": "",
