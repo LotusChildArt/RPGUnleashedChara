@@ -4830,18 +4830,18 @@ if (
                 </p>
 
                 <div class="creator-grid">
-                    <div class="creator-field">
+                    <div class="creator-field creator-gender-field">
                         <span>Gender</span>
                         <input type="text" data-creator-field="gender" placeholder="Gender">
                     </div>
 
-                    <div class="creator-field">
+                    <div class="creator-field creator-age-field">
                         <span>Age</span>
                         <input type="number" min="0" data-creator-field="age" placeholder="Age">
                         <div class="creator-guidance" id="creator-age-guidance"></div>
                     </div>
 
-                    <div class="creator-field full">
+                    <div class="creator-field creator-height-field">
                         <span>Height</span>
                         <div class="creator-height-control">
                             <button class="creator-adjust-button" type="button" data-creator-height-adjust="-12">−</button>
@@ -4855,7 +4855,7 @@ if (
                         <div class="creator-guidance" id="creator-height-guidance"></div>
                     </div>
 
-                    <div class="creator-field">
+                    <div class="creator-field creator-weight-field">
                         <span>Weight</span>
                         <div class="creator-weight-control">
                             <input type="number" min="1" step="1" data-creator-field="weight" placeholder="Weight">
@@ -5094,7 +5094,7 @@ if (
                 </div>
 
                 <div class="creator-review-warning">
-                    Base racial adjustments and the selected Path are applied here. Cultural Traits, racial variants, mixed-race rules, the dedicated feat step, and the full equipment step will be added later.
+                    Base racial adjustments and the selected Path are applied here. Cultural Racial variants, mixed-race rules, the dedicated feat step, and the full equipment step will be added later.
                 </div>
             </section>
 
@@ -17876,19 +17876,19 @@ const CREATOR_COMMON_HAIR_STYLES = [
 const RPG_CREATOR_APPEARANCE = {
     "Human": {
         styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
-        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White"],
+        hair: ["Black", "Brown", "Blonde", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White"],
         eyes: ["Brown", "Blue", "Green", "Hazel", "Grey", "Amber"],
         sclera: []
     },
     "Elf": {
         styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
-        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Gold", "Platinum", "Green", "Blue"],
+        hair: ["Black", "Brown", "Blonde", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Gold", "Platinum", "Green", "Blue"],
         eyes: ["Brown", "Blue", "Green", "Hazel", "Grey", "Amber", "Silver", "Gold", "Platinum", "Rain Drop"],
         sclera: []
     },
     "Dwarf": {
         styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
-        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Silver", "Gold", "Copper", "Brass"],
+        hair: ["Black", "Brown", "Blonde", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Silver", "Gold", "Copper", "Brass"],
         eyes: ["Brown", "Green", "Hazel", "Amber", "Copper", "Gold", "Charcoal"],
         sclera: []
     },
@@ -17900,13 +17900,13 @@ const RPG_CREATOR_APPEARANCE = {
     },
     "Halfling": {
         styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
-        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Brass"],
+        hair: ["Black", "Brown", "Blonde", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Brass"],
         eyes: ["Brown", "Green", "Hazel", "Amber", "Copper", "Charcoal"],
         sclera: []
     },
     "Gnome": {
         styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
-        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Gold", "Copper", "Brass", "Pink", "Light Blue", "Pale Green"],
+        hair: ["Black", "Brown", "Blonde", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Gold", "Copper", "Brass", "Pink", "Light Blue", "Pale Green"],
         eyes: ["Brown", "Blue", "Green", "Hazel", "Amber", "Sapphire", "Emerald", "Grey", "Violet", "Starlight Blue"],
         sclera: []
     },
@@ -17918,7 +17918,7 @@ const RPG_CREATOR_APPEARANCE = {
     },
     "Furfolk": {
         styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
-        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White"],
+        hair: ["Black", "Brown", "Blonde", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White"],
         eyes: ["Brown", "Green", "Hazel", "Amber", "Yellow", "Icy Blue", "Deep Blue", "Red", "Violet"],
         sclera: []
     },
@@ -17957,7 +17957,7 @@ const RPG_CREATOR_APPEARANCE = {
     },
     "Manakeen": {
         styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky", "Spiked", "Braided", "Layered", "Metallic-like Strands", "Neon-lit Wisps"],
-        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "White", "Grey", "Gold", "Copper", "Silver", "Neon Blue", "Bright Green", "Radiant Purple"],
+        hair: ["Black", "Brown", "Blonde", "Red", "Auburn", "White", "Grey", "Gold", "Copper", "Silver", "Neon Blue", "Bright Green", "Radiant Purple"],
         eyes: ["Yellow", "Blue", "Green", "Red", "Orange", "Gold", "Violet", "Cyan", "Pink", "White", "Bright Neon Colors"],
         sclera: ["White", "Black", "Red", "Blue", "Violet", "Green", "Matching Eye Color"]
     }
@@ -19307,6 +19307,7 @@ function makeFreshCreatorDraft() {
         playerName: "",
         race: "",
         raceChoice: "",
+        culturalTraits: [],
         gender: "",
         age: "",
         heightFeet: 5,
@@ -21033,11 +21034,9 @@ function renderCreatorAppearanceControls() {
 
     renderCreatorSelect(
         "creator-sclera-color",
-        appearance.sclera || [],
+        appearance.sclera?.length ? appearance.sclera : ["White"],
         creatorDraft?.scleraColor || "",
-        appearance.sclera?.length
-            ? "Choose sclera color"
-            : "Not specified"
+        "Choose sclera color"
     );
 
     const hairOther =
@@ -21981,8 +21980,25 @@ function renderCreatorValidation() {
         "";
 }
 
+const RPG_CULTURAL_TRAITS = {"Human":["Adaptive Learner","Attribute Versatility","Cultural Exchange","Skill Adept","Resilient Spirit","Social Chameleon","Survivor’s Instinct","Resourceful","Environmental Adaptability"],"Elf":["Elven Longevity","Natural Spellcasters","Lightfooted","Trueshot"],"Dwarf":["Golden Eye","Stout Constitution","Stonecrafter’s Precision","Mountain's Heart","Forge-Tempered"],"Orc":["Slave Master","Orcish Resolve","Thickened Hide","Critical Determination"],"Halfling":["Earthen Affinity","Size Agility","Lucky","Uncanny Forager","Charismatic Caster","Halfling Hospitality"],"Gnome":["Ingenious Tinkerer","Size Agility","Natural Spellcasters","Magical Resistance"],"Traiggoblin":["Scent Sniffer","Unexpected Charm","Agile Build","Survival Instincts","Escapist"],"Furfolk":["Scent Sniffer","Pack Dynamics","Natural Climbers","Primal Awareness","Backed into a Corner","Predatory Stealth","Bestial Hide"],"Zizses":["Thermal Sense","Scale Armor","Venomous Heritage","Sunbather"],"Av’riahl":["Thunder Bird","Fly-By Attack","Dazzling Voice","Mana-Infused Feathers"],"Arrahsect":["Advanced Pheromones","Resilient Metabolism","Nomadic Resilience","Nomadic Burrows"],"Terrán":["Floral Photosynthesis","Hardened Bark","Earthwalk","Entangling Roots","Home Soil"],"Shroomite":["Dark Adept","Fungal Resilience","Earthwalk","Soil Sense","Sporeghast"],"Manakeen":["Mana Machine","Departed Loved One","Overload Strike","Advanced Sensors","Built-In Defenses","Mechanical Syphon"]};
+function renderCreatorTraits() {
+ const grid=document.getElementById("creator-race-grid");
+ if(!grid)return;
+ let el=document.getElementById("creator-cultural-traits");
+ if(!el){el=document.createElement("div");el.id="creator-cultural-traits";grid.after(el);}
+ const names=RPG_CULTURAL_TRAITS[creatorDraft?.race]||[];
+ if(!names.length){el.replaceChildren();return;}
+ const chosen=Array.isArray(creatorDraft.culturalTraits)?creatorDraft.culturalTraits:[];
+ el.replaceChildren();
+ const h=document.createElement("h3");h.textContent="Cultural Traits — choose 2";
+ const p=document.createElement("p");p.textContent="Choose two distinct cultural traits from your race.";el.append(h,p);
+ const wrap=document.createElement("div");wrap.className="creator-traits-grid";
+ for(const name of names){const label=document.createElement("label");label.className="creator-trait-option";const box=document.createElement("input");box.type="checkbox";box.checked=chosen.includes(name);box.disabled=!box.checked&&chosen.length>=2;box.addEventListener("change",()=>{let a=Array.isArray(creatorDraft.culturalTraits)?creatorDraft.culturalTraits:[];creatorDraft.culturalTraits=box.checked?[...a,name].slice(0,2):a.filter(x=>x!==name);renderCreatorTraits()});label.append(box,document.createTextNode(" "+name));wrap.appendChild(label)}el.appendChild(wrap);
+}
+
 function renderCharacterCreator() {
     renderCreatorRaceGrid();
+    renderCreatorTraits();
     renderCreatorRaceSummary();
     renderCreatorDetailGuidance();
     renderCreatorAppearanceControls();
@@ -22326,6 +22342,12 @@ async function createGuidedCharacter() {
             creatorAddInventoryPackage(creatorResolvedPathChoice("gear"));
         }
         creatorApplyOriginSkillEffects();creatorApplyRoleBonus(0);creatorApplyRoleBonus(1);
+        if(creatorDraft.culturalTraits?.length){
+          document.getElementById("add-note")?.click();
+          const note=document.querySelector("#notes-list .note-card:last-child");
+          setInputValueAndNotify(note?.querySelector(".note-title"),"Cultural Traits");
+          setInputValueAndNotify(note?.querySelector(".note-body"),creatorDraft.culturalTraits.join("\n"));
+        }
 
         [
             "bod",
