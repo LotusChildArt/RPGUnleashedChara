@@ -18521,63 +18521,64 @@ const RPG_CREATOR_PATH_ORIGINS = [
         ]
     },
     {
-        "name": "Guardian",
-        "description": "A sacred item, an important person, a place of reverence, it doesn’t matter what it is, you were trained to guard it with your life. Whether you came to end up here of your own choice or you were selected for it from childhood, this is what you know best.",
-        "wealth": "3d6 Gold",
-        "gear": [
-            {
-                "name": "Ritualist’s Regalia",
-                "text": "Common robes, a ceremonial dagger, a vial of sacred oil, and an amulet of your faith (worth 1d4 gold)."
-            },
-            {
-                "name": "Ascetic’s Bundle",
-                "text": "Plain common clothes, a wooden staff (treat as quarterstaff in combat), a prayer book, and a week’s worth of dried rations."
-            },
-            {
-                "name": "Heretic’s Tools",
-                "text": "Common clothes, a tattered hooded cloak, a hidden dagger, and a forged holy symbol to disguise your past (DC 20 to see past)."
-            },
-            {
-                "name": "Doctrine Keeper’s Pack",
-                "text": "Common robes, a collection of scrolls with obscure religious texts, a quill and ink, and a silver-plated book clasp."
-            }
-        ],
-        "perks": [
-            {
-                "name": "Fanatical Focus",
-                "text": "+2 to MND saves."
-            },
-            {
-                "name": "Esoteric Knowledge",
-                "text": "+2 to Knowledge (Religion or The Planes) and +1 to Research."
-            },
-            {
-                "name": "Divine Favor",
-                "text": "Once per day, after failing a roll, you may pray or call upon your faith for guidance. Roll 1d4 and add the result to your failed check."
-            },
-            {
-                "name": "Zealous Conviction",
-                "text": "Once per day, when rolling a Persuade check to spread belief or manipulate through doctrine, roll twice and take the better result."
-            }
-        ],
-        "drawbacks": [
-            {
-                "name": "Hunted by the Faithful",
-                "text": "Your former cult considers you a traitor, heretic, or lost soul that must be redeemed… or silenced. Once per session, the GM may introduce agents of your former cult, such as bounty hunters, inquisitors, spies, or zealous believers, who seek to bring you back or eliminate you. You may have left the cult, but the cult hasn’t left you."
-            },
-            {
-                "name": "Marked by the Faith",
-                "text": "A tattoo, brand, or ritual scar marks you as a former (or current) cultist. Hiding it requires effort, and those who recognize it may react with fear, disgust, or reverence."
-            },
-            {
-                "name": "Sacrificial Instinct",
-                "text": "The cult taught you that self-sacrifice was noble and expected. When an ally is in danger, you must make a MND save (DC 15) to avoid instinctively putting yourself at risk for their sake, even if it would be unwise. The need to offer yourself up never quite left you."
-            },
-            {
-                "name": "The One True Path",
-                "text": "When encountering another religion, make a MND save (DC 15) to resist the urge to challenge, convert, or debate a believer."
-            }
-        ]
+    {
+            "name": "Guardian",
+            "description": "You were trained to guard a person, place, or thing with your life. You know watch-rotations, choke points, escort routes, and what it feels like to stay awake when everyone else sleeps.",
+            "wealth": "3d6 Gold",
+            "gear": [
+                    {
+                            "name": "Shieldbearer’s Kit",
+                            "text": "Common clothes, shield, short spear or shortsword, armored coat armor, whistle."
+                    },
+                    {
+                            "name": "Watchman’s Loadout",
+                            "text": "Common clothes, crossbow (10 bolts) or long spear, lantern, manacles, heavy coat armor."
+                    },
+                    {
+                            "name": "Bodyguard’s Set",
+                            "text": "Common clothes, concealed dagger, mace or shortsword, armored coat armor, “letter of employment” or token of office (worth 1d4 gold)."
+                    },
+                    {
+                            "name": "Warden’s Pack",
+                            "text": "Common clothes, halberd or long spear, chalk + cord (for marking/tying), basic tools (hammer + 10 iron spikes), small keepsake of what you once guarded (worth 1d4 gold)."
+                    }
+            ],
+            "perks": [
+                    {
+                            "name": "Vigilant Eye",
+                            "text": "+2 to Detect checks made to spot ambushes, hidden creatures, traps, or suspicious behavior."
+                    },
+                    {
+                            "name": "Interpose",
+                            "text": "Once per fight, when a creature within 5 feet would hit an ally adjacent to you, you may force the attack to target you instead (after the hit is confirmed, before damage is rolled)."
+                    },
+                    {
+                            "name": "Guard’s Discipline",
+                            "text": "+2 to MND saves made to resist fear, intimidation, coercion, or panic."
+                    },
+                    {
+                            "name": "Hold the Line",
+                            "text": "Once per day, you may take an Interrupt Action when one or more enemies within 5 feet of you try to move out of that range. Contest BOD against each. On a success, shove the enemy 5 feet to a legal space and its movement ends. On a failure, it moves normally."
+                    }
+            ],
+            "drawbacks": [
+                    {
+                            "name": "Oath Before Self",
+                            "text": "When a nearby ally (or the thing/person you’re sworn to) is threatened, make a MND save (DC 15) to avoid reflexively putting yourself in danger to protect them, even when it’s tactically awful."
+                    },
+                    {
+                            "name": "Recognizable Manner",
+                            "text": "You move like a guard. Take -2 to Deceive when pretending to be “harmless,” “uninvolved,” or “not security.”"
+                    },
+                    {
+                            "name": "Hypervigilance",
+                            "text": "In unsafe or unfamiliar places, make a MND save (DC 15) before resting; on a fail, you gain only half the normal benefit of that rest."
+                    },
+                    {
+                            "name": "Old Post, Old Enemy",
+                            "text": "Once per session, the GM may introduce a complication tied to your former duty: someone who remembers you, a rival guard, a beneficiary who expects protection, or an enemy who blames you for what you guarded (or failed to guard)."
+                    }
+            ]
     },
     {
         "name": "Cultist",
