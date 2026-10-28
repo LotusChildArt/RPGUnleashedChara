@@ -1792,6 +1792,276 @@
       "defense": "",
       "description": "Metal restraints bound in chains with locks and keys to keep an individual in place.",
       "sourceText": "Cost: 3 Gold | Weight: 4 lbs\nDescription: Metal restraints bound in chains with locks and keys to keep an individual in place."
+    },
+    {
+      "name": "Wooden Buckler",
+      "category": "Shields",
+      "kind": "shield",
+      "weight": 4,
+      "damage": "",
+      "defense": "+1 / +1 / 0",
+      "description": "1d4 dmg",
+      "sourceText": "DR/Deflection Bonus/Dex Penalty: +1 / +1 / 0 | Cost: 18 Gold | Weight: 4 lbs\nSpecial: Does not need to be held.\nDescription: 1d4 dmg"
+    },
+    {
+      "name": "Wooden Round Shield",
+      "category": "Shields",
+      "kind": "shield",
+      "weight": 6,
+      "damage": "",
+      "defense": "+1 / +2 / -1",
+      "description": "1d6 dmg",
+      "sourceText": "DR/Deflection Bonus/Dex Penalty: +1 / +2 / -1 | Cost: 24 Gold | Weight: 6 lbs\nSpecial: N/A\nDescription: 1d6 dmg"
+    },
+    {
+      "name": "Wooden Kite Shield",
+      "category": "Shields",
+      "kind": "shield",
+      "weight": 8,
+      "damage": "",
+      "defense": "+2 / +2 / -3",
+      "description": "1d8",
+      "sourceText": "DR/Deflection Bonus/Dex Penalty: +2 / +2 / -3 | Cost: 30 Gold | Weight: 8 lbs\nSpecial: N/A\nDescription: 1d8"
+    },
+    {
+      "name": "Steel Teardrop Shield",
+      "category": "Shields",
+      "kind": "shield",
+      "weight": 2,
+      "damage": "",
+      "defense": "+1 / +1 / 0",
+      "description": "2d4",
+      "sourceText": "DR/Deflection Bonus/Dex Penalty: +1 / +1 / 0 | Cost: 35 Gold | Weight: 2 lbs\nSpecial: Does not need to be held. 1d6 dmg\nDescription: 2d4"
+    },
+    {
+      "name": "Steel Heavy Shield",
+      "category": "Shields",
+      "kind": "shield",
+      "weight": 8,
+      "damage": "",
+      "defense": "+3 / +3 / -4",
+      "description": "2d6",
+      "sourceText": "DR/Deflection Bonus/Dex Penalty: +3 / +3 / -4 | Cost: 55 Gold | Weight: 8 lbs\nSpecial: \nDescription: 2d6"
+    },
+    {
+      "name": "Bashing Shield",
+      "category": "Shields",
+      "kind": "shield",
+      "weight": 8,
+      "damage": "",
+      "defense": "+4 / +2 / -3",
+      "description": "2d6",
+      "sourceText": "DR/Deflection Bonus/Dex Penalty: +4 / +2 / -3 | Cost: 75 Gold | Weight: 8 lbs\nSpecial: \nDescription: 2d6"
+    },
+    {
+      "name": "Tower Shield",
+      "category": "Shields",
+      "kind": "shield",
+      "weight": 13,
+      "damage": "",
+      "defense": "+6 / +4 / -6",
+      "description": "3d4",
+      "sourceText": "DR/Deflection Bonus/Dex Penalty: +6 / +4 / -6 | Cost: 100 Gold | Weight: 13 lbs\nSpecial: \nDescription: 3d4"
+    },
+    {
+      "name": "Studded",
+      "category": "Armor Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "+1 / +1 / 0",
+      "description": "Small metal studs are added",
+      "sourceText": "Modification: Studded\nCost: +50% | DR: +1 | Def: +1 | Dex: 0\nDescription: Small metal studs are added\nSpecial: Added to Coats/Leather"
+    },
+    {
+      "name": "Banded",
+      "category": "Armor Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "-1 / +1 / +1",
+      "description": "Armor is separated and re-bound for better mobility",
+      "sourceText": "Modification: Banded\nCost: +30% | DR: -1 | Def: +1 | Dex: +1\nDescription: Armor is separated and re-bound for better mobility\nSpecial: Added to Leather/Plate"
+    },
+    {
+      "name": "Leather Framing",
+      "category": "Armor Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "+1 / 0 / +1",
+      "description": "Metal is framed with leather to reinforce.",
+      "sourceText": "Modification: Leather Framing\nCost: +20% | DR: +1 | Def: 0 | Dex: +1\nDescription: Metal is framed with leather to reinforce.\nSpecial: Added to Chain/Plate"
+    },
+    {
+      "name": "Chained Joints",
+      "category": "Armor Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "+1 / 0 / -1",
+      "description": "Chainmail is used to cover weak points.",
+      "sourceText": "Modification: Chained Joints\nCost: +50% | DR: +1 | Def: 0 | Dex: -1\nDescription: Chainmail is used to cover weak points.\nSpecial: Added to Leather/Plate\nDex wont bypass."
+    },
+    {
+      "name": "Spiked",
+      "category": "Armor Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "0 / 0 / 0",
+      "description": "Spikes are added to armor to deal damage to any attacker within 5ft when they attack.",
+      "sourceText": "Modification: Spiked\nCost: +80% | DR: 0 | Def: 0 | Dex: 0\nDescription: Spikes are added to armor to deal damage to any attacker within 5ft when they attack.\nSpecial: Added to Plate\n+1d4 Dmg to adjacent attacker."
+    },
+    {
+      "name": "Masterwork",
+      "category": "Armor Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "+1 / +1 / +1",
+      "description": "",
+      "sourceText": "Modification: Masterwork\nCost: x3 | DR: +1 | Def: +1 | Dex: +1\nDescription: \nSpecial: Added to Anything"
+    },
+    {
+      "name": "Masterwork (Dwarven)",
+      "category": "Armor Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "+2 / +1 / -1",
+      "description": "",
+      "sourceText": "Modification: Masterwork (Dwarven)\nCost: x5 | DR: +2 | Def: +1 | Dex: -1\nDescription: \nSpecial: Requires Masterwork\nAdded to Plate"
+    },
+    {
+      "name": "Masterwork (Elven)",
+      "category": "Armor Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "+1 / +2 / 0",
+      "description": "",
+      "sourceText": "Modification: Masterwork (Elven)\nCost: x5 | DR: +1 | Def: +2 | Dex: 0\nDescription: \nSpecial: Requires Masterwork\nAdded to Leather"
+    },
+    {
+      "name": "Masterwork (Orcish)",
+      "category": "Armor Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "+2 / +1 / 0",
+      "description": "",
+      "sourceText": "Modification: Masterwork (Orcish)\nCost: x5 | DR: +2 | Def: +1 | Dex: 0\nDescription: \nSpecial: Requires Masterwork\nAdded to Leather"
+    },
+    {
+      "name": "Studded",
+      "category": "Shield Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "0 / +1 / 0",
+      "description": "",
+      "sourceText": "Modification: Studded\nCost: +50% | DR: 0 | Dflc: +1 | Dex: 0"
+    },
+    {
+      "name": "Rivet and Bands",
+      "category": "Shield Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "+2 / +1 / -1",
+      "description": "",
+      "sourceText": "Modification: Rivet and Bands\nCost: +50% | DR: +2 | Dflc: +1 | Dex: -1"
+    },
+    {
+      "name": "Leather Surfacing",
+      "category": "Shield Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "+1 / 0 / 0",
+      "description": "",
+      "sourceText": "Modification: Leather Surfacing\nCost: +30% | DR: +1 | Dflc: 0 | Dex: 0"
+    },
+    {
+      "name": "Arm Strapping",
+      "category": "Shield Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "0 / 0 / +1",
+      "description": "",
+      "sourceText": "Modification: Arm Strapping\nCost: +30% | DR: 0 | Dflc: 0 | Dex: +1"
+    },
+    {
+      "name": "Spiked",
+      "category": "Shield Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "0 / +1 / -1",
+      "description": "",
+      "sourceText": "Modification: Spiked\nCost: +80% | DR: 0 | Dflc: +1 | Dex: -1"
+    },
+    {
+      "name": "Metal Framing",
+      "category": "Shield Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "+1 / +1 / -1",
+      "description": "",
+      "sourceText": "Modification: Metal Framing\nCost: +75% | DR: +1 | Dflc: +1 | Dex: -1"
+    },
+    {
+      "name": "Steel Material",
+      "category": "Shield Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "+2 / +1 / -2",
+      "description": "",
+      "sourceText": "Modification: Steel Material\nCost: x2 | DR: +2 | Dflc: +1 | Dex: -2"
+    },
+    {
+      "name": "Masterwork",
+      "category": "Shield Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "+1 / +1 / -1",
+      "description": "",
+      "sourceText": "Modification: Masterwork\nCost: x3 | DR: +1 | Dflc: +1 | Dex: -1"
+    },
+    {
+      "name": "Masterwork (Dwarven)",
+      "category": "Shield Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "+2 / +1 / -2",
+      "description": "",
+      "sourceText": "Modification: Masterwork (Dwarven)\nCost: x5 | DR: +2 | Dflc: +1 | Dex: -2"
+    },
+    {
+      "name": "Masterwork (Elven)",
+      "category": "Shield Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "+1 / +2 / -1",
+      "description": "",
+      "sourceText": "Modification: Masterwork (Elven)\nCost: x5 | DR: +1 | Dflc: +2 | Dex: -1"
+    },
+    {
+      "name": "Masterwork (Orcish)",
+      "category": "Shield Customization",
+      "kind": "modification",
+      "weight": 0,
+      "damage": "",
+      "defense": "+2 / +2 / -3",
+      "description": "",
+      "sourceText": "Modification: Masterwork (Orcish)\nCost: x5 | DR: +2 | Dflc: +2 | Dex: -3"
     }
   ]
 }
