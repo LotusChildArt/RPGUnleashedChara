@@ -3,7 +3,7 @@
 
 <head>
 
-<link rel="manifest" href="/manifest.json?build=1.59.0">
+<link rel="manifest" href="/manifest.json?build=1.60.0">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="theme-color" content="#ffffff">
@@ -4540,7 +4540,13 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
 
 </style>
 
-<link rel="stylesheet" href="/dark-mode.css?build=1.59.0">
+<link rel="stylesheet" href="/dark-mode.css?build=1.60.0">
+<style>
+/* All repeatable rows, including the first, have removable controls. */
+#feat-list .feat-row:first-child .remove-feat,#skill-bonus-section .skill-bonus-row:first-child .remove-skill-bonus,#inventory-list .inventory-row:first-child .remove-inventory-item{visibility:visible!important;display:inline-flex!important;opacity:1!important;}
+html.rpg-dark #gear-catalog-overlay .gear-catalog-panel,html.rpg-dark #gear-catalog-overlay .gear-entry{background:var(--rpg-surface)!important;color:var(--rpg-fg)!important;border-color:var(--rpg-edge)!important;}
+html.rpg-dark #gear-catalog-overlay input,html.rpg-dark #gear-catalog-overlay select,html.rpg-dark #gear-catalog-overlay button{background:var(--rpg-raised)!important;color:var(--rpg-fg)!important;border-color:var(--rpg-edge)!important;}
+</style>
 </head>
 
 
@@ -9086,6 +9092,7 @@ function removeFreshPlaceholderRows() {
     const tab = document.getElementById("tab2");
     if (!tab) return;
     tab.querySelectorAll("#skill-bonus-section .skill-bonus-row, #feat-list .feat-row").forEach(row => row.remove());
+    document.querySelectorAll("#inventory-list .inventory-row").forEach(row => row.remove());
 }
 
 function restoreCharacterTabs(
@@ -22168,7 +22175,7 @@ function setInputValueAndNotify(
 function creatorFindBlankRow(selector,blankSelector){return Array.from(document.querySelectorAll(selector)).find(r=>!String(r.querySelector(blankSelector)?.value||"").trim())||null;}
 function creatorAddSkillBonus(skill,bonus,special=""){let r=creatorFindBlankRow("#skill-bonus-section .skill-bonus-row",".skill-select");if(!r){document.getElementById("add-skill-bonus")?.click();r=document.querySelector("#skill-bonus-section .skill-bonus-row:last-child");}if(!r)return;const s=r.querySelector(".skill-select");if(s){s.value=skill;s.dispatchEvent(new Event("change",{bubbles:true}));}setInputValueAndNotify(r.querySelector(".skill-bonus-input"),bonus);setInputValueAndNotify(r.querySelector(".skill-special-input"),special);}
 function creatorAddLanguage(language){let r=creatorFindBlankRow("#languages-list .background-entry-row",'input[placeholder="Language"]');if(!r){document.getElementById("add-language")?.click();r=document.querySelector("#languages-list .background-entry-row:last-child");}setInputValueAndNotify(r?.querySelector('input[placeholder="Language"]'),language);}
-function creatorAddFeat(feat,description){let r=creatorFindBlankRow("#feat-list .feat-row",".feat-input");if(!r){document.getElementById("add-feat")?.click();r=document.querySelector("#feat-list .feat-row:last-child");}setInputValueAndNotify(r?.querySelector(".feat-input"),feat);setInputValueAndNotify(r?.querySelector(".feat-description"),description);}
+function creatorAddFeat(feat,description){let r=creatorFindBlankRow("#feat-list .feat-row",".feat-input");if(!r){if(typeof window.RPGAddCatalogFeat==="function")window.RPGAddCatalogFeat(null);else document.getElementById("add-feat")?.click();r=document.querySelector("#feat-list .feat-row:last-child");}setInputValueAndNotify(r?.querySelector(".feat-input"),feat);setInputValueAndNotify(r?.querySelector(".feat-description"),description);}
 function creatorAddInventoryPackage(p){if(!p)return;let r=creatorFindBlankRow("#inventory-list .inventory-row",".inventory-item-input");if(!r){document.getElementById("add-inventory-item")?.click();r=document.querySelector("#inventory-list .inventory-row:last-child");}setInputValueAndNotify(r?.querySelector(".inventory-item-input"),p.name);setInputValueAndNotify(r?.querySelector(".inventory-description"),(p.borrowed?"Borrowed from "+p.source+". ":"")+p.text);}
 function creatorApplyRoleBonus(i){const b=creatorRoleBonusResolved(i);if(!b)return;if(b.type==="skill"||b.type==="knowledge"){creatorAddSkillBonus(b.value,2,"Role Bonus");return;}if(b.type==="language"){creatorAddLanguage(b.value);return;}creatorAddFeat(b.value,b.type==="gearFeat"?"Role Bonus: free Gear Feat":"Role Bonus: free Craft Feat");}
 function creatorApplyOriginSkillEffects(){const p=creatorResolvedPathChoice("perk"),d=creatorResolvedPathChoice("drawback"),effects=[...(RPG_CREATOR_PATH_SKILL_EFFECTS.perks[p?.name]||[]),...(RPG_CREATOR_PATH_SKILL_EFFECTS.drawbacks[d?.name]||[])];effects.forEach(e=>creatorAddSkillBonus(e[0],e[1],e[2]));}
@@ -22313,7 +22320,11 @@ async function createGuidedCharacter() {
         setInputValueAndNotify(pathSection?.querySelector('textarea[placeholder="Drawback"]'),creatorPathChoiceText("drawback")+(creatorResolvedPathChoice("drawback")?.name==="Malnourished Development"&&creatorDraft.drawbackExtra?" ("+creatorDraft.drawbackExtra.toUpperCase()+")":""));
         setInputValueAndNotify(pathSection?.querySelector('textarea[placeholder="Drive"]'),creatorDraft.drive);
         setInputValueAndNotify(document.querySelector("#tab3 .inventory-currency-row input"),getCreatorOrigin()?.wealth||"");
-        creatorAddInventoryPackage(creatorResolvedPathChoice("gear"));
+        if (typeof window.RPGPopulateStartingGear === "function") {
+            await window.RPGPopulateStartingGear(creatorResolvedPathChoice("gear"));
+        } else {
+            creatorAddInventoryPackage(creatorResolvedPathChoice("gear"));
+        }
         creatorApplyOriginSkillEffects();creatorApplyRoleBonus(0);creatorApplyRoleBonus(1);
 
         [
@@ -23957,7 +23968,7 @@ showAppScreen(
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker
-            .register("/service-worker.js?build=1.59.0", { scope: "/" })
+            .register("/service-worker.js?build=1.60.0", { scope: "/" })
             .catch(error => {
                 console.error(
                     "Service worker registration failed:",
@@ -24110,8 +24121,9 @@ if ("serviceWorker" in navigator) {
 })();
 </script>
 
-<script src="/levelup.js?build=1.59.0" defer></script>
-<script src="/theme.js?build=1.59.0"></script>
+<script src="/levelup.js?build=1.60.0" defer></script>
+<script src="/theme.js?build=1.60.0"></script>
+<script src="/gear-integration.js?build=1.60.0"></script>
 </body>
 
 </html>

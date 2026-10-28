@@ -1,0 +1,1797 @@
+{
+  "source": "Gear v3",
+  "sourceUrl": "https://docs.google.com/document/d/12EAEEp2wRZQXzxYqrHKcixGfPWUjqzmWna_FLcqg_H0/edit",
+  "notes": "Some source gear is variant-based; raw text retained. Verify selection against source.",
+  "items": [
+    {
+      "name": "Brass Knuckles",
+      "category": "Light Weapons",
+      "kind": "weapon",
+      "weight": 1,
+      "damage": "1d4 + Unarmed Dmg",
+      "defense": "",
+      "description": "Thick metal shaped to fit around the knuckles.",
+      "sourceText": "Dmg: 1d4 + Unarmed Dmg | Cost: 5 Silver | Weight: 1 lbs\nRange: N/A\nSpecial: 1H, B, Lethal Dmg, Counts as Unarmed, Cannot Grapple while Using\nDescription: Thick metal shaped to fit around the knuckles."
+    },
+    {
+      "name": "Club",
+      "category": "Light Weapons",
+      "kind": "weapon",
+      "weight": 2,
+      "damage": "1d4",
+      "defense": "",
+      "description": "A 2 or 3 foot piece of wood",
+      "sourceText": "Dmg: 1d4 | Cost: 3 Silver | Weight: 2 lbs\nRange: N/A\nSpecial: SW, B\nDescription: A 2 or 3 foot piece of wood"
+    },
+    {
+      "name": "Dagger",
+      "category": "Light Weapons",
+      "kind": "weapon",
+      "weight": 1,
+      "damage": "1d4",
+      "defense": "",
+      "description": "A handheld dagger that can be swung, can be used to stab and slash.",
+      "sourceText": "Dmg: 1d4 | Cost: 8 Silver | Weight: 1 lbs\nRange: 10 ft.\nSpecial: 1H, E, Incisive 1, Hidden\nDescription: A handheld dagger that can be swung, can be used to stab and slash."
+    },
+    {
+      "name": "Dagger, Thrown",
+      "category": "Light Weapons",
+      "kind": "weapon",
+      "weight": 1,
+      "damage": "1d4",
+      "defense": "",
+      "description": "A handheld dagger that is similar to normal daggers except that it is designed to be thrown.",
+      "sourceText": "Dmg: 1d4 | Cost: 1 Gold | Weight: 1 lbs\nRange: 10 ft.\nSpecial: 1H, E, PR, Hidden, +2 Range\nDescription: A handheld dagger that is similar to normal daggers except that it is designed to be thrown."
+    },
+    {
+      "name": "Dagger, Punching",
+      "category": "Light Weapons",
+      "kind": "weapon",
+      "weight": 2,
+      "damage": "1d4+Unarmed Dmg",
+      "defense": "",
+      "description": "A fistheld dagger that has a horizontal handle and a blade that protrudes from between your middle and ring fingers.",
+      "sourceText": "Dmg: 1d4+Unarmed Dmg | Cost: 1 Gold, 5 Silver | Weight: 2 lbs\nRange: N/A\nSpecial: 1H, E, Armor Piercing 1, Can only be used for BOD attack\nDescription: A fistheld dagger that has a horizontal handle and a blade that protrudes from between your middle and ring fingers."
+    },
+    {
+      "name": "Gauntlet",
+      "category": "Light Weapons",
+      "kind": "weapon",
+      "weight": 3,
+      "damage": "1d4+Unarmed Dmg",
+      "defense": "",
+      "description": "A glove armed in metal. Unlike brassed knuckles, a person may hold a weapon while also wearing Gauntlets which allows for a quick switch between the two.",
+      "sourceText": "Dmg: 1d4+Unarmed Dmg | Cost: 6 Gold | Weight: 3 lbs\nRange: N/A\nSpecial: 2H, B, Lethal Dmg, Counts as Unarmed, Cannot Grapple while Using\nDescription: A glove armed in metal. Unlike brassed knuckles, a person may hold a weapon while also wearing Gauntlets which allows for a quick switch between the two."
+    },
+    {
+      "name": "Handaxe",
+      "category": "Light Weapons",
+      "kind": "weapon",
+      "weight": 3,
+      "damage": "1d6",
+      "defense": "",
+      "description": "A small handheld axe.",
+      "sourceText": "Dmg: 1d6 | Cost: 3 Gold | Weight: 3 lbs\nRange: 10 ft.\nSpecial: 1H, E\nDescription: A small handheld axe."
+    },
+    {
+      "name": "Mace",
+      "category": "Light Weapons",
+      "kind": "weapon",
+      "weight": 3,
+      "damage": "1d6",
+      "defense": "",
+      "description": "A small dense heavy ball, block or flanged shape on a handle.",
+      "sourceText": "Dmg: 1d6 | Cost: 2 Gold | Weight: 3 lbs\nRange: N/A\nSpecial: 1H, B\nDescription: A small dense heavy ball, block or flanged shape on a handle."
+    },
+    {
+      "name": "Quarterstaff",
+      "category": "Light Weapons",
+      "kind": "weapon",
+      "weight": 3,
+      "damage": "1d4",
+      "defense": "",
+      "description": "A 6-8 foot staff used for combat.",
+      "sourceText": "Dmg: 1d4 | Cost: 1 Gold | Weight: 3 lbs\nRange: N/A\nSpecial: 2H, B\nDescription: A 6-8 foot staff used for combat."
+    },
+    {
+      "name": "Sickle",
+      "category": "Light Weapons",
+      "kind": "weapon",
+      "weight": 1,
+      "damage": "1d6-1",
+      "defense": "",
+      "description": "A weapon with a crescent shaped blade.",
+      "sourceText": "Dmg: 1d6-1 | Cost: 15 Gold | Weight: 1 lbs\nRange: N/A\nSpecial: 1H, E, High Crit\nDescription: A weapon with a crescent shaped blade."
+    },
+    {
+      "name": "Sword, Short",
+      "category": "Light Weapons",
+      "kind": "weapon",
+      "weight": 3,
+      "damage": "1d6",
+      "defense": "",
+      "description": "A sword about 3 feet long.",
+      "sourceText": "Dmg: 1d6 | Cost: 4 Gold | Weight: 3 lbs\nRange: N/A\nSpecial: 1H, E\nDescription: A sword about 3 feet long."
+    },
+    {
+      "name": "Spear, Short",
+      "category": "Light Weapons",
+      "kind": "weapon",
+      "weight": 3,
+      "damage": "1d6",
+      "defense": "",
+      "description": "A shorter pole with a sharp blade at the end made to keep a distance between the wielder and the opponent.",
+      "sourceText": "Dmg: 1d6 | Cost: 4 Gold | Weight: 3 lbs\nRange: 10 ft\nSpecial: SW, E, PR\nDescription: A shorter pole with a sharp blade at the end made to keep a distance between the wielder and the opponent."
+    },
+    {
+      "name": "Warhammer, Light",
+      "category": "Light Weapons",
+      "kind": "weapon",
+      "weight": 3,
+      "damage": "1d6",
+      "defense": "",
+      "description": "A small handheld hammer with a slightly elongated handle.",
+      "sourceText": "Dmg: 1d6 | Cost: 6 Gold | Weight: 3 lbs\nRange: N/A\nSpecial: SW, B\nDescription: A small handheld hammer with a slightly elongated handle."
+    },
+    {
+      "name": "Dagger, Kris",
+      "category": "Light Exotic Weapons",
+      "kind": "weapon",
+      "weight": 2,
+      "damage": "1d4+2",
+      "defense": "",
+      "description": "A dagger with a very pronounced wavy edge.",
+      "sourceText": "Dmg: 1d4+2 | Cost: 10 Gold | Weight: 2 lbs\nRange: N/A\nSpecial: 1H, E, Incisive 2, Hidden\nDescription: A dagger with a very pronounced wavy edge."
+    },
+    {
+      "name": "Kukri",
+      "category": "Light Exotic Weapons",
+      "kind": "weapon",
+      "weight": 2,
+      "damage": "1d6+2",
+      "defense": "",
+      "description": "A 1 to 2 foot long blade that curves downward.",
+      "sourceText": "Dmg: 1d6+2 | Cost: 14 Gold | Weight: 2 lbs\nRange: N/A\nSpecial: 1H, E, Incisive 2\nDescription: A 1 to 2 foot long blade that curves downward."
+    },
+    {
+      "name": "Kopesh",
+      "category": "Light Exotic Weapons",
+      "kind": "weapon",
+      "weight": 3,
+      "damage": "1d6",
+      "defense": "",
+      "description": "A 2 foot crescent shaped at the end of an otherwise straight blade with a short handle.",
+      "sourceText": "Dmg: 1d6 | Cost: 20 Gold | Weight: 3 lbs\nRange: N/A\nSpecial: 1H, E, Disarm/Trip\nDescription: A 2 foot crescent shaped at the end of an otherwise straight blade with a short handle."
+    },
+    {
+      "name": "Nunchucks",
+      "category": "Light Exotic Weapons",
+      "kind": "weapon",
+      "weight": 1,
+      "damage": "1d6",
+      "defense": "",
+      "description": "2 lengths of dull rounded wood attached by a small length of chain or rope in the center.",
+      "sourceText": "Dmg: 1d6 | Cost: 6 Gold | Weight: 1 lbs\nRange: N/A\nSpecial: 2H, B, Does not do ½ BOD dmg, +1 Strike as FRA, NL Damage\nDescription: 2 lengths of dull rounded wood attached by a small length of chain or rope in the center."
+    },
+    {
+      "name": "Rope Dart",
+      "category": "Light Exotic Weapons",
+      "kind": "weapon",
+      "weight": 2,
+      "damage": "1d4",
+      "defense": "",
+      "description": "A metal spike with a rope tied to it.",
+      "sourceText": "Dmg: 1d4 | Cost: 3 Gold | Weight: 2 lbs\nRange: 10 ft\nSpecial: 2H, E, PR, Disarm/Grapple/Trip\nDescription: A metal spike with a rope tied to it."
+    },
+    {
+      "name": "Sai",
+      "category": "Light Exotic Weapons",
+      "kind": "weapon",
+      "weight": 3,
+      "damage": "1d4+2",
+      "defense": "",
+      "description": "A three pronged dagger-like weapon used to puncture armor.",
+      "sourceText": "Dmg: 1d4+2 | Cost: 8 Gold | Weight: 3 lbs\nRange: N/A\nSpecial: 1H, E, Armor Piercing 2, can only attack with BOD\nDescription: A three pronged dagger-like weapon used to puncture armor."
+    },
+    {
+      "name": "Whip",
+      "category": "Light Exotic Weapons",
+      "kind": "weapon",
+      "weight": 2,
+      "damage": "1d4",
+      "defense": "",
+      "description": "A length of leather or rope attached to a handle.",
+      "sourceText": "Dmg: 1d4 | Cost: 10 Gold | Weight: 2 lbs\nRange: 10 ft.\nSpecial: 1H, +2 Disarm/Trip\nDescription: A length of leather or rope attached to a handle."
+    },
+    {
+      "name": "Whip, Chain",
+      "category": "Light Exotic Weapons",
+      "kind": "weapon",
+      "weight": 3,
+      "damage": "1d6",
+      "defense": "",
+      "description": "A length of braided chain attached to a handle.",
+      "sourceText": "Dmg: 1d6 | Cost: 14 Gold | Weight: 3 lbs\nRange: 10 ft.\nSpecial: 1H, +2 Disarm/Trip\nDescription: A length of braided chain attached to a handle."
+    },
+    {
+      "name": "Club, Great",
+      "category": "Medium Weapons",
+      "kind": "weapon",
+      "weight": 6,
+      "damage": "2d4",
+      "defense": "",
+      "description": "A large piece of wood with metal all about it.",
+      "sourceText": "Dmg: 2d4 | Cost: 6 Gold | Weight: 6 lbs\nRange: N/A\nSpecial: SW\nDescription: A large piece of wood with metal all about it."
+    },
+    {
+      "name": "Glaive",
+      "category": "Medium Weapons",
+      "kind": "weapon",
+      "weight": 5,
+      "damage": "1d10",
+      "defense": "",
+      "description": "A long spear with a bladed end meant for slashing",
+      "sourceText": "Dmg: 1d10 | Cost: 14 Gold | Weight: 5 lbs\nRange: 10 ft\nSpecial: 2H, E, Reach, Area Denial\nDescription: A long spear with a bladed end meant for slashing"
+    },
+    {
+      "name": "Morningstar",
+      "category": "Medium Weapons",
+      "kind": "weapon",
+      "weight": 8,
+      "damage": "1d8",
+      "defense": "",
+      "description": "Similar to a mace, but with a larger, spiked head and is made of metal.",
+      "sourceText": "Dmg: 1d8 | Cost: 20 Gold | Weight: 8 lbs\nRange: N/A\nSpecial: SW, B/E, Considered a Blunt weapon when making BOD attacks and an Edged weapon when making DEX attacks.\nDescription: Similar to a mace, but with a larger, spiked head and is made of metal."
+    },
+    {
+      "name": "Scythe",
+      "category": "Medium Weapons",
+      "kind": "weapon",
+      "weight": 5,
+      "damage": "1d6",
+      "defense": "",
+      "description": "A long pole with a half-crescent blade protruding from it. This scythe is specifically made for battle and also functions as it’s original farming purposes intended.",
+      "sourceText": "Dmg: 1d6 | Cost: 8 Gold | Weight: 5 lbs\nRange: 10 ft\nSpecial: 2H, E, High Crit\nDescription: A long pole with a half-crescent blade protruding from it. This scythe is specifically made for battle and also functions as it’s original farming purposes intended."
+    },
+    {
+      "name": "Spear, Long",
+      "category": "Medium Weapons",
+      "kind": "weapon",
+      "weight": 8,
+      "damage": "1d8",
+      "defense": "",
+      "description": "A pole with a sharp blade at the end made to keep a distance between the wielder and the opponent.",
+      "sourceText": "Dmg: 1d8 | Cost: 14 Gold | Weight: 8 lbs\nRange: 10 ft\nSpecial: 2H, E, PR, Reach, Area Denial\nDescription: A pole with a sharp blade at the end made to keep a distance between the wielder and the opponent."
+    },
+    {
+      "name": "Sword, Long",
+      "category": "Medium Weapons",
+      "kind": "weapon",
+      "weight": 5,
+      "damage": "1d8",
+      "defense": "",
+      "description": "A sword about 4-5 feet in length.",
+      "sourceText": "Dmg: 1d8 | Cost: 12 Gold | Weight: 5 lbs\nRange: N/A\nSpecial: SW, E\nDescription: A sword about 4-5 feet in length."
+    },
+    {
+      "name": "Waraxe",
+      "category": "Medium Weapons",
+      "kind": "weapon",
+      "weight": 6,
+      "damage": "1d10",
+      "defense": "",
+      "description": "An axe with a handle about a foot and a half in length.",
+      "sourceText": "Dmg: 1d10 | Cost: 20 Gold | Weight: 6 lbs\nRange: N/A\nSpecial: 1H, E\nDescription: An axe with a handle about a foot and a half in length."
+    },
+    {
+      "name": "Warhammer",
+      "category": "Medium Weapons",
+      "kind": "weapon",
+      "weight": 7,
+      "damage": "2d4",
+      "defense": "",
+      "description": "A larger hammer head on a 3 foot handle.",
+      "sourceText": "Dmg: 2d4 | Cost: 16 Gold | Weight: 7 lbs\nRange: N/A\nSpecial: SW, B\nDescription: A larger hammer head on a 3 foot handle."
+    },
+    {
+      "name": "Falx",
+      "category": "Medium Exotic Weapons",
+      "kind": "weapon",
+      "weight": 4,
+      "damage": "2d4",
+      "defense": "",
+      "description": "A 5 foot sword with a slight curvature and the single edge of the sword facing in.",
+      "sourceText": "Dmg: 2d4 | Cost: 16 Gold | Weight: 4 lbs\nRange: N/A\nSpecial: 1H, E, Incisive 2\nDescription: A 5 foot sword with a slight curvature and the single edge of the sword facing in."
+    },
+    {
+      "name": "Katana",
+      "category": "Medium Exotic Weapons",
+      "kind": "weapon",
+      "weight": 4,
+      "damage": "1d10",
+      "defense": "",
+      "description": "A 4-5 foot sword with a slight curvature and the single edge of the sword facing out.",
+      "sourceText": "Dmg: 1d10 | Cost: 25 Gold | Weight: 4 lbs\nRange: N/A\nSpecial: SW, E, High Crit\nDescription: A 4-5 foot sword with a slight curvature and the single edge of the sword facing out."
+    },
+    {
+      "name": "Sotarc Blade",
+      "category": "Medium Exotic Weapons",
+      "kind": "weapon",
+      "weight": null,
+      "damage": "2d4",
+      "defense": "",
+      "description": "A stout 2 and a half foot long blade, an inch thick with a gutting hook along the bottom of it wielded in one hand.",
+      "sourceText": "Dmg: 2d4 | Cost: 30 Gold | Weight:\nRange: 10 ft.\nSpecial: 1H, E, Incisive 2, Requires BOD of 10\nDescription: A stout 2 and a half foot long blade, an inch thick with a gutting hook along the bottom of it wielded in one hand."
+    },
+    {
+      "name": "Sword, Bastard",
+      "category": "Medium Exotic Weapons",
+      "kind": "weapon",
+      "weight": 7,
+      "damage": "1d10",
+      "defense": "",
+      "description": "A 4-5 foot sword with a heavier blade than a longsword.",
+      "sourceText": "Dmg: 1d10 | Cost: 30 Gold | Weight:  7 lbs\nRange: 10 ft.\nSpecial: SW, E, Can be used two-handed without exotic proficiency.\nDescription: A 4-5 foot sword with a heavier blade than a longsword."
+    },
+    {
+      "name": "Axe, Great",
+      "category": "Heavy Weapons",
+      "kind": "weapon",
+      "weight": 7,
+      "damage": "2d6",
+      "defense": "",
+      "description": "A large axe on a 3-4 foot handle.",
+      "sourceText": "Dmg: 2d6 | Cost: 22 Gold | Weight: 7 lbs\nRange: N/A\nSpecial: 2H, E, Armor Piercing 2, Area Denial\nDescription: A large axe on a 3-4 foot handle."
+    },
+    {
+      "name": "Halberd",
+      "category": "Heavy Weapons",
+      "kind": "weapon",
+      "weight": 12,
+      "damage": "3d4",
+      "defense": "",
+      "description": "A polearm 6 or more feet long with a hammer head on one side and an axe head on the other.",
+      "sourceText": "Dmg: 3d4 | Cost: 34 Gold | Weight: 12 lbs\nRange: N/A\nSpecial: 2H, B/E, Reach, Area Denial\nDescription: A polearm 6 or more feet long with a hammer head on one side and an axe head on the other."
+    },
+    {
+      "name": "Lance",
+      "category": "Heavy Weapons",
+      "kind": "weapon",
+      "weight": 7,
+      "damage": "2d6",
+      "defense": "",
+      "description": "A polearm 6 or more feet with a pointed end meant to be used with charge attacks, more commonly used for jousting on horseback.",
+      "sourceText": "Dmg: 2d6 | Cost: 18 Gold | Weight: 7 lbs\nRange: 10 ft.\nSpecial: 2H, E, Charging with weapon gives +2 to attack/dmg, Can be 1H when mounted\nDescription: A polearm 6 or more feet with a pointed end meant to be used with charge attacks, more commonly used for jousting on horseback."
+    },
+    {
+      "name": "Maul",
+      "category": "Heavy Weapons",
+      "kind": "weapon",
+      "weight": 10,
+      "damage": "2d6",
+      "defense": "",
+      "description": "A dense metal block on a long handle with spikes.",
+      "sourceText": "Dmg: 2d6 | Cost: 26 Gold | Weight: 10 lbs\nRange: N/A\nSpecial: 2H, B, Armor Piercing 3\nDescription: A dense metal block on a long handle with spikes."
+    },
+    {
+      "name": "Sword, Great",
+      "category": "Heavy Weapons",
+      "kind": "weapon",
+      "weight": 10,
+      "damage": "3d4",
+      "defense": "",
+      "description": "A denser 5 foot sword made to be wielded with two hands.",
+      "sourceText": "Dmg: 3d4 | Cost: 22 Gold | Weight: 10 lbs\nRange: N/A\nSpecial: 2H, E, Area Denial\nDescription: A denser 5 foot sword made to be wielded with two hands."
+    },
+    {
+      "name": "Crossbow, Light",
+      "category": "Ranged Weapons",
+      "kind": "weapon",
+      "weight": 4,
+      "damage": "1d6",
+      "defense": "",
+      "description": "A small crossbow that can be used easily.",
+      "sourceText": "Dmg: 1d6 | Cost: 10 Gold | Weight: 4 lbs\nRange: 90 ft.\nSpecial: SW, PR, +2 to attacks when used 2H, Move Action to Reload\nAmmo: Bolts (1 Gold for 10)\nDescription: A small crossbow that can be used easily."
+    },
+    {
+      "name": "Crossbow",
+      "category": "Ranged Weapons",
+      "kind": "weapon",
+      "weight": 8,
+      "damage": "2d4",
+      "defense": "",
+      "description": "A standard sized crossbow.",
+      "sourceText": "Dmg: 2d4 | Cost: 22 Gold | Weight: 8 lbs\nRange: 120 ft.\nSpecial: 2H, PR, Move Action to Reload\nAmmo: Bolts (1 Gold for 10)\nDescription: A standard sized crossbow."
+    },
+    {
+      "name": "Crossbow, Heavy",
+      "category": "Ranged Weapons",
+      "kind": "weapon",
+      "weight": 15,
+      "damage": "2d6",
+      "defense": "",
+      "description": "A larger crossbow for shooting over longer ranges.",
+      "sourceText": "Dmg: 2d6 | Cost: 30 Gold | Weight: 15 lbs\nRange: 160 ft.\nSpecial: 2H, PR, Armor Piercing 3, Move Action to Reload\nAmmo: Reinforced Bolts (2 Gold for 10)\nDescription: A larger crossbow for shooting over longer ranges."
+    },
+    {
+      "name": "Bow, Short",
+      "category": "Ranged Weapons",
+      "kind": "weapon",
+      "weight": 2,
+      "damage": "1d6",
+      "defense": "",
+      "description": "A small bow used for shooting over long range.",
+      "sourceText": "Dmg: 1d6 | Cost: 8 Gold | Weight: 2 lbs\nRange: 100 ft.\nSpecial: 2H, PR\nAmmo: Arrows (1 Gold for 10)\nDescription: A small bow used for shooting over long range."
+    },
+    {
+      "name": "Bow, Long",
+      "category": "Ranged Weapons",
+      "kind": "weapon",
+      "weight": 7,
+      "damage": "1d8",
+      "defense": "",
+      "description": "A large bow used for shooting over long range.",
+      "sourceText": "Dmg: 1d8 | Cost: 16 Gold | Weight: 7 lbs\nRange: 120 ft.\nSpecial: 2H, PR\nAmmo: Arrows (1 Gold for 10)\nDescription: A large bow used for shooting over long range."
+    },
+    {
+      "name": "Bow, Great",
+      "category": "Ranged Weapons",
+      "kind": "weapon",
+      "weight": 14,
+      "damage": "2d8",
+      "defense": "",
+      "description": "A massive bow crafted for siege warfare and defense against mounts. Cannot be wielded while mounted.",
+      "sourceText": "Dmg: 2d8 | Cost: 38 Gold | Weight: 14 lbs\nRange: 150 ft.\nSpecial: 2H, PR, Armor Piercing 2\nAmmo: Greater Arrows (3 Gold for 10)\nDescription: A massive bow crafted for siege warfare and defense against mounts. Cannot be wielded while mounted."
+    },
+    {
+      "name": "Blowdart Gun",
+      "category": "Ranged Weapons",
+      "kind": "weapon",
+      "weight": 1,
+      "damage": "1d4+1",
+      "defense": "",
+      "description": "A 2 foot pipe by which one can launch blow darts by blowing in one end of it.",
+      "sourceText": "Dmg: 1d4+1 | Cost: 10 Gold | Weight: 1 lbs\nRange: 20 ft.\nSpecial: 2H, PR, Poison DC +1, +2 to attacks when used 2H\nAmmo: Darts (1 Gold for 10)\nDescription: A 2 foot pipe by which one can launch blow darts by blowing in one end of it."
+    },
+    {
+      "name": "Heavy Coat",
+      "category": "Light Armor",
+      "kind": "armor",
+      "weight": 4,
+      "damage": "",
+      "defense": "+2 / 0 / 0",
+      "description": "A quilt-woven, heavy cloth coat that reaches below the waist, effectively covering most of the torso. Can come with a hood.",
+      "sourceText": "DR/Def Bonus/Dex Penalty: +2 / 0 / 0 | Cost: 15 Gold | Weight: 4 lbs\nSpecial: Dex attacks do not bypass\nDescription: A quilt-woven, heavy cloth coat that reaches below the waist, effectively covering most of the torso. Can come with a hood."
+    },
+    {
+      "name": "Leather Cuirass",
+      "category": "Light Armor",
+      "kind": "armor",
+      "weight": 7,
+      "damage": "",
+      "defense": "+1 / +1 / 0",
+      "description": "Leather chest piece that covers torso. Can come with cap and pauldrons.",
+      "sourceText": "DR/Def Bonus/Dex Penalty: +1 / +1 / 0 | Cost: 20 Gold | Weight: 7 lbs\nSpecial: N/A\nDescription: Leather chest piece that covers torso. Can come with cap and pauldrons."
+    },
+    {
+      "name": "Full Leather",
+      "category": "Light Armor",
+      "kind": "armor",
+      "weight": 12,
+      "damage": "",
+      "defense": "+2 / +2 / 0",
+      "description": "Leather armor that covers torso, bracers that cover arms and leg covers. Can come with a cap and pauldrons.",
+      "sourceText": "DR/Def Bonus/Dex Penalty: +2 / +2 / 0 | Cost: 28 Gold | Weight: 12 lbs\nSpecial: N/A\nDescription: Leather armor that covers torso, bracers that cover arms and leg covers. Can come with a cap and pauldrons."
+    },
+    {
+      "name": "Armored Coat",
+      "category": "Medium Armor",
+      "kind": "armor",
+      "weight": 14,
+      "damage": "",
+      "defense": "+3 / 0 / 0",
+      "description": "Like the heavy coat, only with metal plates sewn into the inside to provide better defense.",
+      "sourceText": "DR/Def Bonus/Dex Penalty: +3 / 0 / 0 | Cost: 36 Gold | Weight: 14 lbs\nSpecial: Dex attacks do not bypass, Does not require Medium Armor Proficiency\nDescription: Like the heavy coat, only with metal plates sewn into the inside to provide better defense."
+    },
+    {
+      "name": "Chainshirt",
+      "category": "Medium Armor",
+      "kind": "armor",
+      "weight": 15,
+      "damage": "",
+      "defense": "+2 / +1 / 0",
+      "description": "Linked chains in the fashion of a shirt with sleeves that cover arms and hood, does not have leg covers.",
+      "sourceText": "DR/Def Bonus/Dex Penalty: +2 / +1 / 0 | Cost: 43 Gold | Weight: 15 lbs\nSpecial: Dex attacks do not bypass\nDescription: Linked chains in the fashion of a shirt with sleeves that cover arms and hood, does not have leg covers."
+    },
+    {
+      "name": "Chainmail",
+      "category": "Medium Armor",
+      "kind": "armor",
+      "weight": 13,
+      "damage": "",
+      "defense": "+2 / +2 / -2 Cost: 55 Gold",
+      "description": "Linked chains made into armor, this has torso cover, arm and leg covers and a hood.",
+      "sourceText": "DR/Def Bonus/Dex Penalty: +2 / +2 / -2 Cost: 55 Gold | Weight: 13 lbs\nSpecial: Dex attacks do not bypass\nDescription: Linked chains made into armor, this has torso cover, arm and leg covers and a hood."
+    },
+    {
+      "name": "Scalemail",
+      "category": "Medium Armor",
+      "kind": "armor",
+      "weight": 20,
+      "damage": "",
+      "defense": "+3 / +2 / -1",
+      "description": "Made of dozens of overlapping metal plates that take the appearance of scales, this can cover torso, arms and legs.",
+      "sourceText": "DR/Def Bonus/Dex Penalty: +3 / +2 / -1 | Cost: 68 Gold | Weight: 20 lbs\nSpecial: N/A\nDescription: Made of dozens of overlapping metal plates that take the appearance of scales, this can cover torso, arms and legs."
+    },
+    {
+      "name": "Plate Cuirass",
+      "category": "Heavy Armor",
+      "kind": "armor",
+      "weight": 35,
+      "damage": "",
+      "defense": "+4 / +3 / -2",
+      "description": "Strips of metal made to cover arms, body and legs.",
+      "sourceText": "DR/Def Bonus/Dex Penalty: +4 / +3 / -2 | Cost: 65 Gold | Weight: 35 lbs\nSpecial: N/A\nDescription: Strips of metal made to cover arms, body and legs."
+    },
+    {
+      "name": "Full Plate",
+      "category": "Heavy Armor",
+      "kind": "armor",
+      "weight": 55,
+      "damage": "",
+      "defense": "+5 / +2 / -3",
+      "description": "Plates of metal shaped to cover torso, arms, legs and helmets are made for max protection.",
+      "sourceText": "DR/Def Bonus/Dex Penalty: +5 / +2 / -3 | Cost: 80 Gold | Weight: 55 lbs\nSpecial: N/A\nDescription: Plates of metal shaped to cover torso, arms, legs and helmets are made for max protection."
+    },
+    {
+      "name": "Full Plate and Chains",
+      "category": "Heavy Armor",
+      "kind": "armor",
+      "weight": 60,
+      "damage": "",
+      "defense": "+6 / +4 / -4",
+      "description": "Plates of metal shaped to cover torso, arms, legs and helmets are made for max protection with chains underneath to protect vital areas and joints.",
+      "sourceText": "DR/Def Bonus/Dex Penalty: +6 / +4 / -4 | Cost: 155 Gold | Weight: 60 lbs\nSpecial: Dex attacks do not bypass\nDescription: Plates of metal shaped to cover torso, arms, legs and helmets are made for max protection with chains underneath to protect vital areas and joints."
+    },
+    {
+      "name": "Feeble Potion of Health",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Heals 10 HP.",
+      "sourceText": "Cost: 5 Gold | Weight: .5 lbs\nEffect: +10 HP\nDescription: Heals 10 HP."
+    },
+    {
+      "name": "Lesser Potion of Health",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Heals 20 HP.",
+      "sourceText": "Cost: 15 Gold | Weight: .5 lbs\nEffect: +20 HP\nDescription: Heals 20 HP."
+    },
+    {
+      "name": "Potion of Health",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Heals 40 HP.",
+      "sourceText": "Cost: 45 Gold | Weight: .5 lbs\nEffect: +40 HP\nDescription: Heals 40 HP."
+    },
+    {
+      "name": "Greater Potion of Health",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Heals 80 HP.",
+      "sourceText": "Cost: 135 Gold | Weight: .5 lbs\nEffect: +80 HP\nDescription: Heals 80 HP."
+    },
+    {
+      "name": "Superior Potion of Health",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Heals Full HP.",
+      "sourceText": "Cost: 305 Gold | Weight: .5 lbs\nEffect: +Full HP\nDescription: Heals Full HP."
+    },
+    {
+      "name": "Potion of Full Restoration",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Heals the body entirely and removes all physical condition stacks.",
+      "sourceText": "Cost: 300 Gold | Weight: .5 lbs\nEffect: Full HP, Physical Conditions Reduced to 0\nDescription: Heals the body entirely and removes all physical condition stacks."
+    },
+    {
+      "name": "Lesser Potion of Mana Restoration",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Restore 10 Mana.",
+      "sourceText": "Cost: 25 Gold | Weight: .5 lbs\nEffect: +10 Mana\nDescription: Restore 10 Mana."
+    },
+    {
+      "name": "Potion of Mana Restoration",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Restore 30 Mana.",
+      "sourceText": "Cost: 100 Gold | Weight: .5 lbs\nEffect: +30 Mana\nDescription: Restore 30 Mana."
+    },
+    {
+      "name": "Superior Potion of Mana Restoration",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Fully restores all Mana.",
+      "sourceText": "Cost: 500 Gold | Weight: .5 lbs\nEffect: Full Mana\nDescription: Fully restores all Mana."
+    },
+    {
+      "name": "Lesser Potion of Waterbreathing",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Gain ability to breathe underwater without difficulty as well as see underwater easily up to 60 ft for 1 hour.",
+      "sourceText": "Cost: 10 Gold | Weight: .5 lbs\nEffect: Waterbreathing for 1 Hour\nDescription: Gain ability to breathe underwater without difficulty as well as see underwater easily up to 60 ft for 1 hour."
+    },
+    {
+      "name": "Potion of Waterbreathing",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Gain ability to breathe underwater without difficulty as well as see underwater easily up to 120 ft for 8 hours.",
+      "sourceText": "Cost: 100 Gold | Weight: .5 lbs\nEffect: Waterbreathing for 8 Hours\nDescription: Gain ability to breathe underwater without difficulty as well as see underwater easily up to 120 ft for 8 hours."
+    },
+    {
+      "name": "Greater Potion of Waterbreathing",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Gain ability to breathe underwater without difficulty as well as see underwater easily up to 180 ft for 24 hours.",
+      "sourceText": "Cost: 350 Gold | Weight: .5 lbs\nEffect: Waterbreathing for 24 Hours\nDescription: Gain ability to breathe underwater without difficulty as well as see underwater easily up to 180 ft for 24 hours."
+    },
+    {
+      "name": "Lesser Potion of Bear’s Strength",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 50 Gold | Weight: .5 lbs\nEffect: +2 BOD for 5 Rounds\nDescription:"
+    },
+    {
+      "name": "Potion of Bear’s Strength",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 150 Gold | Weight: .5 lbs\nEffect: +4 BOD for 5 Rounds\nDescription:"
+    },
+    {
+      "name": "Greater Potion of Bear’s Strength",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 450 Gold | Weight: .5 lbs\nEffect: +6 BOD for 5 Rounds\nDescription:"
+    },
+    {
+      "name": "Lesser Potion of Cat’s Speed",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 50 Gold | Weight: .5 lbs\nEffect: +2 DEX for 5 Rounds\nDescription:"
+    },
+    {
+      "name": "Potion of Cat’s Speed",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 150 Gold | Weight: .5 lbs\nEffect: +4 DEX for 5 Rounds\nDescription:"
+    },
+    {
+      "name": "Greater Potion of Cat’s Speed",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 450 Gold | Weight: .5 lbs\nEffect: +6 DEX for 5 Rounds\nDescription:"
+    },
+    {
+      "name": "Lesser Potion of Owl’s Wisdom",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 50 Gold | Weight: .5 lbs\nEffect: +2 MND for 5 Rounds\nDescription:"
+    },
+    {
+      "name": "Potion of Owl’s Wisdom",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 150 Gold | Weight: .5 lbs\nEffect: +4 MND for 5 Rounds\nDescription:"
+    },
+    {
+      "name": "Greater Potion of Owl’s Wisdom",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 450 Gold | Weight: .5 lbs\nEffect: +6 MND for 5 Rounds\nDescription:"
+    },
+    {
+      "name": "Lesser Potion of Badger’s Magnetism",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 50 Gold | Weight: .5 lbs\nEffect: +2 CHA for 5 Rounds\nDescription:"
+    },
+    {
+      "name": "Potion of Badger’s Magnetism",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 150 Gold | Weight: .5 lbs\nEffect: +4 CHA for 5 Rounds\nDescription:"
+    },
+    {
+      "name": "Greater Potion of Badger’s Magnetism",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 450 Gold | Weight: .5 lbs\nEffect: +6 CHA for 5 Rounds\nDescription:"
+    },
+    {
+      "name": "Potion of Lowlight Vision",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 5 Gold | Weight: .5 lbs\nEffect: Gain Lowlight Vision for 8 hours\nDescription:"
+    },
+    {
+      "name": "Potion of Darkvision",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 15 Gold | Weight: .5 lbs\nEffect: Gain Darkvision for 8 hours\nDescription:"
+    },
+    {
+      "name": "Potion of Spirit Vision",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 24 Gold | Weight: .5 lbs\nEffect: Gain Spirit Vision for 8 hours\nDescription:"
+    },
+    {
+      "name": "Potion of Mage Vision",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 30 Gold | Weight: .5 lbs\nEffect: Gain Mage Vision for 8 hours\nDescription:"
+    },
+    {
+      "name": "Potion of Truthseeking",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 25 Gold | Weight: .5 lbs\nEffect: Detect Truth for 1d4 Minutes.\nDescription:"
+    },
+    {
+      "name": "Lesser Potion of the Mule",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Encumbrance is increased by 20, deadlift by 60 and push/drag by 90 for 1 hour.",
+      "sourceText": "Cost: 20 Gold | Weight: .5 lbs\nEffect:\nDescription: Encumbrance is increased by 20, deadlift by 60 and push/drag by 90 for 1 hour."
+    },
+    {
+      "name": "Potion of the Mule",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Encumbrance is increased by 20, deadlift by 60 and push/drag by 90 for 8 hours.",
+      "sourceText": "Cost: 80 Gold | Weight: .5 lbs\nEffect:\nDescription: Encumbrance is increased by 20, deadlift by 60 and push/drag by 90 for 8 hours."
+    },
+    {
+      "name": "Greater Potion of the Mule",
+      "category": "Potions",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Encumbrance is increased by 20, deadlift by 60 and push/drag by 90 for 24 hours.",
+      "sourceText": "Cost: 160 Gold | Weight: .5 lbs\nEffect:\nDescription: Encumbrance is increased by 20, deadlift by 60 and push/drag by 90 for 24 hours."
+    },
+    {
+      "name": "Rat Poison",
+      "category": "Poisons",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 5 Silver | Weight: .5 lbs\nApplication Method: Ingested | Stacks Applied: 5 | Save DC: 14 + 2/Dose\nEffect: Drains 1 HP/Round, causes Nausea.\nDescription:"
+    },
+    {
+      "name": "Basic Poison",
+      "category": "Poisons",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 5 Gold | Weight: .5 lbs\nApplication Method: Wounds | Stacks Applied: 5 | Save DC: 15 + 2/Dose\nEffect: Drains 3 HP/Round for 1d6 rounds, causes Nausea.\nDescription:"
+    },
+    {
+      "name": "Tyrant’s Spice",
+      "category": "Poisons",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 350 Gold | Weight: .5 lbs\nApplication Method: Ingested | Stacks Applied: 8 | Save DC: 18 + 4/Dose\nEffect: Drains 20 HP/Hour, does not cause Nausea\nDescription:"
+    },
+    {
+      "name": "Serpent’s Breath",
+      "category": "Poisons",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Baggy with a very fine dust within. When thrown, it creates a 15ft radius cloud of purple gas lasting for 1d4 rounds. Can be blown for a cone effect which increases dosage by 1. Creatures starting their turn in the area receive 1 dose unless they hold their breath.",
+      "sourceText": "Cost: 450 Gold | Weight: .5 lbs\nApplication Method: Inhaled | Stacks Applied: 6 | Save DC: 16 + 2/Dose\nEffect: Drains 5 HP/minute\nDescription: Baggy with a very fine dust within. When thrown, it creates a 15ft radius cloud of purple gas lasting for 1d4 rounds. Can be blown for a cone effect which increases dosage by 1. Creatures starting their turn in the area receive 1 dose unless they hold their breath."
+    },
+    {
+      "name": "Sickening Mixture",
+      "category": "Poisons",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 30 Gold | Weight: .5 lbs\nApplication Method: Wounds | Stacks Applied: 4 | Save DC: 15 + 4/Dose\nEffect: Reduces victim’s BOD by 2, causes Nausea\nDescription:"
+    },
+    {
+      "name": "Numbleaf Brew",
+      "category": "Poisons",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 30 Gold | Weight: .5 lbs\nApplication Method: Wounds | Stacks Applied: 4 | Save DC: 15 + 4/Dose\nEffect: Reduces victim’s DEX by 2, causes Nausea\nDescription:"
+    },
+    {
+      "name": "Mindrot Salve",
+      "category": "Poisons",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 30 Gold | Weight: .5 lbs\nApplication Method: Wounds | Stacks Applied: 4 | Save DC: 15 + 4/Dose\nEffect: Reduces victim’s MND by 2, causes Nausea\nDescription:"
+    },
+    {
+      "name": "Bard’s Bane",
+      "category": "Poisons",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "",
+      "sourceText": "Cost: 30 Gold | Weight: .5 lbs\nApplication Method: Wounds | Stacks Applied: 4 | Save DC: 15 + 4/Dose\nEffect: Reduces victim’s CHA by 2, causes Nausea\nDescription:"
+    },
+    {
+      "name": "Wonderland Ticket",
+      "category": "Poisons",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Makes the victim woozy and their vision filled with twisting colors and hallucinations. -3 to all rolls, and at the start of their turn, the victim has a 15% chance to lose their turn.",
+      "sourceText": "Cost: 60 Gold | Weight: .5 lbs\nApplication Method: Ingested | Stacks Applied: 5 | Save DC: 15 + 2/Dose\nEffect: -3 to rolls, 15% chance to lose turn, causes nausea\nDescription: Makes the victim woozy and their vision filled with twisting colors and hallucinations. -3 to all rolls, and at the start of their turn, the victim has a 15% chance to lose their turn."
+    },
+    {
+      "name": "Rations",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "A day’s worth of food, consisting of some dried meat, a piece of bread, cheese and grains all wrapped in a wax paper that is bound shut with a cross-tied length of twine.",
+      "sourceText": "Cost: 5 Silver | Weight: 1 lbs\nDescription: A day’s worth of food, consisting of some dried meat, a piece of bread, cheese and grains all wrapped in a wax paper that is bound shut with a cross-tied length of twine."
+    },
+    {
+      "name": "Bread",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "A full loaf of bread. A filling meal.",
+      "sourceText": "Cost: 5 Copper | Weight: 1 lbs\nDescription: A full loaf of bread. A filling meal."
+    },
+    {
+      "name": "Jerky",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "A cut of dried and salted meat. A delicious and convenient meal on the go.",
+      "sourceText": "Cost: 1 Silver | Weight: .5 lbs\nDescription: A cut of dried and salted meat. A delicious and convenient meal on the go."
+    },
+    {
+      "name": "Meat",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "A cut of meat of any animal. It is sold by the pound.",
+      "sourceText": "Cost: 5 Silver | Weight: 1 lbs\nDescription: A cut of meat of any animal. It is sold by the pound."
+    },
+    {
+      "name": "Fatty Meat",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "A cut of meat of 2a fatter animal. The flavor added by the fat deposits make this meat worth more by the pound.",
+      "sourceText": "Cost: 8 Silver | Weight: 1 lbs\nDescription: A cut of meat of 2a fatter animal. The flavor added by the fat deposits make this meat worth more by the pound."
+    },
+    {
+      "name": "Fruit",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Delicious and sweet or tart, fruits make for excellent snacks on the go, however, they go bad within a few days.",
+      "sourceText": "Cost: 2 Silver | Weight: .5 lbs\nDescription: Delicious and sweet or tart, fruits make for excellent snacks on the go, however, they go bad within a few days."
+    },
+    {
+      "name": "Grains",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "Corn, wheat, barely, oat and rice. Filling meals on their own and even better when paired with something else.",
+      "sourceText": "Cost: 5 Copper | Weight: 1 lbs\nDescription: Corn, wheat, barely, oat and rice. Filling meals on their own and even better when paired with something else."
+    },
+    {
+      "name": "Beans",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "There is a legend of these mystical foods, they say that they’re good for your heart and the more that you eat, the more you-- [the end of this legend is lost to time].",
+      "sourceText": "Cost: 5 Copper | Weight: 1 lbs\nDescription: There is a legend of these mystical foods, they say that they’re good for your heart and the more that you eat, the more you-- [the end of this legend is lost to time]."
+    },
+    {
+      "name": "Roots and Vegetables",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "Beetroots, Cabbages, Carrots, and all other leafy greens. These fruits of the soil are filling and good for you.",
+      "sourceText": "Cost: 5 Copper | Weight: 1 lbs\nDescription: Beetroots, Cabbages, Carrots, and all other leafy greens. These fruits of the soil are filling and good for you."
+    },
+    {
+      "name": "Mushroom",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "This constitutes a variety of edible mushrooms, however their price may vary from place to place and species to species, but 5 Copper is the standard. They’re sold by the pound (which is often 8 mushrooms).",
+      "sourceText": "Cost: 5 Copper | Weight: 1 lbs\nDescription: This constitutes a variety of edible mushrooms, however their price may vary from place to place and species to species, but 5 Copper is the standard. They’re sold by the pound (which is often 8 mushrooms)."
+    },
+    {
+      "name": "Water",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": null,
+      "damage": "",
+      "defense": "",
+      "description": "When away from open bodies of water you may fill your waterskins with, filling your waterskin at an inn may cost you 2 Copper. It may cost even more should you be in an area of drought.",
+      "sourceText": "Cost: 2 Copper | Weight: --\nDescription: When away from open bodies of water you may fill your waterskins with, filling your waterskin at an inn may cost you 2 Copper. It may cost even more should you be in an area of drought."
+    },
+    {
+      "name": "Milk",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 4.5,
+      "damage": "",
+      "defense": "",
+      "description": "A jug of fresh milk. Delicious as it may be, milk has a tendency to sour over time so it’s best to drink sooner rather than later. 2 liters.",
+      "sourceText": "Cost: 5 Silver | Weight: 4.5 lbs\nDescription: A jug of fresh milk. Delicious as it may be, milk has a tendency to sour over time so it’s best to drink sooner rather than later. 2 liters."
+    },
+    {
+      "name": "Juice",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 4.5,
+      "damage": "",
+      "defense": "",
+      "description": "Made from fruit nectar, sugar and water, this delicious concoction shall leave your thirst quite quenched. 2 liters",
+      "sourceText": "Cost: 3 Silver | Weight: 4.5 lbs\nDescription: Made from fruit nectar, sugar and water, this delicious concoction shall leave your thirst quite quenched. 2 liters"
+    },
+    {
+      "name": "Dirt Ale",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "The pisswater ale you’ll find in most downtrodden, backstreet alley bars and inns. Commonly made by and drank by Orcs.",
+      "sourceText": "Cost: 5 Copper / Mug | Weight: 1 lbs\nCost: 5 Silver / Jug | Weight: 9 lbs | Contains: 8 Mugs\nCost: 6 Gold / Firkin | Weight: 85 lbs | Contains: 80 Mugs\nSave DC: 10 + 1/Mug | Drunk Stacks: 3\nDescription: The pisswater ale you’ll find in most downtrodden, backstreet alley bars and inns. Commonly made by and drank by Orcs."
+    },
+    {
+      "name": "Sweet Ale",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "The standard ale you’d find in decent inns and in the mugs of most adventurers.",
+      "sourceText": "Cost: 1 Silver / Mug | Weight: 1 lbs\nCost: 1 Gold / Jug | Weight: 9 lbs | Contains: 8 Mugs\nCost: 11 Gold / Firkin | Weight: 85 lbs | Contains: 80 Mugs\nSave DC: 10 + 1/Mug | Drunk Stacks: 4\nDescription: The standard ale you’d find in decent inns and in the mugs of most adventurers."
+    },
+    {
+      "name": "Craft Ale",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "Excellent ale, crafted by the experienced hands of Master Dwarven artisans.",
+      "sourceText": "Cost: 5 Silver / Mug | Weight: 1 lbs\nCost: 5 Gold / Jug | Weight: 9 lbs | Contains: 8 Mugs\nCost: 54 Gold / Firkin | Weight: 85 lbs | Contains: 80 Mugs\nSave DC: 10 + 2/Mug | Drunk Stacks: 5\nDescription: Excellent ale, crafted by the experienced hands of Master Dwarven artisans."
+    },
+    {
+      "name": "Maritime Mead",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "A fine mead for adventurers and the average bar patron alike. A sensible drink at a sensible price.",
+      "sourceText": "Cost: 7 Silver / Mug | Weight: 1 lbs\nCost: 7 Gold / Jug | Weight: 9 lbs | Contains: 8 Mugs\nCost: 75 Gold / Firkin | Weight: 85 lbs | Contains: 80 Mugs\nSave DC: 12 + 2/Mug | Drunk Stacks: 4\nDescription: A fine mead for adventurers and the average bar patron alike. A sensible drink at a sensible price."
+    },
+    {
+      "name": "Golden Hand Mead",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "The signature mead of the Dwarves, the recipe and rituals guarded more than most vaults. This is the mead of adventure and pleasure. If you ask for top-shelf mead at any inn, this will be what you get.",
+      "sourceText": "Cost: 1 Gold / Mug | Weight: 1 lbs\nCost: 9 Gold / Jug | Weight: 9 lbs | Contains: 8 Mugs\nCost: 82 Gold / Firkin | Weight: 85 lbs | Contains: 80 Mugs\nSave DC: 12 + 3/Mug | Drunk Stacks: 5\nDescription: The signature mead of the Dwarves, the recipe and rituals guarded more than most vaults. This is the mead of adventure and pleasure. If you ask for top-shelf mead at any inn, this will be what you get."
+    },
+    {
+      "name": "Stone Whiskey",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "Whisky crafted by roguish Dwarves, often found in inns of all kinds.",
+      "sourceText": "Cost: 4 Silver / Glass | Weight: .1 lbs\nCost: 8 Gold / Bottle | Weight: 1 lbs | Contains: 16 Glasses\nSave DC: 14 + 2/Glass | Drunk Stacks: 8\nDescription: Whisky crafted by roguish Dwarves, often found in inns of all kinds."
+    },
+    {
+      "name": "Phoenix  Whiskey",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "Fine spiced whisky made by experienced distillers using fine ingredients.",
+      "sourceText": "Cost: 1 Gold / Glass | Weight: .1 lbs\nCost: 19 Gold / Bottle | Weight: 1 lbs | Contains: 16 Glasses\nSave DC: 14 + 4/Glass | Drunk Stacks: 10\nDescription: Fine spiced whisky made by experienced distillers using fine ingredients."
+    },
+    {
+      "name": "Fire Rum",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "A basic spiced rum that can commonly be found in any inn or bar.",
+      "sourceText": "Cost: 1 Gold / Glass | Weight: .1 lbs\nCost: 18 Gold / Bottle | Weight: 1 lbs | Contains: 16 Glasses\nSave DC: 14 + 3/Glass | Drunk Stacks: 10\nDescription: A basic spiced rum that can commonly be found in any inn or bar."
+    },
+    {
+      "name": "Lotus Rum",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "A mysterious rum that is distributed by mysterious people. Few inns dare to take this rum knowing nothing of where it’s made or by who, but the inns who sell this rum tend to make a killing doing so.",
+      "sourceText": "Cost: 3 Gold / Glass | Weight: .1 lbs\nCost: 55 Gold / Bottle | Weight: 1 lbs | Contains: 16 Glasses\nSave DC: 14 + 4/Glass | Drunk Stacks: 12\nDescription: A mysterious rum that is distributed by mysterious people. Few inns dare to take this rum knowing nothing of where it’s made or by who, but the inns who sell this rum tend to make a killing doing so."
+    },
+    {
+      "name": "Elf Snot",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "A mocking “wine” made by some relatively sophisticated orcs. Often seen as rubbish wine but others seem to prefer the smooth, almost sludgy texture of this dark red wine.",
+      "sourceText": "Cost: 1 Gold / Glass | Weight: .1 lbs\nCost: 20 Gold / Bottle | Weight: 1 lbs | Contains: 16 Glasses\nSave DC: 12 + 3/Glass | Drunk Stacks: 10\nDescription: A mocking “wine” made by some relatively sophisticated orcs. Often seen as rubbish wine but others seem to prefer the smooth, almost sludgy texture of this dark red wine."
+    },
+    {
+      "name": "Wilted Wine",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "A fine fruity wine crafted by elves with grapes given freely by nature, processed with the earth to reflect natural tones and an earthy after-taste. If bought in bottle form, it comes in a beautiful ornate glass bottle that can be collected as Elven art.",
+      "sourceText": "Cost: 2 Gold / Glass | Weight: .1 lbs\nCost: 60 Gold / Bottle | Weight: 1 lbs | Contains: 16 Glasses\nSave DC: 12 + 3/Glass | Drunk Stacks: 6\nDescription: A fine fruity wine crafted by elves with grapes given freely by nature, processed with the earth to reflect natural tones and an earthy after-taste. If bought in bottle form, it comes in a beautiful ornate glass bottle that can be collected as Elven art."
+    },
+    {
+      "name": "Dragon’s Breath Wine",
+      "category": "Food",
+      "kind": "inventory",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "A spiced wine crafted on a mountain-top by a hermit who has not had contact with man in decades, this recipe passed on from hermit to hermit for generations.",
+      "sourceText": "Cost: 4 Gold / Glass | Weight: .1 lbs\nCost: 80 Gold / Bottle | Weight: 1 lbs | Contains: 16 Glasses\nSave DC: 13 + 4/Glass | Drunk Stacks: 8\nDescription: A spiced wine crafted on a mountain-top by a hermit who has not had contact with man in decades, this recipe passed on from hermit to hermit for generations."
+    },
+    {
+      "name": "Set of Clothing",
+      "category": "Textiles",
+      "kind": "outfit",
+      "weight": 2,
+      "damage": "",
+      "defense": "",
+      "description": "Often made of cheap wool or cotton scraps, these clothes will cover you but they certainly wont earn any praise.",
+      "sourceText": "Quality: Ratty | Cost: 5 Silver | Weight: 2 lbs\nDescription: Often made of cheap wool or cotton scraps, these clothes will cover you but they certainly wont earn any praise."
+    },
+    {
+      "name": "Cape",
+      "category": "Textiles",
+      "kind": "outfit",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Stitched together from scrap rags and swatches, this cape is functional but just barely.",
+      "sourceText": "Quality: Ratty | Cost: 8 Copper | Weight: 0.5 lbs\nDescription: Stitched together from scrap rags and swatches, this cape is functional but just barely."
+    },
+    {
+      "name": "Cloak",
+      "category": "Textiles",
+      "kind": "outfit",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "A frayed rag of a thing with a hood and a clasp.",
+      "sourceText": "Quality: Ratty | Cost: 5 Silver | Weight: 0.5 lbs\nDescription: A frayed rag of a thing with a hood and a clasp."
+    },
+    {
+      "name": "Hat",
+      "category": "Textiles",
+      "kind": "outfit",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "An old, badly stitched leather, straw or wool hat. It covers your head and that’s all you can really ask for.",
+      "sourceText": "Quality: Ratty | Cost: 2 Silver | Weight: 0.5 lbs\nDescription: An old, badly stitched leather, straw or wool hat. It covers your head and that’s all you can really ask for."
+    },
+    {
+      "name": "Bedroll",
+      "category": "Textiles",
+      "kind": "outfit",
+      "weight": 3,
+      "damage": "",
+      "defense": "",
+      "description": "A single padded roll for sleeping outdoors. No pillow or blankets included.",
+      "sourceText": "Quality: Single | Cost: 4 Silver | Weight: 3 lbs\nDescription: A single padded roll for sleeping outdoors. No pillow or blankets included."
+    },
+    {
+      "name": "Tent",
+      "category": "Textiles",
+      "kind": "outfit",
+      "weight": 10,
+      "damage": "",
+      "defense": "",
+      "description": "A canvas tent held up by the classic posts and strings. Takes 30 minutes to set up. Provides adequate cover from rain and some winds with enough space to comfortably sleep one. This tent may easily be packed into a large backpack with room for other things.",
+      "sourceText": "Quality: Single | Cost: 8 Silver | Weight: 10 lbs\nDescription: A canvas tent held up by the classic posts and strings. Takes 30 minutes to set up. Provides adequate cover from rain and some winds with enough space to comfortably sleep one. This tent may easily be packed into a large backpack with room for other things."
+    },
+    {
+      "name": "Chest",
+      "category": "Containers",
+      "kind": "inventory",
+      "weight": 2,
+      "damage": "",
+      "defense": "",
+      "description": "A small wooden chest with metal rivets and a hook and latch to add a lock. Size- 2ft x 1ft x 1ft",
+      "sourceText": "Size: Small | Cost: 2 Gold | Weight: 2 lbs (empty)\nDescription: A small wooden chest with metal rivets and a hook and latch to add a lock. Size- 2ft x 1ft x 1ft"
+    },
+    {
+      "name": "Secure Chest",
+      "category": "Containers",
+      "kind": "inventory",
+      "weight": 2,
+      "damage": "",
+      "defense": "",
+      "description": "A small wooden chest with metal reinforcements and an inset lock that cannot be removed. Size- 2ft x 1ft x 1ft",
+      "sourceText": "Size: Small | Cost: 8 Gold | Weight: 2 lbs (empty)\nDescription: A small wooden chest with metal reinforcements and an inset lock that cannot be removed. Size- 2ft x 1ft x 1ft"
+    },
+    {
+      "name": "Bag",
+      "category": "Containers",
+      "kind": "inventory",
+      "weight": 2,
+      "damage": "",
+      "defense": "",
+      "description": "A small pouch made of leather or fabric that can be worn on a belt, back or shoulder.",
+      "sourceText": "Size: Small | Cost: 8 Silver | Weight: 2 lbs (empty)\nDescription: A small pouch made of leather or fabric that can be worn on a belt, back or shoulder."
+    },
+    {
+      "name": "Crate",
+      "category": "Containers",
+      "kind": "inventory",
+      "weight": 4,
+      "damage": "",
+      "defense": "",
+      "description": "A wooden crate used to move items from one place to another. Size- 3ft x 3ft x 3ft",
+      "sourceText": "Size: Small | Cost: 6 Silver | Weight: 4 lbs (empty)\nDescription: A wooden crate used to move items from one place to another. Size- 3ft x 3ft x 3ft"
+    },
+    {
+      "name": "Water Skin",
+      "category": "Containers",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "A smaller waterskin that can be worn on the hip holding 2 liters of liquid",
+      "sourceText": "Size: Small | Cost: 8 Silver | Weight: 0.5 lbs (empty)\nDescription: A smaller waterskin that can be worn on the hip holding 2 liters of liquid"
+    },
+    {
+      "name": "Flask",
+      "category": "Containers",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "A small corked container often used to travel with alcohol, but can be used to carry other things. Can hold up to 16 oz of liquid.",
+      "sourceText": "Size: Medium | Cost: 2 Gold | Weight: 0.5 lbs (empty)\nDescription: A small corked container often used to travel with alcohol, but can be used to carry other things. Can hold up to 16 oz of liquid."
+    },
+    {
+      "name": "Jar",
+      "category": "Containers",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "A small ceramic or glass jar with a cork top that can carry liquids effectively. Can hold 16 oz of liquid.",
+      "sourceText": "Size: Small | Cost: 8 Copper | Weight: 0.5 lbs (empty)\nDescription: A small ceramic or glass jar with a cork top that can carry liquids effectively. Can hold 16 oz of liquid."
+    },
+    {
+      "name": "Vial",
+      "category": "Containers",
+      "kind": "inventory",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "A small glass vial with a cork cap that can hold 4 oz of liquid.",
+      "sourceText": "Size: Small | Cost: 1 Silver | Weight: 0.1 lbs (empty)\nDescription: A small glass vial with a cork cap that can hold 4 oz of liquid."
+    },
+    {
+      "name": "Jug",
+      "category": "Containers",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "A ceramic jug with a cork top that holds 2 liters of liquid.",
+      "sourceText": "Size: Small | Cost: 3 Silver | Weight: 0.5 lbs (empty)\nDescription: A ceramic jug with a cork top that holds 2 liters of liquid."
+    },
+    {
+      "name": "Bottle",
+      "category": "Containers",
+      "kind": "inventory",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "A small corked bottle that holds 8 oz of liquid.",
+      "sourceText": "Size: Small | Cost: 2 Silver | Weight: 0.1 lbs (empty)\nDescription: A small corked bottle that holds 8 oz of liquid."
+    },
+    {
+      "name": "Barrel",
+      "category": "Containers",
+      "kind": "inventory",
+      "weight": 2,
+      "damage": "",
+      "defense": "",
+      "description": "A firkin, or small barrel designed to hold liquid. Can hold up to 12 gallons.",
+      "sourceText": "Size: Small | Cost: 8 Copper | Weight: 2 lbs (empty)\nDescription: A firkin, or small barrel designed to hold liquid. Can hold up to 12 gallons."
+    },
+    {
+      "name": "Cage",
+      "category": "Containers",
+      "kind": "inventory",
+      "weight": 5,
+      "damage": "",
+      "defense": "",
+      "description": "A metal cage made to trap and keep small animals. There is a simple latch that can be locked and a handle on top in order to carry it. Size- 2ft x 2ft x 2ft",
+      "sourceText": "Size: Small | Cost: 1 Gold | Weight: 5 lbs (empty)\nDescription: A metal cage made to trap and keep small animals. There is a simple latch that can be locked and a handle on top in order to carry it. Size- 2ft x 2ft x 2ft"
+    },
+    {
+      "name": "Parchment",
+      "category": "Stationary",
+      "kind": "inventory",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "A 10 in x 10 in cut of parchment to write, draw or paint on.",
+      "sourceText": "Cost: 2 Copper | Weight: 0.1 lbs\nDescription: A 10 in x 10 in cut of parchment to write, draw or paint on."
+    },
+    {
+      "name": "Canvass",
+      "category": "Stationary",
+      "kind": "inventory",
+      "weight": 2,
+      "damage": "",
+      "defense": "",
+      "description": "A 12 in x 10 in piece of canvas on a wooden frame designed to be painted upon.",
+      "sourceText": "Cost: 1 Silver | Weight: 2 lbs\nDescription: A 12 in x 10 in piece of canvas on a wooden frame designed to be painted upon."
+    },
+    {
+      "name": "Scroll",
+      "category": "Stationary",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "A rolled parchment or papyrus that is attached to a wooden roller that allows for safe storage while rolled.",
+      "sourceText": "Cost: 2 Silver | Weight: 1 lbs\nDescription: A rolled parchment or papyrus that is attached to a wooden roller that allows for safe storage while rolled."
+    },
+    {
+      "name": "Parchment Book",
+      "category": "Stationary",
+      "kind": "inventory",
+      "weight": 1.5,
+      "damage": "",
+      "defense": "",
+      "description": "A book of several cuts of parchment bound together in order to write, draw or paint on. There are 15 pages.",
+      "sourceText": "Cost: 4 Silver | Weight: 1.5 lbs\nDescription: A book of several cuts of parchment bound together in order to write, draw or paint on. There are 15 pages."
+    },
+    {
+      "name": "Journal",
+      "category": "Stationary",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "A book of blank parchment bound in leather. There are 30 pages.",
+      "sourceText": "Cost: 1 Gold | Weight: 1 lbs\nDescription: A book of blank parchment bound in leather. There are 30 pages."
+    },
+    {
+      "name": "Blank Tome",
+      "category": "Stationary",
+      "kind": "inventory",
+      "weight": 3,
+      "damage": "",
+      "defense": "",
+      "description": "A hefty tome of blank pages bound in leather. There are 60 pages.",
+      "sourceText": "Cost: 3 Gold | Weight: 3 lbs\nDescription: A hefty tome of blank pages bound in leather. There are 60 pages."
+    },
+    {
+      "name": "Writing Quills",
+      "category": "Stationary",
+      "kind": "inventory",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "A fine quill for writing and drawing. Needs ink well.",
+      "sourceText": "Cost: 3 Copper | Weight: 0.1 lbs\nDescription: A fine quill for writing and drawing. Needs ink well."
+    },
+    {
+      "name": "Ink Well",
+      "category": "Stationary",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Ink in a thick ceramic container with a corked cap. Comes in a variety of colors. (30 uses)",
+      "sourceText": "Cost: 1 Silver | Weight: 0.5 lbs\nDescription: Ink in a thick ceramic container with a corked cap. Comes in a variety of colors. (30 uses)"
+    },
+    {
+      "name": "Writing Charcoal",
+      "category": "Stationary",
+      "kind": "inventory",
+      "weight": 0.1,
+      "damage": "",
+      "defense": "",
+      "description": "A thick, dark piece of charcoal wrapped in fabric to be used for drawing or writing.",
+      "sourceText": "Cost: 5 Copper | Weight: 0.1 lbs\nDescription: A thick, dark piece of charcoal wrapped in fabric to be used for drawing or writing."
+    },
+    {
+      "name": "Paint Brush",
+      "category": "Stationary",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "A fine brush made with horsehair used for painting. Needs paint.",
+      "sourceText": "Cost: 1 Silver | Weight: 0.5 lbs\nDescription: A fine brush made with horsehair used for painting. Needs paint."
+    },
+    {
+      "name": "Paints",
+      "category": "Stationary",
+      "kind": "inventory",
+      "weight": 2,
+      "damage": "",
+      "defense": "",
+      "description": "A ceramic jar with a cork cap full of a vibrant paint. Comes in many colors.",
+      "sourceText": "Cost: 8 Copper | Weight: 2 lbs\nDescription: A ceramic jar with a cork cap full of a vibrant paint. Comes in many colors."
+    },
+    {
+      "name": "Wax Seal",
+      "category": "Stationary",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "A wooden seal with a custom emblem or crest used to seal private letters. Requires melted wax to be spilled on the folded letter before sealing.",
+      "sourceText": "Cost: 1 Silver | Weight: 1 lbs\nDescription: A wooden seal with a custom emblem or crest used to seal private letters. Requires melted wax to be spilled on the folded letter before sealing."
+    },
+    {
+      "name": "Rope",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 10,
+      "damage": "",
+      "defense": "",
+      "description": "Rope usually made from hempen, comes in lengths of 50 feet.",
+      "sourceText": "Cost: 1 Gold | Weight: 10 lbs\nDescription: Rope usually made from hempen, comes in lengths of 50 feet."
+    },
+    {
+      "name": "Twine",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "A spool of sturdy cotton twine used mostly in crafting, comes in lengths of 200 feet.",
+      "sourceText": "Cost: 2 Silver | Weight: 0.5 lbs\nDescription: A spool of sturdy cotton twine used mostly in crafting, comes in lengths of 200 feet."
+    },
+    {
+      "name": "String",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "A thin spool of linen string, comes in lengths of 200 feet.",
+      "sourceText": "Cost: 1 Silver | Weight: 0.5 lbs\nDescription: A thin spool of linen string, comes in lengths of 200 feet."
+    },
+    {
+      "name": "Bandages",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "A roll of cloth bandages that can be used either for binding or covering wounds, comes in lengths of 15 feet.",
+      "sourceText": "Cost: 3 Silver | Weight: 0.5 lbs\nDescription: A roll of cloth bandages that can be used either for binding or covering wounds, comes in lengths of 15 feet."
+    },
+    {
+      "name": "Torch",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "A handheld stick with a flammable cloth either wrapped or tied around the top. Torches can stay lit for one hour, illuminate bright light within 25 feet, and 15 feet of dim light after.",
+      "sourceText": "Cost: 3 Copper | Weight: 1 lbs\nDescription: A handheld stick with a flammable cloth either wrapped or tied around the top. Torches can stay lit for one hour, illuminate bright light within 25 feet, and 15 feet of dim light after."
+    },
+    {
+      "name": "Lantern",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 2,
+      "damage": "",
+      "defense": "",
+      "description": "A metal lantern with a hood that can reduce the light made by the lantern. Lanterns stay lit 6 hours per flask of lantern oil used, illuminate bright light within 40 feet, and 20 feet of dim light after. If the hood is brought down while the lantern is lit, the light produced will be dim lighting up to 5 feet.",
+      "sourceText": "Cost: 1 Gold | Weight: 2 lbs\nDescription: A metal lantern with a hood that can reduce the light made by the lantern. Lanterns stay lit 6 hours per flask of lantern oil used, illuminate bright light within 40 feet, and 20 feet of dim light after. If the hood is brought down while the lantern is lit, the light produced will be dim lighting up to 5 feet."
+    },
+    {
+      "name": "Lantern Oil",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "A small flask of slick black liquid that can be used to fuel a lantern. Drinking this fluid will cause Nausea.",
+      "sourceText": "Cost: 1 Silver | Weight: .5 lbs\nDescription: A small flask of slick black liquid that can be used to fuel a lantern. Drinking this fluid will cause Nausea."
+    },
+    {
+      "name": "Tinder Box",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "A small handheld box that contains flint, fire steel, and tinder (usually a cloth covered in a flammable liquid). The contents of this box are used to assist in lighting fires, either a campfire or a torch.",
+      "sourceText": "Cost: 1 Silver | Weight: 1 lbs\nDescription: A small handheld box that contains flint, fire steel, and tinder (usually a cloth covered in a flammable liquid). The contents of this box are used to assist in lighting fires, either a campfire or a torch."
+    },
+    {
+      "name": "Tripwire",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "A spool of tight wire used in setting up triggers for traps, comes in lengths of 100 feet.",
+      "sourceText": "Cost: 5 Silver | Weight: 1 lbs\nDescription: A spool of tight wire used in setting up triggers for traps, comes in lengths of 100 feet."
+    },
+    {
+      "name": "Small Game Trap",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 5,
+      "damage": "",
+      "defense": "",
+      "description": "A tiny cage crafted to be hidden and lore small game into it, ultimately closing behind them and capturing them alive. Has a handle to carry the cage.",
+      "sourceText": "Cost: 5 Silver | Weight: 5 lbs\nDescription: A tiny cage crafted to be hidden and lore small game into it, ultimately closing behind them and capturing them alive. Has a handle to carry the cage."
+    },
+    {
+      "name": "Large Game Trap",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 10,
+      "damage": "",
+      "defense": "",
+      "description": "A spring loaded iron trap meant to snap on the appendage of large game and keep them immobile while a hunter moves in for the kill.",
+      "sourceText": "Cost: 1 Gold | Weight: 10 lbs\nDescription: A spring loaded iron trap meant to snap on the appendage of large game and keep them immobile while a hunter moves in for the kill."
+    },
+    {
+      "name": "Net Trap",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 3,
+      "damage": "",
+      "defense": "",
+      "description": "A woven rope trap made to cover and capture creatures by being dropped from above. There are weights on the corners of this trap in order to better entrap the running creature. Works best with medium sized creatures.",
+      "sourceText": "Cost: 1 Gold | Weight: 3 lbs\nDescription: A woven rope trap made to cover and capture creatures by being dropped from above. There are weights on the corners of this trap in order to better entrap the running creature. Works best with medium sized creatures."
+    },
+    {
+      "name": "Fishing Pole",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "A basic fishing pole with a reeling mechanism made to retract the string quickly. Comes with 20 ft of string and hook.",
+      "sourceText": "Cost: 2 Gold | Weight: 1 lbs\nDescription: A basic fishing pole with a reeling mechanism made to retract the string quickly. Comes with 20 ft of string and hook."
+    },
+    {
+      "name": "Mirror",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "Either a steel or glass mirror kept safe inside a small box.",
+      "sourceText": "Cost: 6 Silver | Weight: .5 lbs\nDescription: Either a steel or glass mirror kept safe inside a small box."
+    },
+    {
+      "name": "Grooming Kit",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "A wooden comb, scissors, straight razor and brushing stick. This kit comes wrapped in a linen cloth.",
+      "sourceText": "Cost: 2 Silver | Weight: 1 lbs\nDescription: A wooden comb, scissors, straight razor and brushing stick. This kit comes wrapped in a linen cloth."
+    },
+    {
+      "name": "Sewing Kit",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 0.5,
+      "damage": "",
+      "defense": "",
+      "description": "5 sewing needles and a spool of black string to repair clothing and close up wounds in a pinch. Kit comes wrapped in a linen cloth.",
+      "sourceText": "Cost: 4 Silver | Weight: 0.5 lbs\nDescription: 5 sewing needles and a spool of black string to repair clothing and close up wounds in a pinch. Kit comes wrapped in a linen cloth."
+    },
+    {
+      "name": "Cooking Kit",
+      "category": "Survival",
+      "kind": "inventory",
+      "weight": 2,
+      "damage": "",
+      "defense": "",
+      "description": "An iron skillet and kettle with 4 serving plates and cups. This kit comes in a small chest.",
+      "sourceText": "Cost: 8 Silver | Weight: 2 lbs\nDescription: An iron skillet and kettle with 4 serving plates and cups. This kit comes in a small chest."
+    },
+    {
+      "name": "Locksmith’s Tools",
+      "category": "Tools",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "A set of picks and rakes that allow a locksmith to open just about any mundane lock. This toolset comes in a leather wrap. The contents of this set include a set of lock picks, a small mirror mounted on a metal handle, a set of narrow-bladed scissors, and a pair of pliers.",
+      "sourceText": "Cost: 20 Gold | Weight: 1 lbs\nDescription: A set of picks and rakes that allow a locksmith to open just about any mundane lock. This toolset comes in a leather wrap. The contents of this set include a set of lock picks, a small mirror mounted on a metal handle, a set of narrow-bladed scissors, and a pair of pliers."
+    },
+    {
+      "name": "Carpenter’s Tools",
+      "category": "Tools",
+      "kind": "inventory",
+      "weight": 6,
+      "damage": "",
+      "defense": "",
+      "description": "A set of basic tools used to cut and shape wood for crafts of all sizes. This toolset comes in a small box. Inside the box contains a saw, a hammer, nails, a hatchet, a square, a ruler, an adze, a plane, and a chisel.",
+      "sourceText": "Cost: 5 Gold | Weight: 6 lbs\nDescription: A set of basic tools used to cut and shape wood for crafts of all sizes. This toolset comes in a small box. Inside the box contains a saw, a hammer, nails, a hatchet, a square, a ruler, an adze, a plane, and a chisel."
+    },
+    {
+      "name": "Woodcarver's Tools",
+      "category": "Tools",
+      "kind": "inventory",
+      "weight": 2,
+      "damage": "",
+      "defense": "",
+      "description": "A set to aid in the crafting of small wooden trinkets or arrows. A knife, a gouge, and a small saw. This toolset comes wrapped in a leather that is rolled for easy storage.",
+      "sourceText": "Cost: 2 Gold | Weight: 2 lbs\nDescription: A set to aid in the crafting of small wooden trinkets or arrows. A knife, a gouge, and a small saw. This toolset comes wrapped in a leather that is rolled for easy storage."
+    },
+    {
+      "name": "Alchemist’s Tools",
+      "category": "Tools",
+      "kind": "inventory",
+      "weight": 8,
+      "damage": "",
+      "defense": "",
+      "description": "A mortar and pestle along with several mixing implements and bowls used to bring ingredients together for salves, potions and poisons. This toolset comes in a small chest.",
+      "sourceText": "Cost: 40 gold | Weight: 8 lbs\nDescription: A mortar and pestle along with several mixing implements and bowls used to bring ingredients together for salves, potions and poisons. This toolset comes in a small chest."
+    },
+    {
+      "name": "Blacksmith’s Tools",
+      "category": "Tools",
+      "kind": "inventory",
+      "weight": 5,
+      "damage": "",
+      "defense": "",
+      "description": "A few hammers and tongs made specifically for blacksmithing along with a whetstone. This toolset comes in a small chest.",
+      "sourceText": "Cost: 10 Gold | Weight: 5 lbs\nDescription: A few hammers and tongs made specifically for blacksmithing along with a whetstone. This toolset comes in a small chest."
+    },
+    {
+      "name": "Leatherworker’s Tools",
+      "category": "Tools",
+      "kind": "inventory",
+      "weight": 5,
+      "damage": "",
+      "defense": "",
+      "description": "A set of knives, pins and needles used to cut, shape and prep leather for binding with other pieces of clothing or armor or repairs as well as a jar of adhesive (10 uses) and polish. This toolset comes in a small chest.",
+      "sourceText": "Cost: 3 Gold | Weight: 5 lbs\nDescription: A set of knives, pins and needles used to cut, shape and prep leather for binding with other pieces of clothing or armor or repairs as well as a jar of adhesive (10 uses) and polish. This toolset comes in a small chest."
+    },
+    {
+      "name": "Hammer",
+      "category": "Tools",
+      "kind": "inventory",
+      "weight": 2,
+      "damage": "",
+      "defense": "",
+      "description": "A general purpose hammer. Does 1d4 dmg.",
+      "sourceText": "Cost: 1 Gold | Weight: 2 lbs\nDescription: A general purpose hammer. Does 1d4 dmg."
+    },
+    {
+      "name": "Pick",
+      "category": "Tools",
+      "kind": "inventory",
+      "weight": 4,
+      "damage": "",
+      "defense": "",
+      "description": "A pick for breaking stone or mining. Does 1d6 dmg.",
+      "sourceText": "Cost: 2 Gold | Weight: 4 lbs\nDescription: A pick for breaking stone or mining. Does 1d6 dmg."
+    },
+    {
+      "name": "Shovel",
+      "category": "Tools",
+      "kind": "inventory",
+      "weight": 2,
+      "damage": "",
+      "defense": "",
+      "description": "A general purpose shovel for digging. Does 1d4 dmg, has reach.",
+      "sourceText": "Cost: 1 Gold | Weight: 2 lbs\nDescription: A general purpose shovel for digging. Does 1d4 dmg, has reach."
+    },
+    {
+      "name": "Knife",
+      "category": "Tools",
+      "kind": "inventory",
+      "weight": 1,
+      "damage": "",
+      "defense": "",
+      "description": "A utility knife used for skinning, cutting, etc. Does 1d4 dmg.",
+      "sourceText": "Cost: 4 Silver | Weight: 1 lbs\nDescription: A utility knife used for skinning, cutting, etc. Does 1d4 dmg."
+    },
+    {
+      "name": "Manacles",
+      "category": "Tools",
+      "kind": "inventory",
+      "weight": 4,
+      "damage": "",
+      "defense": "",
+      "description": "Metal restraints bound in chains with locks and keys to keep an individual in place.",
+      "sourceText": "Cost: 3 Gold | Weight: 4 lbs\nDescription: Metal restraints bound in chains with locks and keys to keep an individual in place."
+    }
+  ]
+}
