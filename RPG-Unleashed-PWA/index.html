@@ -3,7 +3,7 @@
 
 <head>
 
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="/manifest.json?build=1.55.0">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="theme-color" content="#ffffff">
@@ -5554,6 +5554,7 @@ if (
         type="number"
         placeholder="Level"
     >
+    <button id="rpg-level-up" type="button" style="padding:8px 12px;border:2px solid #111;border-radius:16px;background:#fff;font-weight:bold;cursor:pointer;white-space:nowrap">+ Lvl 1</button>
 
     <input
         type="number"
@@ -11848,6 +11849,8 @@ function initializeCharacterSheet(
     }
 
 
+    window.RPGProgressionState = structuredClone(restoredSheetState?.progression || {completedLevel:0});
+
     characterSheetInitialized =
         true;
 
@@ -16956,7 +16959,8 @@ async function saveRemoteCharacterSheet() {
                 "halloween"
                 ? "halloween"
                 : "standard",
-        tabs: {}
+        tabs: {},
+        progression: structuredClone(window.RPGProgressionState || {completedLevel:0})
     };
 
 
@@ -17122,7 +17126,8 @@ async function saveCharacterSheet() {
                 "halloween"
                 ? "halloween"
                 : "standard",
-        tabs: {}
+        tabs: {},
+        progression: structuredClone(window.RPGProgressionState || {completedLevel:0})
     };
 
 
@@ -23924,6 +23929,7 @@ if ("serviceWorker" in navigator) {
   let feats = [];
 
   function hide() { overlay.style.display = "none"; }
+  window.RPGOpenFeatCatalog = show;
   function createRow(feat) {
     bypass = true;
     try { add.click(); } finally { bypass = false; }
@@ -23942,6 +23948,7 @@ if ("serviceWorker" in navigator) {
     }
     hide();
   }
+  window.RPGAddCatalogFeat = createRow;
   function render() {
     results.replaceChildren();
     const term = search.value.trim().toLowerCase(), cat = category.value;
@@ -24025,6 +24032,7 @@ if ("serviceWorker" in navigator) {
 })();
 </script>
 
+<script src="/levelup.js?build=1.55.0" defer></script>
 </body>
 
 </html>
