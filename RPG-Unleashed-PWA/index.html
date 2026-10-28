@@ -4549,7 +4549,7 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
  .creator-height-field .creator-guidance,.creator-weight-field .creator-guidance{margin-top:8px;}
 }
 .creator-traits-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:9px;margin:10px 0 16px;}
-.creator-trait-option{display:flex;align-items:center;gap:8px;border:1px solid #888;padding:10px;border-radius:12px;cursor:pointer;}
+.creator-trait-option{display:flex;align-items:flex-start;gap:8px;border:1px solid #888;padding:10px;border-radius:12px;cursor:pointer;line-height:1.4;}.creator-trait-option small{display:block;margin-top:4px;color:#555;font-size:12px;}html.rpg-dark .creator-trait-option small{color:var(--rpg-muted)!important;}
 html.rpg-dark .creator-trait-option{background:var(--rpg-surface);color:var(--rpg-fg);border-color:var(--rpg-edge);}
 #tab2 .feat-row .feat-rank-input{display:none!important;}
 @media(min-width:900px){#tab2 .feat-row{grid-template-columns:minmax(200px,1.8fr) 120px minmax(300px,3fr) 34px;}}
@@ -22039,6 +22039,11 @@ function renderCreatorValidation() {
 }
 
 const RPG_CULTURAL_TRAITS = {"Human":["Adaptive Learner","Attribute Versatility","Cultural Exchange","Skill Adept","Resilient Spirit","Social Chameleon","Survivor’s Instinct","Resourceful","Environmental Adaptability"],"Elf":["Elven Longevity","Natural Spellcasters","Lightfooted","Trueshot"],"Dwarf":["Golden Eye","Stout Constitution","Stonecrafter’s Precision","Mountain's Heart","Forge-Tempered"],"Orc":["Slave Master","Orcish Resolve","Thickened Hide","Critical Determination"],"Halfling":["Earthen Affinity","Size Agility","Lucky","Uncanny Forager","Charismatic Caster","Halfling Hospitality"],"Gnome":["Ingenious Tinkerer","Size Agility","Natural Spellcasters","Magical Resistance"],"Traiggoblin":["Scent Sniffer","Unexpected Charm","Agile Build","Survival Instincts","Escapist"],"Furfolk":["Scent Sniffer","Pack Dynamics","Natural Climbers","Primal Awareness","Backed into a Corner","Predatory Stealth","Bestial Hide"],"Zizses":["Thermal Sense","Scale Armor","Venomous Heritage","Sunbather"],"Av’riahl":["Thunder Bird","Fly-By Attack","Dazzling Voice","Mana-Infused Feathers"],"Arrahsect":["Advanced Pheromones","Resilient Metabolism","Nomadic Resilience","Nomadic Burrows"],"Terrán":["Floral Photosynthesis","Hardened Bark","Earthwalk","Entangling Roots","Home Soil"],"Shroomite":["Dark Adept","Fungal Resilience","Earthwalk","Soil Sense","Sporeghast"],"Manakeen":["Mana Machine","Departed Loved One","Overload Strike","Advanced Sensors","Built-In Defenses","Mechanical Syphon"]};
+let RPG_TRAIT_DETAILS={};
+fetch("/data/cultural-traits-one-v1.json",{cache:"no-store"})
+ .then(r=>{if(!r.ok)throw Error("Cultural trait details unavailable");return r.json()})
+ .then(data=>{RPG_TRAIT_DETAILS=data.races||{};if(creatorDraft)renderCreatorTraits()})
+ .catch(error=>console.warn(error));
 function renderCreatorTraits() {
  const grid=document.getElementById("creator-race-grid");
  if(!grid)return;
@@ -22051,7 +22056,7 @@ function renderCreatorTraits() {
  const h=document.createElement("h3");h.textContent="Cultural Traits — choose 2";
  const p=document.createElement("p");p.textContent="Choose two distinct cultural traits from your race.";el.append(h,p);
  const wrap=document.createElement("div");wrap.className="creator-traits-grid";
- for(const name of names){const label=document.createElement("label");label.className="creator-trait-option";const box=document.createElement("input");box.type="checkbox";box.checked=chosen.includes(name);box.disabled=!box.checked&&chosen.length>=2;box.addEventListener("change",()=>{let a=Array.isArray(creatorDraft.culturalTraits)?creatorDraft.culturalTraits:[];creatorDraft.culturalTraits=box.checked?[...a,name].slice(0,2):a.filter(x=>x!==name);renderCreatorTraits()});label.append(box,document.createTextNode(" "+name));wrap.appendChild(label)}el.appendChild(wrap);
+ for(const name of names){const label=document.createElement("label");label.className="creator-trait-option";const box=document.createElement("input");box.type="checkbox";box.checked=chosen.includes(name);box.disabled=!box.checked&&chosen.length>=2;box.addEventListener("change",()=>{let a=Array.isArray(creatorDraft.culturalTraits)?creatorDraft.culturalTraits:[];creatorDraft.culturalTraits=box.checked?[...a,name].slice(0,2):a.filter(x=>x!==name);renderCreatorTraits()});const info=document.createElement("span");const title=document.createElement("strong");title.textContent=name;info.append(title);const description=RPG_TRAIT_DETAILS[creatorDraft.race]?.[name];if(description){const detail=document.createElement("small");detail.textContent=description;info.append(detail)}label.append(box,info);wrap.appendChild(label)}el.appendChild(wrap);
 }
 
 function renderCharacterCreator() {
