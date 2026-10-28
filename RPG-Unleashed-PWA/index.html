@@ -3,7 +3,7 @@
 
 <head>
 
-<link rel="manifest" href="/manifest.json?build=1.58.0">
+<link rel="manifest" href="/manifest.json?build=1.59.0">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="theme-color" content="#ffffff">
@@ -4540,7 +4540,7 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
 
 </style>
 
-<link rel="stylesheet" href="/dark-mode.css?build=1.58.0">
+<link rel="stylesheet" href="/dark-mode.css?build=1.59.0">
 </head>
 
 
@@ -6564,7 +6564,7 @@ if (
             id="add-skill-bonus"
             type="button"
         >
-            + Skill Bonus
+            + Skill
         </button>
 
 
@@ -9032,6 +9032,62 @@ function showAppScreen(
 }
 
 
+/* Add/remove armor without changing existing saved character rows. */
+const RPG_ARMOR_TEMPLATE = document.querySelector("#tab1 .armor-row")?.outerHTML || "";
+function ensureArmorControls(fresh = false) {
+    const tab = document.getElementById("tab1");
+    if (!tab) return;
+    const heading = [...tab.querySelectorAll("h2")].find(h => h.textContent.trim() === "Armor");
+    if (!heading) return;
+    if (fresh) {
+        tab.querySelectorAll(".armor-entry").forEach(entry => entry.remove());
+        tab.querySelectorAll(".armor-row").forEach(row => row.remove());
+    }
+    // Wrap legacy armor rows so the user can remove them individually.
+    tab.querySelectorAll(".armor-row").forEach(row => {
+        if (row.closest(".armor-entry")) return;
+        const wrapper = document.createElement("div");
+        wrapper.className = "armor-entry";
+        row.before(wrapper);
+        wrapper.appendChild(row);
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "remove-armor";
+        remove.textContent = "×";
+        remove.setAttribute("aria-label", "Remove armor");
+        wrapper.appendChild(remove);
+    });
+    if (!tab.querySelector("#add-armor")) {
+        const add = document.createElement("button");
+        add.id = "add-armor";
+        add.type = "button";
+        add.className = "add-armor";
+        add.textContent = "+ Armor";
+        let last = heading;
+        for (const entry of tab.querySelectorAll(".armor-entry")) last = entry;
+        last.after(add);
+    }
+}
+document.addEventListener("click", event => {
+    if (event.target.closest?.("#add-armor")) {
+        const add = document.querySelector("#tab1 #add-armor");
+        if (!add || !RPG_ARMOR_TEMPLATE) return;
+        const holder = document.createElement("div");
+        holder.className = "armor-entry";
+        holder.innerHTML = RPG_ARMOR_TEMPLATE + '<button type="button" class="remove-armor" aria-label="Remove armor">×</button>';
+        add.before(holder);
+        holder.querySelector("input")?.focus();
+    }
+    if (event.target.closest?.("#tab1 .remove-armor")) {
+        event.target.closest(".armor-entry")?.remove();
+    }
+});
+function removeFreshPlaceholderRows() {
+    const tab = document.getElementById("tab2");
+    if (!tab) return;
+    tab.querySelectorAll("#skill-bonus-section .skill-bonus-row, #feat-list .feat-row").forEach(row => row.remove());
+}
+
 function restoreCharacterTabs(
     state
 ) {
@@ -9072,6 +9128,10 @@ function restoreCharacterTabs(
         }
     );
 
+
+    const fresh = !state?.tabs;
+    ensureArmorControls(fresh);
+    if (fresh) removeFreshPlaceholderRows();
 
     // Restored legacy tab HTML can predate the progression button.
     const levelHeader = document.querySelector("#tab1 .character-header");
@@ -23897,7 +23957,7 @@ showAppScreen(
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker
-            .register("/service-worker.js?build=1.58.0", { scope: "/" })
+            .register("/service-worker.js?build=1.59.0", { scope: "/" })
             .catch(error => {
                 console.error(
                     "Service worker registration failed:",
@@ -24050,8 +24110,8 @@ if ("serviceWorker" in navigator) {
 })();
 </script>
 
-<script src="/levelup.js?build=1.58.0" defer></script>
-<script src="/theme.js?build=1.58.0"></script>
+<script src="/levelup.js?build=1.59.0" defer></script>
+<script src="/theme.js?build=1.59.0"></script>
 </body>
 
 </html>

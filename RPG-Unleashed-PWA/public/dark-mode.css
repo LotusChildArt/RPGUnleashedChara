@@ -49,3 +49,39 @@ html.rpg-dark #rpg-levelup-dialog #rpg-level-message,
 html.rpg-dark #rpg-level-feat-browser p,
 html.rpg-dark #feat-catalog-overlay #feat-catalog-message {color:#d3dae2!important;}
 html.rpg-dark img,html.rpg-dark canvas,html.rpg-dark svg {filter:none;}
+
+/* Readable muted labels and explicitly themed weapon/handbook surfaces. */
+html.rpg-dark {--rpg-muted:#ccd5df;--rpg-edge:#84909d;}
+html.rpg-dark .weapon-card,html.rpg-dark .weapon-main-row,html.rpg-dark .weapon-sub-row,
+html.rpg-dark .weapon-details,html.rpg-dark .weapon-ammo,
+html.rpg-dark .handbook-condition,html.rpg-dark .handbook-page,
+html.rpg-dark .handbook-table-wrap,html.rpg-dark .handbook-table,
+html.rpg-dark .handbook-table td,html.rpg-dark .handbook-table th,
+html.rpg-dark .handbook-screen,html.rpg-dark #handbook-screen,
+html.rpg-dark .character-picture-preview {
+background-color:var(--rpg-surface)!important;color:var(--rpg-fg)!important;border-color:var(--rpg-edge)!important;
+}
+html.rpg-dark .weapon-card input,html.rpg-dark .weapon-card select,
+html.rpg-dark .weapon-card textarea,html.rpg-dark .handbook-condition input {
+background-color:var(--rpg-raised)!important;color:var(--rpg-fg)!important;border-color:var(--rpg-edge)!important;
+}
+html.rpg-dark [style*="color: #555"],html.rpg-dark [style*="color:#555"],
+html.rpg-dark [style*="color: #777"],html.rpg-dark [style*="color:#777"],
+html.rpg-dark [style*="color: #666"],html.rpg-dark [style*="color:#666"],
+html.rpg-dark .path-field-label,html.rpg-dark .app-option-description,
+html.rpg-dark .character-picture-preview,html.rpg-dark .creator-step-note,
+html.rpg-dark .handbook-condition small,html.rpg-dark .creator-path-progress-step,
+html.rpg-dark .weapon-sub-row span,html.rpg-dark .weapon-sub-row label {
+color:var(--rpg-muted)!important;
+}
+html.rpg-dark .handbook-condition p,html.rpg-dark .handbook-condition li,
+html.rpg-dark .handbook-condition strong,html.rpg-dark .handbook-table td {
+color:var(--rpg-fg)!important;
+}
+html.rpg-dark .weapon-card [readonly] {background-color:#303640!important;}
+/* Visible controls for newly added armor rows. */
+.add-armor,.remove-armor {border:2px solid #111;border-radius:16px;padding:7px 14px;background:#fff;color:#111;cursor:pointer;font-weight:bold;}
+.remove-armor {padding:5px 10px;}
+.armor-entry {display:flex;align-items:center;gap:6px;margin-bottom:7px;}
+.armor-entry .armor-row {flex:1;min-width:0;}
+html.rpg-dark .add-armor,html.rpg-dark .remove-armor {border-color:var(--rpg-edge)!important;background:var(--rpg-surface)!important;color:var(--rpg-fg)!important;}
