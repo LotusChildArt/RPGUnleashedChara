@@ -56,7 +56,8 @@ function showReference(kind){
  const input=document.createElement("input");input.type="search";input.placeholder="Search "+kind.toLowerCase();input.setAttribute("aria-label","Search "+kind);
  const category=document.createElement("select");
  category.setAttribute("aria-label","Filter "+kind+" by section");
- category.style.cssText="width:100%;padding:10px;margin:8px 0;border-radius:8px";
+ category.style.cssText="display:block;width:100%;min-height:44px;padding:10px;margin:8px 0;border:1px solid #888;border-radius:8px;background:var(--rpg-surface,#fff);color:var(--rpg-fg,#111)";
+ category.innerHTML='<option value="">All sections</option>';
  const results=document.createElement("div");results.className="rpg-reference-results";
  ref.append(input,category,results);
  category.hidden=kind==="Languages";
