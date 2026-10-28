@@ -107,6 +107,7 @@ window.RPGPopulateStartingGear=async pkg=>{
  // Creator origins use everyday descriptions such as "poor clothing" or
  // "walking stick"; map these only when the source has an unambiguous equivalent.
  const aliases=[
+  [/\b(?:clothes|clothing)\b/i,"Set of Clothing"],
   [/\b(?:poor|plain|common|fine|simple|ratty|ragged|noble|flashy|rugged|travel)(?:\s+(?:but|and|rugged|flashy|noble|travel|fine|common))*\s+(?:clothes|clothing)\b/i,"Set of Clothing"],
   [/\b(?:poor|ragged|plain) cloak\b/i,"Cloak"],
   [/\bwalking stick\b/i,"Club"],
