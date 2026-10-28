@@ -2,7 +2,7 @@
 "use strict";
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??"");
-const addLanguage=document.getElementById("add-language");
+const addLanguage=()=>document.getElementById("add-language");
 const languages=typeof RPG_CREATOR_LANGUAGES!=="undefined"?RPG_CREATOR_LANGUAGES:[];
 let catalog=null;
 const panel=document.createElement("div");panel.id="rpg-language-picker";panel.style.cssText="display:none;position:fixed;inset:0;z-index:100025;background:#000a;overflow:auto;padding:6vh 12px";panel.setAttribute("role","dialog");panel.setAttribute("aria-modal","true");document.body.append(panel);
@@ -10,7 +10,7 @@ function close(){panel.style.display="none";panel.replaceChildren();}
 function addToSheet(name){
  const list=$("#languages-list");if(!list)return;
  const row=[...list.querySelectorAll(".background-entry-row")].find(r=>!r.querySelector('input[placeholder="Language"]')?.value.trim());
- if(!row){window.RPGLanguageBypass=true;try{addLanguage.click()}finally{window.RPGLanguageBypass=false}}
+ if(!row){window.RPGLanguageBypass=true;try{addLanguage()?.click()}finally{window.RPGLanguageBypass=false}}
  const item=row||list.querySelector(".background-entry-row:last-child");
  const input=item?.querySelector('input[placeholder="Language"]');
  if(input){input.value=name;input.dispatchEvent(new Event("input",{bubbles:true}))}
