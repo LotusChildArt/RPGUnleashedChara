@@ -21322,7 +21322,7 @@ function renderCreatorRaceGrid(){
  const mixed=creatorIsMixed(),first=creatorDraft.race||"",stage=mixed?(creatorDraft.heritageStage||1):0;
  const title=mixed?(stage===1?"Confirm First Half-Race — "+first:"Second Heritage — "+first):"Choose a Race";
  header.innerHTML='<h3>'+creatorEscapeHtml(title)+'</h3>'+
-   (mixed?'<p>Choose a second half-race package below. Your first heritage is '+creatorEscapeHtml(first)+'.</p>'+
+   (mixed?'<p>'+(stage===1?'Review the half-race package below, choose its attribute option, and confirm.':'Select your second half-race package below. The first is '+creatorEscapeHtml(first)+'.')+'</p>'+
    '<button type="button" data-heritage-back>← Change First Heritage</button>'+
    (stage===2?'<label class="creator-heritage-override"><input type="checkbox" id="creator-heritage-override" '+(creatorDraft.heritageGmOverride?'checked':'')+'> GM Override — remove genetic compatibility filter</label>':'')+
    (stage===2?'<p class="creator-heritage-footnote">The override allows other breeding types, but not the same parent race, Manakeen, or races without a documented half-race package.</p>':''):
@@ -21967,7 +21967,9 @@ function renderCreatorTraits() {
  if(!grid)return;
  let el=document.getElementById("creator-cultural-traits");
  if(!el){el=document.createElement("div");el.id="creator-cultural-traits";grid.after(el);}
- const mixed=creatorIsMixed(),parents=mixed&&creatorHeritagePairValid()?[creatorDraft.race,creatorDraft.heritagePartner]:[creatorDraft?.race];
+ const mixed=creatorIsMixed(),valid=creatorHeritagePairValid();
+ if(mixed&&!valid){el.replaceChildren();return;}
+ const parents=mixed?[creatorDraft.race,creatorDraft.heritagePartner]:[creatorDraft?.race];
  const names=parents.flatMap(n=>RPG_CULTURAL_TRAITS[n]||[]);
  if(!names.length){el.replaceChildren();return;}
  const chosen=Array.isArray(creatorDraft.culturalTraits)?creatorDraft.culturalTraits:[];
@@ -23129,7 +23131,7 @@ document
               if(!RPG_HALF_HERITAGE[name])return;
               creatorDraft.race=name;creatorDraft.heritageMode="mixed";creatorDraft.heritageStage=1;
               creatorDraft.heritagePartner="";creatorDraft.heritageChoices={};creatorDraft.culturalTraits=[];
-              creatorDraft.raceChoice="";creatorOpenRace="";renderCharacterCreator();return;
+              creatorDraft.raceChoice="";creatorOpenRace=name;renderCharacterCreator();return;
             }
             const halfChoice=event.target.closest("[data-heritage-card-choice]");
             if(halfChoice){
