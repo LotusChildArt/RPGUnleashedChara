@@ -136,7 +136,8 @@ window.RPGPopulateStartingGear=async pkg=>{
  const selected=[];let remaining=normalize(raw);
  for(const item of matches){const n=normalize(item.name);if(!remaining.includes(n)&&!aliases.some(([pattern,name])=>name===item.name&&pattern.test(raw)))continue;selected.push(item);remaining=remaining.replace(n," ")}
  for(const item of selected)place(item,item.name,"starting");
- if(!selected.length){addInventory(pkg.name,null,(pkg.borrowed?"Borrowed from "+pkg.source+". ":"")+raw);return}
+ // Keep the individual package contents in inventory even if nothing matches the catalog.
+ // Unknown items remain editable instead of being replaced by a single package-name row.
  // Populate unmatched package contents into inventory rather than burying them in Notes.
  // Split only at normal list delimiters; leave source text as the description.
  let remainder=raw;
