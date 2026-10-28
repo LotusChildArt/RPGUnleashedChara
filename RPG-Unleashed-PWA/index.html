@@ -18414,7 +18414,7 @@ const RPG_CREATOR_PATH_ORIGINS = [
     {
         "name": "Military",
         "description": "You served in an army, navy, or formal militia, either as a soldier, officer, or specialist. Whether still enlisted, retired, or discharged, your time in the military instilled discipline, tactical knowledge, and combat experience.",
-        "wealth": "4d6",
+        "wealth": "4d6 Gold",
         "gear": [
             {
                 "name": "Standard-Issue Kit",
@@ -20103,17 +20103,6 @@ function renderCreatorDerivedValues() {
         creatorPointsRemaining()
     );
 
-    const origin=getCreatorOrigin();
-    setCreatorText("creator-review-origin",display(origin?.name));
-    setCreatorText("creator-review-origin-wealth",display(origin?.wealth));
-    setCreatorText("creator-review-gear",display(creatorPathChoiceText("gear")));
-    setCreatorText("creator-review-perk",display(creatorPathChoiceText("perk")));
-    setCreatorText("creator-review-drawback",display(creatorPathChoiceText("drawback")+(creatorResolvedPathChoice("drawback")?.name==="Malnourished Development"&&creatorDraft?.drawbackExtra?" ("+creatorDraft.drawbackExtra.toUpperCase()+")":"")));
-    setCreatorText("creator-review-role",display(creatorDraft?.role));
-    setCreatorText("creator-review-role-bonus-1",display(creatorRoleBonusLabel(0)));
-    setCreatorText("creator-review-role-bonus-2",display(creatorRoleBonusLabel(1)));
-    setCreatorText("creator-review-drive",display(creatorDraft?.drive));
-
     [
         "bod",
         "dex",
@@ -20348,6 +20337,93 @@ function renderCreatorReview() {
                 "scleraColor",
                 "scleraOther"
             )
+        )
+    );
+
+    const origin =
+        getCreatorOrigin();
+
+    setCreatorText(
+        "creator-review-origin",
+        display(
+            origin?.name
+        )
+    );
+
+    setCreatorText(
+        "creator-review-origin-wealth",
+        display(
+            origin?.wealth
+        )
+    );
+
+    setCreatorText(
+        "creator-review-gear",
+        display(
+            creatorPathChoiceText(
+                "gear"
+            )
+        )
+    );
+
+    setCreatorText(
+        "creator-review-perk",
+        display(
+            creatorPathChoiceText(
+                "perk"
+            )
+        )
+    );
+
+    setCreatorText(
+        "creator-review-drawback",
+        display(
+            creatorPathChoiceText(
+                "drawback"
+            ) +
+            (
+                creatorResolvedPathChoice(
+                    "drawback"
+                )?.name ===
+                    "Malnourished Development" &&
+                creatorDraft?.drawbackExtra
+                    ? " (" +
+                      creatorDraft.drawbackExtra.toUpperCase() +
+                      ")"
+                    : ""
+            )
+        )
+    );
+
+    setCreatorText(
+        "creator-review-role",
+        display(
+            creatorDraft?.role
+        )
+    );
+
+    setCreatorText(
+        "creator-review-role-bonus-1",
+        display(
+            creatorRoleBonusLabel(
+                0
+            )
+        )
+    );
+
+    setCreatorText(
+        "creator-review-role-bonus-2",
+        display(
+            creatorRoleBonusLabel(
+                1
+            )
+        )
+    );
+
+    setCreatorText(
+        "creator-review-drive",
+        display(
+            creatorDraft?.drive
         )
     );
 
