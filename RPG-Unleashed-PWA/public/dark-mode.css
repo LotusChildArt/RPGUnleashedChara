@@ -85,3 +85,92 @@ html.rpg-dark .weapon-card [readonly] {background-color:#303640!important;}
 .armor-entry {display:flex;align-items:center;gap:6px;margin-bottom:7px;}
 .armor-entry .armor-row {flex:1;min-width:0;}
 html.rpg-dark .add-armor,html.rpg-dark .remove-armor {border-color:var(--rpg-edge)!important;background:var(--rpg-surface)!important;color:var(--rpg-fg)!important;}
+
+/* Comprehensive character creation and shared panel contrast. */
+html.rpg-dark .character-creator-card,
+html.rpg-dark .creator-expandable-card,
+html.rpg-dark .creator-expandable-card-body,
+html.rpg-dark .creator-gear-package-contents,
+html.rpg-dark .creator-multiselect details,
+html.rpg-dark .creator-fixed-value,
+html.rpg-dark .creator-guidance,
+html.rpg-dark .creator-review-warning,
+html.rpg-dark .creator-gm-warning,
+html.rpg-dark .creator-weight-control,
+html.rpg-dark .creator-height-unit,
+html.rpg-dark .creator-derived,
+html.rpg-dark .creator-review-item,
+html.rpg-dark .creator-attribute-row,
+html.rpg-dark .creator-progress-step,
+html.rpg-dark .creator-path-progress-step,
+html.rpg-dark .creator-race-appearance,
+html.rpg-dark .party-character-card {
+ background:var(--rpg-surface)!important;color:var(--rpg-fg)!important;border-color:var(--rpg-edge)!important;
+}
+html.rpg-dark .creator-progress-step.active,
+html.rpg-dark .creator-path-progress-step.active,
+html.rpg-dark .creator-expandable-card.expanded,
+html.rpg-dark .creator-expandable-card.selected {
+ background:var(--rpg-raised)!important;border-color:#c9d9ed!important;
+}
+html.rpg-dark .creator-expandable-card-toggle,
+html.rpg-dark .creator-card-select-button,
+html.rpg-dark .creator-gear-route-button,
+html.rpg-dark .creator-gear-customize-toggle,
+html.rpg-dark .creator-adjust-button,
+html.rpg-dark .creator-race-card,
+html.rpg-dark .creator-race-choice,
+html.rpg-dark .character-creator-nav button,
+html.rpg-dark .character-creator-exit {
+ background:var(--rpg-raised)!important;color:var(--rpg-fg)!important;border-color:var(--rpg-edge)!important;
+}
+html.rpg-dark .creator-expandable-card-toggle:hover,
+html.rpg-dark .creator-card-select-button:hover,
+html.rpg-dark .creator-race-choice:hover,
+html.rpg-dark .creator-gear-route-button:hover {
+ background:#3c4858!important;
+}
+html.rpg-dark .creator-expandable-card.selected > .creator-expandable-card-toggle,
+html.rpg-dark .creator-card-select-button.selected,
+html.rpg-dark .creator-race-choice.selected,
+html.rpg-dark .creator-gear-route-button.selected {
+ background:#405b82!important;color:#fff!important;
+}
+html.rpg-dark .creator-field input,
+html.rpg-dark .creator-field select,
+html.rpg-dark .creator-path-control input,
+html.rpg-dark .creator-path-control select,
+html.rpg-dark .creator-path-control textarea,
+html.rpg-dark .creator-weight-control input {
+ background:var(--rpg-raised)!important;color:var(--rpg-fg)!important;border-color:var(--rpg-edge)!important;
+}
+html.rpg-dark .creator-step-note,
+html.rpg-dark .creator-field label,
+html.rpg-dark .creator-field > span:first-child,
+html.rpg-dark .creator-expandable-card-subtitle,
+html.rpg-dark .creator-race-appearance div,
+html.rpg-dark .creator-race-appearance strong,
+html.rpg-dark .creator-gear-customize-row,
+html.rpg-dark .creator-path-control > span,
+html.rpg-dark .creator-weight-control span,
+html.rpg-dark .creator-quarter-preview,
+html.rpg-dark .creator-racial-baseline,
+html.rpg-dark .creator-derived span,
+html.rpg-dark .creator-review-item span,
+html.rpg-dark .creator-validation,
+html.rpg-dark .creator-review-warning,
+html.rpg-dark .creator-guidance,
+html.rpg-dark .creator-progress-step,
+html.rpg-dark .creator-path-progress-step,
+html.rpg-dark .option-description,
+html.rpg-dark .option-save-status,
+html.rpg-dark .weapon-sub-label {
+ color:var(--rpg-muted)!important;
+}
+html.rpg-dark .creator-expandable-card.selected > .creator-expandable-card-toggle .creator-expandable-card-subtitle {color:#e1e9f4!important;}
+html.rpg-dark .creator-gear-package-contents strong,
+html.rpg-dark .creator-gear-package-contents p,
+html.rpg-dark .creator-expandable-card-body strong,
+html.rpg-dark .creator-expandable-card-body p {color:var(--rpg-fg)!important;}
+html.rpg-dark .creator-progress-step.complete,
+html.rpg-dark .creator-path-progress-step.complete {background:#304153!important;color:#e2eaf5!important;}
