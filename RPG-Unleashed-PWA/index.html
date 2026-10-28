@@ -19413,7 +19413,7 @@ function creatorGearResolvedText(pack,origin){
  const selections=creatorDraft?.gearAlternatives?.[key]||{};
  for(const [i,choice]of creatorGearOptionsFor(pack).entries()){
   const selected=selections[i];
-  text=text.replace(choice.phrase,selected);
+  if(selected)text=text.replace(choice.phrase,selected);
  }
  return text;
 }
