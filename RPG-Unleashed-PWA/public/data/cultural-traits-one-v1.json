@@ -1,0 +1,106 @@
+{
+  "source": "Races and Templates One v1",
+  "sourceUrl": "https://docs.google.com/document/d/1NQVFoC1Nog4jXuypLMnr_8herP_9g-vgSbLM2Go9uhw/edit",
+  "races": {
+    "Human": {
+      "Adaptive Learner": "Humans gain an additional level point per level up, demonstrating their capacity for rapid learning and adaptation.",
+      "Attribute Versatility": "At character creation, humans can opt for a +1 bonus to any two attributes or a +2 bonus to one attribute, reflecting their varied genetic heritage and adaptable nature. (when mixing races, this replaces the race’s Attribute bonus/penalty.)",
+      "Cultural Exchange": "Humans can learn one feat or trait that is typically exclusive to another race, reflecting their extensive interactions with other cultures.",
+      "Skill Adept": "Humans start the game with a +2 to 3 skills of their choice, representing their broad experiences and generalist nature.",
+      "Resilient Spirit": "Humans can reattempt one failed check or saving throw per day, symbolizing their determination and mental toughness, even on a critical failure.",
+      "Social Chameleon": "Humans receive a +2 bonus to all social interaction checks involving other races, enhancing their ability to adapt and blend into various social settings.",
+      "Survivor’s Instinct": "Humans can stabilize themselves once per game session when they are critically injured, showcasing their strong survival instincts.",
+      "Resourceful": "Humans craft and repair items in half the usual time, highlighting their ingenuity and practical thinking.",
+      "Environmental Adaptability": "Humans choose one type of environment during character creation. Gain +2 bonuses on Stealth, Movements and ignore Difficult Terrain here. Urban|Forest|Plains|Mountain|Underground|Underwater|Jungle|Desert|Swamp"
+    },
+    "Elf": {
+      "Elven Longevity": "Gain +2 on BOD saves against poisons and on opposed checks against Constitution spells.",
+      "Natural Spellcasters": "Elves have an innate ability to manipulate magical energies, giving them an edge in casting spells. Gain an additional 5 Mana for each lvl point spent on Manapool.",
+      "Lightfooted": "Elves have a 50% chance of not triggering traps and alarms due to their light and graceful movement.",
+      "Trueshot": "Taught only to pureblooded Elves, Trueshot is a technique for Elves with a MND of 9+, enhancing longbow use. It adds +¼ MND score to attack and damage, ignore range penalty up to 300 ft, but imposes a -4 penalty on all melee attacks, regardless of proficiency. Meditative Rest: Some Elves are so in-tune with their fae-blood that they hardly have any need for proper sleep. These elves meditate instead, allowing them to maintain partial awareness of their surroundings with a -2 penalty on Detect checks while maintaining all the full benefits of proper sleep."
+    },
+    "Dwarf": {
+      "Golden Eye": "Dwarves receive a +2 bonus to appraisal and barter checks, reflecting their keen eye for value and sharp negotiation skills. They also can reroll one failed haggle check per game session, even on a critical fail.",
+      "Stout Constitution": "Dwarves gain a +2 bonus on BOD saves against poisons and alcohol. Additionally, they receive two fewer stacks of poison or alcohol regardless of whether they pass or fail the save.",
+      "Stonecrafter’s Precision": "Dwarves have an innate ability that increases their craftsmanship, particularly with stone and metal. This grants them a +2 bonus to any crafting checks involving these materials as well as a +4 bonus on salvage checks using these materials.",
+      "Mountain's Heart": "Dwarves are intrinsically linked to the stone and minerals of their mountainous homes, giving them an innate ability to sense vibrations and movements through the earth. While in a cave, Dwarves gain a +4 on Detect checks and can sense invisible/underground creatures and hidden passageways within 30 ft.",
+      "Forge-Tempered": "Dwarves have increased resistance to heat and fire, a trait developed from generations working near the forges and volcanic smithies of their mountain homes. This grants them a DR 4 against fire and fire effects, additionally if they’re caught on fire, the fire lasts only half as many rounds as it normally would."
+    },
+    "Orc": {
+      "Slave Master": "Orcs, known for subjugating weaker races, have learned the languages of their captives. This grants Orcs proficiency in an additional language and a +2 bonus on intimidation checks when using a creature's native tongue.",
+      "Orcish Resolve": "Orcs refuse to fall in battle easily. They remain conscious and can continue to fight even when their HP drops to 0 or below. When combat is over, if they survive, they fall unconscious and take a -4 on all rolls for the following 24 hours.",
+      "Thickened Hide": "Full-blooded Orcs can train their bodies to take blow after blow, building up scar tissue which allows them to take more damage without consequence. These orcs trade in their +2 HP for 2 Natural DR.",
+      "Critical Determination": "Once per session, Orcs can turn any one attack into an automatic critical attack at the cost of dealing themselves the base damage of whatever attack they make (not including any damage bonuses or modifiers)."
+    },
+    "Halfling": {
+      "Earthen Affinity": "Halflings possess a natural talent for moving through and manipulating earth, granting them faster digging speeds and enhanced abilities in creating and navigating tunnels. This trait allows them to dig out 5 square feet of dirt with no tools in as little as 30 minutes, allowing them to make hiding holes for themselves.",
+      "Size Agility": "Halflings can quickly dodge out of harm’s way, granting them an increased dodge chance against attacks that they can see coming. +2 to DEX defense checks.",
+      "Lucky": "Once per session, a Halfling can reroll a failed check, reflecting their legendary luck.",
+      "Uncanny Forager": "Halflings seemingly never go hungry, oftentimes being able to forage for food even in places they’ve never been before, providing food for themselves regularly.",
+      "Charismatic Caster": "Halflings have a strong sense of personality, making them apt charisma based casters. When using charisma-based casting, Halfling’s gain a +2 to spell durations that have durations and a +2 to any casting check made with Mind Spells.",
+      "Halfling Hospitality": "Halflings have a way of “helping themselves”, often tricking other people to go along with what they say due to the presentation of their proposals. Halflings gain +3 to persuade and deceive checks made to barter for something or simply convince someone to give that thing to them."
+    },
+    "Gnome": {
+      "Ingenious Tinkerer": "Gnomes gain a natural +2 bonus to all engineering and handle device checks due to their innate understanding and curiosity about how things work.",
+      "Size Agility": "Gnomes can quickly dodge out of harm’s way, granting them an increased dodge chance against attacks that they can see coming. +2 to DEX defense checks.",
+      "Natural Spellcasters": "Elves have an innate ability to manipulate magical energies, giving them an edge in casting spells. Gain an additional 5 Mana for each lvl point spent on Manapool.",
+      "Magical Resistance": "Naturally resistant to magic, gnomes gain a +3 bonus on all saving throws against spells and magical effects. Quickened Gadgets Gnomes can use gadgets more effectively during combat, allowing them to use gadgets as a free action once per encounter. Experienced Tricksters Living life in an environment of tricksters, they’ve learned to tell when they’re being played. Gnomes gain a +2 on Evaluate checks, Detect checks and Communication checks when trying to sense when they’re being lied to."
+    },
+    "Traiggoblin": {
+      "Scent Sniffer": "Traiggoblins have a highly developed sense of smell, allowing them to track individuals or objects by scent alone. They can follow a scent so long as it’s been less than a day and so long as weather permits with a Detect check.",
+      "Unexpected Charm": "Despite their unusual appearance and rough background, Traiggoblins possess a disarming charm. They receive a +2 bonus on persuasion and deception checks, which helps them in negotiations and social interactions.",
+      "Agile Build": "Reflecting their lanky and small bodies, Traiggoblins gain a +3 bonus to DEX based checks, such as parkour, finesse and riding things larger than them.",
+      "Survival Instincts": "Growing up in a world that neither fully accepts nor rejects them, Traiggoblins develop keen survival instincts. They gain a +3 bonus to navigate and gather checks as they are particularly adept at finding food and shelter in unlikely places.",
+      "Escapist": "A lot of people have reasons to tie up Traiggoblins, which gives them a lot of reasons to learn how to escape. Traiggoblins gain a +3 on Handle Device, Stealth checks made to escape captivity or pursuers."
+    },
+    "Furfolk": {
+      "Scent Sniffer": "Furfolk, like their animal counterparts, have a highly developed sense of smell, allowing them to track individuals or objects by scent alone. They can follow a scent so long as it’s been less than a day and so long as weather permits with a Detect check.",
+      "Pack Dynamics": "Growing up in tight-knit communities, Furfolk are adept at helping. When assisting someone else with a check, they may add an additional +1 to the final check for each person assisting, furthermore they can grant +1 to any combat checks made by allies within 5 feet of them. This bonus does not stack with Pack Dynamics from other characters.",
+      "Natural Climbers": "Their animal-like bodies make Furfolk excellent climbers, giving them a climb speed equal to half their land speed and a +2 bonus to climb checks.",
+      "Primal Awareness": "Furfolk are keenly aware of their surroundings, gaining a +2 bonus on Detect checks and Initiative checks, and may act in the surprise round, even when ambushed.",
+      "Backed into a Corner": "When threatened, Furfolk can tap into their primal instincts, granting them a +2 bonus to their Defense checks when at half health or less and dealing +2 damage as well until the end of that combat.",
+      "Predatory Stealth": "Their animalistic traits allow Furfolk to move silently like predators stalking prey, receiving a +2 stealth bonus in low-light settings or darker as well as Lowlight Vision.",
+      "Bestial Hide": "Some Furfolk’s hides and fur are very thick, granting them a surprising resilience against damage and the elements. Due to this coating, they do not suffer in cold weather and they gain a Natural DR 2 and Resistance to elemental damage from Fire and Ice."
+    },
+    "Zizses": {
+      "Thermal Sense": "Some Zizses possess an extraordinary ability to perceive their surroundings using a combination of thermal detection and heightened sensitivity to vibrations. This grants them a form of \"sight\" that doesn't rely on their eyes, ears, or smell. Within a 20-foot radius, Zizses can detect the presence of living creatures, heat sources, and invisible forces, as well as identify hidden passages, traps, or other obscured objects.",
+      "Scale Armor": "The thick, resilient scales of the Zizses provide natural protection against physical harm. They gain +2 Natural DR, which stacks with any armor they wear and they gain Resistance to elemental damage from Fire and Ice.",
+      "Venomous Heritage": "Some Zizses inherit a trace of venomous ancestry. Once per day, they can apply venom to their natural weapons (like claws) or a melee weapon they wield. The venom's effect lasts for one encounter. (see Poisons for Venom)",
+      "Sunbather": "Zizses thrive in the sun, gaining energy and vitality from its rays. When resting for one hour under direct sunlight, they gain 10 Temporary HP and gain a temporary +1 bonus to BOD or DEX (player's choice) for the next encounter. This bonus does not stack with itself."
+    },
+    "Av’riahl": {
+      "Thunder Bird": "Av’riahls who fly fearlessly through storms are said to be favored by the gods. They ignore fly checks during high-wind days or storms. Once per session, during an active thunderstorm, they can perform a Thunder Dive attack. Thunder Dive: Using a FRA the Av’riahl flies into a storm cloud and dive-bombs an enemy, trailing lightning. On a hit, the attack deals 4d6 Electrical Damage in addition to normal attack damage. On a miss, the Av’riahl crashes to the ground, taking half the fall and lightning damage. At level 6, 8d6 Electrical Damage.",
+      "Fly-By Attack": "Av’riahls are warriors trained to fight while they move. While flying, Av’riahls can make Fly-By melee attacks as a FRA; this works as a charge for the purpose of determining bonuses to hit and damage as well as penalties for missing. Fly-By allows for one initial attack and may utilize Bonus Attacks to deal additional attacks during the Fly-By. If the Fly-By fails, the Av’riahl must make a DC 20 BOD check to remain flying.",
+      "Dazzling Voice": "Av’riahls are bards and diplomats, capable of making people see things their way. Av’riahls are treated friendly by intelligent neutral parties and as neutral by intelligent hostile parties. Their voice makes combat distracting for some, causing those the Av’riahl entrances to succeed on a DC 10+ ½ Av’riahl CHA check or suffer -2 penalties on attack and defense rolls until the end of their next turn. Using their voice like this constitutes a standard action and they may affect a number of targets equal to ¼ their CHA within 30 feet.",
+      "Mana-Infused Feathers": "Av’riahls’ heritage remains a point of contention, but what is not a point of contention is the unique magic that lies in the feathers of an Av’riahl. Once per day, Av’riahls with this trait can harmlessly pluck a feather from their wings. Burning this feather restores Av’riahl Level+2d6 Mana to a caster. At level 6, Av’riahl Level+4d6 Mana."
+    },
+    "Arrahsect": {
+      "Advanced Pheromones": "Arrahsects who have spent their entire lives interacting with strangers have subconsciously been focusing their pheromones until they have become strong enough to influence other races. Gain a +2 on CHA checks made to Persuade, furthermore 1 target per 3 Arrahsect levels within 30 feet can be calmed or taunted for 1 round using Pheromones unless they make a MND save equal to 10+½ CHA score. This calm or taunt effect can be used each turn as a swift action.",
+      "Resilient Metabolism": "Due to their unique and resilient physiology, some Arrahsects can better process poisons and disease, making the duration for each half as long and granting them a +2 bonus on BOD saves, they are also immune to ill effects from spoiled food or drink.",
+      "Nomadic Resilience": "Due to their nomadic lifestyles, Arrahsects have become accustomed to living out in extreme environments and adapting to the setting. Arrahsects do not take penalties for extreme cold/hot climate, may sleep comfortably on the ground and can go up to 24 hours without food or water with no penalty.",
+      "Nomadic Burrows": "Arrahsects are no strangers to living on the road, though some find it’s easier to live under it. These Arrahsects have become proficient in creating 15’x15’x5’ burrows in the ground that provide shelter for themselves and up to 5 companions. The burrow is made in the span of 3 hours with no checks, is structurally sound and can protect against extreme weather. It can also be hidden, requiring a DC 20 check to find. Alternatively, a 5x5x5 burrow can be made in 1 hour and a 10x10x5 can be made in 2."
+    },
+    "Terrán": {
+      "Floral Photosynthesis": "Terráns can grow special blooms that allow them to regenerate health during combat. While in combat, Terráns can drink water as though it were a potion and gain their BOD score in HP. This ability only works in direct sunlight.",
+      "Hardened Bark": "Terráns have a hardened exterior that acts as secondary armor, granting 2 Natural DR.",
+      "Earthwalk": "Terráns have the ability to walk through soil the same way some people can swim through water. They cannot pull others into the soil this way, they cannot attack while under the soil. Earthwalk Speed 20 ft per round.",
+      "Entangling Roots": "As a Standard Action, Terráns can make a BOD attack against a target’s BOD/DEX defense to grapple them. If successful, the target is pinned and can only make DEX defense checks at half DEX. The grapple lasts until the target succeeds on a BOD check against the Terrán. Neither the Terrán nor the target can move, but both can use their arms. Being attacked does not break the grapple.",
+      "Home Soil": "Terráns can be deceptively quick while in their favored environment. Select a terrain, in this terrain they gain a +2 to attacks, defenses, detect, navigation checks and their movement speeds are 10 ft faster than normal. DC to detect a Terrán amongst plantlife in their Home Soil increases by 5. Forest|Plains|Mountain|Jungle|Desert|Swamp"
+    },
+    "Shroomite": {
+      "Dark Adept": "Some Shroomites are used to never seeing the light of day, their eyes are accustomed to it and their flesh prefers the cool night air. Shroomites receive a +1 bonus to all rolls made at night or in dark places as well as 10 temporary HP, but a -2 on all perception checks made in the day time or in bright places.",
+      "Fungal Resilience": "Shroomites are particularly hearty and thus harder to kill. So long as their hitpoints don't reach a number equal to negative twice their BOD score, their body can regenerate. They gain passive regeneration of 4 HP per round while in combat.",
+      "Earthwalk": "Shroomites have the ability to walk through soil the same way some people can swim through water. They cannot pull others into the soil this way, they cannot attack while under the soil. Earthwalk Speed 20 ft per round.",
+      "Soil Sense": "Shroomites can dig their roots into the fertile earth to see past what their eyes allow. Doing this is a full round action. They can sense in a 60 ft AOE allowing them to sense what’s in and on the ground with extreme precision.",
+      "Sporeghast": "Should a Shroomite meet an untimely end, there is a small chance for them to continue as a Sporeghast, a sentient cloud of mushroom spores. Sporeghasts can live indefinitely in cool, dark, cave environments but die under direct sunlight. They can inhabit a fresh non Shroomite corpse and rebuild their body from it, though this corpse must not be starting decay. Sporeghasts can attempt to take over living beings with an opposed MND save check and while in a living being can transport themselves to a viable host or attempt to kill the living being to create a viable host, however the target of the Shroomghast may make MND saves against the Shroomghast each round they’re being controlled. While controlling a living being, the Shroomghast can communicate with it’s target telepathically."
+    },
+    "Manakeen": {
+      "Mana Machine": "Manakeen may spend up to ½ their level (rounded up) in mana per action to boost checks, damage, or healing, allowing for stronger effects in a single turn. This mana may be divided between multiple uses (e.g., +2 to damage and +1 to a check for 3 mana).",
+      "Departed Loved One": "Manakeen crafted to resemble a lost loved one are built with extraordinary care and attention to detail, granting them a +2 CHA bonus and removing the mechanical detachment that some Manakeen exhibit. This trait improves their ability to display and read emotions, making them more personable and socially adept.",
+      "Overload Strike": "Melee-focused Manakeen can channel built-up mana into a devastating attack. During an encounter, if a Manakeen makes 3 consecutive successful boosted melee attacks without taking damage, they are granted a free strike. On a hit, this strike deals an additional +3 damage and 1 extra damage die on top of any mana boosts applied to the attack.",
+      "Advanced Sensors": "Manakeen are built with advanced sensing implements that allow them to sense in various conditions. These sensors allow them to see in low-light, total darkness, magic darkness, fog and spot invisible or spectral enemies. This also allows them to act during surprise rounds.",
+      "Built-In Defenses": "Manakeen are built with defenses in mind, allowing them to summon weapons from their bodies. Manakeen may spend 5 Mana to summon a melee weapon equivalent to any melee weapon the Manakeen may know, this weapon if disarmed will dissipate, forcing the Manakeen to resummon it. They may also spend 3 Mana to turn their arm into a cannon that spends mana to deal damage. Each attack with this cannon may consume 1, 2 or 3 mana, dealing 1d4 damage per mana consumed.",
+      "Mechanical Syphon": "Manakeen can absorb Mana from sources such as Mana Nodes, Casters and other arcane sources. If a Manakeen successfully defends against a spell, they absorb the spell’s mana, replenishing their Mana by 1d4. If a Manakeen grapples an arcane caster, they may syphon the caster’s mana, draining the caster of 5 Mana per round they are grappled."
+    }
+  }
+}

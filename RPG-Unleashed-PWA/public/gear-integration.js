@@ -26,9 +26,18 @@ function addArmor(record,name){
  stats.slice(0,3).forEach((n,i)=>input(a[i+1],n));
  input(a[4],record.sourceText);
 }
-function addOutfit(record,name){
+function addOutfit(record,name,starting=false){
  const row=$("#tab1 .outfit-row");
- if(row&&!row.querySelector("input")?.value.trim()){input(row.querySelector("input"),name);input(row.querySelectorAll("input")[1],record.sourceText);return}
+ if(!row)return addInventory(name,record,starting?"starting clothes":"");
+ const fields=row.querySelectorAll("input");
+ const existing=fields[0]?.value.trim()||"";
+ if(starting){
+  // Starting clothes and additional garments belong together in Outfit.
+  input(fields[0],existing?existing+", "+name:name);
+  input(fields[1],"starting clothes");
+  return;
+ }
+ if(!existing){input(fields[0],name);input(fields[1],record?.sourceText||"");return}
  addInventory(name,record,"Spare outfit/clothing");
 }
 function matchItem(name){
@@ -57,7 +66,7 @@ function place(record,name,mode){
  if(mode==="inventory")return addInventory(name,record);
  if(record?.kind==="armor")return addArmor(record,name);
  if(record?.kind==="weapon")return equipWeapon(record,name);
- if(record?.kind==="outfit")return addOutfit(record,name);
+ if(record?.kind==="outfit")return addOutfit(record,name,mode==="starting");
  addInventory(name,record);
 }
 const overlay=document.createElement("div");overlay.id="gear-catalog-overlay";overlay.style.cssText="display:none;position:fixed;inset:0;z-index:100020;background:#000b;padding:4vh 12px;overflow:auto";overlay.setAttribute("role","dialog");overlay.setAttribute("aria-modal","true");overlay.setAttribute("aria-label","Gear catalog");document.body.appendChild(overlay);
@@ -98,16 +107,27 @@ window.RPGPopulateStartingGear=async pkg=>{
  // Creator origins use everyday descriptions such as "poor clothing" or
  // "walking stick"; map these only when the source has an unambiguous equivalent.
  const aliases=[
-  [/\b(?:poor|plain|common|fine|simple|ratty) clothing\b/i,"Set of Clothing"],
-  [/\b(?:poor|ragged|plain) cloak\b/i,"Cape"],
-  [/\bwalking stick\b/i,"Club"]
+  [/\b(?:clothes|clothing)\b/i,"Set of Clothing"],
+  [/\b(?:poor|plain|common|fine|simple|ratty|ragged|noble|flashy|rugged|travel)(?:\s+(?:but|and|rugged|flashy|noble|travel|fine|common))*\s+(?:clothes|clothing)\b/i,"Set of Clothing"],
+  [/\b(?:poor|ragged|plain) cloak\b/i,"Cloak"],
+  [/\bwalking stick\b/i,"Club"],
+  [/\b(?:short ?sword|shortsword)\b/i,"Sword, Short"],
+  [/\blongsword\b/i,"Sword, Long"],
+  [/\bbastard sword\b/i,"Sword, Bastard"],
+  [/\bshortbow\b/i,"Bow, Short"],
+  [/\blongbow\b/i,"Bow, Long"],
+  [/\b(?:hunting )?spear\b/i,"Spear, Short"],
+  [/\b(?:light )?crossbow\b/i,"Crossbow"],
+  [/\bheavy coat\b/i,"Heavy Coat"],
+  [/\barmored coat\b/i,"Armored Coat"]
+
  ];
  for(const [pattern,name] of aliases){
   if(pattern.test(raw)){const item=matchItem(name);if(item&&!matches.some(m=>m.name===item.name))matches.push(item);}
  }
  const selected=[];let remaining=normalize(raw);
  for(const item of matches){const n=normalize(item.name);if(!remaining.includes(n)&&!aliases.some(([pattern,name])=>name===item.name&&pattern.test(raw)))continue;selected.push(item);remaining=remaining.replace(n," ")}
- for(const item of selected)place(item,item.name,"equipped");
+ for(const item of selected)place(item,item.name,"starting");
  if(!selected.length){addInventory(pkg.name,null,(pkg.borrowed?"Borrowed from "+pkg.source+". ":"")+raw);return}
  // Preserve every detail of the selected package without turning the package into duplicate equipment.
  const notes=$("#notes-list");if(notes){$("#add-note")?.click();const card=notes.lastElementChild;if(card){input($(".note-title",card),"Starting Gear — "+pkg.name);input($(".note-body",card),(pkg.borrowed?"Borrowed from "+pkg.source+".\n":"")+raw+"\n\nRecognized: "+selected.map(x=>x.name).join(", ")+". Check other contents for manual entry.")}}

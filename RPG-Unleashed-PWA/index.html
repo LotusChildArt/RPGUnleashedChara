@@ -3,7 +3,7 @@
 
 <head>
 
-<link rel="manifest" href="/manifest.json?build=1.62.0">
+<link rel="manifest" href="/manifest.json?build=1.63.0">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="theme-color" content="#ffffff">
@@ -4538,9 +4538,38 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
     }
 }
 
+
+/* Creator details desktop columns and equal-sized fields. */
+@media(min-width:780px){
+ .creator-gender-field input,.creator-age-field input{height:44px;min-height:44px;box-sizing:border-box;}
+ .creator-height-field,.creator-weight-field{grid-column:span 1!important;min-width:0;}
+ .creator-height-control{flex-wrap:nowrap;gap:4px;}
+ .creator-height-control .creator-adjust-button{padding:7px 9px;min-width:29px;}
+ .creator-height-unit{min-width:42px!important;}
+ .creator-height-field .creator-guidance,.creator-weight-field .creator-guidance{margin-top:8px;}
+}
+.creator-traits-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:9px;margin:10px 0 16px;}
+.creator-trait-option{display:flex;align-items:flex-start;gap:8px;border:1px solid #888;padding:10px;border-radius:12px;cursor:pointer;line-height:1.4;}.creator-trait-option small{display:block;margin-top:4px;color:#555;font-size:12px;}html.rpg-dark .creator-trait-option small{color:var(--rpg-muted)!important;}
+html.rpg-dark .creator-trait-option{background:var(--rpg-surface);color:var(--rpg-fg);border-color:var(--rpg-edge);}
+#tab2 .feat-row .feat-rank-input{display:none!important;}
+@media(min-width:900px){#tab2 .feat-row{grid-template-columns:minmax(200px,1.8fr) 120px minmax(300px,3fr) 34px;}}
+.rpg-reference-panel{max-width:700px;margin:auto;background:#fff;color:#111;border-radius:14px;padding:20px;display:grid;gap:12px}
+.rpg-reference-panel input{padding:10px;}
+.rpg-reference-results{display:grid;gap:10px;max-height:60vh;overflow:auto;}
+.rpg-reference-results button,.rpg-reference-entry{padding:10px 14px;text-align:left;border:1px solid #aaa;border-radius:12px;background:#f8f8f8;color:#111}
+.rpg-reference-entry h3{margin:0 0 4px;}
+.rpg-reference-entry p{margin:6px 0;white-space:pre-wrap}
+.rpg-reference-entry pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;font-size:13px}
+#rpg-handbook-reference[hidden],#handbook-screen .handbook-page[hidden]{display:none!important;}
+html.rpg-dark .rpg-reference-panel,html.rpg-dark .rpg-reference-results button,html.rpg-dark .rpg-reference-entry{background:var(--rpg-surface)!important;color:var(--rpg-fg)!important;border-color:var(--rpg-edge)!important;}
+html.rpg-dark .rpg-reference-panel input{background:var(--rpg-raised)!important;color:var(--rpg-fg)!important;}
+.creator-gear-choice{display:grid;gap:5px;margin:12px 0;}
+.creator-gear-choice select{width:100%;padding:8px;border:1px solid #888;border-radius:9px;}
+html.rpg-dark .creator-gear-choice select{background:var(--rpg-raised)!important;color:var(--rpg-fg)!important;}
+
 </style>
 
-<link rel="stylesheet" href="/dark-mode.css?build=1.62.0">
+<link rel="stylesheet" href="/dark-mode.css?build=1.63.0">
 <style>
 /* All repeatable rows, including the first, have removable controls. */
 #feat-list .feat-row:first-child .remove-feat,#skill-bonus-section .skill-bonus-row:first-child .remove-skill-bonus,#inventory-list .inventory-row:first-child .remove-inventory-item{visibility:visible!important;display:inline-flex!important;opacity:1!important;}
@@ -4830,18 +4859,18 @@ if (
                 </p>
 
                 <div class="creator-grid">
-                    <div class="creator-field">
+                    <div class="creator-field creator-gender-field">
                         <span>Gender</span>
                         <input type="text" data-creator-field="gender" placeholder="Gender">
                     </div>
 
-                    <div class="creator-field">
+                    <div class="creator-field creator-age-field">
                         <span>Age</span>
                         <input type="number" min="0" data-creator-field="age" placeholder="Age">
                         <div class="creator-guidance" id="creator-age-guidance"></div>
                     </div>
 
-                    <div class="creator-field full">
+                    <div class="creator-field creator-height-field">
                         <span>Height</span>
                         <div class="creator-height-control">
                             <button class="creator-adjust-button" type="button" data-creator-height-adjust="-12">−</button>
@@ -4855,7 +4884,7 @@ if (
                         <div class="creator-guidance" id="creator-height-guidance"></div>
                     </div>
 
-                    <div class="creator-field">
+                    <div class="creator-field creator-weight-field">
                         <span>Weight</span>
                         <div class="creator-weight-control">
                             <input type="number" min="1" step="1" data-creator-field="weight" placeholder="Weight">
@@ -5094,7 +5123,7 @@ if (
                 </div>
 
                 <div class="creator-review-warning">
-                    Base racial adjustments and the selected Path are applied here. Cultural Traits, racial variants, mixed-race rules, the dedicated feat step, and the full equipment step will be added later.
+                    Base racial adjustments and the selected Path are applied here. Cultural Racial variants, mixed-race rules, the dedicated feat step, and the full equipment step will be added later.
                 </div>
             </section>
 
@@ -17876,19 +17905,19 @@ const CREATOR_COMMON_HAIR_STYLES = [
 const RPG_CREATOR_APPEARANCE = {
     "Human": {
         styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
-        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White"],
+        hair: ["Black", "Brown", "Blonde", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White"],
         eyes: ["Brown", "Blue", "Green", "Hazel", "Grey", "Amber"],
         sclera: []
     },
     "Elf": {
         styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
-        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Gold", "Platinum", "Green", "Blue"],
+        hair: ["Black", "Brown", "Blonde", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Gold", "Platinum", "Green", "Blue"],
         eyes: ["Brown", "Blue", "Green", "Hazel", "Grey", "Amber", "Silver", "Gold", "Platinum", "Rain Drop"],
         sclera: []
     },
     "Dwarf": {
         styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
-        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Silver", "Gold", "Copper", "Brass"],
+        hair: ["Black", "Brown", "Blonde", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Silver", "Gold", "Copper", "Brass"],
         eyes: ["Brown", "Green", "Hazel", "Amber", "Copper", "Gold", "Charcoal"],
         sclera: []
     },
@@ -17900,13 +17929,13 @@ const RPG_CREATOR_APPEARANCE = {
     },
     "Halfling": {
         styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
-        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Brass"],
+        hair: ["Black", "Brown", "Blonde", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Brass"],
         eyes: ["Brown", "Green", "Hazel", "Amber", "Copper", "Charcoal"],
         sclera: []
     },
     "Gnome": {
         styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
-        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Gold", "Copper", "Brass", "Pink", "Light Blue", "Pale Green"],
+        hair: ["Black", "Brown", "Blonde", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White", "Gold", "Copper", "Brass", "Pink", "Light Blue", "Pale Green"],
         eyes: ["Brown", "Blue", "Green", "Hazel", "Amber", "Sapphire", "Emerald", "Grey", "Violet", "Starlight Blue"],
         sclera: []
     },
@@ -17918,7 +17947,7 @@ const RPG_CREATOR_APPEARANCE = {
     },
     "Furfolk": {
         styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky"],
-        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White"],
+        hair: ["Black", "Brown", "Blonde", "Red", "Auburn", "Chestnut", "Sandy", "Blonde", "Grey", "White"],
         eyes: ["Brown", "Green", "Hazel", "Amber", "Yellow", "Icy Blue", "Deep Blue", "Red", "Violet"],
         sclera: []
     },
@@ -17957,7 +17986,7 @@ const RPG_CREATOR_APPEARANCE = {
     },
     "Manakeen": {
         styles: ["Wavy", "Curly", "Straight", "Coiled", "Kinky", "Spiked", "Braided", "Layered", "Metallic-like Strands", "Neon-lit Wisps"],
-        hair: ["Black", "Brown", "Blond", "Red", "Auburn", "White", "Grey", "Gold", "Copper", "Silver", "Neon Blue", "Bright Green", "Radiant Purple"],
+        hair: ["Black", "Brown", "Blonde", "Red", "Auburn", "White", "Grey", "Gold", "Copper", "Silver", "Neon Blue", "Bright Green", "Radiant Purple"],
         eyes: ["Yellow", "Blue", "Green", "Red", "Orange", "Gold", "Violet", "Cyan", "Pink", "White", "Bright Neon Colors"],
         sclera: ["White", "Black", "Red", "Blue", "Violet", "Green", "Matching Eye Color"]
     }
@@ -19307,6 +19336,7 @@ function makeFreshCreatorDraft() {
         playerName: "",
         race: "",
         raceChoice: "",
+        culturalTraits: [],
         gender: "",
         age: "",
         heightFeet: 5,
@@ -19322,6 +19352,7 @@ function makeFreshCreatorDraft() {
         scleraOther: "",
         origin: "",
         gearMode: "default",
+        gearAlternatives: {},
         gearSource: "",
         gearChoice: "",
         gearCustom: "",
@@ -19354,7 +19385,7 @@ function creatorResolvedPathChoice(kind){
  if(!creatorDraft)return null;const mode=creatorDraft[kind+"Mode"]||"default";
  if(mode==="custom"){const t=String(creatorDraft[kind+"Custom"]||"").trim();if(!t)return null;return{name:kind==="gear"?"Custom Starting Gear":kind==="perk"?"Custom Perk":"Custom Drawback",text:t,source:"Custom",custom:true,borrowed:false};}
  const source=mode==="borrow"?creatorDraft[kind+"Source"]:creatorDraft.origin,origin=getCreatorOrigin(source);if(!origin)return null;
- const choice=origin[creatorPathChoiceProperty(kind)]?.find(x=>x.name===creatorDraft[kind+"Choice"]);return choice?{...choice,source:origin.name,custom:false,borrowed:mode==="borrow"}:null;
+ const choice=origin[creatorPathChoiceProperty(kind)]?.find(x=>x.name===creatorDraft[kind+"Choice"]);return choice?{...choice,text:kind==="gear"?creatorGearResolvedText(choice,origin.name):choice.text,source:origin.name,custom:false,borrowed:mode==="borrow"}:null;
 }
 function creatorPathChoiceText(kind){const c=creatorResolvedPathChoice(kind);if(!c)return"";return c.name+(c.borrowed?" ["+c.source+"]":"")+(c.text?" — "+c.text:"");}
 function creatorOriginHpModifier(){return creatorResolvedPathChoice("perk")?.name==="Harty Lifestyle"?5:0;}
@@ -19374,6 +19405,34 @@ function creatorPathSubstepIsValid(step=creatorPathStep){
 }
 function creatorPathIsComplete(){for(let i=0;i<CREATOR_PATH_STEP_COUNT;i++)if(!creatorPathSubstepIsValid(i))return false;return true;}
 function renderCreatorPathSelect(select,values,selected,placeholder){if(!select)return;select.innerHTML='<option value="">'+creatorEscapeHtml(placeholder)+'</option>'+values.map(v=>'<option value="'+creatorEscapeHtml(v)+'">'+creatorEscapeHtml(v)+'</option>').join("");select.value=values.includes(selected)?selected:"";}
+const RPG_CREATOR_GEAR_ALTERNATIVES={"Indentured Worker’s Tools":[{"phrase":"hammer, sickle, shovel or axe","options":["hammer","sickle","shovel","axe"]}],"Entertainer’s Rags":[{"phrase":"flute, drum, or lute","options":["flute","drum","lute"]}],"Desperate Defender":[{"phrase":"shortsword, hand axe or mace","options":["shortsword","hand axe","mace"]}],"Farmhand’s Kit":[{"phrase":"handaxe or sickle","options":["handaxe","sickle"]}],"Fallen Noble’s Remnants":[{"phrase":"signet ring or pendant","options":["signet ring","pendant"]}],"Exiled Warrior’s Kit":[{"phrase":"longsword, waraxe or warhammer","options":["longsword","waraxe","warhammer"]}],"Wilderness Hunter":[{"phrase":"shortbow (with 10 arrows) or a spear","options":["shortbow (with 10 arrows)","spear"]}],"Enforcer’s Loadout":[{"phrase":"club or brass knuckles","options":["club","brass knuckles"]}],"Smuggler’s Pack":[{"phrase":"small vial of mild poison or small vial of sleeping agent","options":["small vial of mild poison","small vial of sleeping agent"]}],"Veteran’s Arsenal":[{"phrase":"longsword, waraxe or warhammer","options":["longsword","waraxe","warhammer"]}],"Hired Blade’s Kit":[{"phrase":"short sword or two daggers","options":["short sword","two daggers"]}],"Caravan Guard’s Loadout":[{"phrase":"spear or crossbow (with 10 bolts)","options":["spear","crossbow (with 10 bolts)"]}],"Bounty Hunter’s Tools":[{"phrase":"club or short sword","options":["club","short sword"]}],"Standard-Issue Kit":[{"phrase":"longsword, waraxe, or warhammer","options":["longsword","waraxe","warhammer"]}],"Infantry Loadout":[{"phrase":"spear or crossbow (with 10 bolts)","options":["spear","crossbow (with 10 bolts)"]}],"Officer’s Pack":[{"phrase":"rapier or bastard sword","options":["rapier","bastard sword"]}],"Traveling Bard’s Pack":[{"phrase":"musical instrument or a book of poems","options":["musical instrument","book of poems"]}],"Arena Veteran’s Kit":[{"phrase":"longsword, waraxe, or warhammer","options":["longsword","waraxe","warhammer"]}],"Pit Fighter’s Loadout":[{"phrase":"brass knuckles or 2 daggers","options":["brass knuckles","2 daggers"]}],"Performer’s Attire":[{"phrase":"rapier, scimitar, or whip","options":["rapier","scimitar","whip"]}],"Escaped Champion’s Stash":[{"phrase":"longsword, spear, or mace","options":["longsword","spear","mace"]}],"Duelist’s Equipment":[{"phrase":"rapier or saber","options":["rapier","saber"]}],"Hunter’s Outfit":[{"phrase":"longbow (with 10 arrows) or a hunting spear","options":["longbow (with 10 arrows)","hunting spear"]},{"phrase":"hunting hawk or dog","options":["hunting hawk","dog"]}],"Enforcer’s Kit":[{"phrase":"mace or shortsword","options":["mace","shortsword"]}],"Hitman’s Loadout":[{"phrase":"shortbow (with 10 arrows) or 2 throwing daggers","options":["shortbow (with 10 arrows)","2 throwing daggers"]}],"Dueling Finery":[{"phrase":"mastercrafted rapier or saber","options":["mastercrafted rapier","mastercrafted saber"]}],"Estate Hunter’s Kit":[{"phrase":"longbow (with 10 arrows) or a mastercrafted hunting spear","options":["longbow (with 10 arrows)","mastercrafted hunting spear"]},{"phrase":"trained hawk or dog","options":["trained hawk","dog"]}],"Caravan Owner’s Pack":[{"phrase":"horse or pack animal","options":["horse","pack animal"]}]};
+function creatorGearOptionsFor(pack){return RPG_CREATOR_GEAR_ALTERNATIVES[pack?.name]||[];}
+function creatorGearKey(origin,pack){return origin+"::"+pack;}
+function creatorGearResolvedText(pack,origin){
+ let text=String(pack?.text||"");const key=creatorGearKey(origin,pack?.name);
+ const selections=creatorDraft?.gearAlternatives?.[key]||{};
+ for(const [i,choice]of creatorGearOptionsFor(pack).entries()){
+  const selected=selections[i];
+  if(selected)text=text.replace(choice.phrase,selected);
+ }
+ return text;
+}
+function creatorGearOptionHtml(gear,origin){
+ const choices=creatorGearOptionsFor(gear);
+ if(!choices.length)return "";
+ const key=creatorGearKey(origin.name,gear.name),selections=creatorDraft?.gearAlternatives?.[key]||{};
+ return choices.map((c,i)=>'<label class="creator-gear-choice"><strong>Choose your equipment:</strong><select data-creator-gear-option="'+i+'" data-creator-gear-package="'+creatorEscapeHtml(key)+'"><option value="">Select an option</option>'+c.options.map(v=>'<option value="'+creatorEscapeHtml(v)+'"'+(selections[i]===v?' selected':'')+'>'+creatorEscapeHtml(v)+'</option>').join('')+'</select></label>').join('');
+}
+document.addEventListener("change",event=>{
+ const select=event.target.closest?.("[data-creator-gear-option]");
+ if(!select||!creatorDraft)return;
+ const key=select.dataset.creatorGearPackage;
+ creatorDraft.gearAlternatives ||= {};
+ creatorDraft.gearAlternatives[key] ||= {};
+ creatorDraft.gearAlternatives[key][Number(select.dataset.creatorGearOption)]=select.value;
+ renderCharacterCreator();
+});
+
 function creatorGearCardHtml(
     origin,
     gear,
@@ -19451,6 +19510,7 @@ function creatorGearCardHtml(
                     ) +
                     "</p>" +
                     "</div>" +
+                    creatorGearOptionHtml(gear,origin) +
                     '<div class="creator-expandable-card-actions">' +
                     '<button class="creator-card-select-button' +
                     (
@@ -19458,7 +19518,7 @@ function creatorGearCardHtml(
                             ? " selected"
                             : ""
                     ) +
-                    '" type="button" data-creator-gear-select="' +
+                    '" type="button"'+(creatorGearOptionsFor(gear).some((c,i)=>!creatorDraft?.gearAlternatives?.[creatorGearKey(origin.name,gear.name)]?.[i])?' disabled title="Select your equipment choices first"':'')+' data-creator-gear-select="' +
                     creatorEscapeHtml(
                         gear.name
                     ) +
@@ -21033,11 +21093,9 @@ function renderCreatorAppearanceControls() {
 
     renderCreatorSelect(
         "creator-sclera-color",
-        appearance.sclera || [],
+        appearance.sclera?.length ? appearance.sclera : ["White"],
         creatorDraft?.scleraColor || "",
-        appearance.sclera?.length
-            ? "Choose sclera color"
-            : "Not specified"
+        "Choose sclera color"
     );
 
     const hairOther =
@@ -21706,6 +21764,10 @@ function renderCreatorReview() {
         )
     );
 
+    const raceReview=document.getElementById("creator-review-race");
+    if(raceReview&&creatorDraft?.culturalTraits?.length===2){
+        raceReview.textContent=display(creatorDraft.race)+" — Traits: "+creatorDraft.culturalTraits.join(", ");
+    }
     const origin =
         getCreatorOrigin();
 
@@ -21832,15 +21894,10 @@ function creatorRaceIsComplete() {
         return false;
     }
 
-    if (
-        race.choices?.length
-    ) {
-        return Boolean(
-            getCreatorRaceChoice()
-        );
-    }
-
-    return true;
+    if (race.choices?.length && !getCreatorRaceChoice()) return false;
+    const chosen=creatorDraft?.culturalTraits||[];
+    const available=RPG_CULTURAL_TRAITS[race.name]||[];
+    return chosen.length===2 && chosen.every(t=>available.includes(t));
 }
 
 function creatorStepIsValid(
@@ -21949,7 +22006,7 @@ function renderCreatorValidation() {
         )
     ) {
         validation.textContent =
-            "Choose the racial attribute adjustment to continue.";
+            "Choose your racial attribute adjustment (if applicable) and exactly 2 cultural traits to continue.";
         return;
     }
 
@@ -21981,8 +22038,30 @@ function renderCreatorValidation() {
         "";
 }
 
+const RPG_CULTURAL_TRAITS = {"Human":["Adaptive Learner","Attribute Versatility","Cultural Exchange","Skill Adept","Resilient Spirit","Social Chameleon","Survivor’s Instinct","Resourceful","Environmental Adaptability"],"Elf":["Elven Longevity","Natural Spellcasters","Lightfooted","Trueshot"],"Dwarf":["Golden Eye","Stout Constitution","Stonecrafter’s Precision","Mountain's Heart","Forge-Tempered"],"Orc":["Slave Master","Orcish Resolve","Thickened Hide","Critical Determination"],"Halfling":["Earthen Affinity","Size Agility","Lucky","Uncanny Forager","Charismatic Caster","Halfling Hospitality"],"Gnome":["Ingenious Tinkerer","Size Agility","Natural Spellcasters","Magical Resistance"],"Traiggoblin":["Scent Sniffer","Unexpected Charm","Agile Build","Survival Instincts","Escapist"],"Furfolk":["Scent Sniffer","Pack Dynamics","Natural Climbers","Primal Awareness","Backed into a Corner","Predatory Stealth","Bestial Hide"],"Zizses":["Thermal Sense","Scale Armor","Venomous Heritage","Sunbather"],"Av’riahl":["Thunder Bird","Fly-By Attack","Dazzling Voice","Mana-Infused Feathers"],"Arrahsect":["Advanced Pheromones","Resilient Metabolism","Nomadic Resilience","Nomadic Burrows"],"Terrán":["Floral Photosynthesis","Hardened Bark","Earthwalk","Entangling Roots","Home Soil"],"Shroomite":["Dark Adept","Fungal Resilience","Earthwalk","Soil Sense","Sporeghast"],"Manakeen":["Mana Machine","Departed Loved One","Overload Strike","Advanced Sensors","Built-In Defenses","Mechanical Syphon"]};
+let RPG_TRAIT_DETAILS={};
+fetch("/data/cultural-traits-one-v1.json",{cache:"no-store"})
+ .then(r=>{if(!r.ok)throw Error("Cultural trait details unavailable");return r.json()})
+ .then(data=>{RPG_TRAIT_DETAILS=data.races||{};if(creatorDraft)renderCreatorTraits()})
+ .catch(error=>console.warn(error));
+function renderCreatorTraits() {
+ const grid=document.getElementById("creator-race-grid");
+ if(!grid)return;
+ let el=document.getElementById("creator-cultural-traits");
+ if(!el){el=document.createElement("div");el.id="creator-cultural-traits";grid.after(el);}
+ const names=RPG_CULTURAL_TRAITS[creatorDraft?.race]||[];
+ if(!names.length){el.replaceChildren();return;}
+ const chosen=Array.isArray(creatorDraft.culturalTraits)?creatorDraft.culturalTraits:[];
+ el.replaceChildren();
+ const h=document.createElement("h3");h.textContent="Cultural Traits — choose 2";
+ const p=document.createElement("p");p.textContent="Choose two distinct cultural traits from your race.";el.append(h,p);
+ const wrap=document.createElement("div");wrap.className="creator-traits-grid";
+ for(const name of names){const label=document.createElement("label");label.className="creator-trait-option";const box=document.createElement("input");box.type="checkbox";box.checked=chosen.includes(name);box.disabled=!box.checked&&chosen.length>=2;box.addEventListener("change",()=>{let a=Array.isArray(creatorDraft.culturalTraits)?creatorDraft.culturalTraits:[];creatorDraft.culturalTraits=box.checked?[...a,name].slice(0,2):a.filter(x=>x!==name);renderCreatorTraits()});const info=document.createElement("span");const title=document.createElement("strong");title.textContent=name;info.append(title);const description=RPG_TRAIT_DETAILS[creatorDraft.race]?.[name];if(description){const detail=document.createElement("small");detail.textContent=description;info.append(detail)}label.append(box,info);wrap.appendChild(label)}el.appendChild(wrap);
+}
+
 function renderCharacterCreator() {
     renderCreatorRaceGrid();
+    renderCreatorTraits();
     renderCreatorRaceSummary();
     renderCreatorDetailGuidance();
     renderCreatorAppearanceControls();
@@ -22326,6 +22405,12 @@ async function createGuidedCharacter() {
             creatorAddInventoryPackage(creatorResolvedPathChoice("gear"));
         }
         creatorApplyOriginSkillEffects();creatorApplyRoleBonus(0);creatorApplyRoleBonus(1);
+        if(creatorDraft.culturalTraits?.length){
+          document.getElementById("add-note")?.click();
+          const note=document.querySelector("#notes-list .note-card:last-child");
+          setInputValueAndNotify(note?.querySelector(".note-title"),"Cultural Traits");
+          setInputValueAndNotify(note?.querySelector(".note-body"),creatorDraft.culturalTraits.join("\n"));
+        }
 
         [
             "bod",
@@ -23128,6 +23213,7 @@ document
                 ) {
                     creatorDraft.raceChoice =
                         "";
+                    creatorDraft.culturalTraits = [];
 
                     creatorDraft.hairColor = "";
                     creatorDraft.hairOther = "";
@@ -23135,7 +23221,7 @@ document
                     creatorDraft.hairStyleOther = "";
                     creatorDraft.eyeColor = "";
                     creatorDraft.eyeOther = "";
-                    creatorDraft.scleraColor = "";
+                    creatorDraft.scleraColor = creatorAppearanceData(raceName).sclera?.length ? "" : "White";
                     creatorDraft.scleraOther = "";
                     creatorDraft.weight = "";
 
@@ -23968,7 +24054,7 @@ showAppScreen(
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker
-            .register("/service-worker.js?build=1.62.0", { scope: "/" })
+            .register("/service-worker.js?build=1.63.0", { scope: "/" })
             .catch(error => {
                 console.error(
                     "Service worker registration failed:",
@@ -24028,7 +24114,7 @@ if ("serviceWorker" in navigator) {
       if (levels[1] && feat.levelPointThreshold != null) levels[1].value = String(feat.levelPointThreshold);
       row.querySelector(".feat-rank-input").value = "0";
       const desc = row.querySelector(".feat-description");
-      desc.value = [feat.description, feat.rankBenefit ? "+Rank: " + feat.rankBenefit : ""].filter(Boolean).join("\n");
+      desc.value = feat.description || "";
       desc.dispatchEvent(new Event("input", { bubbles: true }));
       row.dataset.featCatalogId = feat.id;
     }
@@ -24121,9 +24207,10 @@ if ("serviceWorker" in navigator) {
 })();
 </script>
 
-<script src="/levelup.js?build=1.62.0" defer></script>
-<script src="/theme.js?build=1.62.0"></script>
-<script src="/gear-integration.js?build=1.62.0"></script>
+<script src="/levelup.js?build=1.63.0" defer></script>
+<script src="/theme.js?build=1.63.0"></script>
+<script src="/gear-integration.js?build=1.63.0"></script>
+<script src="/character-references.js?build=1.63.0"></script>
 </body>
 
 </html>
