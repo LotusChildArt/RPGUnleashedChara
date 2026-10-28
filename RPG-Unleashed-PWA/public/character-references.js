@@ -54,12 +54,21 @@ function showReference(kind){
  ref.replaceChildren();
  const h=document.createElement("h2");h.textContent=kind;ref.append(h);
  const input=document.createElement("input");input.type="search";input.placeholder="Search "+kind.toLowerCase();input.setAttribute("aria-label","Search "+kind);
+ const category=document.createElement("select");
+ category.setAttribute("aria-label","Filter "+kind+" by section");
+ category.style.cssText="width:100%;padding:10px;margin:8px 0;border-radius:8px";
  const results=document.createElement("div");results.className="rpg-reference-results";
- ref.append(input,results);
+ ref.append(input,category,results);
+ category.hidden=kind==="Languages";
  if(kind==="Languages"){const render=()=>{results.replaceChildren();for(const l of languages.filter(l=>l.toLowerCase().includes(input.value.toLowerCase()))){const el=document.createElement("div");el.className="rpg-reference-entry";el.textContent=l;results.append(el)}};input.oninput=render;render();return}
  results.textContent="Loading…";
  getData(kind).then(items=>{if(ref.hidden||h.textContent!==kind)return;
- const render=()=>{results.replaceChildren();const search=input.value.toLowerCase();for(const item of items.filter(i=>(i.name+" "+(i.description||"")+" "+(i.category||"")).toLowerCase().includes(search))){const el=document.createElement("article");el.className="rpg-reference-entry";const heading=document.createElement("h3");heading.textContent=item.name;const cat=document.createElement("small");cat.textContent=item.category||"";const desc=document.createElement("p");desc.textContent=item.description||"";el.append(heading,cat,desc);if(kind==="Gear"){const raw=document.createElement("pre");raw.textContent=item.sourceText||"";el.append(raw)}else{if(item.requirement){const r=document.createElement("p");r.textContent="Requirements: "+item.requirement;el.append(r)}if(item.rankBenefit){const rank=document.createElement("p");rank.textContent="Rank up: "+item.rankBenefit;el.append(rank)}}results.append(el)}};input.oninput=render;render()
+ const sections=[...new Set(items.map(i=>i.category||"Uncategorized"))];
+ category.replaceChildren();
+ for(const name of ["All sections",...sections]){
+   const option=document.createElement("option");option.value=name==="All sections"?"":name;option.textContent=name;category.append(option);
+ }
+ const render=()=>{results.replaceChildren();const search=input.value.toLowerCase();const section=category.value;for(const item of items.filter(i=>(!section||(i.category||"Uncategorized")===section)&&(i.name+" "+(i.description||"")+" "+(i.category||"")).toLowerCase().includes(search))){const el=document.createElement("article");el.className="rpg-reference-entry";const heading=document.createElement("h3");heading.textContent=item.name;const cat=document.createElement("small");cat.textContent=item.category||"";const desc=document.createElement("p");desc.textContent=item.description||"";el.append(heading,cat,desc);if(kind==="Gear"){const raw=document.createElement("pre");raw.textContent=item.sourceText||"";el.append(raw)}else{if(item.requirement){const r=document.createElement("p");r.textContent="Requirements: "+item.requirement;el.append(r)}if(item.rankBenefit){const rank=document.createElement("p");rank.textContent="Rank up: "+item.rankBenefit;el.append(rank)}}results.append(el)}};input.oninput=render;category.onchange=render;render()
  }).catch(e=>results.textContent="Could not load "+kind+": "+e.message);
 }
 bar.addEventListener("click",e=>{const b=e.target.closest?.("[data-reference]");if(b)showReference(b.dataset.reference)});
