@@ -3,7 +3,7 @@
 
 <head>
 
-<link rel="manifest" href="/manifest.json?build=1.62.0">
+<link rel="manifest" href="/manifest.json?build=1.63.0">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="theme-color" content="#ffffff">
@@ -4538,9 +4538,37 @@ body.owlbear-connected.owlbear-gm .owlbear-gm-only {
     }
 }
 
+
+/* Creator details desktop columns and equal-sized fields. */
+@media(min-width:780px){
+ .creator-gender-field input,.creator-age-field input{height:44px;min-height:44px;box-sizing:border-box;}
+ .creator-height-field,.creator-weight-field{grid-column:span 1!important;min-width:0;}
+ .creator-height-control{flex-wrap:nowrap;gap:4px;}
+ .creator-height-control .creator-adjust-button{padding:7px 9px;min-width:29px;}
+ .creator-height-unit{min-width:42px!important;}
+ .creator-height-field .creator-guidance,.creator-weight-field .creator-guidance{margin-top:8px;}
+}
+.creator-traits-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:9px;margin:10px 0 16px;}
+.creator-trait-option{display:flex;align-items:center;gap:8px;border:1px solid #888;padding:10px;border-radius:12px;cursor:pointer;}
+html.rpg-dark .creator-trait-option{background:var(--rpg-surface);color:var(--rpg-fg);border-color:var(--rpg-edge);}
+#tab2 .feat-row .feat-rank-input{display:none!important;}
+.rpg-reference-panel{max-width:700px;margin:auto;background:#fff;color:#111;border-radius:14px;padding:20px;display:grid;gap:12px}
+.rpg-reference-panel input{padding:10px;}
+.rpg-reference-results{display:grid;gap:10px;max-height:60vh;overflow:auto;}
+.rpg-reference-results button,.rpg-reference-entry{padding:10px 14px;text-align:left;border:1px solid #aaa;border-radius:12px;background:#f8f8f8;color:#111}
+.rpg-reference-entry h3{margin:0 0 4px;}
+.rpg-reference-entry p{margin:6px 0;white-space:pre-wrap}
+.rpg-reference-entry pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;font-size:13px}
+#rpg-handbook-reference[hidden],#handbook-screen .handbook-page[hidden]{display:none!important;}
+html.rpg-dark .rpg-reference-panel,html.rpg-dark .rpg-reference-results button,html.rpg-dark .rpg-reference-entry{background:var(--rpg-surface)!important;color:var(--rpg-fg)!important;border-color:var(--rpg-edge)!important;}
+html.rpg-dark .rpg-reference-panel input{background:var(--rpg-raised)!important;color:var(--rpg-fg)!important;}
+.creator-gear-choice{display:grid;gap:5px;margin:12px 0;}
+.creator-gear-choice select{width:100%;padding:8px;border:1px solid #888;border-radius:9px;}
+html.rpg-dark .creator-gear-choice select{background:var(--rpg-raised)!important;color:var(--rpg-fg)!important;}
+
 </style>
 
-<link rel="stylesheet" href="/dark-mode.css?build=1.62.0">
+<link rel="stylesheet" href="/dark-mode.css?build=1.63.0">
 <style>
 /* All repeatable rows, including the first, have removable controls. */
 #feat-list .feat-row:first-child .remove-feat,#skill-bonus-section .skill-bonus-row:first-child .remove-skill-bonus,#inventory-list .inventory-row:first-child .remove-inventory-item{visibility:visible!important;display:inline-flex!important;opacity:1!important;}
@@ -23150,6 +23178,7 @@ document
                 ) {
                     creatorDraft.raceChoice =
                         "";
+                    creatorDraft.culturalTraits = [];
 
                     creatorDraft.hairColor = "";
                     creatorDraft.hairOther = "";
@@ -23990,7 +24019,7 @@ showAppScreen(
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker
-            .register("/service-worker.js?build=1.62.0", { scope: "/" })
+            .register("/service-worker.js?build=1.63.0", { scope: "/" })
             .catch(error => {
                 console.error(
                     "Service worker registration failed:",
@@ -24143,9 +24172,10 @@ if ("serviceWorker" in navigator) {
 })();
 </script>
 
-<script src="/levelup.js?build=1.62.0" defer></script>
-<script src="/theme.js?build=1.62.0"></script>
-<script src="/gear-integration.js?build=1.62.0"></script>
+<script src="/levelup.js?build=1.63.0" defer></script>
+<script src="/theme.js?build=1.63.0"></script>
+<script src="/gear-integration.js?build=1.63.0"></script>
+<script src="/character-references.js?build=1.63.0"></script>
 </body>
 
 </html>
