@@ -256,17 +256,12 @@ input::placeholder {
    ========================================= */
 
 .character-header {
-
-    display: grid;
-
-    grid-template-columns:
-        3fr
-        1fr
-        1fr
-        1fr;
-
-    gap: 4px;
+    display:grid;
+    grid-template-columns:minmax(140px,3fr) minmax(90px,1fr) minmax(65px,.7fr) minmax(90px,1fr) minmax(90px,auto);
+    gap:6px;
+    align-items:center;
 }
+@media(max-width:760px){.character-header{grid-template-columns:repeat(2,minmax(0,1fr));}.character-header input:first-child{grid-column:1 / -1;}}
 
 
 .character-header input {
