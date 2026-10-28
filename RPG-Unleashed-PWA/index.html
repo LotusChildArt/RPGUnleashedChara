@@ -19351,6 +19351,7 @@ function makeFreshCreatorDraft() {
         scleraOther: "",
         origin: "",
         gearMode: "default",
+        gearAlternatives: {},
         gearSource: "",
         gearChoice: "",
         gearCustom: "",
@@ -19383,7 +19384,7 @@ function creatorResolvedPathChoice(kind){
  if(!creatorDraft)return null;const mode=creatorDraft[kind+"Mode"]||"default";
  if(mode==="custom"){const t=String(creatorDraft[kind+"Custom"]||"").trim();if(!t)return null;return{name:kind==="gear"?"Custom Starting Gear":kind==="perk"?"Custom Perk":"Custom Drawback",text:t,source:"Custom",custom:true,borrowed:false};}
  const source=mode==="borrow"?creatorDraft[kind+"Source"]:creatorDraft.origin,origin=getCreatorOrigin(source);if(!origin)return null;
- const choice=origin[creatorPathChoiceProperty(kind)]?.find(x=>x.name===creatorDraft[kind+"Choice"]);return choice?{...choice,source:origin.name,custom:false,borrowed:mode==="borrow"}:null;
+ const choice=origin[creatorPathChoiceProperty(kind)]?.find(x=>x.name===creatorDraft[kind+"Choice"]);return choice?{...choice,text:kind==="gear"?creatorGearResolvedText(choice,origin.name):choice.text,source:origin.name,custom:false,borrowed:mode==="borrow"}:null;
 }
 function creatorPathChoiceText(kind){const c=creatorResolvedPathChoice(kind);if(!c)return"";return c.name+(c.borrowed?" ["+c.source+"]":"")+(c.text?" — "+c.text:"");}
 function creatorOriginHpModifier(){return creatorResolvedPathChoice("perk")?.name==="Harty Lifestyle"?5:0;}
@@ -19403,6 +19404,33 @@ function creatorPathSubstepIsValid(step=creatorPathStep){
 }
 function creatorPathIsComplete(){for(let i=0;i<CREATOR_PATH_STEP_COUNT;i++)if(!creatorPathSubstepIsValid(i))return false;return true;}
 function renderCreatorPathSelect(select,values,selected,placeholder){if(!select)return;select.innerHTML='<option value="">'+creatorEscapeHtml(placeholder)+'</option>'+values.map(v=>'<option value="'+creatorEscapeHtml(v)+'">'+creatorEscapeHtml(v)+'</option>').join("");select.value=values.includes(selected)?selected:"";}
+const RPG_CREATOR_GEAR_ALTERNATIVES={"Indentured Worker’s Tools":[{"phrase":"hammer, sickle, shovel or axe","options":["hammer","sickle","shovel","axe"]}],"Entertainer’s Rags":[{"phrase":"flute, drum, or lute","options":["flute","drum","lute"]}],"Desperate Defender":[{"phrase":"shortsword, hand axe or mace","options":["shortsword","hand axe","mace"]}],"Farmhand’s Kit":[{"phrase":"handaxe or sickle","options":["handaxe","sickle"]}],"Fallen Noble’s Remnants":[{"phrase":"signet ring or pendant","options":["signet ring","pendant"]}],"Exiled Warrior’s Kit":[{"phrase":"longsword, waraxe or warhammer","options":["longsword","waraxe","warhammer"]}],"Wilderness Hunter":[{"phrase":"shortbow (with 10 arrows) or a spear","options":["shortbow (with 10 arrows)","spear"]}],"Enforcer’s Loadout":[{"phrase":"club or brass knuckles","options":["club","brass knuckles"]}],"Smuggler’s Pack":[{"phrase":"small vial of mild poison or small vial of sleeping agent","options":["small vial of mild poison","small vial of sleeping agent"]}],"Veteran’s Arsenal":[{"phrase":"longsword, waraxe or warhammer","options":["longsword","waraxe","warhammer"]}],"Hired Blade’s Kit":[{"phrase":"short sword or two daggers","options":["short sword","two daggers"]}],"Caravan Guard’s Loadout":[{"phrase":"spear or crossbow (with 10 bolts)","options":["spear","crossbow (with 10 bolts)"]}],"Bounty Hunter’s Tools":[{"phrase":"club or short sword","options":["club","short sword"]}],"Standard-Issue Kit":[{"phrase":"longsword, waraxe, or warhammer","options":["longsword","waraxe","warhammer"]}],"Infantry Loadout":[{"phrase":"spear or crossbow (with 10 bolts)","options":["spear","crossbow (with 10 bolts)"]}],"Officer’s Pack":[{"phrase":"rapier or bastard sword","options":["rapier","bastard sword"]}],"Traveling Bard’s Pack":[{"phrase":"musical instrument or a book of poems","options":["musical instrument","book of poems"]}],"Arena Veteran’s Kit":[{"phrase":"longsword, waraxe, or warhammer","options":["longsword","waraxe","warhammer"]}],"Pit Fighter’s Loadout":[{"phrase":"brass knuckles or 2 daggers","options":["brass knuckles","2 daggers"]}],"Performer’s Attire":[{"phrase":"rapier, scimitar, or whip","options":["rapier","scimitar","whip"]}],"Escaped Champion’s Stash":[{"phrase":"longsword, spear, or mace","options":["longsword","spear","mace"]}],"Duelist’s Equipment":[{"phrase":"rapier or saber","options":["rapier","saber"]}],"Hunter’s Outfit":[{"phrase":"longbow (with 10 arrows) or a hunting spear","options":["longbow (with 10 arrows)","hunting spear"]},{"phrase":"hunting hawk or dog","options":["hunting hawk","dog"]}],"Enforcer’s Kit":[{"phrase":"mace or shortsword","options":["mace","shortsword"]}],"Hitman’s Loadout":[{"phrase":"shortbow (with 10 arrows) or 2 throwing daggers","options":["shortbow (with 10 arrows)","2 throwing daggers"]}],"Dueling Finery":[{"phrase":"mastercrafted rapier or saber","options":["mastercrafted rapier","mastercrafted saber"]}],"Estate Hunter’s Kit":[{"phrase":"longbow (with 10 arrows) or a mastercrafted hunting spear","options":["longbow (with 10 arrows)","mastercrafted hunting spear"]},{"phrase":"trained hawk or dog","options":["trained hawk","dog"]}],"Caravan Owner’s Pack":[{"phrase":"horse or pack animal","options":["horse","pack animal"]}]};
+function creatorGearOptionsFor(pack){return RPG_CREATOR_GEAR_ALTERNATIVES[pack?.name]||[];}
+function creatorGearKey(origin,pack){return origin+"::"+pack;}
+function creatorGearResolvedText(pack,origin){
+ let text=String(pack?.text||"");const key=creatorGearKey(origin,pack?.name);
+ const selections=creatorDraft?.gearAlternatives?.[key]||{};
+ for(const [i,choice]of creatorGearOptionsFor(pack).entries()){
+  const selected=selections[i]||choice.options[0];
+  text=text.replace(choice.phrase,selected);
+ }
+ return text;
+}
+function creatorGearOptionHtml(gear,origin){
+ const choices=creatorGearOptionsFor(gear);
+ if(!choices.length)return "";
+ const key=creatorGearKey(origin.name,gear.name),selections=creatorDraft?.gearAlternatives?.[key]||{};
+ return choices.map((c,i)=>'<label class="creator-gear-choice"><strong>Choose your equipment:</strong><select data-creator-gear-option="'+i+'" data-creator-gear-package="'+creatorEscapeHtml(key)+'">'+c.options.map(v=>'<option value="'+creatorEscapeHtml(v)+'"'+((selections[i]||c.options[0])===v?' selected':'')+'>'+creatorEscapeHtml(v)+'</option>').join('')+'</select></label>').join('');
+}
+document.addEventListener("change",event=>{
+ const select=event.target.closest?.("[data-creator-gear-option]");
+ if(!select||!creatorDraft)return;
+ const key=select.dataset.creatorGearPackage;
+ creatorDraft.gearAlternatives ||= {};
+ creatorDraft.gearAlternatives[key] ||= {};
+ creatorDraft.gearAlternatives[key][Number(select.dataset.creatorGearOption)]=select.value;
+});
+
 function creatorGearCardHtml(
     origin,
     gear,
@@ -19480,6 +19508,7 @@ function creatorGearCardHtml(
                     ) +
                     "</p>" +
                     "</div>" +
+                    creatorGearOptionHtml(gear,origin) +
                     '<div class="creator-expandable-card-actions">' +
                     '<button class="creator-card-select-button' +
                     (
