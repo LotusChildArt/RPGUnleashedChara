@@ -1,7 +1,7 @@
 (() => {
 "use strict";
-const button=document.getElementById("rpg-level-up");
-if (!button) return;
+const getButton=()=>document.getElementById("rpg-level-up");
+if (!getButton()) return;
 const panel=document.createElement("div");
 panel.id="rpg-levelup-dialog";
 panel.style.cssText="display:none;position:fixed;inset:0;z-index:100005;background:#000b;overflow:auto;padding:4vh 12px";
@@ -10,7 +10,7 @@ document.body.appendChild(panel);
 let catalog=null,working=null;
 const levelInput=()=>document.querySelector('#tab1 .character-header input[placeholder="Level"]');
 const progression=()=>window.RPGProgressionState||{completedLevel:0};
-function updateButton(){button.textContent="+ Lvl "+(Number(progression().completedLevel||0)+1);}
+function updateButton(){const button=getButton();if(button)button.textContent="+ Lvl "+(Number(progression().completedLevel||0)+1);}
 function featRows(){return [...document.querySelectorAll("#feat-list .feat-row")].filter(r=>r.querySelector(".feat-input")?.value.trim());}
 function chosenNames(){return new Set([...featRows().map(r=>r.querySelector(".feat-input").value.trim()),...(working?.operations||[]).filter(o=>o.kind==="feat").map(o=>o.name)]);}
 function sourceFeat(name){return catalog?.find(f=>f.name===name);}
@@ -98,7 +98,8 @@ async function complete(){
  panel.style.display="none";working=null;updateButton();
  if(typeof window.RPGSaveCurrentCharacter==="function"){try{await window.RPGSaveCurrentCharacter();}catch(e){console.error("Level up auto-save failed",e);}}
 }
-button.addEventListener("click",async()=>{
+document.addEventListener("click",async event=>{
+ if(!event.target.closest?.("#rpg-level-up"))return;
  updateButton();if(working)return;const level=rulesLevel();
  working={level,base:3+level,adjustment:0,freeCount:level===1?2:level%3===0?1:0,operations:[]};
  panel.style.display="block";render();
