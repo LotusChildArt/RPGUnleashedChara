@@ -10,13 +10,12 @@ window.RPGGearReady=load();
 const invRow=()=>list()?.querySelector(".inventory-row");
 function inventoryDescription(record,extra=""){
  const raw=String(record?.sourceText||record?.description||"");
- // Weight is stored separately; put prices at the end of the description.
- const price=[];
- let detail=raw.replace(/\\b(?:Cost|Price):\\s*([^|\\n]+)/gi,(_,cost)=>{price.push(cost.trim());return""});
- detail=detail.replace(/\\bWeight:\\s*[^|\\n]+/gi,"");
- detail=detail.split("\\n").map(line=>line.split("|").map(part=>part.trim()).filter(Boolean).join(" | ")).filter(Boolean).join("\\n").trim();
- const tail=price.length?"Cost: "+price.join(" / "):"";
- return [detail,extra,tail].filter(Boolean).join("\\n").trim();
+ // Weight is already stored in the weight field; costs belong at the bottom.
+ const costs=[];
+ let detail=raw.replace(/\b(?:Cost|Price):\s*([^|\n]+)/gi,(_,cost)=>{costs.push(cost.trim());return""});
+ detail=detail.replace(/\bWeight:\s*[^|\n]+/gi,"");
+ detail=detail.split("\n").map(line=>line.split("|").map(part=>part.trim()).filter(Boolean).join(" | ")).filter(Boolean).join("\n").trim();
+ return [detail,extra,costs.length?"Cost: "+costs.join(" / "):""].filter(Boolean).join("\n").trim();
 }
 function addInventory(name,record,extra=""){
  let row=[...document.querySelectorAll("#inventory-list .inventory-row")].find(r=>!$(".inventory-item-input",r)?.value.trim());
