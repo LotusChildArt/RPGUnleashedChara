@@ -21762,6 +21762,10 @@ function renderCreatorReview() {
         )
     );
 
+    const raceReview=document.getElementById("creator-review-race");
+    if(raceReview&&creatorDraft?.culturalTraits?.length===2){
+        raceReview.textContent=display(creatorDraft.race)+" — Traits: "+creatorDraft.culturalTraits.join(", ");
+    }
     const origin =
         getCreatorOrigin();
 
@@ -21888,15 +21892,10 @@ function creatorRaceIsComplete() {
         return false;
     }
 
-    if (
-        race.choices?.length
-    ) {
-        return Boolean(
-            getCreatorRaceChoice()
-        );
-    }
-
-    return true;
+    if (race.choices?.length && !getCreatorRaceChoice()) return false;
+    const chosen=creatorDraft?.culturalTraits||[];
+    const available=RPG_CULTURAL_TRAITS[race.name]||[];
+    return chosen.length===2 && chosen.every(t=>available.includes(t));
 }
 
 function creatorStepIsValid(
@@ -22005,7 +22004,7 @@ function renderCreatorValidation() {
         )
     ) {
         validation.textContent =
-            "Choose the racial attribute adjustment to continue.";
+            "Choose your racial attribute adjustment (if applicable) and exactly 2 cultural traits to continue.";
         return;
     }
 
@@ -23215,7 +23214,7 @@ document
                     creatorDraft.hairStyleOther = "";
                     creatorDraft.eyeColor = "";
                     creatorDraft.eyeOther = "";
-                    creatorDraft.scleraColor = "";
+                    creatorDraft.scleraColor = creatorAppearanceData(raceName).sclera?.length ? "" : "White";
                     creatorDraft.scleraOther = "";
                     creatorDraft.weight = "";
 
@@ -24108,7 +24107,7 @@ if ("serviceWorker" in navigator) {
       if (levels[1] && feat.levelPointThreshold != null) levels[1].value = String(feat.levelPointThreshold);
       row.querySelector(".feat-rank-input").value = "0";
       const desc = row.querySelector(".feat-description");
-      desc.value = [feat.description, feat.rankBenefit ? "+Rank: " + feat.rankBenefit : ""].filter(Boolean).join("\n");
+      desc.value = feat.description || "";
       desc.dispatchEvent(new Event("input", { bubbles: true }));
       row.dataset.featCatalogId = feat.id;
     }
