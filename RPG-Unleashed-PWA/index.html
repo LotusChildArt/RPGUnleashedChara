@@ -21319,20 +21319,20 @@ function renderCreatorRaceGrid(){
  const grid=document.getElementById("creator-race-grid");if(!grid||!creatorDraft)return;
  let header=document.getElementById("creator-heritage-bar");
  if(!header){header=document.createElement("section");header.id="creator-heritage-bar";grid.before(header);}
- const mixed=creatorIsMixed(),first=creatorDraft.race||"";
- const title=mixed?"Second Heritage — "+first:"Choose a Race";
+ const mixed=creatorIsMixed(),first=creatorDraft.race||"",stage=mixed?(creatorDraft.heritageStage||1):0;
+ const title=mixed?(stage===1?"Confirm First Half-Race — "+first:"Second Heritage — "+first):"Choose a Race";
  header.innerHTML='<h3>'+creatorEscapeHtml(title)+'</h3>'+
    (mixed?'<p>Choose a second half-race package below. Your first heritage is '+creatorEscapeHtml(first)+'.</p>'+
    '<button type="button" data-heritage-back>← Change First Heritage</button>'+
-   '<label class="creator-heritage-override"><input type="checkbox" id="creator-heritage-override" '+(creatorDraft.heritageGmOverride?'checked':'')+'> GM Override — remove genetic compatibility filter</label>'+
-   '<p class="creator-heritage-footnote">The override allows other breeding types, but not the same parent race, Manakeen, or races without a documented half-race package.</p>':
+   (stage===2?'<label class="creator-heritage-override"><input type="checkbox" id="creator-heritage-override" '+(creatorDraft.heritageGmOverride?'checked':'')+'> GM Override — remove genetic compatibility filter</label>':'')+
+   (stage===2?'<p class="creator-heritage-footnote">The override allows other breeding types, but not the same parent race, Manakeen, or races without a documented half-race package.</p>':''):
    '<p>Expand any race to choose the full-blooded package or begin mixed heritage.</p>');
  header.onclick=e=>{if(e.target.closest("[data-heritage-back]")){creatorDraft.heritageMode="full";creatorDraft.heritageStage=0;creatorDraft.heritagePartner="";creatorDraft.heritageChoices={};creatorDraft.culturalTraits=[];creatorOpenRace=first;renderCharacterCreator();}};
  header.onchange=e=>{if(e.target.id==="creator-heritage-override"){creatorDraft.heritageGmOverride=e.target.checked;creatorDraft.heritagePartner="";creatorDraft.heritageChoices={};creatorDraft.culturalTraits=[];creatorOpenRace="";renderCharacterCreator();}};
- const eligible=RPG_CREATOR_RACES.filter(r=>!mixed||(r.name!==first&&r.name!=="Manakeen"&&RPG_HALF_HERITAGE[r.name]&&(creatorDraft.heritageGmOverride||creatorBirthType(r.name)===creatorBirthType(first))));
+ const eligible=RPG_CREATOR_RACES.filter(r=>!mixed||(stage===1?r.name===first:(r.name!==first&&r.name!=="Manakeen"&&RPG_HALF_HERITAGE[r.name]&&(creatorDraft.heritageGmOverride||creatorBirthType(r.name)===creatorBirthType(first)))));
  grid.innerHTML=eligible.map(race=>{
   const name=race.name,pkg=mixed?RPG_HALF_HERITAGE[name]:null;
-  const selected=mixed?creatorDraft.heritagePartner===name:creatorDraft.race===name;
+  const selected=mixed?(stage===1?name===first:creatorDraft.heritagePartner===name):creatorDraft.race===name;
   const expanded=creatorOpenRace===name;
   const bonus=mixed?pkg.bonus:race.bonus;
   const appearance=creatorAppearanceData(name);
@@ -21351,7 +21351,7 @@ function renderCreatorRaceGrid(){
     '<div class="creator-expandable-card-actions">'+
     (!mixed&&RPG_HALF_HERITAGE[name]?'<button type="button" class="creator-card-select-button" data-heritage-start="'+creatorEscapeHtml(name)+'">Mixed Heritage</button>':'')+
     '<button type="button" class="creator-card-select-button'+(selected?' selected':'')+'" data-creator-race-select="'+creatorEscapeHtml(name)+'">'+
-      (mixed?(selected?'Selected Second Heritage':'Confirm '+creatorEscapeHtml(name)+' Heritage'):(selected?'Selected':'Select '+creatorEscapeHtml(name)))+'</button></div></div>':'';
+      (mixed?(stage===1?'Confirm Half-'+creatorEscapeHtml(name)+' Heritage':(selected?'Selected Second Heritage':'Select '+creatorEscapeHtml(name)+' Heritage')):(selected?'Selected':'Select '+creatorEscapeHtml(name)))+'</button></div></div>':'';
   return '<div class="creator-expandable-card creator-race-card'+(selected?' selected':'')+(expanded?' expanded':'')+'" data-creator-race-card="'+creatorEscapeHtml(name)+'">'+
    '<button type="button" class="creator-expandable-card-toggle" data-creator-race-toggle="'+creatorEscapeHtml(name)+'">'+
    '<span class="creator-expandable-card-title"><span>'+creatorEscapeHtml(name)+'</span>'+(selected?'<span class="creator-card-selected-badge">Selected</span>':'')+'</span>'+
@@ -23127,7 +23127,7 @@ document
             if(begin){
               const name=begin.dataset.heritageStart;
               if(!RPG_HALF_HERITAGE[name])return;
-              creatorDraft.race=name;creatorDraft.heritageMode="mixed";creatorDraft.heritageStage=2;
+              creatorDraft.race=name;creatorDraft.heritageMode="mixed";creatorDraft.heritageStage=1;
               creatorDraft.heritagePartner="";creatorDraft.heritageChoices={};creatorDraft.culturalTraits=[];
               creatorDraft.raceChoice="";creatorOpenRace="";renderCharacterCreator();return;
             }
@@ -23163,6 +23163,11 @@ document
                 const raceName =
                     selectButton.dataset.creatorRaceSelect;
                 if(creatorIsMixed()){
+                  if(creatorDraft.heritageStage===1){
+                    const groups=RPG_HALF_HERITAGE[raceName]?.options||[];
+                    if(groups.some((g,i)=>!g.some(c=>c.label===creatorDraft.heritageChoices?.[raceName+":"+i])))return;
+                    creatorDraft.heritageStage=2;creatorOpenRace="";renderCharacterCreator();return;
+                  }
                   if(raceName===creatorDraft.race||!RPG_HALF_HERITAGE[raceName])return;
                   if(!creatorDraft.heritageGmOverride&&creatorBirthType(raceName)!==creatorBirthType(creatorDraft.race))return;
                   if(creatorDraft.heritagePartner!==raceName){creatorDraft.culturalTraits=[];}
