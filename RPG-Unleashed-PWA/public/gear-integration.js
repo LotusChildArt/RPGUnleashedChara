@@ -164,7 +164,10 @@ window.RPGPopulateStartingGear=async pkg=>{
    if(!clean||clean.length<3||normalizedSelected.has(normalize(clean)))continue;
    // Avoid re-adding prose about a recognized item as a second physical item.
    if(selected.some(x=>normalize(clean).includes(normalize(x.name))))continue;
-   if(/\b(clothes|clothing|outfit|garments|robes|tunic|shirt|trousers|dress)\b/i.test(clean)&&!/\barmor|armored\b/i.test(clean))addOutfit(null,clean,true);
+   if(/\b(clothes|clothing|outfit|garments|robes|tunic|shirt|trousers|dress)\b/i.test(clean)&&!/\barmor|armored\b/i.test(clean)){
+     if(!selected.some(x=>normalize(x.name)==="set of clothing"))addOutfit(null,clean,true);
+     continue;
+   }
    else addInventory(clean,null,(pkg.borrowed?"Borrowed from "+pkg.source+". ":"")+"From "+pkg.name+": "+part);
  }
 };
