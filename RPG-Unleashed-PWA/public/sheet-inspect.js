@@ -58,11 +58,11 @@ new MutationObserver(()=>{updateHelp();ensureTempToggle()}).observe(document.bod
 updateHelp();
 function ensureTempToggle(){
 const attrList=document.querySelector("#tab1 .attribute-list")||document.querySelector(".attribute-list");
-if(attrList&&!attrList.previousElementSibling?.classList.contains("sheet-temp-toggle")){
+if(attrList&&!attrList.querySelector(":scope > .sheet-temp-toggle")){
  const button=document.createElement("button");button.type="button";button.className="sheet-temp-toggle";
  const label=()=>{const active=[...attrList.querySelectorAll(".temp-value input")].some(i=>i.value.trim()&&Number(i.value)!==Number(document.getElementById(i.id.replace(/^temp-/,""))?.value));button.textContent=(attrList.classList.contains("show-temp-attributes")?"Hide":"Show")+" Temp Attributes"+(active?" (Active)":"");button.setAttribute("aria-expanded",String(attrList.classList.contains("show-temp-attributes")));};
  const heading=attrList.querySelector(".attribute-header");
- attrList.before(button);
+ attrList.prepend(button);
  button.addEventListener("click",()=>{attrList.classList.toggle("show-temp-attributes");label()});
  attrList.addEventListener("input",label);
  label();
