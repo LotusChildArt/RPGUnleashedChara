@@ -1,11 +1,15 @@
-const CACHE_NAME = "rpg-unleashed-v99";
+const CACHE_NAME = "rpg-unleashed-v100";
 
 const APP_SHELL = [
     "/",
     "/index.html",
     "/manifest.json",
     "/icons/icon-192.png",
-    "/icons/icon-512.png"
+    "/icons/icon-512.png",
+    "/sheet-inspect.js",
+    "/data/language-descriptions.json",
+    "/data/sheet-reference-details.json",
+    "/data/cultural-traits-one-v1.json"
 ];
 
 self.addEventListener("install", event => {
