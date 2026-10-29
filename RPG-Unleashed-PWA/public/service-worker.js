@@ -1,4 +1,4 @@
-const CACHE_NAME = "rpg-unleashed-v104";
+const CACHE_NAME = "rpg-unleashed-v105";
 
 const APP_SHELL = [
     "/",
@@ -8,6 +8,7 @@ const APP_SHELL = [
     "/icons/icon-512.png",
     "/sheet-inspect.js",
     "/character-references.js",
+    "/dark-mode.css",
     "/data/skills-one-v1.json",
     "/data/feats-one-v1.json",
     "/data/language-descriptions.json",
