@@ -20701,7 +20701,7 @@ function creatorAverageWeightForHeight() {
         return null;
     }
 
-    return Math.round(
+    return Math.ceil(
         (
             Number(
                 band[2]
@@ -20734,7 +20734,7 @@ function setCreatorWeightToHeightAverage() {
             null
             ? ""
             : String(
-                average
+                Math.ceil(average)
             );
 
     const weightInput =
@@ -20784,7 +20784,7 @@ function creatorWeightNumber() {
         weight >
             0
     )
-        ? weight
+        ? Math.ceil(weight)
         : null;
 }
 
@@ -22345,10 +22345,17 @@ async function createGuidedCharacter() {
           addCreatorBackgroundValue("traits-list","add-trait",trait);
         }
         // The race's listed non-attribute features are aspects, not traits.
-        const raceAspects=creatorIsMixed()?(getCreatorRace()?.mixedAspects||[]):(getCreatorRace()?.bonus||"")
-          .split(";").map(part=>part.trim())
-          .filter(part=>part&&!/^[+−-]?\d+\s*(?:BOD|DEX|MND|CHA|HP|Trait)\b/i.test(part)
-            && !/^(?:or |\+\d+ to |\+\d+ Trait)/i.test(part));
+        const racialRace=getCreatorRace();
+        const racialMods=creatorRaceModifiers();
+        const racialNumberAspects=Object.entries(racialMods).filter(([,value])=>value!==0)
+          .map(([key,value])=>"Racial "+key.toUpperCase()+" "+(value>0?"+":"")+value);
+        if(Number(racialRace?.hpBonus||0)!==0)racialNumberAspects.push("Racial HP "+(racialRace.hpBonus>0?"+":"")+racialRace.hpBonus);
+        if(Number(racialRace?.naturalDr||0)!==0)racialNumberAspects.push("Racial Natural DR +"+racialRace.naturalDr);
+        const racialFeatureAspects=creatorIsMixed()?(racialRace?.mixedAspects||[]):
+          (racialRace?.bonus||"").split(";").map(part=>part.trim())
+           .filter(part=>part&&!/^[+−-]?\d+\s*(?:BOD|DEX|MND|CHA|HP|DR|Trait|Language|Feat)\b/i.test(part)
+             && !/^(?:or |\+\d+ to )/i.test(part));
+        const raceAspects=[...new Set([...racialNumberAspects,...racialFeatureAspects])];
         for(const aspect of raceAspects){
           addCreatorBackgroundValue("aspects-list","add-aspect",aspect);
         }
