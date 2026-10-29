@@ -37,11 +37,11 @@ const ref=document.createElement("section");ref.id="rpg-handbook-reference";ref.
 const tabs=[...bar.querySelectorAll(".handbook-tab-button")];
 const conditionButton=tabs[0];
 if(conditionButton){conditionButton.dataset.reference="Conditions"}
-for(const label of ["Languages","Feats","Gear"]){const b=document.createElement("button");b.type="button";b.className="handbook-tab-button";b.dataset.reference=label;b.textContent=label;bar.append(b)}
+for(const label of ["Languages","Skills","Feats","Gear"]){const b=document.createElement("button");b.type="button";b.className="handbook-tab-button";b.dataset.reference=label;b.textContent=label;bar.append(b)}
 const cache={};
 async function getData(kind){
  if(cache[kind])return cache[kind];
- const url=kind==="Feats"?"/data/feats-one-v1.json":"/data/gear-v3.json";
+ const url=kind==="Feats"?"/data/feats-one-v1.json":kind==="Skills"?"/data/skills-one-v1.json":"/data/gear-v3.json";
  const response=await fetch(url,{cache:"no-store"});if(!response.ok)throw Error("HTTP "+response.status);
  const data=await response.json();
  cache[kind]=kind==="Feats"?(data.feats||[]):(data.items||[]);return cache[kind];
@@ -69,8 +69,49 @@ function showReference(kind){
  for(const name of ["All sections",...sections]){
    const option=document.createElement("option");option.value=name==="All sections"?"":name;option.textContent=name;category.append(option);
  }
- const render=()=>{results.replaceChildren();const search=input.value.toLowerCase();const section=category.value;for(const item of items.filter(i=>(!section||(i.category||"Uncategorized")===section)&&(i.name+" "+(i.description||"")+" "+(i.category||"")).toLowerCase().includes(search))){const el=document.createElement("article");el.className="rpg-reference-entry";const heading=document.createElement("h3");heading.textContent=item.name;const cat=document.createElement("small");cat.textContent=item.category||"";const desc=document.createElement("p");desc.textContent=item.description||"";el.append(heading,cat,desc);if(kind==="Gear"){const raw=document.createElement("pre");raw.textContent=item.sourceText||"";el.append(raw)}else{if(item.requirement){const r=document.createElement("p");r.textContent="Requirements: "+item.requirement;el.append(r)}if(item.rankBenefit){const rank=document.createElement("p");rank.textContent="Rank up: "+item.rankBenefit;el.append(rank)}}results.append(el)}};input.oninput=render;category.onchange=render;render()
+ const render=()=>{results.replaceChildren();const search=input.value.toLowerCase();const section=category.value;for(const item of items.filter(i=>(!section||(i.category||"Uncategorized")===section)&&(i.name+" "+(i.description||"")+" "+(i.category||"")).toLowerCase().includes(search))){const el=document.createElement("article");el.className="rpg-reference-entry";const heading=document.createElement("h3");heading.textContent=item.name;const cat=document.createElement("small");cat.textContent=(item.category||"")+(item.attributes?" · "+item.attributes:"");const desc=document.createElement("p");desc.textContent=item.description||"";el.append(heading,cat,desc);if(kind==="Gear"){const raw=document.createElement("pre");raw.textContent=item.sourceText||"";el.append(raw)}else{if(item.requirement){const r=document.createElement("p");r.textContent="Requirements: "+item.requirement;el.append(r)}if(item.rankBenefit){const rank=document.createElement("p");rank.textContent="Rank up: "+item.rankBenefit;el.append(rank)}}results.append(el)}};input.oninput=render;category.onchange=render;render()
  }).catch(e=>results.textContent="Could not load "+kind+": "+e.message);
 }
+
+const roleOverlay=document.createElement("div");
+roleOverlay.id="rpg-role-reference-overlay";
+roleOverlay.style.cssText="display:none;position:fixed;inset:0;z-index:100030;background:#000b;overflow:auto;padding:5vh 12px";
+roleOverlay.setAttribute("role","dialog");roleOverlay.setAttribute("aria-modal","true");roleOverlay.setAttribute("aria-label","Choose Role Bonus");
+document.body.append(roleOverlay);
+function closeRole(){roleOverlay.style.display="none";roleOverlay.replaceChildren()}
+window.RPGShowRoleReference=async(index,type)=>{
+ const feats=type==="gearFeat"||type==="craftFeat",kind=feats?"Feats":"Skills";
+ roleOverlay.style.display="block";
+ roleOverlay.replaceChildren();
+ const card=document.createElement("section");card.className="rpg-reference-panel";
+ const title=document.createElement("h2");title.textContent=feats?"Choose a "+(type==="gearFeat"?"Gear":"Craft")+" Feat":"Choose a "+(type==="knowledge"?"Knowledge":"Skill")+" Bonus";
+ const closeButton=document.createElement("button");closeButton.type="button";closeButton.textContent="Close";closeButton.onclick=closeRole;
+ const search=document.createElement("input");search.type="search";search.placeholder="Search names and descriptions";search.setAttribute("aria-label","Search "+kind);
+ const results=document.createElement("div");results.className="rpg-reference-results";results.textContent="Loading…";
+ card.append(title,closeButton,search,results);roleOverlay.append(card);
+ try{
+  const all=await getData(kind);
+  const items=all.filter(item=>feats?(type==="gearFeat"?item.category==="Gear":/craft|artisan|alchemy|culinary/i.test(item.name+" "+item.description)):(type==="knowledge"?item.category.startsWith("Knowledge"):!item.category.startsWith("Knowledge")&&item.category!=="Assist"));
+  function render(){
+   results.replaceChildren();
+   const query=search.value.trim().toLowerCase();
+   for(const item of items.filter(x=>(x.name+" "+x.description+" "+x.category).toLowerCase().includes(query))){
+    const row=document.createElement("article");row.className="rpg-reference-entry";
+    const h=document.createElement("h3");h.textContent=item.name;
+    const sub=document.createElement("small");sub.textContent=item.category+(item.attributes?" · "+item.attributes:"");
+    const desc=document.createElement("p");desc.textContent=item.description||"";
+    row.append(h,sub,desc);
+    if(item.requirement){const req=document.createElement("p");req.textContent="Requirements: "+item.requirement;row.append(req)}
+    if(item.rankBenefit){const rank=document.createElement("p");rank.textContent="Rank up: "+item.rankBenefit;row.append(rank)}
+    const pick=document.createElement("button");pick.type="button";pick.textContent="Select "+item.name;pick.onclick=()=>{const value=feats?item.name:item.category.startsWith("Knowledge")?"Knowledge "+item.name:item.name;window.RPGSelectRoleReference?.(index,value);closeRole()};row.append(pick);results.append(row);
+   }
+   if(!results.childElementCount)results.textContent="No matching entries.";
+  }
+  search.oninput=render;render();search.focus();
+ }catch(e){results.textContent="Could not load "+kind+": "+e.message}
+};
+roleOverlay.addEventListener("click",e=>{if(e.target===roleOverlay)closeRole()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&roleOverlay.style.display!=="none")closeRole()});
+
 bar.addEventListener("click",e=>{const b=e.target.closest?.("[data-reference]");if(b)showReference(b.dataset.reference)});
 })();
