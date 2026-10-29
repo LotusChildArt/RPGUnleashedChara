@@ -146,7 +146,12 @@ window.RPGPopulateStartingGear=async pkg=>{
  }
  const selected=[];let remaining=normalize(raw);
  for(const item of matches){const n=normalize(item.name);if(!remaining.includes(n)&&!aliases.some(([pattern,name])=>name===item.name&&pattern.test(raw)))continue;selected.push(item);remaining=remaining.replace(n," ")}
- for(const item of selected)place(item,item.name,"starting");
+ // Keep the origin package's actual clothing wording on the outfit slot.
+ const clothingMatch=raw.match(/\b(?:(?:poor|plain|common|fine|simple|ratty|ragged|noble|flashy|rugged|travel)(?:\s+(?:but|and|rugged|flashy|noble|travel|fine|common))*\s+)?(?:clothes|clothing)\b/i);
+ for(const item of selected){
+  if(item.name==="Set of Clothing"&&clothingMatch)addOutfit(item,clothingMatch[0],"starting");
+  else place(item,item.name,"starting");
+ }
  // Keep the individual package contents in inventory even if nothing matches the catalog.
  // Unknown items remain editable instead of being replaced by a single package-name row.
  // Populate unmatched package contents into inventory rather than burying them in Notes.
