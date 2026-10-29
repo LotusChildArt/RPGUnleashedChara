@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "source": "User-updated skill chart and Skills List",
+  "items": [
+    {
+      "category": "Physical",
+      "name": "Parkour",
+      "attributes": "BOD/DEX",
+      "description": "A check made to climb or perform athletic or acrobatic feats."
+    },
+    {
+      "category": "Physical",
+      "name": "Swim",
+      "attributes": "BOD/DEX",
+      "description": "A check made to swim through water or similar liquid. Wearing armor makes this more difficult."
+    },
+    {
+      "category": "Physical",
+      "name": "Ride",
+      "attributes": "DEX",
+      "description": "A check made to stay on, steer and control your mount."
+    },
+    {
+      "category": "Physical",
+      "name": "Sleight of Hand",
+      "attributes": "DEX/MND",
+      "description": "A check made to do tricks, pickpocket and conceal things on your person."
+    },
+    {
+      "category": "Physical",
+      "name": "Stealth",
+      "attributes": "MND",
+      "description": "A check made to hide, move quietly or avoid detection."
+    },
+    {
+      "category": "Mental",
+      "name": "Detect",
+      "attributes": "MND",
+      "description": "A check made to perceive surroundings, follow tracks and find traps."
+    },
+    {
+      "category": "Mental",
+      "name": "Heal",
+      "attributes": "MND",
+      "description": "A check made to identify illness, stop bleeding and apply medicine."
+    },
+    {
+      "category": "Mental",
+      "name": "Handle Device",
+      "attributes": "MND/DEX",
+      "description": "A check made to pick locks or disable or manipulate traps, rope and other devices."
+    },
+    {
+      "category": "Mental",
+      "name": "Navigate",
+      "attributes": "MND",
+      "description": "A check made to determine direction, read maps and distinguish landmarks."
+    },
+    {
+      "category": "Mental",
+      "name": "Research",
+      "attributes": "MND",
+      "description": "A check made to obtain information from texts and experimentation."
+    },
+    {
+      "category": "Social",
+      "name": "Persuade",
+      "attributes": "CHA/MND",
+      "description": "A check made to appeal to a target through charm, flirting or reasoning."
+    },
+    {
+      "category": "Social",
+      "name": "Deceive",
+      "attributes": "CHA/MND",
+      "description": "A check made to deceive a target through false information, disguises or imitation."
+    },
+    {
+      "category": "Social",
+      "name": "Intimidate",
+      "attributes": "CHA/BOD",
+      "description": "A check made to scare a target through physical force or charisma."
+    },
+    {
+      "category": "Social",
+      "name": "Handle Animal",
+      "attributes": "CHA",
+      "description": "A check made to understand, calm and command animals."
+    },
+    {
+      "category": "Knowledge Studies",
+      "name": "Arcana",
+      "attributes": "MND",
+      "description": "A check made to understand and identify magics, their purpose and their origin."
+    },
+    {
+      "category": "Knowledge Studies",
+      "name": "Divine",
+      "attributes": "MND",
+      "description": "A check made to identify deities, their markings, teachings, followers and what entities follow them."
+    },
+    {
+      "category": "Knowledge Studies",
+      "name": "Nature",
+      "attributes": "MND",
+      "description": "A check made to understand nature, plants, weather and non-beast aspects of nature."
+    },
+    {
+      "category": "Knowledge Wilds",
+      "name": "Fabled",
+      "attributes": "MND",
+      "description": "A check made to identify mythical or legendary creatures, including exceptionally rare beings such as phoenixes, pegasi, dragons and dracolythes, as well as their abilities, weaknesses, habits and origins."
+    },
+    {
+      "category": "Knowledge Wilds",
+      "name": "Archaic",
+      "attributes": "MND",
+      "description": "A check made to identify creatures that possess supernatural or magical abilities, their weaknesses, habits and locations."
+    },
+    {
+      "category": "Knowledge Wilds",
+      "name": "Terrestrial",
+      "attributes": "MND",
+      "description": "A check made to identify mundane animals, the tracks they leave behind and ascertain what their habits may be."
+    },
+    {
+      "category": "Knowledge Culture",
+      "name": "History",
+      "attributes": "MND",
+      "description": "A check made to ascertain historical knowledge and how it pertains to a place or person."
+    },
+    {
+      "category": "Knowledge Culture",
+      "name": "Local",
+      "attributes": "MND",
+      "description": "A check made to ascertain directions in towns and knowledge of unspoken rules, gangs and local conventions."
+    },
+    {
+      "category": "Crafting",
+      "name": "Blacksmithing",
+      "attributes": "MND",
+      "description": "A check made to craft metal works."
+    },
+    {
+      "category": "Crafting",
+      "name": "Leather Working",
+      "attributes": "MND",
+      "description": "A check made to craft leather works."
+    },
+    {
+      "category": "Crafting",
+      "name": "Engineering",
+      "attributes": "MND",
+      "description": "A check made to craft contraptions or multifaceted mechanical objects."
+    },
+    {
+      "category": "Crafting",
+      "name": "Masonry",
+      "attributes": "MND",
+      "description": "A check made to craft stone works."
+    },
+    {
+      "category": "Crafting",
+      "name": "Carpentry",
+      "attributes": "MND",
+      "description": "A check made to craft wood works."
+    },
+    {
+      "category": "Fine Crafting",
+      "name": "Finery",
+      "attributes": "DEX",
+      "description": "A check made to craft jewelry works."
+    },
+    {
+      "category": "Fine Crafting",
+      "name": "Textiles",
+      "attributes": "DEX",
+      "description": "A check made to craft cloth works."
+    },
+    {
+      "category": "Fine Crafting",
+      "name": "Paint",
+      "attributes": "DEX",
+      "description": "A check made to craft paint works."
+    },
+    {
+      "category": "Fine Crafting",
+      "name": "Sculpting",
+      "attributes": "DEX",
+      "description": "A check made to craft sculpted works."
+    },
+    {
+      "category": "Fine Crafting",
+      "name": "Mini Engineering",
+      "attributes": "DEX",
+      "description": "A check made to craft small mechanical contraptions."
+    },
+    {
+      "category": "Fine Crafting",
+      "name": "Engrave/Brand",
+      "attributes": "DEX",
+      "description": "A check made to engrave or brand."
+    },
+    {
+      "category": "Arts",
+      "name": "Act",
+      "attributes": "CHA",
+      "description": "A check made to perform."
+    },
+    {
+      "category": "Arts",
+      "name": "Dance",
+      "attributes": "CHA/DEX",
+      "description": "A check made to dance."
+    },
+    {
+      "category": "Arts",
+      "name": "Write",
+      "attributes": "CHA/MND",
+      "description": "A check made to write."
+    },
+    {
+      "category": "Arts",
+      "name": "Draw",
+      "attributes": "CHA/DEX",
+      "description": "A check made to draw."
+    },
+    {
+      "category": "Arts",
+      "name": "Sing",
+      "attributes": "CHA",
+      "description": "A check made to sing."
+    },
+    {
+      "category": "Arts",
+      "name": "Instrument",
+      "attributes": "CHA",
+      "description": "A check made to play an instrument."
+    },
+    {
+      "category": "Assist",
+      "name": "Assist",
+      "attributes": "1/4 associated attribute",
+      "description": "Added to another character’s check as assistance; the GM determines appropriate situations and the number of assistants."
+    }
+  ]
+}
