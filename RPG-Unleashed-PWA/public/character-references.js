@@ -46,6 +46,39 @@ async function getData(kind){
  const data=await response.json();
  cache[kind]=kind==="Feats"?(data.feats||[]):(data.items||[]);return cache[kind];
 }
+
+function parseCoins(text){
+ const source=String(text||"").trim();
+ if(!source||/[dD]\d|\b(?:gp|sp|cp)\b/i.test(source))return null;
+ const matches=[...source.matchAll(/(\d+(?:\.\d+)?)\s*(Gold|Silver|Copper)\b/gi)];
+ if(!matches.length)return null;
+ const leftovers=source.replace(/(\d+(?:\.\d+)?)\s*(Gold|Silver|Copper)\b/gi,"").replace(/[,\s;+]/g,"");
+ if(leftovers)return null;
+ let copper=0;const seen=new Set();
+ for(const m of matches){const coin=m[2].toLowerCase();if(seen.has(coin))return null;seen.add(coin);copper+=Math.round(Number(m[1])*(coin==="gold"?100:coin==="silver"?10:1));}
+ return Number.isSafeInteger(copper)?copper:null;
+}
+function coinText(copper){const g=Math.floor(copper/100),silver=Math.floor(copper%100/10),c=copper%10;return[g&&g+" Gold",silver&&silver+" Silver",c&&c+" Copper"].filter(Boolean).join(", ")||"0 Copper"}
+function itemCost(item){const m=String(item.sourceText||"").match(/\bCost:\s*([^|\n]+)/i);return m?parseCoins(m[1]):null}
+function addGearPurchaseButtons(card,item){
+ const actions=document.createElement("div");actions.style.cssText="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px";
+ const take=document.createElement("button");take.type="button";take.textContent="Take";
+ const buy=document.createElement("button");buy.type="button";
+ const cost=itemCost(item);buy.textContent=cost===null?"Buy (price unavailable)":"Buy · "+coinText(cost);
+ buy.disabled=cost===null;
+ const info=document.createElement("small");info.setAttribute("role","status");info.style.cssText="display:block;margin-top:6px";
+ const add=()=>{if(typeof window.RPGAddGearToSheet!=="function")return false;window.RPGAddGearToSheet(item.name,"inventory");return true};
+ take.onclick=()=>{info.textContent=add()?"Added to inventory. Open your character sheet to view it.":"Could not add item to inventory."};
+ buy.onclick=()=>{
+  const field=document.querySelector("#tab3 .inventory-currency-row input");if(!field){info.textContent="Open a character sheet before purchasing.";return}
+  const balance=parseCoins(field.value);if(balance===null){info.textContent="Enter an exact currency balance, e.g. 5 Gold, 3 Silver. Roll any starting wealth first.";return}
+  if(balance<cost){info.textContent="Insufficient funds ("+coinText(balance)+" available).";return}
+  if(!add()){info.textContent="Could not add item; no gold was deducted.";return}
+  field.value=coinText(balance-cost);field.dispatchEvent(new Event("input",{bubbles:true}));info.textContent="Purchased "+item.name+" for "+coinText(cost)+".";
+ };
+ actions.append(buy,take);card.append(actions,info);
+}
+
 function showReference(kind){
  const isConditions=kind==="Conditions";
  conditions.hidden=!isConditions;ref.hidden=isConditions;
@@ -61,7 +94,7 @@ function showReference(kind){
  const results=document.createElement("div");results.className="rpg-reference-results";
  ref.append(input,category,results);
  category.hidden=kind==="Languages";
- if(kind==="Languages"){results.textContent="Loading language descriptions…";fetch("/data/language-descriptions.json").then(r=>{if(!r.ok)throw Error("HTTP "+r.status);return r.json()}).then(data=>{const descriptions=data.languages||{};const names=[...new Set([...languages,...Object.keys(descriptions)])];const render=()=>{results.replaceChildren();const q=input.value.toLowerCase();for(const l of names.filter(n=>(n+" "+(descriptions[n]?.speakers||"")+" "+(descriptions[n]?.description||"")).toLowerCase().includes(q))){const item=descriptions[l]||{};const el=document.createElement("article");el.className="rpg-reference-entry";const heading=document.createElement("h3");heading.textContent=l;const speakers=document.createElement("small");speakers.textContent=item.speakers?"Speakers: "+item.speakers:"";const desc=document.createElement("p");desc.textContent=item.description||"No description in the current source.";el.append(heading,speakers,desc);results.append(el)}};input.oninput=render;render()}).catch(e=>results.textContent="Could not load language descriptions: "+e.message);return}
+ if(kind==="Languages"){results.textContent="Loading language descriptions…";fetch("/data/language-descriptions.json").then(r=>{if(!r.ok)throw Error("HTTP "+r.status);return r.json()}).then(data=>{const descriptions=data.languages||{};const names=[...new Set([...languages,...Object.keys(descriptions)])];const render=()=>{results.replaceChildren();const q=input.value.toLowerCase();for(const l of names.filter(n=>(n+" "+(descriptions[n]?.speakers||"")+" "+(descriptions[n]?.description||"")).toLowerCase().includes(q))){const item=descriptions[l]||{};const el=document.createElement("article");el.className="rpg-reference-entry";const heading=document.createElement("h3");heading.textContent=l;const speakers=document.createElement("small");speakers.textContent=item.speakers?"Speakers: "+item.speakers:"";const desc=document.createElement("p");const full=String(item.description||"");const cut=full.search(/\n\s*(?:[A-Z][\w’'-]*\s+)?(?:appearances?|clothing|physic(?:al|ally)|in terms of clothing)\b/i);desc.textContent=(cut>=0?full.slice(0,cut):full).trim()||"No language-specific description available.";el.append(heading,speakers,desc);results.append(el)}};input.oninput=render;render()}).catch(e=>results.textContent="Could not load language descriptions: "+e.message);return}
  results.textContent="Loading…";
  getData(kind).then(items=>{if(ref.hidden||h.textContent!==kind)return;
  const sections=[...new Set(items.map(i=>i.category||"Uncategorized"))];
@@ -69,7 +102,7 @@ function showReference(kind){
  for(const name of ["All sections",...sections]){
    const option=document.createElement("option");option.value=name==="All sections"?"":name;option.textContent=name;category.append(option);
  }
- const render=()=>{results.replaceChildren();const search=input.value.toLowerCase();const section=category.value;for(const item of items.filter(i=>(!section||(i.category||"Uncategorized")===section)&&(i.name+" "+(i.description||"")+" "+(i.category||"")).toLowerCase().includes(search))){const el=document.createElement("article");el.className="rpg-reference-entry";const heading=document.createElement("h3");heading.textContent=item.name;const cat=document.createElement("small");cat.textContent=(item.category||"")+(item.attributes?" · "+item.attributes:"");const desc=document.createElement("p");desc.textContent=item.description||"";el.append(heading,cat,desc);if(kind==="Gear"){const raw=document.createElement("pre");raw.textContent=item.sourceText||"";el.append(raw)}else{if(item.requirement){const r=document.createElement("p");r.textContent="Requirements: "+item.requirement;el.append(r)}if(item.rankBenefit){const rank=document.createElement("p");rank.textContent="Rank up: "+item.rankBenefit;el.append(rank)}}results.append(el)}};input.oninput=render;category.onchange=render;render()
+ const render=()=>{results.replaceChildren();const search=input.value.toLowerCase();const section=category.value;for(const item of items.filter(i=>(!section||(i.category||"Uncategorized")===section)&&(i.name+" "+(i.description||"")+" "+(i.category||"")).toLowerCase().includes(search))){const el=document.createElement("article");el.className="rpg-reference-entry";const heading=document.createElement("h3");heading.textContent=item.name;const cat=document.createElement("small");cat.textContent=(item.category||"")+(item.attributes?" · "+item.attributes:"");const desc=document.createElement("p");desc.textContent=item.description||"";el.append(heading,cat,desc);if(kind==="Gear"){const raw=document.createElement("pre");raw.textContent=item.sourceText||"";el.append(raw);addGearPurchaseButtons(el,item)}else{if(item.requirement){const r=document.createElement("p");r.textContent="Requirements: "+item.requirement;el.append(r)}if(item.rankBenefit){const rank=document.createElement("p");rank.textContent="Rank up: "+item.rankBenefit;el.append(rank)}}results.append(el)}};input.oninput=render;category.onchange=render;render()
  }).catch(e=>results.textContent="Could not load "+kind+": "+e.message);
 }
 
