@@ -22378,7 +22378,8 @@ async function createGuidedCharacter() {
           (racialRace?.bonus||"").split(";").map(part=>part.trim())
            .filter(part=>part&&!/^[+−-]?\d+\s*(?:BOD|DEX|MND|CHA|HP|DR|Trait|Language|Feat)\b/i.test(part)
              && !/^(?:or |\+\d+ to )/i.test(part));
-        const raceAspects=[...new Set([...racialNumberAspects,...racialFeatureAspects])];
+        const racialExtras=creatorIsMixed()?([creatorDraft.race,creatorDraft.heritagePartner].includes("Human")?["Racial Bonus Feat +1"]:[]):[];
+        const raceAspects=[...new Set([...racialNumberAspects,...racialFeatureAspects,...racialExtras])];
         for(const aspect of raceAspects){
           addCreatorBackgroundValue("aspects-list","add-aspect",aspect);
         }
