@@ -81,6 +81,7 @@ function equipWeapon(record,name){
 }
 function place(record,name,mode){
  if(mode==="inventory")return addInventory(name,record);
+ if(mode==="starting"&&/\b(clothes|clothing|outfit|garments|robes|tunic|shirt|trousers|dress)\b/i.test(name)&&!/\barmor|armored\b/i.test(name))return addOutfit(record,name,true);
  if(record?.kind==="armor")return addArmor(record,name);
  if(record?.kind==="weapon")return equipWeapon(record,name);
  if(record?.kind==="outfit")return addOutfit(record,name,mode==="starting");
@@ -163,7 +164,8 @@ window.RPGPopulateStartingGear=async pkg=>{
    if(!clean||clean.length<3||normalizedSelected.has(normalize(clean)))continue;
    // Avoid re-adding prose about a recognized item as a second physical item.
    if(selected.some(x=>normalize(clean).includes(normalize(x.name))))continue;
-   addInventory(clean,null,(pkg.borrowed?"Borrowed from "+pkg.source+". ":"")+"From "+pkg.name+": "+part);
+   if(/\b(clothes|clothing|outfit|garments|robes|tunic|shirt|trousers|dress)\b/i.test(clean)&&!/\barmor|armored\b/i.test(clean))addOutfit(null,clean,true);
+   else addInventory(clean,null,(pkg.borrowed?"Borrowed from "+pkg.source+". ":"")+"From "+pkg.name+": "+part);
  }
 };
 })();
