@@ -61,7 +61,7 @@ function showReference(kind){
  const results=document.createElement("div");results.className="rpg-reference-results";
  ref.append(input,category,results);
  category.hidden=kind==="Languages";
- if(kind==="Languages"){const render=()=>{results.replaceChildren();for(const l of languages.filter(l=>l.toLowerCase().includes(input.value.toLowerCase()))){const el=document.createElement("div");el.className="rpg-reference-entry";el.textContent=l;results.append(el)}};input.oninput=render;render();return}
+ if(kind==="Languages"){results.textContent="Loading language descriptions…";fetch("/data/language-descriptions.json").then(r=>{if(!r.ok)throw Error("HTTP "+r.status);return r.json()}).then(data=>{const descriptions=data.languages||{};const names=[...new Set([...languages,...Object.keys(descriptions)])];const render=()=>{results.replaceChildren();const q=input.value.toLowerCase();for(const l of names.filter(n=>(n+" "+(descriptions[n]?.speakers||"")+" "+(descriptions[n]?.description||"")).toLowerCase().includes(q))){const item=descriptions[l]||{};const el=document.createElement("article");el.className="rpg-reference-entry";const heading=document.createElement("h3");heading.textContent=l;const speakers=document.createElement("small");speakers.textContent=item.speakers?"Speakers: "+item.speakers:"";const desc=document.createElement("p");desc.textContent=item.description||"No description in the current source.";el.append(heading,speakers,desc);results.append(el)}};input.oninput=render;render()}).catch(e=>results.textContent="Could not load language descriptions: "+e.message);return}
  results.textContent="Loading…";
  getData(kind).then(items=>{if(ref.hidden||h.textContent!==kind)return;
  const sections=[...new Set(items.map(i=>i.category||"Uncategorized"))];
@@ -112,6 +112,51 @@ window.RPGShowRoleReference=async(index,type)=>{
 };
 roleOverlay.addEventListener("click",e=>{if(e.target===roleOverlay)closeRole()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&roleOverlay.style.display!=="none")closeRole()});
+
+
+let skillAddBypass=false;
+document.addEventListener("click",e=>{
+ const button=e.target.closest?.("#add-skill-bonus");
+ if(!button||skillAddBypass)return;
+ e.preventDefault();e.stopImmediatePropagation();
+ showSheetSkillPicker();
+},true);
+async function showSheetSkillPicker(){
+ roleOverlay.style.display="block";roleOverlay.replaceChildren();
+ const card=document.createElement("section");card.className="rpg-reference-panel";
+ const h=document.createElement("h2");h.textContent="Add Skill Bonus";
+ const closeButton=document.createElement("button");closeButton.type="button";closeButton.textContent="Close";closeButton.onclick=closeRole;
+ const search=document.createElement("input");search.type="search";search.placeholder="Search skills and descriptions";search.setAttribute("aria-label","Search skills");
+ const category=document.createElement("select");category.setAttribute("aria-label","Skill category");
+ const results=document.createElement("div");results.className="rpg-reference-results";results.textContent="Loading…";
+ card.append(h,closeButton,search,category,results);roleOverlay.append(card);
+ try{
+  const items=await getData("Skills");
+  for(const name of ["All categories",...new Set(items.map(x=>x.category))]){const opt=document.createElement("option");opt.value=name==="All categories"?"":name;opt.textContent=name;category.append(opt)}
+  function render(){
+   results.replaceChildren();const q=search.value.toLowerCase();
+   for(const item of items.filter(x=>(!category.value||x.category===category.value)&&(x.name+" "+x.description+" "+x.attributes).toLowerCase().includes(q))){
+    const entry=document.createElement("article");entry.className="rpg-reference-entry";
+    const heading=document.createElement("h3");heading.textContent=item.name;
+    const meta=document.createElement("small");meta.textContent=item.category+" · "+item.attributes;
+    const desc=document.createElement("p");desc.textContent=item.description||"";
+    const pick=document.createElement("button");pick.type="button";pick.textContent="Select "+item.name;
+    pick.onclick=()=>{
+     skillAddBypass=true;try{document.getElementById("add-skill-bonus")?.click()}finally{skillAddBypass=false}
+     const row=document.querySelector("#skill-bonus-section .skill-bonus-row:last-child");
+     const select=row?.querySelector(".skill-select");if(select){const name=item.category.startsWith("Knowledge")?"Knowledge "+item.name:item.name;
+      if(![...select.options].some(o=>o.value===name)){const opt=document.createElement("option");opt.value=name;opt.textContent=name;select.add(opt)}
+      select.value=name;select.dispatchEvent(new Event("change",{bubbles:true}));
+     }
+     closeRole();
+    };
+    entry.append(heading,meta,desc,pick);results.append(entry);
+   }
+   if(!results.childElementCount)results.textContent="No matching skills.";
+  }
+  search.oninput=render;category.onchange=render;render();search.focus();
+ }catch(err){results.textContent="Unable to load skills: "+err.message}
+}
 
 bar.addEventListener("click",e=>{const b=e.target.closest?.("[data-reference]");if(b)showReference(b.dataset.reference)});
 })();
