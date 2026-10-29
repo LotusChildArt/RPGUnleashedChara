@@ -20223,8 +20223,8 @@ function renderCreatorDrawbackChoices() {
 
 function renderCreatorRoleBonuses(){
  for(let i=0;i<2;i++){const b=creatorDraft?.roleBonuses?.[i]||{type:"",detail:"",other:""},ts=document.getElementById("creator-role-bonus-type-"+i),ds=document.getElementById("creator-role-bonus-detail-"+i),oi=document.getElementById("creator-role-bonus-other-"+i);if(ts)ts.value=b.type||"";
- const textOnly=b.type==="gearFeat"||b.type==="craftFeat",opts=textOnly?[]:creatorRoleBonusOptions(b.type);if(ds){ds.hidden=textOnly||!b.type;renderCreatorPathSelect(ds,opts,b.detail||"",b.type?"Choose selection":"Choose bonus type first");}
- const needs=textOnly||(b.type==="language"&&b.detail==="Other");if(oi){oi.hidden=!needs;oi.value=b.other||"";oi.placeholder=b.type==="gearFeat"?"Gear Feat name":b.type==="craftFeat"?"Craft Feat name":"Custom language";}}
+ const textOnly=b.type==="gearFeat"||b.type==="craftFeat",browse=["gearFeat","craftFeat","skill","knowledge"].includes(b.type),opts=textOnly?[]:creatorRoleBonusOptions(b.type);if(ds){ds.hidden=browse||!b.type;renderCreatorPathSelect(ds,opts,b.detail||"",b.type?"Choose selection":"Choose bonus type first");}const card=document.querySelector(`[data-creator-role-bonus-card="${i}"]`);if(card){let pick=card.querySelector(".rpg-role-reference-picker");if(!pick){pick=document.createElement("button");pick.type="button";pick.className="rpg-role-reference-picker";pick.style.cssText="margin:8px 0;padding:10px;border-radius:8px;cursor:pointer";pick.addEventListener("click",()=>window.RPGShowRoleReference?.(i,creatorDraft.roleBonuses[i].type));card.querySelector(".creator-path-choice-grid")?.append(pick);}pick.hidden=!browse;pick.textContent=(textOnly?b.other:b.detail)||"Search "+(textOnly?"feats":"skills")+"…";}
+ const needs=(b.type==="language"&&b.detail==="Other");if(oi){oi.hidden=!needs;oi.value=b.other||"";oi.placeholder=b.type==="gearFeat"?"Gear Feat name":b.type==="craftFeat"?"Craft Feat name":"Custom language";}}
 }
 function renderCreatorPath() {
     document
