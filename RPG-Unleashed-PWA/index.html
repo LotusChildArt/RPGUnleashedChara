@@ -23160,6 +23160,12 @@ document
                     creatorDraft.heritageStage=2;creatorOpenRace="";renderCharacterCreator();return;
                   }
                   if(raceName===creatorDraft.race||!RPG_HALF_HERITAGE[raceName])return;
+                  const secondGroups=RPG_HALF_HERITAGE[raceName].options||[];
+                  if(secondGroups.some((g,i)=>!g.some(c=>c.label===creatorDraft.heritageChoices?.[raceName+":"+i]))){
+                    const message=document.getElementById("creator-validation");
+                    if(message)message.textContent="Choose the required attribute option for "+raceName+" before confirming this heritage.";
+                    return;
+                  }
                   if(!creatorDraft.heritageGmOverride&&creatorBirthType(raceName)!==creatorBirthType(creatorDraft.race))return;
                   if(creatorDraft.heritagePartner!==raceName){creatorDraft.culturalTraits=[];}
                   creatorDraft.heritagePartner=raceName;
