@@ -190,3 +190,34 @@ html.rpg-dark .path-field-label,
 html.rpg-dark .weapon-sub-label,
 html.rpg-dark .rpg-reference-entry small {color:var(--rpg-muted)!important;}
 html.rpg-dark input::placeholder,html.rpg-dark textarea::placeholder {color:#c7d0dc!important;opacity:1;}
+
+/* Ensure previously gray or muted copy remains readable on dark surfaces. */
+html.rpg-dark {--rpg-muted:#d5dce6!important;}
+html.rpg-dark .rpg-reference-entry,
+html.rpg-dark .rpg-reference-panel,
+html.rpg-dark #rpg-role-reference-overlay .rpg-reference-entry,
+html.rpg-dark #rpg-language-picker .rpg-reference-entry {
+ background:var(--rpg-surface)!important;color:var(--rpg-fg)!important;border-color:var(--rpg-edge)!important;
+}
+html.rpg-dark .rpg-reference-entry small,
+html.rpg-dark .rpg-reference-entry p,
+html.rpg-dark .rpg-reference-panel small,
+html.rpg-dark #handbook-screen small,
+html.rpg-dark #handbook-screen .rpg-reference-entry p,
+html.rpg-dark .creator-role-bonus-card small,
+html.rpg-dark .creator-role-bonus-card .creator-step-note,
+html.rpg-dark [style*="color: gray"],
+html.rpg-dark [style*="color:gray"],
+html.rpg-dark [style*="color: #888"],
+html.rpg-dark [style*="color:#888"],
+html.rpg-dark [style*="color: #777"],
+html.rpg-dark [style*="color:#777"],
+html.rpg-dark [style*="color: #666"],
+html.rpg-dark [style*="color:#666"] {color:var(--rpg-muted)!important;}
+html.rpg-dark #rpg-role-reference-overlay button,
+html.rpg-dark #rpg-role-reference-overlay input,
+html.rpg-dark #rpg-role-reference-overlay select,
+html.rpg-dark #rpg-handbook-reference input,
+html.rpg-dark #rpg-handbook-reference select {
+ background:var(--rpg-raised)!important;color:var(--rpg-fg)!important;border-color:var(--rpg-edge)!important;
+}
