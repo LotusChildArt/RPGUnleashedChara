@@ -47,19 +47,40 @@ async function getData(kind){
  cache[kind]=kind==="Feats"?(data.feats||[]):(data.items||[]);return cache[kind];
 }
 
+const COIN_PATTERN=/(\d+(?:\.\d+)?)\s*(Gold|Gld|GP|G|Silver|Slvr|SP|S|Copper|Cpr|CP|C)\b/gi;
+function coinUnit(label){const x=label.toLowerCase();return["gold","gld","gp","g"].includes(x)?100:["silver","slvr","sp","s"].includes(x)?10:1}
+function coinMatches(source){
+ const matches=[];
+ for(const match of String(source||"").matchAll(COIN_PATTERN)){
+  // Dice expressions (for example 3d6 GP) are not liquidated currency.
+  const prefix=source.slice(0,match.index);
+  if(/(?:\d+d|\bd)\s*$/i.test(prefix))continue;
+  const amount=Number(match[1])*coinUnit(match[2]);
+  if(!Number.isSafeInteger(amount)||amount<0)continue;
+  matches.push({start:match.index,end:match.index+match[0].length,copper:amount});
+ }
+ return matches;
+}
 function parseCoins(text){
- const source=String(text||"").trim();
- if(!source||/[dD]\d|\b(?:gp|sp|cp)\b/i.test(source))return null;
- const matches=[...source.matchAll(/(\d+(?:\.\d+)?)\s*(Gold|Silver|Copper)\b/gi)];
- if(!matches.length)return null;
- const leftovers=source.replace(/(\d+(?:\.\d+)?)\s*(Gold|Silver|Copper)\b/gi,"").replace(/[,\s;+]/g,"");
- if(leftovers)return null;
- let copper=0;const seen=new Set();
- for(const m of matches){const coin=m[2].toLowerCase();if(seen.has(coin))return null;seen.add(coin);copper+=Math.round(Number(m[1])*(coin==="gold"?100:coin==="silver"?10:1));}
- return Number.isSafeInteger(copper)?copper:null;
+ const source=String(text||"");
+ const total=coinMatches(source).reduce((sum,match)=>sum+match.copper,0);
+ return Number.isSafeInteger(total)?total:null;
 }
 function coinText(copper){const g=Math.floor(copper/100),silver=Math.floor(copper%100/10),c=copper%10;return[g&&g+" Gold",silver&&silver+" Silver",c&&c+" Copper"].filter(Boolean).join(", ")||"0 Copper"}
-function itemCost(item){const m=String(item.sourceText||"").match(/\bCost:\s*([^|\n]+)/i);return m?parseCoins(m[1]):null}
+function itemCost(item){
+ const m=String(item.sourceText||"").match(/\bCost:\s*([^|\n]+)/i);
+ if(!m)return null;
+ const cost=parseCoins(m[1]);
+ return cost!==null&&coinMatches(m[1]).length?cost:null;
+}
+function spendCoinsPreservingOtherText(source,newAmount){
+ const original=String(source||"");
+ const matches=coinMatches(original);
+ let rest=original;
+ for(let i=matches.length-1;i>=0;i--)rest=rest.slice(0,matches[i].start)+rest.slice(matches[i].end);
+ rest=rest.replace(/^[\s,;+\/]+|[\s,;+\/]+$/g,"").replace(/(?:\s*[,;+\/]\s*){2,}/g,", ").trim();
+ return [coinText(newAmount),rest].filter(Boolean).join(rest?", ":"");
+}
 function addGearPurchaseButtons(card,item){
  const actions=document.createElement("div");actions.style.cssText="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px";
  const take=document.createElement("button");take.type="button";take.textContent="Take";
@@ -71,10 +92,10 @@ function addGearPurchaseButtons(card,item){
  take.onclick=()=>{info.textContent=add()?"Added to inventory. Open your character sheet to view it.":"Could not add item to inventory."};
  buy.onclick=()=>{
   const field=document.querySelector("#tab3 .inventory-currency-row input");if(!field){info.textContent="Open a character sheet before purchasing.";return}
-  const balance=parseCoins(field.value);if(balance===null){info.textContent="Enter an exact currency balance, e.g. 5 Gold, 3 Silver. Roll any starting wealth first.";return}
+  const balance=parseCoins(field.value);if(balance===null){info.textContent="Currency amount could not be calculated.";return}
   if(balance<cost){info.textContent="Insufficient funds ("+coinText(balance)+" available).";return}
   if(!add()){info.textContent="Could not add item; no gold was deducted.";return}
-  field.value=coinText(balance-cost);field.dispatchEvent(new Event("input",{bubbles:true}));info.textContent="Purchased "+item.name+" for "+coinText(cost)+".";
+  field.value=spendCoinsPreservingOtherText(field.value,balance-cost);field.dispatchEvent(new Event("input",{bubbles:true}));info.textContent="Purchased "+item.name+" for "+coinText(cost)+".";
  };
  actions.append(buy,take);card.append(actions,info);
 }
