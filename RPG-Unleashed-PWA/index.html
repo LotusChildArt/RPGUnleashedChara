@@ -21810,7 +21810,9 @@ function creatorRaceIsComplete() {
        if(!creatorHeritagePairValid())return false;
        if(creatorHalfChoiceGroups().some(g=>!g.items.some(c=>c.label===creatorDraft.heritageChoices?.[g.key])))return false;
        const a=creatorDraft.culturalTraits||[];
-       return [creatorDraft.race,creatorDraft.heritagePartner].every(n=>a.filter(t=>(RPG_CULTURAL_TRAITS[n]||[]).includes(t)).length===1);
+       if(a.length!==2||new Set(a).size!==2)return false;
+       const [first,second]=[creatorDraft.race,creatorDraft.heritagePartner].map(n=>RPG_CULTURAL_TRAITS[n]||[]);
+       return (first.includes(a[0])&&second.includes(a[1]))||(first.includes(a[1])&&second.includes(a[0]));
     }
     if (race.choices?.length && !getCreatorRaceChoice()) return false;
     const chosen=creatorDraft?.culturalTraits||[];
@@ -21924,7 +21926,7 @@ function renderCreatorValidation() {
         )
     ) {
         validation.textContent =
-            "Choose your racial attribute adjustment (if applicable) and exactly 2 cultural traits to continue.";
+            creatorIsMixed() ? "Confirm both half-race attribute choices and select one cultural trait from each heritage to continue." : "Choose your racial attribute adjustment (if applicable) and exactly 2 cultural traits to continue.";
         return;
     }
 
@@ -21977,7 +21979,7 @@ function renderCreatorTraits() {
  const h=document.createElement("h3");h.textContent=mixed?"Cultural Traits — choose 1 from each parent":"Cultural Traits — choose 2";
  const p=document.createElement("p");p.textContent=mixed?"Choose one documented cultural trait from each parental heritage.":"Choose two distinct cultural traits from your race.";el.append(h,p);
  const wrap=document.createElement("div");wrap.className="creator-traits-grid";
- for(const name of names){const label=document.createElement("label");label.className="creator-trait-option";const box=document.createElement("input");box.type="checkbox";box.checked=chosen.includes(name);const owner=parents.find(n=>(RPG_CULTURAL_TRAITS[n]||[]).includes(name));box.disabled=!box.checked&&(chosen.length>=2||(mixed&&chosen.some(t=>(RPG_CULTURAL_TRAITS[owner]||[]).includes(t))));box.addEventListener("change",()=>{let a=Array.isArray(creatorDraft.culturalTraits)?creatorDraft.culturalTraits:[];creatorDraft.culturalTraits=box.checked?[...a,name].slice(0,2):a.filter(x=>x!==name);renderCharacterCreator()});const info=document.createElement("span");const title=document.createElement("strong");title.textContent=name;info.append(title);const description=RPG_TRAIT_DETAILS[owner]?.[name];if(description){const detail=document.createElement("small");detail.textContent=description;info.append(detail)}label.append(box,info);wrap.appendChild(label)}el.appendChild(wrap);
+ for(const name of names){const label=document.createElement("label");label.className="creator-trait-option";const box=document.createElement("input");box.type="checkbox";box.checked=chosen.includes(name);const owner=parents.find(n=>(RPG_CULTURAL_TRAITS[n]||[]).includes(name));box.disabled=!box.checked&&(chosen.length>=2||(mixed&&chosen.length===1&&!parents.some(n=>n!==owner&&(RPG_CULTURAL_TRAITS[n]||[]).includes(name))&&chosen.some(t=>(RPG_CULTURAL_TRAITS[owner]||[]).includes(t))));box.addEventListener("change",()=>{let a=Array.isArray(creatorDraft.culturalTraits)?creatorDraft.culturalTraits:[];creatorDraft.culturalTraits=box.checked?[...a,name].slice(0,2):a.filter(x=>x!==name);renderCharacterCreator()});const info=document.createElement("span");const title=document.createElement("strong");title.textContent=name;info.append(title);const description=RPG_TRAIT_DETAILS[owner]?.[name];if(description){const detail=document.createElement("small");detail.textContent=description;info.append(detail)}label.append(box,info);wrap.appendChild(label)}el.appendChild(wrap);
 }
 
 function renderCharacterCreator() {
@@ -22351,19 +22353,6 @@ async function createGuidedCharacter() {
           addCreatorBackgroundValue("aspects-list","add-aspect",aspect);
         }
 
-        if(creatorIsMixed()){
-          const parts=[creatorDraft.race,creatorDraft.heritagePartner];
-          const combined=parts.map(name=>name+": "+RPG_HALF_HERITAGE[name].bonus).join("\n");
-          const chosen=creatorHalfChoiceGroups().map(group=>group.name+" attribute choice: "+(creatorDraft.heritageChoices?.[group.key]||"")).join("\n");
-          const note=document.querySelector("#notes-list .note-card");
-          if(note){
-            setInputValueAndNotify(note.querySelector(".note-title"),"Mixed Heritage");
-            setInputValueAndNotify(note.querySelector("textarea"),combined+"\n"+chosen+"\nHeritage traits: "+(creatorDraft.culturalTraits||[]).join(", ")+
-             (parts.includes("Human")?"\nHalf-Human grants an additional starting feat; choose it on the Feats tab.":"")+
-             (parts.includes("Halfling")?"\nHalf-Halfling grants an additional trait.":"")+
-             (parts.includes("Traiggoblin")?"\nTraiggoblin has a special allowance for a second cultural trait without a flaw.":""));
-          }
-        }
 
         [
             "bod",
