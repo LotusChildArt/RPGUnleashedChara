@@ -221,3 +221,39 @@ html.rpg-dark #rpg-handbook-reference input,
 html.rpg-dark #rpg-handbook-reference select {
  background:var(--rpg-raised)!important;color:var(--rpg-fg)!important;border-color:var(--rpg-edge)!important;
 }
+
+/* Shared Gear Handbook purchase actions. */
+.rpg-gear-actions button {display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 17px;border:1px solid #6c7886;border-radius:10px;font-weight:700;cursor:pointer;}
+.rpg-gear-actions .rpg-gear-buy {background:#dbeafe;color:#172554;}
+.rpg-gear-actions .rpg-gear-take {background:#f1f5f9;color:#243244;}
+.rpg-gear-actions button:disabled {opacity:.55;cursor:not-allowed;}
+html.rpg-dark .rpg-gear-actions .rpg-gear-buy {background:#355681!important;color:#fff!important;border-color:#9ab6d5!important;}
+html.rpg-dark .rpg-gear-actions .rpg-gear-take {background:#354351!important;color:#f1f5f9!important;border-color:#9aa9ba!important;}
+
+/* Site-wide subdued text: applies to every screen, including main menu,
+   campaign/party views, library, dialogs and the Handbook. */
+html.rpg-dark {--rpg-muted:#e0e6ee!important;}
+html.rpg-dark .app-screen small,
+html.rpg-dark .app-screen .text-muted,
+html.rpg-dark .app-screen .muted,
+html.rpg-dark .app-screen .subtitle,
+html.rpg-dark .app-screen .description,
+html.rpg-dark .app-screen [class*="-description"],
+html.rpg-dark .app-screen [class*="-subtitle"],
+html.rpg-dark .app-screen [class*="-hint"],
+html.rpg-dark .app-screen [class*="-status"],
+html.rpg-dark .app-screen [class*="-meta"],
+html.rpg-dark .app-screen [class*="-note"],
+html.rpg-dark .app-screen [class*="-caption"],
+html.rpg-dark .app-screen [style*="color: #999"],
+html.rpg-dark .app-screen [style*="color:#999"],
+html.rpg-dark .app-screen [style*="color: #888"],
+html.rpg-dark .app-screen [style*="color:#888"],
+html.rpg-dark .app-screen [style*="color: #777"],
+html.rpg-dark .app-screen [style*="color:#777"],
+html.rpg-dark .app-screen [style*="color: #666"],
+html.rpg-dark .app-screen [style*="color:#666"],
+html.rpg-dark .app-screen [style*="color: gray"],
+html.rpg-dark .app-screen [style*="color:gray"] {color:var(--rpg-muted)!important;}
+html.rpg-dark .app-screen input::placeholder,
+html.rpg-dark .app-screen textarea::placeholder {color:#d0d9e5!important;opacity:1;}
