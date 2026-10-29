@@ -4608,6 +4608,29 @@ html.rpg-dark #creator-heritage-bar{background:var(--rpg-surface);color:var(--rp
 html.rpg-dark #creator-heritage-bar select,html.rpg-dark #creator-heritage-bar button{background:var(--rpg-raised);color:var(--rpg-fg);border-color:var(--rpg-edge)}
 html.rpg-dark #creator-heritage-bar button.selected{background:#405b82!important;color:white!important}
 </style>
+
+<style>
+/* Collapsed temporary attribute columns (values remain in DOM and saved). */
+#tab1 .attribute-list:not(.show-temp-attributes) .attribute-header,
+#tab1 .attribute-list:not(.show-temp-attributes) .attribute-row{grid-template-columns:68px 68px 68px!important}
+#tab1 .attribute-list:not(.show-temp-attributes) .attribute-header>span:nth-child(4),
+#tab1 .attribute-list:not(.show-temp-attributes) .attribute-header>span:nth-child(5),
+#tab1 .attribute-list:not(.show-temp-attributes) .attribute-row>.temp-value,
+#tab1 .attribute-list:not(.show-temp-attributes) .attribute-row>.temp-quarter-value{display:none!important}
+#tab1 .sheet-temp-toggle{justify-self:start;border:1px solid #888;background:#f2f3f5;color:#171717;border-radius:16px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer}
+#tab1 .sheet-temp-toggle[aria-expanded="true"]{background:#dce8f5}
+#tab4 .background-entry-row{grid-template-columns:minmax(0,1fr) 28px 30px!important}
+#tab4 .sheet-entry-help{width:27px;height:27px;border-radius:50%;border:1.5px solid currentColor;background:transparent;color:inherit;cursor:pointer;font-size:14px;font-weight:800}
+.sheet-reference-backdrop[hidden]{display:none!important}
+.sheet-reference-backdrop{position:fixed;inset:0;z-index:100100;display:grid;place-items:center;background:rgba(0,0,0,.76);padding:14px}
+.sheet-reference-dialog{width:min(640px,100%);max-height:84vh;overflow:auto;position:relative;border-radius:15px;padding:18px;background:#fff;color:#161616;box-shadow:0 15px 60px #0007}
+.sheet-reference-dialog h3{margin:0 42px 14px 0}
+.sheet-reference-text{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}
+.sheet-reference-close{position:absolute;top:8px;right:10px;border-radius:50%;width:34px;height:34px;font-size:24px;cursor:pointer}
+html.rpg-dark #tab1 .sheet-temp-toggle{background:var(--rpg-raised);color:var(--rpg-fg);border-color:var(--rpg-edge)}
+html.rpg-dark .sheet-reference-dialog{background:var(--rpg-surface);color:var(--rpg-fg)}
+html.rpg-dark .sheet-reference-close{background:var(--rpg-raised);color:var(--rpg-fg)}
+</style>
 </head>
 
 
@@ -24197,6 +24220,7 @@ if ("serviceWorker" in navigator) {
 <script src="/gear-integration.js?build=1.63.0"></script>
 <script src="/character-references.js?build=1.64.0"></script>
 <script src="/creator-help.js?build=1.68.0" defer></script>
+<script src="/sheet-inspect.js?build=1.99.0" defer></script>
 </body>
 
 </html>
