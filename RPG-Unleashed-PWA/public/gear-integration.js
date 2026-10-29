@@ -155,6 +155,7 @@ window.RPGPopulateStartingGear=async pkg=>{
  // treating leftover text as an actual item.
  for(const item of selected){
    const name=item.name;
+   if(name==="Set of Clothing")remainder=remainder.replace(/\b(?:(?:common|poor|fine|simple|ragged|plain|flashy|noble|rugged|travel|ratty)\s+)*(?:clothes|clothing)\b/gi," ");
    for(const [pattern,canonical] of aliases){
      if(canonical===name)remainder=remainder.replace(pattern," ");
    }
