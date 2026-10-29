@@ -134,7 +134,8 @@ window.RPGPopulateStartingGear=async pkg=>{
   [/\bbastard sword\b/i,"Sword, Bastard"],
   [/\bshortbow\b/i,"Bow, Short"],
   [/\blongbow\b/i,"Bow, Long"],
-  [/\b(?:hunting )?spear\b/i,"Spear, Short"],
+  [/\blong spear\b/i,"Spear, Long"],
+   [/\b(?:short spear|hunting spear|(?<!long )spear)\b/i,"Spear, Short"],
   [/\b(?:light )?crossbow\b/i,"Crossbow"],
   [/\bheavy coat\b/i,"Heavy Coat"],
   [/\barmored coat\b/i,"Armored Coat"]
