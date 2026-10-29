@@ -1,0 +1,23 @@
+{
+  "source": "Races and Templates One v1",
+  "flaws": {
+    "Impatient": "Take a -2 penalty to checks involving patience and may act impulsively in tense situations.",
+    "Overconfidence": "Take a -2 penalty to checks involving risk assessment and may push yourself too hard.",
+    "Arrogant": "Take a -2 penalty to Persuade checks and have difficulty acknowledging others’ opinions.",
+    "Addiction": "Your character is addicted to a substance or habit. Take a -2 penalty to all checks when unable to satisfy this addiction, but a +1 to all checks for 1d4 hours after satisfying the addiction.",
+    "Loner": "Take a -2 penalty to teamwork-related checks and struggle to work effectively in groups.",
+    "Greedy": "Take a -2 penalty to MND saves to resist the lure of wealth or power, and may take reckless and selfish actions in pursuit of wealth or power.",
+    "Mistrustful": "Take a -2 penalty to Persuade checks and have difficulty trusting others, leading to strained relationships.",
+    "Vengeful": "Take a -2 penalty to MND saving throws against letting go of grudges, which may lead to reckless decisions.",
+    "Envious": "Take a -2 penalty to MND checks when interacting with those who have something your character desires.",
+    "Pacifist": "Take a -2 penalty to attack rolls and struggle to engage in combat, preferring peaceful resolutions."
+  },
+  "aspects": {
+    "Lowlight Vision": "See in low-light conditions as if it were daylight. Source: Races and Templates One v1.",
+    "Dark Vision": "See in complete darkness as if it were daylight, up to 60 ft. Source: Races and Templates One v1.",
+    "Scale Armor": "Hardened scales provide +2 Natural DR and resistance to fire and ice damage for Half-Zizses.",
+    "Compound Vision": "Cannot be flanked from either side and gains +2 to Detect checks.",
+    "Winged Flight": "Inherits Av’riahl wings, with half the usual sustained flight time.",
+    "Natural Weapons": "Fur-bred may inherit claws (1d6 unarmed damage), horns or teeth (2d4), depending on their Furfolk parent's animal form."
+  }
+}
