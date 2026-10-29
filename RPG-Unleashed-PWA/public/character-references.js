@@ -82,10 +82,10 @@ function spendCoinsPreservingOtherText(source,newAmount){
  return [coinText(newAmount),rest].filter(Boolean).join(rest?", ":"");
 }
 function addGearPurchaseButtons(card,item){
- const actions=document.createElement("div");actions.style.cssText="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px";
- const take=document.createElement("button");take.type="button";take.textContent="Take";
+ const actions=document.createElement("div");actions.className="rpg-gear-actions";actions.style.cssText="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px";
+ const take=document.createElement("button");take.type="button";take.textContent="＋ Take";take.className="rpg-gear-take";take.setAttribute("aria-label","Take "+item.name+" into inventory");
  const buy=document.createElement("button");buy.type="button";
- const cost=itemCost(item);buy.textContent=cost===null?"Buy (price unavailable)":"Buy · "+coinText(cost);
+ const cost=itemCost(item);buy.className="rpg-gear-buy";buy.textContent=cost===null?"Buy (price unavailable)":"🪙 Buy · "+coinText(cost);buy.setAttribute("aria-label","Buy "+item.name);
  buy.disabled=cost===null;
  const info=document.createElement("small");info.setAttribute("role","status");info.style.cssText="display:block;margin-top:6px";
  const add=()=>{if(typeof window.RPGAddGearToSheet!=="function")return false;window.RPGAddGearToSheet(item.name,"inventory");return true};
