@@ -22352,7 +22352,7 @@ async function createGuidedCharacter() {
         }
         creatorApplyOriginSkillEffects();creatorApplyRoleBonus(0);creatorApplyRoleBonus(1);
         // Native languages are granted by racial heritage, not inferred from equipment.
-        const nativeLanguages={"Human":["Common"],"Elf":["Elvish"],"Dwarf":["Dwarvish","Common"],"Orc":["Orcish / Erg’nah"],"Halfling":["Undercommon","Common"],"Gnome":["Faespeak","Common"],"Traiggoblin":["Common"],"Furfolk":["Ahrewic"],"Zizses":["Heiszek"],"Av’riahl":["Ak’iki"],"Arrahsect":["Sectah","Sign (Common Sign Language)"],"Terrán":["Térr"],"Shroomite":[],"Manakeen":[]};
+        const nativeLanguages={"Human":["Common"],"Elf":["Elvish"],"Dwarf":["Dwarvish","Common"],"Orc":["Orcish / Erg’nah"],"Halfling":["Undercommon","Common"],"Gnome":["Faespeak","Common"],"Traiggoblin":["Common"],"Furfolk":["Ahrewic"],"Zizses":["Heiszek"],"Av’riahl":["Ak’iki"],"Arrahsect":["Sectah","Sign (Common Sign Language)"],"Terrán":["Elvish","Common"],"Shroomite":[],"Manakeen":[]};
         for(const ancestry of (creatorIsMixed()?[creatorDraft.race,creatorDraft.heritagePartner]:[creatorDraft.race])){
           for(const language of nativeLanguages[ancestry]||[])creatorAddLanguage(language);
         }
