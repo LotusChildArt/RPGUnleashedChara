@@ -151,11 +151,18 @@ window.RPGPopulateStartingGear=async pkg=>{
  // Populate unmatched package contents into inventory rather than burying them in Notes.
  // Split only at normal list delimiters; leave source text as the description.
  let remainder=raw;
+ // Remove recognized gear aliases and their descriptive wrappers before
+ // treating leftover text as an actual item.
  for(const item of selected){
    const name=item.name;
-   const pos=remainder.toLowerCase().indexOf(name.toLowerCase());
-   if(pos>=0)remainder=remainder.slice(0,pos)+remainder.slice(pos+name.length);
+   for(const [pattern,canonical] of aliases){
+     if(canonical===name)remainder=remainder.replace(pattern," ");
+   }
+   if(name==="Dagger")remainder=remainder.replace(/\b(?:an?\s+)?(?:intimidating|concealed|hidden|chipped|ceremonial|hunting)\s+dagger\b/gi," ");
+   const position=remainder.toLowerCase().indexOf(name.toLowerCase());
+   if(position>=0)remainder=remainder.slice(0,position)+remainder.slice(position+name.length);
  }
+ remainder=remainder.replace(/\b(?:armor|armour)\b/gi," ").replace(/\b(?:an?\s+)?(?:intimidating|concealed|hidden)\b/gi," ");
  const parts=remainder.split(/,|;|\s+and\s+/i).map(x=>x.trim())
    .filter(x=>x&&!/^(?:a|an|the|with|and|or)$/i.test(x));
  const normalizedSelected=new Set(selected.map(x=>normalize(x.name)));
