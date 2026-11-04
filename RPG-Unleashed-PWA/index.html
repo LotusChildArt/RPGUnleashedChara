@@ -11993,8 +11993,9 @@ function openSavedCharacter(
 }
 
 
-function returnToMainMenu() {
+async function returnToMainMenu() {
 
+    await flushCharacterAutosave();
     window.location.href =
         window.location.pathname +
         window.location.search;
@@ -17264,7 +17265,7 @@ async function saveRemoteCharacterSheet() {
 }
 
 
-async function saveCharacterSheet() {
+async function saveCharacterSheet({automatic = false} = {}) {
 
     if (
         remoteEditSession
@@ -17398,7 +17399,7 @@ async function saveCharacterSheet() {
 
 
         saveStatus.textContent =
-            "Character saved to the Library.";
+            automatic ? "Autosaved to Character Library." : "Character saved to the Library.";
 
     }
 
@@ -17413,16 +17414,81 @@ async function saveCharacterSheet() {
 
 
         saveStatus.textContent =
-            "Could not save this character.";
+            automatic ? "Autosave failed. Use Save to retry." : "Could not save this character.";
 
     }
 
 }
 
 
+// Autosave uses the existing complete Character Library save format.
+// The debounce avoids saving each keystroke; character records stay independent.
+let rpgAutosaveTimer = null;
+let rpgAutosavePending = false;
+let rpgAutosaveInFlight = null;
+let rpgAutosaveLastEdit = 0;
+const RPG_AUTOSAVE_DELAY = 1200;
+
+async function flushCharacterAutosave() {
+    clearTimeout(rpgAutosaveTimer);
+    rpgAutosaveTimer = null;
+    if (!characterSheetInitialized || remoteEditSession || !rpgAutosavePending) return;
+    if (rpgAutosaveInFlight) {
+        await rpgAutosaveInFlight;
+        if (!rpgAutosavePending) return;
+    }
+    rpgAutosavePending = false;
+    // Capture state only when saving, never while typing or modifying a field.
+    const saving = saveCharacterSheet({automatic:true});
+    rpgAutosaveInFlight = saving;
+    try { await saving; }
+    finally {
+        if (rpgAutosaveInFlight === saving) rpgAutosaveInFlight = null;
+        if (rpgAutosavePending) {
+            clearTimeout(rpgAutosaveTimer);
+            rpgAutosaveTimer = setTimeout(flushCharacterAutosave, RPG_AUTOSAVE_DELAY);
+        }
+    }
+}
+function scheduleCharacterAutosave() {
+    if (!characterSheetInitialized || remoteEditSession ||
+        !document.getElementById("character-app")?.classList.contains("active")) return;
+    rpgAutosavePending = true;
+    rpgAutosaveLastEdit = Date.now();
+    saveStatus.textContent = "Unsaved changes…";
+    clearTimeout(rpgAutosaveTimer);
+    rpgAutosaveTimer = setTimeout(flushCharacterAutosave, RPG_AUTOSAVE_DELAY);
+}
+const characterAutosaveRoot = document.getElementById("character-app");
+characterAutosaveRoot.addEventListener("input", event => {
+    if (event.target.closest("input, textarea, select, [contenteditable]")) scheduleCharacterAutosave();
+}, true);
+characterAutosaveRoot.addEventListener("change", event => {
+    if (event.target.closest("input, textarea, select")) scheduleCharacterAutosave();
+}, true);
+// Buttons can alter a sheet without a native input/change event (inventory,
+// conditions, feat selection, spell rows, level progression, etc.).
+characterAutosaveRoot.addEventListener("click", event => {
+    const button = event.target.closest("button");
+    if (!button || !characterAutosaveRoot.contains(button)) return;
+    if (button.closest(".tab-bar") || button.matches("#save-sheet, #save-options, #export-character")) return;
+    scheduleCharacterAutosave();
+}, true);
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden" && rpgAutosavePending) void flushCharacterAutosave();
+});
+window.addEventListener("pagehide", () => {
+    if (rpgAutosavePending) void flushCharacterAutosave();
+});
+
 saveSheetButton.addEventListener(
     "click",
-    saveCharacterSheet
+    async () => {
+        clearTimeout(rpgAutosaveTimer);
+        rpgAutosavePending = false;
+        if (rpgAutosaveInFlight) await rpgAutosaveInFlight;
+        await saveCharacterSheet();
+    }
 );
 
 
