@@ -1,7 +1,6 @@
 import OBR from '@owlbear-rodeo/sdk';
 
 const KEY='com.rpgunleashed.notes/npcTokenV1';
-const RENDERER='https://rpgunleashednotes.onrender.com/npc-battlefield.js';
 const fields=['hp','hpMax','mana','manaMax','drArmor','drNatural','drMagic','nl'];
 const integer=(value)=>{const n=Number(value);return Number.isFinite(n)?n:0};
 
@@ -35,7 +34,7 @@ export async function saveNPC(record){
  }});
  const updated={...record,npcUpdatedAt:updatedAt};
  try{
-  await import(RENDERER);
+  await import('./npc-battlefield-bridge.js');
   if(!window.RPGNPCBattlefield?.ready)await new Promise((resolve,reject)=>{
    const timeout=setTimeout(()=>reject(Error('NPC HUD renderer was not ready.')),5000);
    window.addEventListener('rpg-npc-owlbear-state',()=>{if(window.RPGNPCBattlefield?.ready){clearTimeout(timeout);resolve()}},{once:true});
