@@ -49,6 +49,9 @@ html.rpg-dark #rpg-levelup-dialog #rpg-level-message,
 html.rpg-dark #rpg-level-feat-browser p,
 html.rpg-dark #feat-catalog-overlay #feat-catalog-message {color:#d3dae2!important;}
 html.rpg-dark img,html.rpg-dark canvas,html.rpg-dark svg {filter:none;}
+/* Invert only the monochrome app-brand icon against the dark menu background. */
+html.rpg-dark #main-menu-screen .app-brand > img {filter:invert(1);}
+
 
 /* Readable muted labels and explicitly themed weapon/handbook surfaces. */
 html.rpg-dark {--rpg-muted:#ccd5df;--rpg-edge:#84909d;}
