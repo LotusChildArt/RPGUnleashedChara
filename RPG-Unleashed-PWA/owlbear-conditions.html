@@ -626,6 +626,12 @@ function getConditionHelpText(condition) {
 }
 
 function parseVitalsFromRecord(record) {
+    if (record?.__notesNPC) return {
+        hpCurrent:Number(record.hp)||0,hpMax:Number(record.hpMax)||0,
+        manaCurrent:Number(record.mana)||0,manaMax:Number(record.manaMax)||0,
+        nl:Number(record.nl)||0,drArmor:Number(record.drArmor)||0,
+        drNatural:Number(record.drNatural)||0,drMagic:Number(record.drMagic)||0
+    };
     const vitals = {
         hpCurrent: 0,
         hpMax: 0,
@@ -680,6 +686,10 @@ function parseVitalsFromRecord(record) {
 }
 
 function writeVitalsToRecord(record, vitals) {
+    if(record?.__notesNPC)return {...record,
+        hp:vitals.hpCurrent,hpMax:vitals.hpMax,mana:vitals.manaCurrent,
+        manaMax:vitals.manaMax,nl:vitals.nl,drArmor:vitals.drArmor,
+        drNatural:vitals.drNatural,drMagic:vitals.drMagic};
     const nextRecord = {
         ...record,
         state: {
@@ -1016,6 +1026,8 @@ function renderConditionDetailEditor(condition, conditionKey) {
 }
 
 function parseConditionsFromRecord(record) {
+    if(record?.__notesNPC)return Array.isArray(record.conditionDetails)?record.conditionDetails:
+      String(record.conditions||'').split(',').map(id=>({id:id.trim().toLowerCase().replace(/\s+/g,'-'),stacks:1})).filter(x=>x.id);
     const tab1Html = record?.state?.tabs?.tab1;
     if (typeof tab1Html !== "string") return [];
 
@@ -1050,6 +1062,8 @@ function parseConditionsFromRecord(record) {
 }
 
 function writeConditionsToRecord(record, conditions) {
+    if(record?.__notesNPC)return {...record,conditionDetails:conditions,
+      conditions:conditions.map(x=>x.id).join(', ')};
     const tab1Html = record?.state?.tabs?.tab1;
     if (typeof tab1Html !== "string") return record;
 
@@ -1327,10 +1341,12 @@ async function persistRecord(nextRecord) {
     setStatus("Saving…");
 
     try {
-        const result = await window.RPGOwlbear.saveTokenLinkedCharacter({
-            record: loadedRecord,
-            remoteEditSession: loadedContext.remoteEditSession
-        });
+        const result = loadedContext.npc
+          ? await (await import('./npc-controls.js')).saveNPC(loadedRecord)
+          : await window.RPGOwlbear.saveTokenLinkedCharacter({
+              record: loadedRecord,
+              remoteEditSession: loadedContext.remoteEditSession
+          });
 
         loadedRecord = result.record;
         loadedContext = {
@@ -1789,7 +1805,9 @@ async function initializeTokenControls() {
         renderConditionPicker();
         updateConditionAddOptions();
 
-        loadedContext =
+        const npcBridge = await import('./npc-controls.js');
+        loadedContext = await npcBridge.loadNPC(tokenId);
+        if(!loadedContext)loadedContext =
             await window.RPGOwlbear.loadCharacterForTokenId(
                 tokenId
             );
@@ -1810,8 +1828,9 @@ async function initializeTokenControls() {
 
         loadedRecord = loadedContext.record;
 
-        const editMode =
-            loadedContext.remoteEditSession
+        const editMode = loadedContext.npc
+            ? 'GM editing Notes NPC'
+            : loadedContext.remoteEditSession
                 ? "GM editing player character"
                 : "Owner editing character";
 
