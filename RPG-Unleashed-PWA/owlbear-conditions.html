@@ -358,7 +358,7 @@ select { min-height: 36px; padding: 6px 8px; }
     </details>
 </div>
 
-<script>
+<script type="module">
 const RPG_DB_NAME = "rpgUnleashedCharactersDB";
 const RPG_DB_VERSION = 1;
 const RPG_CHARACTER_STORE = "characters";
@@ -1859,13 +1859,9 @@ async function initializeTokenControls() {
         );
     }
 }
-</script>
-
-<script type="module" src="./owlbear-integration.js"></script>
-
-<script>
 initializeTokenControls();
 </script>
+<script type="module" src="./owlbear-integration.js"></script>
 
 </body>
 </html>
