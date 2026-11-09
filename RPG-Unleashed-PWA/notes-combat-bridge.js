@@ -104,8 +104,15 @@ async function publish(record,token,prior){
 }
 async function applyPending(record,token,bridge){
  const patch=bridge.pendingPatch;
- if(!patch||typeof patch.id!=='string'||lastApplied.get(record.id)===patch.id)return;
+ if(!patch||typeof patch.id!=='string')return;
  if(patch.characterId!==record.id||patch.ownerId!==ownerId)return;
+ if(lastApplied.get(record.id)===patch.id){
+  await OBR.scene.items.updateItems([token.id],items=>{for(const item of items){
+   const state=item.metadata?.[BRIDGE];
+   if(state?.pendingPatch?.id===patch.id){state.acknowledgedPatchId=patch.id;delete state.pendingPatch}
+  }});
+  return;
+ }
  if(Number.isInteger(Number(patch.baseRevision))&&Number(record.revision||0)!==Number(patch.baseRevision)){
   await OBR.scene.items.updateItems([token.id],items=>{for(const item of items){
    const state=item.metadata?.[BRIDGE];
