@@ -74,7 +74,7 @@ function updateRecord(record,changes){
     let card=retained.find(x=>x.dataset.conditionId===spec.id&&!used.has(x));
     if(!card){
      card=document.createElement('div');card.className='condition-card';card.dataset.conditionId=spec.id;
-     card.innerHTML='<span class="condition-card-name">'+spec.id+'</span><label class="condition-stack-field">Stacks <input class="condition-stacks" type="number" min="1"></label><button class="remove-condition" type="button">×</button>';
+     card.innerHTML='<span class="condition-card-name">'+(conditionLabels[spec.id]||spec.id)+'</span><label class="condition-stack-field">Stacks <input class="condition-stacks" type="number" min="1"></label><button class="remove-condition" type="button">×</button>';
     }
     const input=card.querySelector('.condition-stacks');
     if(input){input.value=String(spec.stacks);input.setAttribute('value',String(spec.stacks))}
