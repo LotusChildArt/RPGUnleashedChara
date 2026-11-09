@@ -13012,6 +13012,32 @@ function setupConditionCard(
 }
 
 
+// Used by the Notes token bridge for targeted GM condition updates.
+window.RPGSetCombatConditions = raw => {
+    const valid=new Set(RPG_CONDITION_DEFINITIONS.map(x=>x.id));
+    const next=String(raw||'').split(',').map(x=>x.trim()).filter(Boolean).map(part=>{
+        const match=part.match(/^([a-z][a-z-]*)(?::([0-9]+))?$/i);
+        if(!match||!valid.has(match[1].toLowerCase()))throw Error('Unrecognized condition: '+part);
+        const stacks=Number(match[2]||1);
+        if(!Number.isSafeInteger(stacks)||stacks<1||stacks>100)throw Error('Invalid condition stacks');
+        return {id:match[1].toLowerCase(),stacks};
+    });
+    const list=document.querySelector('#tab1 .active-condition-list');
+    if(!list)throw Error('Condition manager is unavailable');
+    const old=[...list.querySelectorAll('.condition-card')],used=new Set();
+    for(const entry of next){
+        const card=old.find(x=>x.dataset.conditionId===entry.id&&!used.has(x));
+        if(card){
+            used.add(card);
+            const stacks=card.querySelector('.condition-stacks');
+            if(stacks){stacks.value=String(entry.stacks);stacks.dispatchEvent(new Event('input',{bubbles:true}))}
+        }else addConditionCard(entry.id,entry.stacks);
+    }
+    old.filter(x=>!used.has(x)).forEach(x=>x.remove());
+    renderConditionEmptyState();
+    queueConditionOverlayUpdate();
+};
+
 function addConditionCard(
     conditionId,
     stacks = 1,
@@ -17506,6 +17532,7 @@ window.RPGApplyCombatPatchToLiveSheet = async changes => {
     ['drArmor','drNatural','drMagic'].forEach((key,i)=>change(dr[i],changes[key]));
     change(tab5.querySelector('.mana-current'),changes.mana);
     change(tab5.querySelector('.mana-max'),changes.manaMax);
+    if(Object.prototype.hasOwnProperty.call(changes,'conditions'))window.RPGSetCombatConditions?.(changes.conditions);
     await window.RPGSaveCurrentCharacter();
     window.dispatchEvent(new Event('rpg-notes-combat-sheet-saved'));
 };
