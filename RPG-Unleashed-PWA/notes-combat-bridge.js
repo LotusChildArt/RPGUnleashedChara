@@ -61,6 +61,7 @@ function updateRecord(record,changes){
  if(Object.prototype.hasOwnProperty.call(changes,'conditions')){
   const desired=parseConditions(changes.conditions);
   const host=a.content.querySelector('.active-condition-list');
+  if(!host)throw Error('This saved sheet needs its condition manager restored before receiving GM condition changes.');
   if(host){
    const retained=[...host.querySelectorAll('.condition-card')];
    const used=new Set();
@@ -125,7 +126,7 @@ async function applyPending(record,token,bridge){
  }else{
   const updated=updateRecord(record,changes);
   await window.RPGCharacterStore.putCharacter(updated);
-  if(window.RPGOwlbear?.ready)await window.RPGOwlbear.syncSharedCharacter(updated);
+  if(window.RPGOwlbear?.ready)try{await window.RPGOwlbear.syncSharedCharacter(updated)}catch(error){console.warn('Saved GM values locally; Owlbear publish will retry',error)}
  }
  const verifiedRecord=await window.RPGCharacterStore.getCharacterById(record.id);
  if(!verifiedRecord)throw Error('Character disappeared during GM update.');
