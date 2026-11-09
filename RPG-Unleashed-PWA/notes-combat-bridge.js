@@ -32,13 +32,18 @@ function parseSheet(record){
  const dr=vals('.dr-bubbles input');
  const def=vals('.def-bubbles input');
  const attr=id=>num(value(a.querySelector('#'+id)));
- const atks=vals('.attack-bubbles input');
+ const weapons=[...a.querySelectorAll('.weapon-card')].map(card=>{
+  const name=value(card.querySelector('.weapon-main-row input'))?.trim();
+  const hit=card.querySelectorAll('.weapon-sub-row .weapon-mini-field input');
+  if(!name||hit.length<2)return null;
+  return name+': BOD '+(Number(value(hit[0]))>=0?'+':'')+value(hit[0])+' / DEX '+(Number(value(hit[1]))>=0?'+':'')+value(hit[1]);
+ }).filter(Boolean);
  const manaCurrent=value(b.querySelector('.mana-current')||b.querySelector('input[placeholder="Manapool"]'));
  const manaMax=value(b.querySelector('.mana-max')||b.querySelector('input[placeholder="Manapool"]'));
  return {name:record.name||'Player',bod:attr('bod'),dex:attr('dex'),mnd:attr('mnd'),cha:attr('cha'),
   hp:num(hp[0]),hpMax:num(hp[1]),mana:num(manaCurrent),manaMax:num(manaMax),
   drArmor:num(dr[0]),drNatural:num(dr[1]),drMagic:num(dr[2]),
-  attack:atks.length?'BOD '+atks[0]+' / DEX '+(atks[1]||'—'):'',
+  attack:weapons.join(' | '),
   defense:def.length?'BOD '+def[0]+' / DEX '+(def[1]||'—'):'',
   conditions:conditionsFrom(a)};
 }
