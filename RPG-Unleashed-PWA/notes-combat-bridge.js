@@ -1,0 +1,118 @@
+import OBR from 'https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm';
+
+const LINK='com.rpgunleashed.character-sheet/tokenLink';
+const BRIDGE='com.rpgunleashed.notes/playerCombatV1';
+const fields=['hp','hpMax','mana','manaMax','drArmor','drNatural','drMagic'];
+const lastApplied=new Map();
+let running=false,ready=false,roomId=null,ownerId=null,checkTimer=null;
+const num=(v,fallback=null)=>v===''||v==null?fallback:Number.isFinite(Number(v))?Number(v):fallback;
+const value=e=>e?.value??e?.getAttribute('value')??'';
+function parseSheet(record){
+ const tab1=document.createElement('template'),tab5=document.createElement('template');
+ tab1.innerHTML=record?.state?.tabs?.tab1||'';
+ tab5.innerHTML=record?.state?.tabs?.tab5||'';
+ const a=tab1.content,b=tab5.content;
+ const vals=sel=>[...a.querySelectorAll(sel)].map(value);
+ const hp=vals('.current-max-field .current-max-values input');
+ const dr=vals('.dr-bubbles input');
+ const def=vals('.def-bubbles input');
+ const attr=id=>num(value(a.querySelector('#'+id)));
+ const atks=vals('.attack-bubbles input');
+ const manaCurrent=value(b.querySelector('.mana-current')||b.querySelector('input[placeholder="Manapool"]'));
+ const manaMax=value(b.querySelector('.mana-max')||b.querySelector('input[placeholder="Manapool"]'));
+ return {name:record.name||'Player',bod:attr('bod'),dex:attr('dex'),mnd:attr('mnd'),cha:attr('cha'),
+  hp:num(hp[0]),hpMax:num(hp[1]),mana:num(manaCurrent),manaMax:num(manaMax),
+  drArmor:num(dr[0]),drNatural:num(dr[1]),drMagic:num(dr[2]),
+  attack:atks.length?'BOD '+atks[0]+' / DEX '+(atks[1]||'—'):'',
+  defense:def.length?'BOD '+def[0]+' / DEX '+(def[1]||'—'):'',
+  conditions:null};
+}
+function updateRecord(record,changes){
+ const copy=structuredClone(record);
+ const a=document.createElement('template'),b=document.createElement('template');
+ a.innerHTML=copy.state?.tabs?.tab1||'';
+ b.innerHTML=copy.state?.tabs?.tab5||'';
+ const set=(root,selector,value)=>{const el=root.querySelector(selector);if(!el)return;el.value=String(value);el.setAttribute('value',String(value))};
+ const hp=a.content.querySelectorAll('.current-max-field .current-max-values input');
+ const dr=a.content.querySelectorAll('.dr-bubbles input');
+ for(const [key,index] of [['hp',0],['hpMax',1]])if(Number.isInteger(changes[key])&&hp[index]){hp[index].value=String(changes[key]);hp[index].setAttribute('value',String(changes[key]))}
+ for(const [key,index] of [['drArmor',0],['drNatural',1],['drMagic',2]])if(Number.isInteger(changes[key])&&dr[index]){dr[index].value=String(changes[key]);dr[index].setAttribute('value',String(changes[key]))}
+ for(const [key,selector] of [['mana','.mana-current'],['manaMax','.mana-max']])if(Number.isInteger(changes[key]))set(b.content,selector,changes[key]);
+ copy.state.tabs.tab1=a.innerHTML;copy.state.tabs.tab5=b.innerHTML;
+ copy.revision=Number(copy.revision||0)+1;copy.updatedAt=Date.now();
+ return copy;
+}
+async function publish(record,token,prior){
+ const data=parseSheet(record);
+ const existing=prior||token.metadata?.[BRIDGE]||{};
+ const patch=existing.pendingPatch;
+ // Preserve a pending GM change until the owner applies it.
+ const next={...existing,version:1,roomId,characterId:record.id,ownerId,
+  updatedAt:Date.now(),sheetRevision:Number(record.revision||0),stats:data};
+ if(patch)next.pendingPatch=patch;else delete next.pendingPatch;
+ await OBR.scene.items.updateItems([token.id],items=>{for(const item of items){
+  item.metadata||={};item.metadata[BRIDGE]=next;
+ }});
+}
+async function applyPending(record,token,bridge){
+ const patch=bridge.pendingPatch;
+ if(!patch||typeof patch.id!=='string'||lastApplied.get(record.id)===patch.id)return;
+ if(patch.characterId!==record.id||patch.ownerId!==ownerId)return;
+ const changes={};
+ for(const key of fields)if(Object.prototype.hasOwnProperty.call(patch.values||{},key)){
+  const n=num(patch.values[key]);if(!Number.isSafeInteger(n))return;
+  changes[key]=n;
+ }
+ if(!Object.keys(changes).length)return;
+ // Apply only the requested fields, keeping unrelated edits made in Chara.
+ const active=window.RPGGetActiveCharacterId?.()===record.id;
+ if(active&&typeof window.RPGApplyCombatPatchToLiveSheet==='function'){
+  await window.RPGApplyCombatPatchToLiveSheet(changes);
+ }else{
+  const updated=updateRecord(record,changes);
+  await window.RPGCharacterStore.putCharacter(updated);
+  if(window.RPGOwlbear?.ready)await window.RPGOwlbear.syncSharedCharacter(updated);
+ }
+ lastApplied.set(record.id,patch.id);
+ const items=await OBR.scene.items.getItems([token.id]);
+ const latest=items[0]?.metadata?.[BRIDGE];
+ if(latest?.pendingPatch?.id===patch.id){
+  await OBR.scene.items.updateItems([token.id],list=>{for(const item of list){
+   const state=item.metadata?.[BRIDGE];if(state?.pendingPatch?.id===patch.id){
+    state.acknowledgedPatchId=patch.id;delete state.pendingPatch;
+   }
+  }});
+ }
+}
+async function check(){
+ if(running||!ready||!window.RPGCharacterStore)return;
+ running=true;
+ try{
+  if(!await OBR.scene.isReady())return;
+  const tokens=await OBR.scene.items.getItems(x=>x.layer==='CHARACTER'&&
+   x.metadata?.[LINK]?.ownerId===ownerId&&x.metadata?.[LINK]?.roomId===roomId);
+  for(const token of tokens){
+   const link=token.metadata[LINK],record=await window.RPGCharacterStore.getCharacterById(link.characterId);
+   if(!record)continue;
+   const bridge=token.metadata?.[BRIDGE];
+   if(bridge?.pendingPatch){
+    await applyPending(record,token,bridge);
+    continue;
+   }
+   if(!bridge||bridge.characterId!==record.id||
+      Number(record.revision||0)!==Number(bridge.sheetRevision||0)){
+    await publish(record,token,bridge);
+   }
+  }
+ }catch(error){console.warn('RPG combat bridge sync failed',error)}
+ finally{running=false}
+}
+OBR.onReady(async()=>{
+ try{
+  roomId=OBR.room.id;ownerId=OBR.player.id;ready=true;
+  window.addEventListener('rpg-owlbear-ready',()=>{void check()});
+  window.addEventListener('rpg-notes-combat-sheet-saved',()=>{void check()});
+  if(checkTimer)clearInterval(checkTimer);
+  checkTimer=setInterval(check,2200);await check();
+ }catch(error){console.warn('RPG combat bridge unavailable',error)}
+});
