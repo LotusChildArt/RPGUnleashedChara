@@ -13016,11 +13016,14 @@ function setupConditionCard(
 window.RPGSetCombatConditions = raw => {
     const valid=new Set(RPG_CONDITION_DEFINITIONS.map(x=>x.id));
     const next=String(raw||'').split(',').map(x=>x.trim()).filter(Boolean).map(part=>{
-        const match=part.match(/^([a-z][a-z-]*)(?::([0-9]+))?$/i);
-        if(!match||!valid.has(match[1].toLowerCase()))throw Error('Unrecognized condition: '+part);
+        const match=part.match(/^([a-z][a-z -]*?)(?::([0-9]+))?$/i);
+        const label=match?.[1]?.trim().toLowerCase();
+        const definition=RPG_CONDITION_DEFINITIONS.find(x=>x.name.toLowerCase()===label)
+            || RPG_CONDITION_DEFINITIONS.find(x=>x.id===label);
+        if(!definition||!valid.has(definition.id))throw Error('Unrecognized condition: '+part);
         const stacks=Number(match[2]||1);
         if(!Number.isSafeInteger(stacks)||stacks<1||stacks>100)throw Error('Invalid condition stacks');
-        return {id:match[1].toLowerCase(),stacks};
+        return {id:definition.id,stacks};
     });
     const list=document.querySelector('#tab1 .active-condition-list');
     if(!list)throw Error('Condition manager is unavailable');
