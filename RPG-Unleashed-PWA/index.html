@@ -17521,8 +17521,12 @@ saveSheetButton.addEventListener(
 );
 
 
-window.RPGSaveCurrentCharacter =
-    saveCharacterSheet;
+window.RPGSaveCurrentCharacter = async () => {
+    clearTimeout(rpgAutosaveTimer);
+    rpgAutosavePending = false;
+    if(rpgAutosaveInFlight)await rpgAutosaveInFlight;
+    return saveCharacterSheet();
+};
 window.RPGGetActiveCharacterId = () => characterSheetInitialized && !remoteEditSession
     ? currentCharacterRecord?.id || null : null;
 window.RPGApplyCombatPatchToLiveSheet = async changes => {
