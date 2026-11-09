@@ -97,6 +97,17 @@ async function applyPending(record,token,bridge){
  const patch=bridge.pendingPatch;
  if(!patch||typeof patch.id!=='string'||lastApplied.get(record.id)===patch.id)return;
  if(patch.characterId!==record.id||patch.ownerId!==ownerId)return;
+ if(Number.isInteger(Number(patch.baseRevision))&&Number(record.revision||0)!==Number(patch.baseRevision)){
+  await OBR.scene.items.updateItems([token.id],items=>{for(const item of items){
+   const state=item.metadata?.[BRIDGE];
+   if(state?.pendingPatch?.id===patch.id){
+    state.rejectedPatchId=patch.id;
+    state.rejectionReason='The player changed the character sheet. Refresh and retry the GM edit.';
+    delete state.pendingPatch;
+   }
+  }});
+  return;
+ }
  const changes={};
  for(const key of fields)if(Object.prototype.hasOwnProperty.call(patch.values||{},key)){
   if(key==='conditions'){try{parseConditions(patch.values[key]);changes[key]=patch.values[key]}catch{return}continue}
@@ -112,6 +123,15 @@ async function applyPending(record,token,bridge){
   const updated=updateRecord(record,changes);
   await window.RPGCharacterStore.putCharacter(updated);
   if(window.RPGOwlbear?.ready)await window.RPGOwlbear.syncSharedCharacter(updated);
+ }
+ const verifiedRecord=await window.RPGCharacterStore.getCharacterById(record.id);
+ if(!verifiedRecord)throw Error('Character disappeared during GM update.');
+ const actual=parseSheet(verifiedRecord);
+ for(const [key,expected] of Object.entries(changes)){
+  if(key==='conditions'){
+   const normalize=text=>parseConditions(text).map(x=>x.id+':'+x.stacks).sort().join(',');
+   if(normalize(actual.conditions)!==normalize(expected))throw Error('Condition changes did not save');
+  }else if(actual[key]!==expected)throw Error('A GM combat change was not saved to Chara: '+key);
  }
  lastApplied.set(record.id,patch.id);
  const items=await OBR.scene.items.getItems([token.id]);
