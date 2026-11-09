@@ -17494,6 +17494,21 @@ saveSheetButton.addEventListener(
 
 window.RPGSaveCurrentCharacter =
     saveCharacterSheet;
+window.RPGGetActiveCharacterId = () => characterSheetInitialized && !remoteEditSession
+    ? currentCharacterRecord?.id || null : null;
+window.RPGApplyCombatPatchToLiveSheet = async changes => {
+    if(!characterSheetInitialized || remoteEditSession || !currentCharacterRecord)throw Error('Character sheet is not locally editable');
+    const tab1=document.getElementById('tab1'),tab5=document.getElementById('tab5');
+    const change=(input,value)=>{if(!input||!Number.isSafeInteger(value))return;input.value=String(value);input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}))};
+    const hp=tab1.querySelectorAll('.current-max-field .current-max-values input');
+    change(hp[0],changes.hp);change(hp[1],changes.hpMax);
+    const dr=tab1.querySelectorAll('.dr-bubbles input');
+    ['drArmor','drNatural','drMagic'].forEach((key,i)=>change(dr[i],changes[key]));
+    change(tab5.querySelector('.mana-current'),changes.mana);
+    change(tab5.querySelector('.mana-max'),changes.manaMax);
+    await window.RPGSaveCurrentCharacter();
+    window.dispatchEvent(new Event('rpg-notes-combat-sheet-saved'));
+};
 
 
 saveOptionsButton.addEventListener(
@@ -24129,6 +24144,7 @@ showAppScreen(
     type="module"
     src="./owlbear-integration.js"
 ></script>
+<script type="module" src="./notes-combat-bridge.js"></script>
 
 
 <script>
