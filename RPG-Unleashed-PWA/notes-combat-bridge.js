@@ -7,7 +7,7 @@ const allowedConditions=new Set(['fear','wounded','arrowed','bleeding','broken-b
 function parseConditions(raw){
  const parts=String(raw??'').split(',').map(x=>x.trim()).filter(Boolean);
  const list=[];
- for(const part of parts){const m=part.match(/^([a-z][a-z-]*)(?::(\\d+))?$/i);
+ for(const part of parts){const m=part.match(/^([a-z][a-z-]*)(?::([0-9]+))?$/i);
   if(!m||!allowedConditions.has(m[1].toLowerCase()))throw Error('Unsupported condition: '+part);
   const stacks=Number(m[2]||1);if(!Number.isSafeInteger(stacks)||stacks<1||stacks>100)throw Error('Invalid condition stacks: '+part);
   list.push({id:m[1].toLowerCase(),stacks});
