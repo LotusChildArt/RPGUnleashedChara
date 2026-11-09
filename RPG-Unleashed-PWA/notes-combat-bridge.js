@@ -90,7 +90,10 @@ async function publish(record,token,prior){
   updatedAt:Date.now(),sheetRevision:Number(record.revision||0),stats:data};
  if(patch)next.pendingPatch=patch;else delete next.pendingPatch;
  await OBR.scene.items.updateItems([token.id],items=>{for(const item of items){
-  item.metadata||={};item.metadata[BRIDGE]=next;
+  item.metadata||={};
+  const latest=item.metadata[BRIDGE]||{};
+  item.metadata[BRIDGE]={...latest,...next,
+   ...(latest.pendingPatch?{pendingPatch:latest.pendingPatch}:next.pendingPatch?{pendingPatch:next.pendingPatch}:{})};
  }});
 }
 async function applyPending(record,token,bridge){
