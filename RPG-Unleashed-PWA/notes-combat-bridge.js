@@ -3,20 +3,25 @@ import OBR from 'https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm';
 const LINK='com.rpgunleashed.character-sheet/tokenLink';
 const BRIDGE='com.rpgunleashed.notes/playerCombatV1';
 const fields=['hp','hpMax','mana','manaMax','drArmor','drNatural','drMagic','conditions'];
-const allowedConditions=new Set(['fear','wounded','arrowed','bleeding','broken-bone','burning','charmed','poisoned','drunk','confused','frozen','unconscious','taunted','stunned','taunt']);
+const conditionLabels={fear:'Fear',wounded:'Acid',arrowed:'Pierced',bleeding:'Bleed','broken-bone':'Bone Break',burning:'Burning',charmed:'Charmed',poisoned:'Dead',drunk:'Drunk',confused:'Unconscious',frozen:'Frozen',unconscious:'Poison',taunted:'Rage',stunned:'Slowed',taunt:'Taunted'};
+const allowedConditions=new Set(Object.keys(conditionLabels));
+const conditionNameToId=new Map(Object.entries(conditionLabels).map(([id,label])=>[label.toLowerCase(),id]));
+// Also accept unambiguous internal IDs, for compatibility with existing cards.
+for(const id of allowedConditions)if(!conditionNameToId.has(id))conditionNameToId.set(id,id);
 function parseConditions(raw){
  const parts=String(raw??'').split(',').map(x=>x.trim()).filter(Boolean);
  const list=[];
- for(const part of parts){const m=part.match(/^([a-z][a-z-]*)(?::([0-9]+))?$/i);
-  if(!m||!allowedConditions.has(m[1].toLowerCase()))throw Error('Unsupported condition: '+part);
+ for(const part of parts){const m=part.match(/^([a-z][a-z -]*?)(?::([0-9]+))?$/i);
+  const id=m?conditionNameToId.get(m[1].trim().toLowerCase()):null;
+  if(!id)throw Error('Unsupported condition: '+part);
   const stacks=Number(m[2]||1);if(!Number.isSafeInteger(stacks)||stacks<1||stacks>100)throw Error('Invalid condition stacks: '+part);
-  list.push({id:m[1].toLowerCase(),stacks});
+  list.push({id,stacks});
  }
  return list;
 }
 function conditionsFrom(root){return [...root.querySelectorAll('.condition-card[data-condition-id]')].map(el=>{
  const n=Number(value(el.querySelector('.condition-stacks'))||1);
- return el.dataset.conditionId+(n>1?':'+n:'');
+ return (conditionLabels[el.dataset.conditionId]||el.dataset.conditionId)+(n>1?':'+n:'');
  }).join(', ')}
 const lastApplied=new Map();
 let running=false,ready=false,roomId=null,ownerId=null,checkTimer=null;
