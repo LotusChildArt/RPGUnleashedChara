@@ -2,7 +2,22 @@ import OBR from 'https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm';
 
 const LINK='com.rpgunleashed.character-sheet/tokenLink';
 const BRIDGE='com.rpgunleashed.notes/playerCombatV1';
-const fields=['hp','hpMax','mana','manaMax','drArmor','drNatural','drMagic'];
+const fields=['hp','hpMax','mana','manaMax','drArmor','drNatural','drMagic','conditions'];
+const allowedConditions=new Set(['fear','wounded','arrowed','bleeding','broken-bone','burning','charmed','poisoned','drunk','confused','frozen','unconscious','taunted','stunned','taunt']);
+function parseConditions(raw){
+ const parts=String(raw??'').split(',').map(x=>x.trim()).filter(Boolean);
+ const list=[];
+ for(const part of parts){const m=part.match(/^([a-z][a-z-]*)(?::(\\d+))?$/i);
+  if(!m||!allowedConditions.has(m[1].toLowerCase()))throw Error('Unsupported condition: '+part);
+  const stacks=Number(m[2]||1);if(!Number.isSafeInteger(stacks)||stacks<1||stacks>100)throw Error('Invalid condition stacks: '+part);
+  list.push({id:m[1].toLowerCase(),stacks});
+ }
+ return list;
+}
+function conditionsFrom(root){return [...root.querySelectorAll('.condition-card[data-condition-id]')].map(el=>{
+ const n=Number(value(el.querySelector('.condition-stacks'))||1);
+ return el.dataset.conditionId+(n>1?':'+n:'');
+ }).join(', ')}
 const lastApplied=new Map();
 let running=false,ready=false,roomId=null,ownerId=null,checkTimer=null;
 const num=(v,fallback=null)=>v===''||v==null?fallback:Number.isFinite(Number(v))?Number(v):fallback;
@@ -25,7 +40,7 @@ function parseSheet(record){
   drArmor:num(dr[0]),drNatural:num(dr[1]),drMagic:num(dr[2]),
   attack:atks.length?'BOD '+atks[0]+' / DEX '+(atks[1]||'—'):'',
   defense:def.length?'BOD '+def[0]+' / DEX '+(def[1]||'—'):'',
-  conditions:null};
+  conditions:conditionsFrom(a)};
 }
 function updateRecord(record,changes){
  const copy=structuredClone(record);
@@ -38,6 +53,25 @@ function updateRecord(record,changes){
  for(const [key,index] of [['hp',0],['hpMax',1]])if(Number.isInteger(changes[key])&&hp[index]){hp[index].value=String(changes[key]);hp[index].setAttribute('value',String(changes[key]))}
  for(const [key,index] of [['drArmor',0],['drNatural',1],['drMagic',2]])if(Number.isInteger(changes[key])&&dr[index]){dr[index].value=String(changes[key]);dr[index].setAttribute('value',String(changes[key]))}
  for(const [key,selector] of [['mana','.mana-current'],['manaMax','.mana-max']])if(Number.isInteger(changes[key]))set(b.content,selector,changes[key]);
+ if(Object.prototype.hasOwnProperty.call(changes,'conditions')){
+  const desired=parseConditions(changes.conditions);
+  const host=a.content.querySelector('.active-condition-list');
+  if(host){
+   const retained=[...host.querySelectorAll('.condition-card')];
+   const used=new Set();
+   for(const spec of desired){
+    let card=retained.find(x=>x.dataset.conditionId===spec.id&&!used.has(x));
+    if(!card){
+     card=document.createElement('div');card.className='condition-card';card.dataset.conditionId=spec.id;
+     card.innerHTML='<span class="condition-card-name">'+spec.id+'</span><label class="condition-stack-field">Stacks <input class="condition-stacks" type="number" min="1"></label><button class="remove-condition" type="button">×</button>';
+    }
+    const input=card.querySelector('.condition-stacks');
+    if(input){input.value=String(spec.stacks);input.setAttribute('value',String(spec.stacks))}
+    used.add(card);host.appendChild(card);
+   }
+   retained.filter(x=>!used.has(x)).forEach(x=>x.remove());
+  }
+ }
  copy.state.tabs.tab1=a.innerHTML;copy.state.tabs.tab5=b.innerHTML;
  copy.revision=Number(copy.revision||0)+1;copy.updatedAt=Date.now();
  return copy;
@@ -60,6 +94,7 @@ async function applyPending(record,token,bridge){
  if(patch.characterId!==record.id||patch.ownerId!==ownerId)return;
  const changes={};
  for(const key of fields)if(Object.prototype.hasOwnProperty.call(patch.values||{},key)){
+  if(key==='conditions'){try{parseConditions(patch.values[key]);changes[key]=patch.values[key]}catch{return}continue}
   const n=num(patch.values[key]);if(!Number.isSafeInteger(n))return;
   changes[key]=n;
  }
